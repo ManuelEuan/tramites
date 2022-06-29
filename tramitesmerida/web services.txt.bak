@@ -1,0 +1,49 @@
+Lista de tramites con filtro y paginacion
+URL: https://tramites-merida.azurewebsites.net/api/Tramite/Filter
+TIPO: POST
+
+PARAMS
+{
+	"search": "",
+	"dependencies": [],
+	"unidadesadmin": [],
+	"skipe": 9,
+	"take": 10
+}
+
+_____________________________________________
+
+Detalle tramite
+URL: https://tramites-merida.azurewebsites.net/api/Tramite/Detalle/1
+TIPO: GET
+_____________________________________________
+
+Dependencias
+URL: https://tramites-merida.azurewebsites.net/api/Tramite/Dependencias
+TIPO: GET
+_____________________________________________
+
+Estados
+URL: https://tramites-merida.azurewebsites.net/api/Tramite/Estados
+TIPO: GET
+_____________________________________________
+
+Municipios
+URL: https://tramites-merida.azurewebsites.net/api/Tramite/Municipios
+TIPO: GET
+_____________________________________________
+
+MunicipiosPorEstado
+URL: https://tramites-merida.azurewebsites.net/api/Tramite/MunicipiosPorEstado/1
+TIPO: GET
+_____________________________________________
+
+Edificios
+URL: https://tramites-merida.azurewebsites.net/api/Tramite/Edificios
+TIPO: GET
+_____________________________________________
+
+EdificioPorId
+URL: https://tramites-merida.azurewebsites.net/api/Tramite/EdificioPorId/1
+TIPO: GET
+_____________________________________________

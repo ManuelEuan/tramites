@@ -1,0 +1,259 @@
+[Fri Jul 30 15:47:30.028590 2021] [core:error] [pid 137566] (36)File name too long: [client 142.93.156.173:55252] AH00036: access to /3000D00E0000FFFF3F0031313744373731343634304537353046007A7A7A7A7A7A7A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000008047A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000 failed (filesystem path '/var/www/html/public/3000D00E0000FFFF3F0031313744373731343634304537353046007A7A7A7A7A7A7A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000008047A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000')
+[Sat Aug 07 15:21:25.228438 2021] [authz_core:error] [pid 324388] [client 5.8.10.202:18796] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Sat Aug 07 15:21:34.702528 2021] [authz_core:error] [pid 324387] [client 5.8.10.202:29262] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Mon Aug 16 04:10:38.815273 2021] [authz_core:error] [pid 593993] [client 161.35.86.181:54786] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Wed Aug 25 05:50:45.811352 2021] [core:error] [pid 923768] [client 121.46.25.189:47816] AH00126: Invalid URI in request GET secure/Dashboard.jspa HTTP/1.1
+[Sat Aug 28 01:22:22.143327 2021] [authz_core:error] [pid 1033621] [client 161.35.188.242:58588] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Thu Sep 09 16:40:21.002897 2021] [authz_core:error] [pid 37835] [client 5.8.10.202:47272] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Wed Sep 22 01:57:33.530209 2021] [authz_core:error] [pid 340936] [client 137.184.130.36:48202] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Wed Sep 22 20:54:32.337894 2021] [authz_core:error] [pid 340936] [client 143.198.136.88:50118] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Wed Oct 06 04:39:15.106418 2021] [core:error] [pid 17911] [client 145.220.25.28:51306] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd HTTP/1.1
+[Wed Oct 06 06:56:30.998811 2021] [core:error] [pid 17908] [client 45.146.164.110:53406] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Oct 07 17:37:06.303195 2021] [core:error] [pid 36989] [client 128.1.248.42:48886] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Thu Oct 07 21:13:22.425554 2021] [core:error] [pid 36989] [client 23.251.102.74:57162] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Thu Oct 07 23:11:35.147169 2021] [core:error] [pid 36061] [client 45.146.164.110:33756] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Oct 08 18:59:21.358692 2021] [core:error] [pid 52992] [client 128.14.134.170:34986] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Sat Oct 09 06:09:12.138758 2021] [core:error] [pid 75375] [client 45.146.164.110:48124] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Oct 10 03:26:20.375540 2021] [core:error] [pid 90248] [client 45.146.164.110:50298] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Oct 10 18:08:39.282695 2021] [core:error] [pid 93650] [client 45.146.164.110:42800] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Oct 11 14:13:23.243182 2021] [core:error] [pid 118373] [client 45.146.164.110:47122] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Oct 12 09:56:48.851888 2021] [core:error] [pid 139099] [client 45.146.164.110:56754] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Oct 12 23:19:43.535766 2021] [core:error] [pid 139099] [client 45.79.204.46:35008] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Wed Oct 13 02:11:09.758867 2021] [core:error] [pid 165840] [client 45.146.164.110:50506] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Oct 13 02:55:07.712971 2021] [core:error] [pid 165840] [client 185.180.143.71:42750] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Wed Oct 13 22:13:14.508275 2021] [core:error] [pid 165842] [client 45.146.164.110:56860] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Oct 14 17:54:17.591135 2021] [core:error] [pid 190782] [client 45.146.164.110:60778] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Oct 15 05:54:37.160681 2021] [core:error] [pid 225381] [client 45.93.201.33:39004] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd HTTP/1.1
+[Fri Oct 15 12:45:57.265062 2021] [core:error] [pid 225380] [client 45.79.204.46:49980] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Fri Oct 15 14:12:32.527101 2021] [core:error] [pid 222631] [client 45.146.164.110:35164] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Oct 16 10:08:06.541238 2021] [core:error] [pid 242351] [client 45.146.164.110:49786] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Oct 17 04:45:54.776233 2021] [core:error] [pid 262904] [client 45.146.164.110:52392] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Oct 17 22:44:59.131947 2021] [core:error] [pid 262900] [client 45.146.164.110:49464] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Oct 18 17:49:59.706673 2021] [core:error] [pid 282662] [client 45.146.164.110:57748] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Oct 18 20:39:22.965220 2021] [core:error] [pid 293301] [client 23.251.102.74:44104] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Tue Oct 19 10:53:47.695162 2021] [core:error] [pid 308742] [client 45.146.164.110:34884] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Oct 19 21:19:43.860419 2021] [core:error] [pid 308742] [client 171.25.193.78:57688] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd HTTP/1.1
+[Tue Oct 19 21:19:44.772022 2021] [core:error] [pid 302035] [client 171.25.193.78:58188] AH00126: Invalid URI in request POST /cgi-bin/.%2e/%2e%2e/%2e%2e/bin/sh HTTP/1.1
+[Wed Oct 20 07:08:09.711900 2021] [core:error] [pid 322450] [client 45.146.164.110:49660] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Oct 21 00:13:00.266709 2021] [core:error] [pid 344396] [client 45.146.164.110:52254] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Oct 21 14:55:43.260766 2021] [authz_core:error] [pid 344400] [client 142.93.53.9:51912] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Thu Oct 21 20:56:57.893897 2021] [core:error] [pid 344397] [client 45.146.164.110:57504] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Oct 22 12:32:27.573247 2021] [core:error] [pid 373433] [client 45.146.164.110:45470] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Oct 23 11:38:27.098532 2021] [core:error] [pid 398284] [client 45.146.164.110:44894] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Oct 24 01:14:26.844579 2021] [core:error] [pid 417372] [client 45.146.164.110:35814] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Oct 24 20:57:10.535348 2021] [core:error] [pid 417393] [client 45.146.164.110:52498] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Oct 25 15:31:09.406000 2021] [core:error] [pid 433357] [client 45.146.164.110:33104] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Oct 26 12:12:15.241162 2021] [core:error] [pid 449489] [client 45.146.164.110:49586] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Oct 27 05:50:04.240211 2021] [core:error] [pid 467406] [client 45.146.164.110:43072] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Oct 28 02:49:04.977828 2021] [core:error] [pid 486926] [client 45.146.164.110:37544] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Oct 28 19:03:19.971448 2021] [core:error] [pid 486924] [client 45.146.164.110:39136] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Oct 29 01:40:39.337995 2021] [core:error] [pid 511161] [client 193.118.53.210:54528] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Fri Oct 29 13:24:53.303578 2021] [core:error] [pid 511576] [client 45.146.164.110:38290] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Oct 30 03:30:48.518807 2021] [authz_core:error] [pid 528398] [client 5.8.10.202:52256] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Sat Oct 30 10:51:08.004966 2021] [core:error] [pid 528973] [client 45.146.164.110:47264] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Oct 31 02:13:10.637757 2021] [core:error] [pid 546174] [client 45.146.164.110:59840] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Oct 31 23:36:34.701415 2021] [core:error] [pid 547859] [client 45.146.164.110:40504] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Nov 01 17:19:58.708007 2021] [core:error] [pid 571295] [client 45.146.164.110:58768] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Nov 02 09:01:58.686252 2021] [core:error] [pid 581191] [client 45.146.164.110:36798] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Nov 02 20:50:31.477252 2021] [core:error] [pid 581190] (36)File name too long: [client 159.203.0.168:51472] AH00036: access to /3000D00E0000FFFF3F0031313744373731343634304537353046007A7A7A7A7A7A7A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000008047A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000 failed (filesystem path '/var/www/html/public/3000D00E0000FFFF3F0031313744373731343634304537353046007A7A7A7A7A7A7A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000008047A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000')
+[Wed Nov 03 09:51:06.868864 2021] [core:error] [pid 602776] [client 45.146.164.110:33680] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Nov 04 00:59:02.591697 2021] [core:error] [pid 624484] [client 45.146.164.110:41476] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Nov 05 01:15:46.646365 2021] [core:error] [pid 643950] [client 131.161.83.246:49714] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Nov 05 04:53:41.868775 2021] [core:error] [pid 644165] [client 45.146.164.110:38036] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Nov 05 18:58:00.083888 2021] [core:error] [pid 643951] [client 45.146.164.110:39776] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Nov 06 12:40:22.947003 2021] [core:error] [pid 660382] [client 195.154.119.181:34712] AH00126: Invalid URI in request GET /cgi-bin/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/etc/passwd HTTP/1.1
+[Sat Nov 06 14:49:19.771113 2021] [core:error] [pid 660383] [client 45.146.164.110:33588] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Nov 07 15:11:21.886781 2021] [core:error] [pid 679699] [client 45.146.164.110:33626] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Nov 08 11:15:52.826968 2021] [core:error] [pid 695755] [client 45.146.164.110:33258] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Nov 10 08:46:55.313511 2021] [core:error] [pid 740121] [client 45.146.164.110:40476] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Nov 11 02:36:06.042918 2021] [core:error] [pid 760623] [client 45.146.164.110:50046] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Nov 12 10:29:39.911632 2021] [core:error] [pid 775590] [client 128.14.134.134:51050] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Fri Nov 12 18:32:56.277745 2021] [core:error] [pid 775425] [client 134.122.112.12:50004] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Wed Nov 17 12:46:15.285174 2021] [core:error] [pid 64900] [client 45.146.164.110:53312] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Nov 18 07:14:14.781089 2021] [core:error] [pid 82706] [client 45.146.164.110:38880] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Nov 19 02:01:08.538615 2021] [core:error] [pid 98175] [client 45.146.164.110:53062] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Nov 19 20:39:32.615341 2021] [core:error] [pid 98175] [client 45.146.164.110:40818] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Nov 21 11:41:10.392396 2021] [core:error] [pid 129863] [client 45.146.164.110:34272] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Nov 22 06:58:04.041283 2021] [core:error] [pid 154452] [client 45.146.164.110:45872] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Nov 23 22:10:16.864169 2021] [core:error] [pid 189715] [client 45.146.164.110:60862] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Nov 24 17:47:11.385689 2021] [core:error] [pid 227519] [client 45.146.164.110:33664] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Nov 25 12:31:13.528539 2021] [core:error] [pid 260823] [client 23.251.102.74:50170] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Thu Nov 25 13:32:43.363939 2021] [core:error] [pid 271323] [client 45.146.164.110:58128] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Nov 26 08:40:56.692203 2021] [core:error] [pid 277571] [client 45.146.164.110:46022] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Nov 27 04:20:15.986430 2021] [core:error] [pid 294349] [client 45.146.164.110:52104] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Nov 27 23:58:24.845532 2021] [core:error] [pid 297434] [client 45.146.164.110:50350] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Nov 28 19:38:06.959674 2021] [core:error] [pid 315484] [client 45.146.164.110:57926] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Nov 29 15:44:27.837577 2021] [authz_core:error] [pid 331980] [client 45.33.65.249:53784] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Tue Nov 30 07:18:03.803708 2021] [core:error] [pid 349053] [client 45.146.164.110:55472] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Nov 30 23:25:31.306430 2021] [authz_core:error] [pid 349052] [client 5.8.10.202:33064] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Wed Dec 01 22:04:40.443916 2021] [core:error] [pid 368442] [client 45.146.164.110:35568] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Dec 02 17:06:11.602993 2021] [core:error] [pid 394964] [client 45.146.164.110:36806] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Dec 03 13:06:31.568715 2021] [core:error] [pid 420173] [client 45.146.164.110:53210] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Dec 04 14:03:41.483497 2021] [core:error] [pid 437286] [client 45.155.205.233:60880] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Dec 06 03:05:06.882379 2021] [core:error] [pid 475174] [client 47.252.38.12:57786] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Dec 06 05:00:46.741755 2021] [core:error] [pid 475174] [client 45.155.205.233:42936] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Dec 07 00:03:33.646246 2021] [core:error] [pid 495808] [client 45.155.205.233:48202] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Dec 07 19:48:30.738155 2021] [authz_core:error] [pid 495809] [client 5.8.10.202:14982] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Tue Dec 07 19:48:40.745507 2021] [authz_core:error] [pid 495810] [client 5.8.10.202:37922] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Wed Dec 08 14:39:09.063039 2021] [core:error] [pid 519112] [client 45.155.205.233:51160] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Dec 09 07:01:35.109336 2021] [core:error] [pid 573333] [client 128.14.209.162:43016] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Thu Dec 09 09:58:04.944125 2021] [core:error] [pid 575637] [client 45.155.205.233:60044] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Dec 10 04:04:22.690415 2021] [core:error] [pid 613238] [client 143.198.136.88:41700] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Fri Dec 10 04:04:23.730566 2021] [authz_core:error] [pid 615543] [client 143.198.136.88:42424] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Fri Dec 10 05:35:24.682727 2021] [core:error] [pid 613239] [client 45.155.205.233:56000] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Dec 11 01:37:21.873149 2021] [authz_core:error] [pid 630480] [client 172.104.140.107:43010] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Mon Dec 13 03:35:22.284611 2021] [core:error] [pid 664790] [client 195.54.160.149:47808] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Dec 13 20:50:20.284792 2021] [authz_core:error] [pid 664328] [client 45.33.65.249:33466] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Thu Dec 16 13:25:07.352191 2021] [core:error] [pid 711922] [client 195.54.160.149:49772] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Dec 17 10:02:35.420048 2021] [core:error] [pid 732157] [client 195.54.160.149:57350] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Dec 18 00:49:21.236619 2021] [core:error] [pid 744332] [client 45.67.221.63:52452] AH00126: Invalid URI in request GET /_next/../../../../../../../../../../etc/passwd HTTP/1.1
+[Sat Dec 18 05:59:34.503352 2021] [core:error] [pid 744328] [client 134.122.112.12:43506] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Sat Dec 18 06:39:02.252120 2021] [core:error] [pid 744332] [client 195.54.160.149:45012] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Dec 19 02:32:46.351369 2021] [core:error] [pid 761541] [client 195.54.160.149:47812] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Dec 19 22:37:10.195242 2021] [core:error] [pid 761538] [client 195.54.160.149:49376] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Dec 20 19:09:41.763772 2021] [core:error] [pid 793128] [client 195.54.160.149:41518] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Dec 20 23:59:27.144980 2021] [core:error] [pid 782628] [client 45.67.221.63:52648] AH00126: Invalid URI in request GET /public/plugins/alertlist/../../../../../../../../../../../../../../../../../../../etc/passwd HTTP/1.1
+[Tue Dec 21 15:13:50.142122 2021] [core:error] [pid 809792] [client 195.54.160.149:39554] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Dec 22 11:52:09.851813 2021] [core:error] [pid 833220] [client 195.54.160.149:42462] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Dec 23 08:19:04.883840 2021] [core:error] [pid 852529] [client 195.54.160.149:54306] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Dec 23 14:58:34.158239 2021] [core:error] [pid 852531] [client 128.14.133.58:36382] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Fri Dec 24 04:37:14.935947 2021] [core:error] [pid 868003] [client 195.54.160.149:40444] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Dec 25 01:27:36.919190 2021] [core:error] [pid 885571] [client 195.54.160.149:59718] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Dec 25 21:40:21.449777 2021] [core:error] [pid 886519] [client 195.54.160.149:58822] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Dec 26 13:10:04.079346 2021] [authz_core:error] [pid 902095] [client 5.8.10.202:56138] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Sun Dec 26 16:21:40.334393 2021] [core:error] [pid 902095] [client 161.35.86.181:57836] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Sun Dec 26 16:21:42.384044 2021] [authz_core:error] [pid 902097] [client 161.35.86.181:59746] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Tue Dec 28 11:09:21.347173 2021] [authz_core:error] [pid 935050] [client 5.8.10.202:27578] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Tue Dec 28 11:09:22.111566 2021] [authz_core:error] [pid 935027] [client 5.8.10.202:30724] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Tue Dec 28 12:12:26.641485 2021] [core:error] [pid 935029] [client 195.54.160.149:37056] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Dec 28 15:45:24.537028 2021] [authz_core:error] [pid 946303] [client 172.105.87.91:42182] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Wed Dec 29 08:39:14.021832 2021] [core:error] [pid 958058] [client 195.54.160.149:37962] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Dec 30 05:43:27.091886 2021] [core:error] [pid 978445] [client 195.54.160.149:39616] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Dec 31 02:24:56.104357 2021] [core:error] [pid 993595] [client 195.54.160.149:39612] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Dec 31 22:39:04.676938 2021] [core:error] [pid 993594] [client 195.54.160.149:54608] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Jan 02 15:16:58.897035 2022] [core:error] [pid 1026731] [client 195.54.160.149:55288] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Jan 05 03:18:27.845911 2022] [core:error] [pid 1079358] [client 45.146.165.37:48032] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Jan 05 21:35:49.541464 2022] [core:error] [pid 2672] [client 45.146.165.37:44704] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Jan 06 16:40:02.840398 2022] [core:error] [pid 30598] [client 45.146.165.37:37510] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Jan 06 18:23:38.784011 2022] [core:error] [pid 30620] [client 128.14.209.162:41590] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Fri Jan 07 11:59:47.518874 2022] [core:error] [pid 49907] [client 45.146.165.37:48072] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Jan 08 07:17:31.807363 2022] [core:error] [pid 64252] [client 45.146.165.37:57604] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Jan 08 18:48:22.075443 2022] [core:error] [pid 63845] [client 161.35.86.181:43862] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Sun Jan 09 02:34:23.430122 2022] [core:error] [pid 85085] [client 45.146.165.37:54834] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Jan 09 22:16:30.869987 2022] [core:error] [pid 85086] [client 45.146.165.37:60628] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Jan 10 16:39:05.835041 2022] [core:error] [pid 110308] [client 143.198.136.88:42340] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Tue Jan 11 15:02:32.687478 2022] [core:error] [pid 148246] [client 45.146.165.37:37012] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Jan 12 11:36:42.489350 2022] [core:error] [pid 156629] [client 45.146.165.37:56186] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Jan 15 00:33:14.091867 2022] [core:error] [pid 230803] [client 45.146.165.37:58974] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Jan 15 21:01:00.447368 2022] [core:error] [pid 230800] [client 45.146.165.37:53750] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Jan 16 17:21:22.483136 2022] [core:error] [pid 252506] [client 45.146.165.37:53750] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Jan 17 13:56:15.673983 2022] [core:error] [pid 274559] [client 45.146.165.37:48700] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Jan 19 04:59:13.345517 2022] [core:error] [pid 318201] [client 45.146.165.37:42500] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Jan 20 22:02:25.535901 2022] [core:error] [pid 340977] [client 45.146.165.37:59168] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Jan 21 23:08:06.013475 2022] [core:error] [pid 369968] [client 193.118.53.194:55656] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Sat Jan 22 14:43:48.723818 2022] [core:error] [pid 395507] [client 45.146.165.37:33084] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Jan 24 07:50:57.844275 2022] [core:error] [pid 440411] [client 45.146.165.37:39354] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Jan 25 04:23:25.197504 2022] [core:error] [pid 459768] [client 45.146.165.37:50202] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Jan 26 20:49:46.572987 2022] [core:error] [pid 482555] [client 45.146.165.37:53734] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Jan 27 17:05:16.253394 2022] [core:error] [pid 509651] [client 45.146.165.37:47320] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Jan 28 13:35:54.223453 2022] [core:error] [pid 526829] [client 45.146.165.37:48432] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Jan 30 06:37:47.374242 2022] [core:error] [pid 570482] [client 45.146.165.37:48122] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Jan 31 02:47:21.226775 2022] [core:error] [pid 593010] [client 45.146.165.37:41394] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Jan 31 23:08:19.579692 2022] [core:error] [pid 2492] [client 45.146.165.37:57408] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Feb 01 20:01:58.755213 2022] [core:error] [pid 17525] [client 45.146.165.37:47628] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Feb 02 16:18:00.728838 2022] [core:error] [pid 25697] [client 45.146.165.37:44182] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Feb 03 12:17:16.497894 2022] [core:error] [pid 45597] [client 45.146.165.37:34030] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Feb 04 08:59:33.430680 2022] [core:error] [pid 93377] [client 45.146.165.37:48798] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Feb 04 13:02:02.931615 2022] [core:error] [pid 93373] [client 193.118.53.202:35728] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Sun Feb 06 00:22:04.834626 2022] [core:error] [pid 178148] (36)File name too long: [client 147.182.146.153:55178] AH00036: access to /3000D00E0000FFFF3F0031313744373731343634304537353046007A7A7A7A7A7A7A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000008047A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000 failed (filesystem path '/var/www/html/public/3000D00E0000FFFF3F0031313744373731343634304537353046007A7A7A7A7A7A7A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000008047A7A7A7A7A7A7A7A7A0000000000000000000000000000000000000000000000000000000000000000')
+[Tue Feb 08 15:05:07.578786 2022] [core:error] [pid 231676] [client 45.146.165.37:40978] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Feb 09 11:09:26.618968 2022] [core:error] [pid 267394] [client 45.146.165.37:48050] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Feb 10 07:38:15.639619 2022] [core:error] [pid 298342] [client 45.146.165.37:50082] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Feb 11 04:15:29.925135 2022] [core:error] [pid 325942] [client 45.146.165.37:58132] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Feb 12 21:07:34.960503 2022] [core:error] [pid 358211] [client 45.146.165.37:55050] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Feb 14 13:46:10.089061 2022] [core:error] [pid 459266] [client 45.146.165.37:58574] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Feb 17 03:31:38.948253 2022] [core:error] [pid 540148] [client 45.146.165.37:51576] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Feb 17 17:48:38.304454 2022] [core:error] [pid 541722] [client 128.14.133.58:34354] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Thu Feb 17 23:50:00.001120 2022] [core:error] [pid 540148] [client 45.146.165.37:53114] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Feb 19 17:01:07.183860 2022] [core:error] [pid 607994] [client 45.146.165.37:38316] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Feb 20 13:31:38.938835 2022] [core:error] [pid 643137] [client 45.146.165.37:43716] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Feb 21 10:11:40.385515 2022] [core:error] [pid 673316] [client 45.146.165.37:39138] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Feb 23 02:51:29.557933 2022] [core:error] [pid 739170] [client 45.146.165.37:57914] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Feb 24 04:15:55.761757 2022] [authz_core:error] [pid 776392] [client 172.104.159.48:32990] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Thu Feb 24 19:44:19.383176 2022] [core:error] [pid 786448] [client 45.146.165.37:38370] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Feb 25 15:58:46.270629 2022] [core:error] [pid 812445] [client 45.146.165.37:43088] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Feb 26 18:47:39.851482 2022] [core:error] [pid 851352] [client 45.146.165.37:36512] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Feb 27 20:39:22.440803 2022] [core:error] [pid 885989] [client 45.146.165.37:38544] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Feb 28 23:47:23.213669 2022] [core:error] [pid 925935] [client 45.146.165.37:58524] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Mar 02 03:55:23.493777 2022] [core:error] [pid 1001854] [client 45.146.165.37:58036] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Mar 02 06:12:43.747529 2022] [authz_core:error] [pid 1001858] [client 109.74.204.123:52186] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Thu Mar 03 06:28:07.467643 2022] [core:error] [pid 1045716] [client 45.146.165.37:55254] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Mar 04 09:18:59.889295 2022] [core:error] [pid 1081565] [client 45.146.165.37:58000] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Mar 04 21:23:32.853445 2022] [core:error] [pid 1081562] [client 161.35.86.181:39046] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Fri Mar 04 21:23:34.963034 2022] [authz_core:error] [pid 1081563] [client 161.35.86.181:40884] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Sat Mar 05 01:28:08.210814 2022] [core:error] [pid 1118220] [client 45.146.165.37:44824] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Mar 06 04:14:50.880197 2022] [core:error] [pid 1155005] [client 45.146.165.37:50420] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Mar 07 06:50:26.684237 2022] [core:error] [pid 1198066] [client 45.146.165.37:58078] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Mar 08 10:00:18.398450 2022] [core:error] [pid 1240602] [client 45.146.165.37:36874] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Mar 09 12:30:15.110953 2022] [core:error] [pid 1276915] [client 45.146.165.37:49350] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Mar 11 18:38:36.082114 2022] [core:error] [pid 1385048] [client 45.146.165.37:59304] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Mar 12 21:41:42.096629 2022] [core:error] [pid 1399318] [client 45.146.165.37:42340] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Mar 12 23:06:40.199516 2022] [authz_core:error] [pid 1399405] [client 45.33.101.246:12364] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Mon Mar 14 00:40:21.857976 2022] [core:error] [pid 1472763] [client 45.146.165.37:59048] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Mar 14 23:05:34.439679 2022] [core:error] [pid 1472416] [client 128.199.2.117:33392] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/.git/config HTTP/1.1
+[Tue Mar 15 03:09:25.775745 2022] [core:error] [pid 1511114] [client 45.146.165.37:59550] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Mar 16 07:20:29.772467 2022] [core:error] [pid 1550281] [client 45.146.165.37:36426] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Mar 17 09:33:12.061148 2022] [core:error] [pid 1595518] [client 45.146.165.37:47036] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Mar 17 10:33:44.982150 2022] [authz_core:error] [pid 1613877] [client 88.80.186.144:60978] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Fri Mar 18 12:37:32.304607 2022] [core:error] [pid 1651843] [client 45.146.165.37:53000] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Mar 19 15:28:34.013480 2022] [core:error] [pid 1682465] [client 45.146.165.37:46982] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Mar 20 08:40:12.220855 2022] [authz_core:error] [pid 1734434] [client 172.105.87.91:38510] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Sun Mar 20 18:47:34.103374 2022] [core:error] [pid 1734434] [client 45.146.165.37:38530] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Mar 21 21:58:02.114965 2022] [core:error] [pid 1761242] [client 45.146.165.37:54364] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Mar 23 01:43:30.919787 2022] [core:error] [pid 1844907] [client 45.146.165.37:56192] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Mar 24 06:50:16.822938 2022] [core:error] [pid 1884224] [client 45.146.165.37:40054] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Mar 27 00:32:02.018189 2022] [core:error] [pid 2005457] [client 45.155.204.146:58982] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Mar 29 04:20:54.906386 2022] [core:error] [pid 2085035] [client 45.155.204.146:45060] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Mar 30 03:39:29.284373 2022] [core:error] [pid 2123035] [client 162.221.192.26:46438] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Wed Mar 30 10:14:00.435115 2022] [core:error] [pid 2123045] [client 45.155.204.146:43482] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Mar 31 15:21:55.959132 2022] [core:error] [pid 2169421] [client 45.155.204.146:58358] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Apr 01 11:56:46.075126 2022] [authz_core:error] [pid 2197524] [client 172.104.140.107:54064] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Mon Apr 04 00:26:59.602458 2022] [core:error] [pid 54189] [client 45.155.204.146:49868] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Apr 05 05:53:27.825183 2022] [core:error] [pid 93912] [client 45.155.204.146:47176] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Apr 07 13:29:32.690933 2022] [core:error] [pid 173905] [client 45.155.204.146:50934] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Apr 08 17:43:39.906394 2022] [core:error] [pid 235904] [client 45.155.204.146:58434] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Apr 11 04:21:03.223075 2022] [core:error] [pid 331285] [client 45.155.204.146:44052] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Apr 12 08:04:49.891408 2022] [core:error] [pid 374003] [client 45.155.204.146:51280] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Apr 13 12:15:01.486778 2022] [core:error] [pid 412235] [client 45.155.204.146:43666] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Apr 14 03:34:41.038506 2022] [authz_core:error] [pid 452461] [client 45.33.101.246:34948] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Thu Apr 14 16:20:34.750553 2022] [core:error] [pid 456416] [client 45.155.204.146:50094] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Apr 16 10:29:22.122716 2022] [core:error] [pid 528508] [client 45.155.204.146:34824] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Apr 17 13:18:18.381753 2022] [core:error] [pid 570289] [client 45.155.204.146:47954] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon Apr 18 10:03:40.882231 2022] [core:error] [pid 603845] [client 161.35.86.181:38318] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Mon Apr 18 17:22:21.126575 2022] [core:error] [pid 603846] [client 45.155.204.146:41468] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed Apr 20 18:37:10.818012 2022] [authz_core:error] [pid 680165] [client 40.70.210.147:51794] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Thu Apr 21 04:00:15.155104 2022] [core:error] [pid 715473] [client 45.155.204.146:52926] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Apr 21 10:45:59.842717 2022] [core:error] [pid 715671] [client 161.35.188.242:57434] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Thu Apr 21 10:45:59.977960 2022] [core:error] [pid 715470] [client 161.35.188.242:57940] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Fri Apr 22 09:23:16.982960 2022] [core:error] [pid 758648] [client 45.155.204.146:47858] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Fri Apr 22 21:03:51.109044 2022] [core:error] [pid 758648] [client 161.35.86.181:35514] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Sat Apr 23 02:33:24.845146 2022] [authz_core:error] [pid 798178] [client 88.80.186.144:28951] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Sat Apr 23 02:50:37.504034 2022] [core:error] [pid 801136] [client 193.118.53.210:59434] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Sat Apr 23 14:57:11.407682 2022] [core:error] [pid 798178] [client 45.155.204.146:54102] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sun Apr 24 20:38:22.576669 2022] [core:error] [pid 826786] [client 213.226.123.30:53920] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue Apr 26 05:09:37.426196 2022] [core:error] [pid 891758] [client 213.226.123.30:54012] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu Apr 28 09:13:24.737286 2022] [core:error] [pid 958467] [client 213.226.123.30:59766] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Apr 30 05:33:18.708633 2022] [core:error] [pid 1032343] [client 213.226.123.30:52148] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat Apr 30 16:02:02.402140 2022] [core:error] [pid 1032342] [client 128.199.2.117:53936] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/.git/config HTTP/1.1
+[Sun May 01 02:42:19.421239 2022] [core:error] [pid 1064332] [client 213.226.123.30:37134] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue May 03 00:42:15.017656 2022] [core:error] [pid 3812] [client 213.226.123.30:55616] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Wed May 04 10:34:24.325981 2022] [core:error] [pid 41552] [client 213.226.123.30:48228] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Sat May 07 17:33:53.263161 2022] [authz_core:error] [pid 139814] [client 172.104.140.107:50458] AH01630: client denied by server configuration: /var/www/html/public/server-status
+[Sat May 07 21:28:21.402898 2022] [core:error] [pid 139818] [client 161.35.86.181:59254] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Sun May 08 16:00:03.629113 2022] [core:error] [pid 161515] [client 45.9.20.101:56614] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Mon May 09 12:34:03.828074 2022] [core:error] [pid 196198] [client 45.9.20.101:47594] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Tue May 10 10:25:40.460863 2022] [core:error] [pid 229651] [client 45.9.20.101:33630] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu May 12 05:06:18.910932 2022] [core:error] [pid 289164] [client 45.9.20.101:36008] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1
+[Thu May 12 17:04:32.273770 2022] [core:error] [pid 289165] [client 161.35.86.181:55486] AH00126: Invalid URI in request GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/hosts HTTP/1.1
+[Thu May 12 20:46:01.841713 2022] [core:error] [pid 289166] [client 162.221.192.26:40932] AH00126: Invalid URI in request HEAD /icons/.%2e/%2e%2e/apache2/icons/sphere1.png HTTP/1.1
+[Fri May 13 01:54:11.246040 2022] [core:error] [pid 323832] [client 45.9.20.101:38836] AH00126: Invalid URI in request POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1

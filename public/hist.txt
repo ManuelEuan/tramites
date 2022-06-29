@@ -1,0 +1,208 @@
+    1  apt-get update
+    2  apt-get upgrade
+    3  apt-get install php7.4
+    4  apt-get install mariadb-server
+    5  apt-get install php-mysql
+    6  sudo apt install php7.4-common php7.4-cli php7.4-gd php7.4-mysql php7.4-curl php7.4-intl php7.4-mbstring php7.4-bcmath php7.4-imap php7.4-xml php7.4-zip
+    7  apache2ctl restart
+    8  cd /var/www
+    9  ls
+   10  cd html/
+   11  ls
+   12  apt-get install emacs
+   13  emacs info.php
+   14  apt-get install unzip
+   15  mkdir tramitesmerida
+   16  cd tramitesmerida
+   17  ls
+   18  wget pulsocoparmex.mx/sigetysmid.zip
+   19  ls
+   20  unzip sigetysmid.zip 
+   21  ls
+   22  pwd
+   23  ls
+   24  pwd
+   25  cd /var/www/html
+   26  ks
+   27  ls
+   28  cd ..
+   29  mkdir actualiza
+   30  cd actualiza/
+   31  wget yucatan2030.mx/merida.zip
+   32  unzip merida.zip 
+   33  ls
+   34  cd app
+   35  ls
+   36  cd Http/
+   37  ls
+   38  cd Controllers/
+   39  ls
+   40  ls -lha
+   41  ls
+   42  cp -r GestorController.php ../../../app/Http/Controllers/
+   43  cp -r GestorController.php ../../../../html/app/Http/Controllers/
+   44  cp -r Tramite*.php ../../../../html/app/Http/Controllers/
+   45  cd ..
+   46  ls
+   47  cp -r Cls_Tramite_Servicio.php ../../html/app/
+   48  cd ..
+   49  cd resources/
+   50  ls
+   51  cd views/
+   52  ls
+   53  cp -r DET_GESTOR_CONFIGURACION_TRAMITE/ ../../../html/resources/views/
+   54  cp -r MST_GESTOR/ ../../../html/resources/views/
+   55  cp -r MST_TRAMITE_SERVICIO/ ../../../html/resources/views/
+   56  ls -lha
+   57  ls
+   58  cd /var/www
+   59  ls
+   60  cd html/
+   61  ls
+   62  cd public/
+   63  ls
+   64  ls -lha
+   65  cd files
+   66  ls
+   67  ls -lha
+   68  cd documentos/
+   69  ls
+   70  ls -lha
+   71  ls
+   72  cd /var/www
+   73  ls
+   74  mkdir actualiza2
+   75  ls
+   76  cp -r html htmlbak
+   77  cd actualiza2
+   78  ls
+   79  wget yucatan2030.mx/sigetysmid2.zip
+   80  ls
+   81  unzip sigetysmid2.zip 
+   82  ls
+   83  rm sigetysmid2.zip 
+   84  ls
+   85  cd app
+   86  cd 
+   87  cd /var/www/actualiza2/app
+   88  ls
+   89  cd Http/
+   90  ls
+   91  cd Controllers/
+   92  ls
+   93  ls -lha
+   94  cp GestorController.php ../../../../html/app/Http/Controllers/
+   95  cp TramitesController.php ../../../../html/app/Http/Controllers/
+   96  cp TramiteServicioController.php ../../../../html/app/Http/Controllers/
+   97  cd ..
+   98  ls
+   99  cd ..
+  100  ls
+  101  cd Http/
+  102  ls
+  103  cd ..
+  104  ls
+  105  cd resources/
+  106  cd views/
+  107  ls
+  108  cp -r DET_GESTOR_CONFIGURACION_TRAMITE ../../../html/resources/views/
+  109  cp -r MST_GESTOR ../../../html/resources/views/
+  110  cp -r MST_TRAMITE_SERVICIO ../../../html/resources/views/
+  111  apache2ctl restart
+  112  ls
+  113  cd /var/www
+  114  ls
+  115  cd html
+  116  ls
+  117  cd public/
+  118  ls
+  119  cd files
+  120  ls
+  121  ls -lha
+  122  chmod -R 777 documentos/
+  123  ls -lha
+  124  cd documentos/
+  125  ls
+  126  cd /var/
+  127  ls
+  128  cd www
+  129  ls
+  130  cd html
+  131  ls
+  132  cd database/
+  133  ls
+  134  cd ..
+  135  cd database/
+  136  ls
+  137  cd factories/
+  138  ls
+  139  cd ..
+  140  ls
+  141  cd config/
+  142  ls
+  143  emacs database.php 
+  144  ls
+  145  cd /var/www/html
+  146  ks
+  147  ls
+  148  clear
+  149  ls
+  150  cd database/
+  151  ls
+  152  cd ..
+  153  ls -lha
+  154  emacs .env
+  155  exit
+  156  ls
+  157  cd /var/www
+  158  ls
+  159  cd html
+  160  ls
+  161  emacs .env
+  162  apache2ctl restart
+  163  emacs .env
+  164  apache2ctl restart
+  165  cd database/
+  166  ls
+  167  cd migrations/
+  168  ls
+  169  cd ..
+  170  ls
+  171  sudo su
+  172  ls
+  173  cd /var/www/html
+  174  ls
+  175  ls -lha
+  176  emacs .env
+  177  df -h
+  178  cd /dev/loop0
+  179  cd /snap/core18
+  180  ls
+  181  cd 2245
+  182  ls
+  183  cd ..
+  184  ks
+  185  ls
+  186  df -h
+  187  apt-get install rar
+  188  df -h
+  189  ls
+  190  cd ..
+  191  rar todo.rar html
+  192  zip
+  193  apt-get install zip
+  194  ls
+  195  zip -r todo.zip html
+  196  ls
+  197  cd html
+  198  ls
+  199  cd ..
+  200  cp todo.zip html/public/
+  201  ls
+  202  cd html
+  203  cd public/
+  204  ls
+  205  history
+  206  ls
+  207  rm todo.zip 
+  208  history > hist.txt
