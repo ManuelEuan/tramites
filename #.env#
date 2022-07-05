@@ -13,6 +13,13 @@ DB_DATABASE=siegy-merida-dev
 DB_USERNAME=adminsiegy@chihuahuasiegy1
 DB_PASSWORD=A123456a*
 
+DB_CONNECTION=mysql2
+DB_HOST=chihuahuasiegy1.mysql.database.azure.com
+DB_PORT=3306
+DB_DATABASE=retysmerida
+DB_USERNAME=adminsiegy@chihuahuasiegy1
+DB_PASSWORD=Angelica2234.
+
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file
 QUEUE_CONNECTION=sync
