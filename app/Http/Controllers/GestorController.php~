@@ -23,7 +23,7 @@ class GestorController extends Controller
         $this->middleware('auth');
     }
 
-    protected $host = 'https://tramites-merida.azurewebsites.net';
+    protected $host = 'https://retys-queretaro.azurewebsites.net';
 
     public function index()
     {

@@ -28,7 +28,7 @@ class TramitesController extends Controller
 
     }
 
-    protected $host = 'https://retys-queretaro.azurewebsites.net';
+    protected $host = 'https://remtysmerida.azurewebsites.net';
 
     public function listado(){
 

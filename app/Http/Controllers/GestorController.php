@@ -24,7 +24,7 @@ class GestorController extends Controller
         $this->middleware('auth');
     }
 
-    protected $host = 'https://retys-queretaro.azurewebsites.net';
+    protected $host = 'https://remtysmerida.azurewebsites.net';
 
     public function index()
     {
@@ -69,7 +69,7 @@ class GestorController extends Controller
             $_exist = DB::table('tram_mst_tramite as g')
                     ->where('g.TRAM_NIDTRAMITE_ACCEDE', $obj->TRAM_NIDTRAMITE)
                     ->select('g.*')
-                    ->get();       
+                    ->get();
             $exist = $_exist->count();
 
             if($exist > 0){
@@ -117,7 +117,7 @@ class GestorController extends Controller
                 $start = (intval($numeroPagina) * intval($numeroRegistros)) - 1;
                 $end = intval($numeroRegistros);
             }
-            
+
             $palabraClave = $request->palabraClave;
             $dependencia = $request->dependencia;
             $unidad = intval($request->unidad);
@@ -155,7 +155,7 @@ class GestorController extends Controller
                 $tram  = (object)  $objTramiteTem;
                 array_push($listaTramites, $tram);
             }
-    
+
             //Lista final
             foreach ($listaTramites as $obj) {
                 //Validar si existe
@@ -163,7 +163,7 @@ class GestorController extends Controller
                         ->where('g.TRAM_NIDTRAMITE_ACCEDE', $obj->TRAM_NIDTRAMITE)
                         ->select('g.*')
                         ->get();
-                        
+
                 $exist = $_exist->count();
 
                 if($exist == 1){
@@ -457,7 +457,7 @@ class GestorController extends Controller
         //Obtener edificios
         $edificios = [];
         if ($objTramite != null) {
-            
+
             $horarios = "";
             foreach($objTramite['horarios'] as $objHorario){
                 $horarios .= $objHorario ." <br/>";
@@ -531,7 +531,7 @@ class GestorController extends Controller
         $tramites->TRAM_NIDTRAMITE_CONFIG = $tramiteIDConfig;
         $registro = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
         $tramite = [];
-        
+
         //Obtener tramite
         $urlTramite = $this->host . '/api/Tramite/Detalle/' . $tramiteID;
         $options = array(
@@ -1080,7 +1080,7 @@ class GestorController extends Controller
         foreach ($listDependenciasTemporal as $dependencia) {
             $dependenciaTEM = [];
             $dependenciaTEM['id'] = $dependencia['id'];
-            $dependenciaTEM['name'] =  $dependencia['nombre'];
+            $dependenciaTEM['name'] =  $dependencia['name'];
             array_push($listDependencias, $dependenciaTEM);
         }
         //Edificios

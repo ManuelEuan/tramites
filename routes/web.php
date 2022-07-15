@@ -38,6 +38,12 @@ Route::get('/perfil', array('uses' => 'PerfilController@index'));
 Route::post('/perfil/modificar', array('uses' => 'PerfilController@modificar'));
 Route::post('/perfil/confirmar', array('uses' => 'PerfilController@confirmar'));
 Route::post('/perfil/confirmarServidor', array('uses' => 'PerfilController@confirmarServidor'));
+Route::post('/perfil/guardarDocs', array('uses' => 'PerfilController@guardarDocs'));
+Route::post('/perfil/eliminarDoc', array('uses' => 'PerfilController@eliminarDoc'));
+Route::get('/perfil/getHistory', array('uses' => 'PerfilController@getDocsHistory'));
+Route::get('/perfil/getDocsHistoryExpediente/{id}', array('uses' => 'PerfilController@getDocsHistoryExpediente'));
+Route::get('/perfil/listarDocs', array('uses' => 'PerfilController@listarDocs'));
+Route::post('/perfil/setActual', array('uses' => 'PerfilController@setActual'));
 
 Route::get('/bitacora', array('uses' => 'BitacoraController@index'));
 Route::get('/bitacora/consultar', array('uses' => 'BitacoraController@consultar'));
@@ -60,6 +66,7 @@ Route::get('/permisorol/consultar/{id}', array('uses' => 'PermisoRolController@c
 Route::get('/categoria_permiso/consultar/', array('uses' => 'CategoriaPermisoController@consultar'));
 
 Route::get('/tramite_servicio', array('uses' => 'TramiteServicioController@index'))->middleware("permiso");
+Route::post('/tramite_servicio/getTramites', array('uses' => 'TramiteServicioController@getTramites'));
 Route::post('/tramite_servicio/consultar', array('uses' => 'TramiteServicioController@consultar'))->name('consultar_tramites');;
 Route::get('/tramite_servicio/obtener_dependencias_unidad', array('uses' => 'TramiteServicioController@obtener_dependencias_unidad'));
 Route::get('/tramite_servicio/obtener_modalidad', array('uses' => 'TramiteServicioController@obtener_modalidad'));

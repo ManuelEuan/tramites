@@ -90,7 +90,7 @@
                             <option value="{{$opt->USUA_NIDUSUARIO}}" data-rfc="{{$opt->USUA_CRFC}}" data-curp="{{$opt->USUA_CCURP}}" data-nombre="{{$opt->USUA_CNOMBRES}} {{$opt->USUA_CPRIMER_APELLIDO}} {{$opt->USUA_CSEGUNDO_APELLIDO}}">{{$opt->USUA_CNOMBRES}} {{$opt->USUA_CPRIMER_APELLIDO}} {{$opt->USUA_CSEGUNDO_APELLIDO}}</option>
                         @endforeach
                     </select>
-                @endif 
+                @endif
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -112,7 +112,7 @@
                             <option value="{{$opt->USUA_NIDUSUARIO}}" data-rfc="{{$opt->USUA_CRFC}}" data-curp="{{$opt->USUA_CCURP}}" data-nombre="{{$opt->USUA_CRAZON_SOCIAL}}">{{$opt->USUA_CRAZON_SOCIAL}}</option>
                         @endforeach
                     </select>
-                @endif 
+                @endif
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -325,7 +325,7 @@
                                                                                                     @foreach($resp->respuestas_especial as $resp_esp)
                                                                                                         <input type="text" class="form-control txt_abierta" name="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" id="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" placeholder="{{$resp->FORM_CVALOR}}" required>
                                                                                                     @endforeach
-                                                                                                @endif 
+                                                                                                @endif
                                                                                             </div>
                                                                                             @break
                                                                                         @case('numerico')
@@ -334,7 +334,7 @@
                                                                                                     @foreach($resp->respuestas_especial as $resp_esp)
                                                                                                         <input type="number" class="form-control" name="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" id="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" placeholder="{{$resp->FORM_CVALOR}}" required>
                                                                                                     @endforeach
-                                                                                                @endif 
+                                                                                                @endif
                                                                                             </div>
                                                                                             @break
                                                                                         @case('opciones')
@@ -345,7 +345,7 @@
                                                                                                             <option value="{{$resp_esp->FORM_NID}}">{{$resp_esp->FORM_CVALOR}}</option>
                                                                                                         @endforeach
                                                                                                     </select>
-                                                                                                @endif 
+                                                                                                @endif
                                                                                             </div>
                                                                                             @break
                                                                                     @endswitch
@@ -369,7 +369,7 @@
                         <table class="table" id="documentosP4">
                             <thead>
                               <tr>
-                
+
                                 <th scope="col">Existente</th>
                                 <th scope="col"></th>
                                 <th scope="col">Nombre</th>
@@ -418,7 +418,7 @@
                                             {{$doc->TRAD_CNOMBRE}}
 
                                                 @if($doc->TRAD_NOBLIGATORIO == 1 )
-                                                    <span class="text-danger">*</span> 
+                                                    <span class="text-danger">*</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -512,16 +512,16 @@
         font-size: 22px;
     }
 
-    .file-select {          
+    .file-select {
         position: relative;
         display: inline-block;
     }
-    
+
     .file-select::before {
         background-color: #28a745;
         border-color: #28a745;
         color: white;
-        display: flex;            
+        display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 3px;
@@ -530,20 +530,20 @@
         left: 0;
         right: 0;
         top: 0;
-        bottom: 0;                
+        bottom: 0;
     }
-    
+
     .file-select input[type="file"] {
         opacity: 0;
         width: 100%;
         height: 32px;
-        display: inline-block;            
+        display: inline-block;
     }
-    
+
     .file-select::before {
         content: 'Subir documento';
     }
- 
+
     /* Porcentaje */
     .border-primary {
         border-color: #03A9F4 !important;
@@ -876,7 +876,7 @@
     }
 
     function setDocData(nombre, extension, peso, id){
-            
+
             $("#size_" + id).html('<span>' + peso + ' Bytes</span>');
             switch(extension){
                         case "jpg":
@@ -901,7 +901,7 @@
             }
         });
 
-        
+
         $(".chckdfiles").change();
 
         $("#btnEnviar").hide();
@@ -1114,7 +1114,7 @@
             var id = this.id;
             CKEDITOR.instances[id].on('change', function() {
                 $("#" + id).val(CKEDITOR.instances[id].getData());
-                
+
             });
         });
 
@@ -1123,7 +1123,7 @@
                 var id = this.id;
                 CKEDITOR.instances[id].on('change', function() {
                     $("#" + id).val(CKEDITOR.instances[id].getData());
-                    
+
                     var editor_val = CKEDITOR.instances.editor.document.getBody().getChild(0).getText().trim();
                 });
             });
@@ -1224,13 +1224,13 @@
             var formData = new FormData();
             var files = $("#" + id)[0].files[0];
             formData.append('file',files);
-       
+
             var name = $(this).data("docname");
             var resultado = id.split("_");
             var bla = $('#txt_'+resultado[1]).val();
 
-  
-           
+
+
             $.ajax({
                 url: '/tramite_servicio/subir_documento',
                 type: 'post',
@@ -1239,7 +1239,7 @@
                 processData: false,
                 success: function(response) {
                     $("#docs_" + id).val(response.path + "_" + response.extension + "_" + response.size + "_" + bla);
-                   
+
                     $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
                     switch(response.extension){
                         case "jpg":
@@ -1269,7 +1269,7 @@
 
     }
     function TRAM_FN_GENERATE(n) {
-        var add = 1, max = 12 - add;   // 12 is the min safe number Math.random() can generate without it starting to pad the end with zeros.   
+        var add = 1, max = 12 - add;   // 12 is the min safe number Math.random() can generate without it starting to pad the end with zeros.
 
         if ( n > max ) {
                 return generate(max) + generate(n - max);
@@ -1279,15 +1279,15 @@
         var min    = max/10; // Math.pow(10, n) basically
         var number = Math.floor( Math.random() * (max - min + 1) ) + min;
 
-        return ("" + number).substring(add); 
+        return ("" + number).substring(add);
 }
 
     function TRAM_FN_AGREGAR_ROW(name){
 
-     
+
 
       var iddata = TRAM_FN_GENERATE(8);
-            $("#documentosP4").append('<tr>'+ 
+            $("#documentosP4").append('<tr>'+
             '<td> '+ "<div  class='form-check'> <input class='form-check-input' type='checkbox' value='' id=defaultCheck2' disabled> </div>"+'</td>' +
             '<td>'+
                 " <div id='icon_file_"+iddata+"'>"+
@@ -1305,7 +1305,7 @@
             '<td>'+
                 " <input type='hidden' name='docs_file_"+iddata+"' id='docs_file_"+iddata+"' value='0_0_0_"+name+"'>"+
                 "<input class='file-select documentos nuevo' name='file_"+iddata+"' id='file_"+iddata+"' data-docname='"+name+"' type='file' onchange='TRAM_FN_SUBIR_DOCUMENTO_MULTIPLE(\""+iddata+"\")'>"
-               
+
 
             +'</td><td></td>' +
             '<td>'+ "<h5 class='font-weight-bold'><span class='circle-error-multi'  onclick='TRAM_FN_LIMPIARROW_DOCUMENTO(\""+iddata+"\",\""+name+"\")' >X</span></h5>"+'</td>' +
@@ -1488,6 +1488,6 @@
 
         return size.toFixed(2) + ' TB';
     };
-    
+
 </script>
 @endsection
