@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use  Illuminate\Pagination\Paginator;
 use App\Http\Controllers\FormularioController;
+use App\Services\TramiteService;
 use  Illuminate\Pagination\LengthAwarePaginator;
 
 
@@ -25,50 +26,24 @@ class GestorController extends Controller
      * Variable para acceder a las APIS de remtysMerida
      */
     protected $host = 'https://remtysmerida.azurewebsites.net';
+    
+    /**
+     * Varibale para la conexion con el servicio
+     */
+    private $tramiteService;
     public function __construct(){
         $this->middleware('auth');
+        $this->tramiteService = new TramiteService();
     }
 
+
     public function index() {
-        $estatus    = 2; //No seleccionado ningun estatus
-        $baseUrl    =   $this->host . '/api/Tramite/Filter';
-        $dataForPost = array('search' => '', 'dependencies' => [], 'unidadesadmin' => [], 'skipe' => 0, 'take' => 10, 'usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => $estatus);
-        $options    = array(
-            'http' => array(
-                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'POST',
-                'content' => http_build_query($dataForPost),
-            )
-        );
-
-        $context        = stream_context_create($options);
-        $result         = file_get_contents($baseUrl, false, $context);
-        $listTramites   = json_decode($result, true);
-
-        $procedures = DB::connection('mysql2')->table('procedures as p')
-                        ->join('administrativeunits as a', 'p.IdAdministrativeUnit', '=', 'a.Id')
-                        ->join('dependencies as d', 'a.IdDependency', '=', 'd.Id')
-                    ->select('p.id','p.CitizenDescription', 'p.name', 'd.name as nameDependencia', 'd.Description as descripcionDependencia', 'p.CreatedDate')->get();
-
-        // Retis merida
-        $listaTramites = array();
-        foreach ($listTramites['data'] as $tramite) {
-            $objTram                            = new stdClass();
-            $objTram->TRAM_NIDTRAMITE           = $tramite['id'];
-            $objTram->TRAM_NIDTRAMITE_CONFIG    = 0;
-            $objTram->TRAM_CNOMBRE              = $tramite['name'];
-            $objTram->TRAM_CDESCRIPCION         = $tramite['citizenDescription'];
-            $objTram->UNAD_CNID                 = $tramite['id'];
-            $objTram->UNAD_CNOMBRE              = $tramite['id'];
-            //$objTram->TRAM_NIMPLEMENTADO        = $tramite['traM_NIMPLEMENTADO'];
-            //$objTram->TRAM_DFECHACREACION       = $tramite['traM_NENLACEOFICIAL'];
-            //$objTram->TRAM_DFECHAACTUALIZACION  = $tramite['traM_DFECHAACTUALIZACION'];
-            
-            array_push($listaTramites, $objTram);
-        }
+        $data       = ['usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => 2];
+        $request    = new Request($data);
+        $tramite    =  $this->tramiteService->busqueda($request);
 
         //Lista final
-        foreach ($listaTramites as $obj) {
+        /* foreach ($busqueda['data'] as $obj) {
             //Validar si existe
             $_exist = DB::table('tram_mst_tramite as g')
                     ->where('g.TRAM_NIDTRAMITE_ACCEDE', 18)
@@ -80,20 +55,9 @@ class GestorController extends Controller
                 $obj->TRAM_NIMPLEMENTADO = $_exist[count($_exist) - 1]->TRAM_NIMPLEMENTADO;
                 $obj->TRAM_NIDTRAMITE_CONFIG = $_exist[count($_exist) - 1]->TRAM_NIDTRAMITE;
             }
-        }
+        } */
 
-
-        //Paginado
-        $numeroPagina = 1;
-        $numeroRegistros = 10;
-        $start  = (intval($numeroPagina) * intval($numeroRegistros)) - intval($numeroRegistros);
-        $end    = intval($numeroPagina) * intval($numeroRegistros);
-
-        $data_tramite = new LengthAwarePaginator($listaTramites,10, $numeroRegistros,  $numeroPagina, [
-            'path' => Paginator::resolveCurrentPath()
-        ]);
-
-
+        $data_tramite = $tramite['data'];
         return view('MST_GESTOR.index', compact('data_tramite'));
     }
 
@@ -107,54 +71,12 @@ class GestorController extends Controller
     }
 
     public function consultar(Request $request) {
-        if ($request->ajax()) {
+        if ($request->ajax()) { 
+            $tramite        =  $this->tramiteService->busqueda($request);
+            $data_tramite   = $tramite['data'];
 
-            //Paginado
-            $numeroPagina = intval($request->IntNumPagina);
-            $numeroRegistros = intval($request->IntCantidadRegistros);
+            return response()->json(view('MST_GESTOR.index_partial', compact('data_tramite'))->render());
 
-            if($numeroPagina == 1){
-                $start = 0;
-                $end = 10;
-            }else {
-                $start = (intval($numeroPagina) * intval($numeroRegistros)) - 1;
-                $end = intval($numeroRegistros);
-            }
-
-            $palabraClave = $request->palabraClave;
-            $dependencia = $request->dependencia;
-            $unidad = intval($request->unidad);
-            $modalidad = $request->modalidad;
-            $clasificacion = intval($request->clasificacion);
-            $audiencia = '';
-            $estatus = intval($request->estatus);
-
-            $url =   $this->host . '/api/Tramite/Filter';
-            $dataForPost = array('search' => $palabraClave, 'dependencies' => $dependencia, 'unidadesadmin' => [], 'skipe' => $start, 'take' => $end, 'usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => $estatus);
-
-            $options = array(
-                'http' => array(
-                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                    'method'  => 'POST',
-                    'content' => http_build_query($dataForPost),
-                )
-            );
-
-            $context  = stream_context_create($options);
-            $result = file_get_contents($url, false, $context);
-            $listTramites = json_decode($result, true);
-            $listaTramites = [];
-
-            foreach ($listTramites['data'] as $tramite) {
-                $objTram                            = new stdClass();
-                $objTram->TRAM_NIDTRAMITE           = $tramite['id'];
-                $objTram->TRAM_NIDTRAMITE_CONFIG    = 0;
-                $objTram->TRAM_CNOMBRE              = $tramite['name'];
-                $objTram->TRAM_CDESCRIPCION         = $tramite['citizenDescription'];
-                $objTram->UNAD_CNID                 = $tramite['id'];
-                $objTram->UNAD_CNOMBRE              = $tramite['id'];
-                array_push($listaTramites, $objTram);
-            }
 
             //Lista final
             foreach ($listaTramites as $obj) {
@@ -171,11 +93,6 @@ class GestorController extends Controller
                     $obj->TRAM_NIDTRAMITE_CONFIG = $_exist[0]->TRAM_NIDTRAMITE;
                 }
             }
-
-            //Paginado
-            $data_tramite = new LengthAwarePaginator($listaTramites, intval($listTramites['total']), $numeroRegistros,  $numeroPagina, [
-                'path' => Paginator::resolveCurrentPath()
-            ]);
 
             return response()->json(view('MST_GESTOR.index_partial', compact('data_tramite'))->render());
         }
