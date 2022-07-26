@@ -283,7 +283,7 @@
 
     <script src="{{ asset('assets/template/plugins/bootstrap-select/js/bootstrap-select.min.js') }}"></script>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     {{-- <script src="{{ asset('assets/template/plugins/Datepicker/js/bootstrap-datetimepicker.min.js') }}"></script>--}}
     {{-- <script src="{{ asset('assets/template/plugins/Datepicker/js/bootstrap-datetimepicker.min.js') }}"></script>--}}
 

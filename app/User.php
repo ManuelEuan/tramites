@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use Notifiable;
-
+    protected $connection = 'mysql';
     protected $fillable = [
         'USUA_NIDUSUARIO', 'USUA_CCORREO_ELECTRONICO', 'USUA_CCONTRASENIA',
     ];

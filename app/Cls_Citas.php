@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class Cls_Citas extends Model
 {
+    protected $connection = 'mysql';
     protected $table = 'tram_aux_citas_reservadas';
 
 
@@ -20,6 +21,7 @@ class Cls_Citas extends Model
     static function TRAM_SP_CITAAGENDADA($CITA_FOLIO,$CITA_STATUS,$CITA_IDUSUARIO,$CITA_IDTRAMITECONF){
         return DB::statement('call TRAM_SP_CITAAGENDADA(?,?,?,?)'
                 , array($CITA_FOLIO
+
                 , $CITA_STATUS
                 , $CITA_IDUSUARIO
                 , $CITA_IDTRAMITECONF));

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Schema;
 
 class Cls_Vista_Accede extends Model
 {
-
+    protected $connection = 'mysql';
     static function VW_ACCEDE_TRAMITE(){
        	$user = "SIGETYSC";
     	$pass = "td788T6VB92mKNKr";

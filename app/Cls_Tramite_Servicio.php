@@ -9,6 +9,7 @@ use App\Cls_Notificacion_Tramite;
 
 class Cls_Tramite_Servicio extends Model
 {
+    protected $connection = 'mysql';
     protected $table = 'tram_mst_tramite';
 
     //Atributos para filtro

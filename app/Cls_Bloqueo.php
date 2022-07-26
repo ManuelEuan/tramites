@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Bloqueo extends Model
 {
+    protected $connection = 'mysql';
     protected $table = 'tram_dat_bloqueusuario';
 
     static function TRAM_SP_VALIDAR_BLOQUEO($IntIdUsuario){

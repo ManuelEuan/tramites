@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Cls_Seguimiento_Servidor_Publico extends Model
 {
+    protected $connection = 'mysql';
     public $USTR_NIDUSUARIOTRAMITE;
     public $UsuarioID;
 

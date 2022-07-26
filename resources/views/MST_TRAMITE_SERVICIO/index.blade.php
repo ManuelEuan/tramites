@@ -88,33 +88,7 @@
     <br>
     <br>
     <div id="tramite_servicio">
-        <section>
-            @foreach ($data_tramite as $data)
-            <div class="card text-left" style="margin-bottom: 2rem;">
-                <div class="card-header text-primary titleCard">
-                    {{$data->TRAM_CNOMBRE}} <span class="badge badge-warning">{{$data->UNAD_CNOMBRE}}</span>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-text" style="color: #212529;">
-                        {{$data->TRAM_CDESCRIPCION}}
-                    </h6>
-                </div>
-                <div class="card-footer text-muted" style="background-color: transparent; border-top: none; border-bottom: none;">
-                    <span class="text-left" style="margin-right: 30px;">Creado: {{date("d/m/Y", strtotime($data->created_at))}}</span>
-                    <span class="text-left">Ultima Modificación: {{date("d/m/Y", strtotime($data->updated_at))}}</span>
 
-                    <a href="{{route('detalle_tramite', ['id' => $data->TRAM_NIDTRAMITE_CONFIG])}}" class="btn btn-primary" style="float: right;">Ver trámite</a>
-                </div>
-            </div>
-            @endforeach
-            <div class="paginate" style="float: right;">
-                {{ $data_tramite->links() }}
-            </div>
-            <div>
-                <strong>Mostrando registros del {{($data_tramite->currentpage()-1)*$data_tramite->perpage()+1}} al {{$data_tramite->currentpage()*$data_tramite->perpage()}}
-                    de un total de {{$data_tramite->total()}} registros</strong>
-            </div>
-        </section>
     </div>
     <br>
 </div>
@@ -179,12 +153,12 @@
         });
         var host = "http://vucapacita.chihuahua.gob.mx";
 
-        
+getTramites()
         function TRAM_AJX_CONSULTAR_FILTRO() {
             var cmbClasificacion = $("#cmbClasificacion");
             var cmbAudiencia = $("#cmbAudiencia");
             var cmbDependenciaEntidad = $("#cmbDependenciaEntidad");
-            
+
             $.ajax({
                 //data: $('#frmForm').serialize(),
                 //dataType: 'json',
@@ -312,6 +286,22 @@
                 //     text: data.message,
                 //     footer: ''
                 // });
+            }
+        });
+    }
+
+    function getTramites(){
+        var formData = new FormData()
+        formData.append('search', '')
+        formData.append('dependencies','')
+        $.ajax({
+            data: formData,
+            url: "/tramite_servicio/getTramites",
+            type: "POST",
+            processData: false, // tell jQuery not to process the data
+            contentType: false, // tell jQuery not to set contentType
+            success: function(data) {
+                $("#tramite_servicio").html(data)
             }
         });
     }

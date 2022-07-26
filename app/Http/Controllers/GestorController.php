@@ -2,38 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use stdClass;
 use App\Cls_Gestor;
-use App\Cls_Tramite_Servicio;
 use App\Cls_Resolutivo;
-use App\Cls_Seccion_Seguimiento;
 use Hamcrest\Type\IsNumeric;
-use Illuminate\Support\Facades\Auth;
-use  Illuminate\Pagination\LengthAwarePaginator;
-use  Illuminate\Pagination\Paginator;
 use Illuminate\Http\Request;
+use App\Cls_Tramite_Servicio;
+use App\Cls_Seccion_Seguimiento;
 use PhpParser\Node\Stmt\TryCatch;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Collection;
-use App\Http\Controllers\FormularioController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use  Illuminate\Pagination\Paginator;
+use App\Http\Controllers\FormularioController;
+use  Illuminate\Pagination\LengthAwarePaginator;
 
 
 class GestorController extends Controller
 {
+    /**
+     * Variable para acceder a las APIS de remtysMerida
+     */
+    protected $host = 'https://remtysmerida.azurewebsites.net';
     public function __construct(){
         $this->middleware('auth');
     }
 
-    protected $host = 'https://retys-queretaro.azurewebsites.net';
-
-    public function index()
-    {
-
-        $estatus = 2; //No seleccionado ningun estatus
-        $url =   $this->host . '/api/Tramite/Filter';
-
+    public function index() {
+        $estatus    = 2; //No seleccionado ningun estatus
+        $baseUrl    =   $this->host . '/api/Tramite/Filter';
         $dataForPost = array('search' => '', 'dependencies' => [], 'unidadesadmin' => [], 'skipe' => 0, 'take' => 10, 'usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => $estatus);
-        $options = array(
+        $options    = array(
             'http' => array(
                 'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method'  => 'POST',
@@ -41,35 +41,39 @@ class GestorController extends Controller
             )
         );
 
-        $context  = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        $listTramites = json_decode($result, true);
-        $listaTramites = [];
+        $context        = stream_context_create($options);
+        $result         = file_get_contents($baseUrl, false, $context);
+        $listTramites   = json_decode($result, true);
 
-        //dd($listTramites);
+        $procedures = DB::connection('mysql2')->table('procedures as p')
+                        ->join('administrativeunits as a', 'p.IdAdministrativeUnit', '=', 'a.Id')
+                        ->join('dependencies as d', 'a.IdDependency', '=', 'd.Id')
+                    ->select('p.id','p.CitizenDescription', 'p.name', 'd.name as nameDependencia', 'd.Description as descripcionDependencia', 'p.CreatedDate')->get();
 
-        foreach ($listTramites['data'] as $obj) {
-            $objTramiteTem = [];
-            $objTramiteTem['TRAM_NIDTRAMITE'] =  $obj['traM_NIDTRAMITE'];
-            $objTramiteTem['TRAM_NIDTRAMITE_CONFIG'] = 0;
-            $objTramiteTem['TRAM_CNOMBRE'] =  $obj['traM_CNOMBRE'];
-            $objTramiteTem['TRAM_CDESCRIPCION'] =   $obj['traM_CDESCRIPCION'];
-            $objTramiteTem['UNAD_CNID'] =   $obj['traM_NIDCENTRO'];
-            $objTramiteTem['UNAD_CNOMBRE'] =   $obj['traM_CCENTRO'];
-            $objTramiteTem['TRAM_NIMPLEMENTADO'] =  $obj['traM_NIMPLEMENTADO'];
-            $objTramiteTem['TRAM_DFECHACREACION'] =  $obj['traM_NENLACEOFICIAL'];
-            $objTramiteTem['TRAM_DFECHAACTUALIZACION'] =  $obj['traM_DFECHAACTUALIZACION'];
-            $tram  = (object)  $objTramiteTem;
-            array_push($listaTramites, $tram);
+        // Retis merida
+        $listaTramites = array();
+        foreach ($listTramites['data'] as $tramite) {
+            $objTram                            = new stdClass();
+            $objTram->TRAM_NIDTRAMITE           = $tramite['id'];
+            $objTram->TRAM_NIDTRAMITE_CONFIG    = 0;
+            $objTram->TRAM_CNOMBRE              = $tramite['name'];
+            $objTram->TRAM_CDESCRIPCION         = $tramite['citizenDescription'];
+            $objTram->UNAD_CNID                 = $tramite['id'];
+            $objTram->UNAD_CNOMBRE              = $tramite['id'];
+            //$objTram->TRAM_NIMPLEMENTADO        = $tramite['traM_NIMPLEMENTADO'];
+            //$objTram->TRAM_DFECHACREACION       = $tramite['traM_NENLACEOFICIAL'];
+            //$objTram->TRAM_DFECHAACTUALIZACION  = $tramite['traM_DFECHAACTUALIZACION'];
+            
+            array_push($listaTramites, $objTram);
         }
 
         //Lista final
         foreach ($listaTramites as $obj) {
             //Validar si existe
             $_exist = DB::table('tram_mst_tramite as g')
-                    ->where('g.TRAM_NIDTRAMITE_ACCEDE', $obj->TRAM_NIDTRAMITE)
+                    ->where('g.TRAM_NIDTRAMITE_ACCEDE', 18)
                     ->select('g.*')
-                    ->get();       
+                    ->get();
             $exist = $_exist->count();
 
             if($exist > 0){
@@ -82,13 +86,13 @@ class GestorController extends Controller
         //Paginado
         $numeroPagina = 1;
         $numeroRegistros = 10;
-        $start = (intval($numeroPagina) * intval($numeroRegistros)) - intval($numeroRegistros);
-        $end = intval($numeroPagina) * intval($numeroRegistros);
+        $start  = (intval($numeroPagina) * intval($numeroRegistros)) - intval($numeroRegistros);
+        $end    = intval($numeroPagina) * intval($numeroRegistros);
 
-        $data_tramite = new LengthAwarePaginator($listaTramites, intval($listTramites['total']), $numeroRegistros,  $numeroPagina, [
+        $data_tramite = new LengthAwarePaginator($listaTramites,10, $numeroRegistros,  $numeroPagina, [
             'path' => Paginator::resolveCurrentPath()
         ]);
-        //dd($data_tramite);
+
 
         return view('MST_GESTOR.index', compact('data_tramite'));
     }
@@ -102,8 +106,7 @@ class GestorController extends Controller
         return response()->json($response);
     }
 
-    public function consultar(Request $request)
-    {
+    public function consultar(Request $request) {
         if ($request->ajax()) {
 
             //Paginado
@@ -117,7 +120,7 @@ class GestorController extends Controller
                 $start = (intval($numeroPagina) * intval($numeroRegistros)) - 1;
                 $end = intval($numeroRegistros);
             }
-            
+
             $palabraClave = $request->palabraClave;
             $dependencia = $request->dependencia;
             $unidad = intval($request->unidad);
@@ -128,6 +131,7 @@ class GestorController extends Controller
 
             $url =   $this->host . '/api/Tramite/Filter';
             $dataForPost = array('search' => $palabraClave, 'dependencies' => $dependencia, 'unidadesadmin' => [], 'skipe' => $start, 'take' => $end, 'usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => $estatus);
+
             $options = array(
                 'http' => array(
                     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -141,21 +145,17 @@ class GestorController extends Controller
             $listTramites = json_decode($result, true);
             $listaTramites = [];
 
-            foreach ($listTramites['data'] as $obj) {
-                $objTramiteTem = [];
-                $objTramiteTem['TRAM_NIDTRAMITE'] =  $obj['traM_NIDTRAMITE'];
-                $objTramiteTem['TRAM_NIDTRAMITE_CONFIG'] = 0;
-                $objTramiteTem['TRAM_CNOMBRE'] =  $obj['traM_CNOMBRE'];
-                $objTramiteTem['TRAM_CDESCRIPCION'] =   $obj['traM_CDESCRIPCION'];
-                $objTramiteTem['UNAD_CNID'] =   $obj['traM_NIDCENTRO'];
-                $objTramiteTem['UNAD_CNOMBRE'] =   $obj['traM_CCENTRO'];
-                $objTramiteTem['TRAM_NIMPLEMENTADO'] =  $obj['traM_NIMPLEMENTADO'];
-                $objTramiteTem['TRAM_DFECHACREACION'] =  $obj['traM_NENLACEOFICIAL'];
-                $objTramiteTem['TRAM_DFECHAACTUALIZACION'] =  $obj['traM_DFECHAACTUALIZACION'];
-                $tram  = (object)  $objTramiteTem;
-                array_push($listaTramites, $tram);
+            foreach ($listTramites['data'] as $tramite) {
+                $objTram                            = new stdClass();
+                $objTram->TRAM_NIDTRAMITE           = $tramite['id'];
+                $objTram->TRAM_NIDTRAMITE_CONFIG    = 0;
+                $objTram->TRAM_CNOMBRE              = $tramite['name'];
+                $objTram->TRAM_CDESCRIPCION         = $tramite['citizenDescription'];
+                $objTram->UNAD_CNID                 = $tramite['id'];
+                $objTram->UNAD_CNOMBRE              = $tramite['id'];
+                array_push($listaTramites, $objTram);
             }
-    
+
             //Lista final
             foreach ($listaTramites as $obj) {
                 //Validar si existe
@@ -163,7 +163,7 @@ class GestorController extends Controller
                         ->where('g.TRAM_NIDTRAMITE_ACCEDE', $obj->TRAM_NIDTRAMITE)
                         ->select('g.*')
                         ->get();
-                        
+
                 $exist = $_exist->count();
 
                 if($exist == 1){
@@ -457,7 +457,7 @@ class GestorController extends Controller
         //Obtener edificios
         $edificios = [];
         if ($objTramite != null) {
-            
+
             $horarios = "";
             foreach($objTramite['horarios'] as $objHorario){
                 $horarios .= $objHorario ." <br/>";
@@ -531,7 +531,7 @@ class GestorController extends Controller
         $tramites->TRAM_NIDTRAMITE_CONFIG = $tramiteIDConfig;
         $registro = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
         $tramite = [];
-        
+
         //Obtener tramite
         $urlTramite = $this->host . '/api/Tramite/Detalle/' . $tramiteID;
         $options = array(
@@ -1080,7 +1080,7 @@ class GestorController extends Controller
         foreach ($listDependenciasTemporal as $dependencia) {
             $dependenciaTEM = [];
             $dependenciaTEM['id'] = $dependencia['id'];
-            $dependenciaTEM['name'] =  $dependencia['nombre'];
+            $dependenciaTEM['name'] =  $dependencia['name'];
             array_push($listDependencias, $dependenciaTEM);
         }
         //Edificios

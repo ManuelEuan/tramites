@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_reportes extends Model
 {
+    protected $connection = 'mysql';
     static function obtenernombrerolreporte($id){
         return DB::select('call obtenernombrerolreporte(?)'
         , array($id));
