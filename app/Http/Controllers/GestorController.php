@@ -42,21 +42,6 @@ class GestorController extends Controller
         $request    = new Request($data);
         $tramite    =  $this->tramiteService->busqueda($request);
 
-        //Lista final
-        /* foreach ($busqueda['data'] as $obj) {
-            //Validar si existe
-            $_exist = DB::table('tram_mst_tramite as g')
-                    ->where('g.TRAM_NIDTRAMITE_ACCEDE', 18)
-                    ->select('g.*')
-                    ->get();
-            $exist = $_exist->count();
-
-            if($exist > 0){
-                $obj->TRAM_NIMPLEMENTADO = $_exist[count($_exist) - 1]->TRAM_NIMPLEMENTADO;
-                $obj->TRAM_NIDTRAMITE_CONFIG = $_exist[count($_exist) - 1]->TRAM_NIDTRAMITE;
-            }
-        } */
-
         $data_tramite = $tramite['data'];
         return view('MST_GESTOR.index', compact('data_tramite'));
     }
@@ -74,25 +59,6 @@ class GestorController extends Controller
         if ($request->ajax()) { 
             $tramite        =  $this->tramiteService->busqueda($request);
             $data_tramite   = $tramite['data'];
-
-            return response()->json(view('MST_GESTOR.index_partial', compact('data_tramite'))->render());
-
-
-            //Lista final
-            foreach ($listaTramites as $obj) {
-                //Validar si existe
-                $_exist = DB::table('tram_mst_tramite as g')
-                        ->where('g.TRAM_NIDTRAMITE_ACCEDE', $obj->TRAM_NIDTRAMITE)
-                        ->select('g.*')
-                        ->get();
-
-                $exist = $_exist->count();
-
-                if($exist == 1){
-                    $obj->TRAM_NIMPLEMENTADO = $_exist[0]->TRAM_NIMPLEMENTADO;
-                    $obj->TRAM_NIDTRAMITE_CONFIG = $_exist[0]->TRAM_NIDTRAMITE;
-                }
-            }
 
             return response()->json(view('MST_GESTOR.index_partial', compact('data_tramite'))->render());
         }

@@ -460,7 +460,8 @@
             e.preventDefault();
             $('#loading').show();
             $("#loading-text").html("Filtrando...");
-            TRAM_AJX_CONSULTARTRAMITES(page);
+
+            TRAM_AJX_CONSULTARTRAMITES(1);
         }
 
         //Funcion para obtener tramites
@@ -478,7 +479,7 @@
                 "clasificacion": "",
                 // "audiencia": $('#cmbAudiencia').val() === "" ? null : $('#cmbAudiencia').val(),
                 "estatus": 2,
-                "IntNumPagina": page,
+                "page": page,
                 "IntCantidadRegistros": $('#cmbNumeroRegistro').val(),
                 "StrOrdenColumna": "",
                 "StrOrdenDir": "",
