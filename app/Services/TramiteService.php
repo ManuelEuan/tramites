@@ -38,9 +38,25 @@ class TramiteService
             $tramite->TRAM_CDESCRIPCION         = $tramite->CitizenDescription;
             $tramite->UNAD_CNID                 = $tramite->descripcionDependencia;
             $tramite->UNAD_CNOMBRE              = $tramite->nameDependencia;
-            //$tramite->TRAM_NIMPLEMENTADO        = $tramite['traM_NIMPLEMENTADO'];
             $tramite->TRAM_DFECHACREACION       = $tramite->CreatedDate;
-            //$tramite->TRAM_DFECHAACTUALIZACION  = $tramite->CreatedDate;
+            
+
+
+            /* $objTram = DB::connection('mysql')->table('tram_mst_tramite as g')
+                    ->where('g.TRAM_NIDTRAMITE_ACCEDE', 2222)
+                    ->select('g.*')
+                    ->get();
+     
+            if(sizeof($objTram) > 0){
+                dd($objTram);
+                $lol= $objTram[count($objTram) - 1]->TRAM_NIMPLEMENTADO;
+                $lol22 = $objTram[count($objTram) - 1]->TRAM_NIDTRAMITE;
+                
+                
+            }      */
+
+            $tramite->TRAM_NIMPLEMENTADO = rand(0, 1);;
+            $tramite->TRAM_DFECHAACTUALIZACION  = $tramite->CreatedDate;
         }
 
         return [ 'data' => $tramites];
