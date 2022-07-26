@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_PermisoRol extends Model
 {
+    protected $connection = 'mysql';
     protected $table = 'tram_det_permisorol';
 
     static function TRAM_SP_CONSULTARPERMISOROL($IntRolId){

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Sucursal extends Model
 {
+    protected $connection = 'mysql';
     protected $table = 'tram_mdv_sucursal';
     
     static function TRAM_SP_AGREGARSUCURSAL($Obj){

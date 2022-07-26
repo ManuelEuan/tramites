@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Rol extends Model
 {
+    protected $connection = 'mysql';
     protected $table = 'tram_cat_rol';
 
     static function TRAM_SP_CONSULTARROL(){

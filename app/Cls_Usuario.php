@@ -13,6 +13,7 @@ use App\Cls_Sucursal;
 
 class Cls_Usuario extends Model
 {
+    protected $connection = 'mysql';
     protected $table = 'tram_mst_usuario';
     static function TRAM_SP_VALIDAR_RFC($StrRfc)
     {

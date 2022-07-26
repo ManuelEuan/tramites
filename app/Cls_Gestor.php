@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Gestor extends Model
 {
+    protected $connection = 'mysql';
     public $StrNombreFormulario;
     public $IntTramite;
 

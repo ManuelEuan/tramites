@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Categoria_Permiso extends Model
 {
+    protected $connection = 'mysql';
     protected $table = 'tram_cat_categoria_permiso';
 
     static function TRAM_SP_CONSULTAR_CATEGORIA_PERMISO(){

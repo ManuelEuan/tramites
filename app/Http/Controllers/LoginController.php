@@ -20,20 +20,13 @@ class LoginController extends Controller
 	public $maxAttempts = 2;
 	
     public function index() {
-		$ObjAuth = Auth::user();
-		if($ObjAuth == null) {
+		if(is_null(Auth::user()))
 			return view('MSTP_LOGIN.index');
-		} else {
+		else {
 			switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
-				case "CDNS":
-					return redirect('/tramite_servicio');
-					break;
-				case "ADM":
-					return redirect('/gestores');
-					break;
-				default:
-					return redirect('/gestores');
-					break;
+				case "CDNS"	: return redirect('/tramite_servicio'); break;
+				case "ADM"	: return redirect('/gestores'); break;
+				default		: return redirect('/gestores'); break;
 			}
 		}
 	}

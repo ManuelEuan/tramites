@@ -175,43 +175,46 @@ Route::group(['prefix' => 'general'], function () {
 });
 
 
+Route::group(['prefix' => 'gestores'], function () {
+    Route::get('/', array('uses' => 'GestorController@index'))->name('gestor_index')->middleware("permiso");
+    Route::post('/consultar', array('uses' => 'GestorController@consultar'))->name('gestor_consultar');
+    Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@configurar_tramite'))->name("gestor_configurar_tramite");
+    Route::get('/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
+    Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@consultar_tramite'))->name("gestor_consultar_tramite");
 
+    Route::group(['prefix' => 'configuracion'], function (){
+        Route::get('/seccion_formulario', array('uses' => 'GestorController@view_formulario'))->name("seccion_formulario");
+        Route::get('/seccion_revision', array('uses' => 'GestorController@view_revision'))->name("seccion_revision");
+        Route::get('/seccion_cita', array('uses' => 'GestorController@view_cita'))->name("seccion_cita");
+        Route::get('/seccion_ventanilla', array('uses' => 'GestorController@view_ventanilla'))->name("seccion_ventanilla");
+        Route::get('/seccion_pago', array('uses' => 'GestorController@view_pago'))->name("seccion_pago");
+        Route::get('/seccion_analisis_interno', array('uses' => 'GestorController@view_analisis_modulo_interno'))->name("seccion_analisis_interno");
+        Route::get('/seccion_resolutivo', array('uses' => 'GestorController@view_resolutivo'))->name("seccion_resolutivo");
+    });
+    
+    Route::get('/consultar_formulario', array('uses' => 'GestorController@consultar_formulario'))->name("gestor_consultar_formulario");
+    Route::get('/consultar_documento_tramite/{IntTramite}', array('uses' => 'GestorController@consultar_documento_tramite'))->name("gestor_consultar_documento_tramite");
+    Route::post('/crear', array('uses' => 'GestorController@save'))->name('gestor_crear_configuracion');
+    Route::get('/consultar_configuracion_tramite/{TRAM_NIDTRAMITE_CONFIG}', array('uses' => 'GestorController@consultar_configuracion_tramite'))->name("consultar_configuracion_tramite");
+    Route::get('/implementar_tramite/{TRAM_NIDTRAMITE_CONFIG}/{TRAM_NIMPLEMENTADO}', array('uses' => 'GestorController@implementar_tramite'))->name("implementar_tramite");
+    Route::get('/consultar_concepto_pago/{TRAM_NIDTRAMITE_ACCEDE}', array('uses' => 'GestorController@consultar_concepto_pago'))->name("consultar_concepto_pago");
+    Route::get('/consultar_filtro', array('uses' => 'GestorController@obtener_filtro'))->name("consultar_filtro_gestores");
+    Route::get('/set_json_value_tramite', array('uses' => 'GestorController@set_json_value_tramite'))->name("set_json_value_tramite");
+    Route::get('/consultar_resolutivo', array('uses' => 'GestorController@consultar_resolutivo'))->name("consultar_resolutivo");
+    Route::get('/unidad_administrativa/{id}', array('uses' => 'GestorController@unidad_administrativa'))->name("consultar_unidad_administrativa");
+    Route::get('/formulario', array('uses' => 'GestorController@formulario'))->name("formulario_gestor");
+});
 
-
-
-Route::get('/gestores', array('uses' => 'GestorController@index'))->name('gestor_index')->middleware("permiso");
-Route::post('/gestores/consultar', array('uses' => 'GestorController@consultar'))->name('gestor_consultar');
-Route::get('/gestores/configurar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@configurar_tramite'))->name("gestor_configurar_tramite");
-Route::get('/gestores/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
-Route::get('/gestores/consultar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@consultar_tramite'))->name("gestor_consultar_tramite");
-Route::get('/gestores/configuracion/seccion_formulario', array('uses' => 'GestorController@view_formulario'))->name("seccion_formulario");
-Route::get('/gestores/configuracion/seccion_revision', array('uses' => 'GestorController@view_revision'))->name("seccion_revision");
-Route::get('/gestores/configuracion/seccion_cita', array('uses' => 'GestorController@view_cita'))->name("seccion_cita");
-Route::get('/gestores/configuracion/seccion_ventanilla', array('uses' => 'GestorController@view_ventanilla'))->name("seccion_ventanilla");
-Route::get('/gestores/configuracion/seccion_pago', array('uses' => 'GestorController@view_pago'))->name("seccion_pago");
-Route::get('/gestores/configuracion/seccion_analisis_interno', array('uses' => 'GestorController@view_analisis_modulo_interno'))->name("seccion_analisis_interno");
-Route::get('/gestores/configuracion/seccion_resolutivo', array('uses' => 'GestorController@view_resolutivo'))->name("seccion_resolutivo");
-Route::get('/gestores/consultar_formulario', array('uses' => 'GestorController@consultar_formulario'))->name("gestor_consultar_formulario");
-Route::get('/gestores/consultar_documento_tramite/{IntTramite}', array('uses' => 'GestorController@consultar_documento_tramite'))->name("gestor_consultar_documento_tramite");
-Route::post('/gestores/crear', array('uses' => 'GestorController@save'))->name('gestor_crear_configuracion');
-Route::get('/gestores/consultar_configuracion_tramite/{TRAM_NIDTRAMITE_CONFIG}', array('uses' => 'GestorController@consultar_configuracion_tramite'))->name("consultar_configuracion_tramite");
-Route::get('/gestores/implementar_tramite/{TRAM_NIDTRAMITE_CONFIG}/{TRAM_NIMPLEMENTADO}', array('uses' => 'GestorController@implementar_tramite'))->name("implementar_tramite");
-Route::get('/gestores/consultar_concepto_pago/{TRAM_NIDTRAMITE_ACCEDE}', array('uses' => 'GestorController@consultar_concepto_pago'))->name("consultar_concepto_pago");
-Route::get('/gestores/consultar_filtro', array('uses' => 'GestorController@obtener_filtro'))->name("consultar_filtro_gestores");
-Route::get('/gestores/set_json_value_tramite', array('uses' => 'GestorController@set_json_value_tramite'))->name("set_json_value_tramite");
-Route::get('/gestores/consultar_resolutivo', array('uses' => 'GestorController@consultar_resolutivo'))->name("consultar_resolutivo");
-Route::get('/gestores/unidad_administrativa/{id}', array('uses' => 'GestorController@unidad_administrativa'))->name("consultar_unidad_administrativa");
-Route::get('/gestores/formulario', array('uses' => 'GestorController@formulario'))->name("formulario_gestor");
-
-
-Route::get('/servidorespublicos', array('uses' => 'ServidorPublicoController@index'))->middleware("permiso");
-Route::get('/servidorespublicos/consultar', array('uses' => 'ServidorPublicoController@consultar'));
-Route::get('/servidorespublicos/crear', array('uses' => 'ServidorPublicoController@crear'));
-Route::post('/servidorespublicos/agregar', array('uses' => 'ServidorPublicoController@agregar'));
-Route::get('/servidorespublicos/editar/{id}', array('uses' => 'ServidorPublicoController@editar'));
-Route::post('/servidorespublicos/modificar', array('uses' => 'ServidorPublicoController@modificar'));
-Route::get('/servidorespublicos/detalle/{id}', array('uses' => 'ServidorPublicoController@detalle'));
-Route::get('/servidorespublicos/validar_correo/{StrCorreo}', array('uses' => 'ServidorPublicoController@validar_correo'));
+Route::group(['prefix' => 'servidorespublicos'], function () {
+    Route::get('/', array('uses' => 'ServidorPublicoController@index'))->middleware("permiso");
+    Route::get('/consultar', array('uses' => 'ServidorPublicoController@consultar'));
+    Route::get('/crear', array('uses' => 'ServidorPublicoController@crear'));
+    Route::post('/agregar', array('uses' => 'ServidorPublicoController@agregar'));
+    Route::get('/editar/{id}', array('uses' => 'ServidorPublicoController@editar'));
+    Route::post('/modificar', array('uses' => 'ServidorPublicoController@modificar'));
+    Route::get('/detalle/{id}', array('uses' => 'ServidorPublicoController@detalle'));
+    Route::get('/validar_correo/{StrCorreo}', array('uses' => 'ServidorPublicoController@validar_correo'));
+});
 
 Route::get('/edificios', array('uses' => 'DatosDurosController@edificios'));
 Route::get('/unidades_administrativas/{id}', array('uses' => 'DatosDurosController@unidades_administrativas'));

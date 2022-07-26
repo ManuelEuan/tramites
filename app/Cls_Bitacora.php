@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class Cls_Bitacora extends Model
 {
+    protected $connection = 'mysql';
     protected $table = 'tram_his_bitacora';
 
     //Atributos para filtro
