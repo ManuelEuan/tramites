@@ -466,28 +466,22 @@
 
         //Funcion para obtener tramites
         function TRAM_AJX_CONSULTARTRAMITES(page) {
-            let dependencia_id = $('#cmbDependenciaEntidad').val() > 0 ? $('#cmbDependenciaEntidad').val() : 0;
-            var dependencia_arr = [];
-            if (dependencia_id > 0) {
-                dependencia_arr.push(Number(dependencia_id));
-            }
-            var filtro = {
-                "palabraClave": $('#txtPalabraClave').val(),
-                "dependencia": dependencia_arr,
-                "modalidad": "",
-                "unidad": [],
-                "clasificacion": "",
-                // "audiencia": $('#cmbAudiencia').val() === "" ? null : $('#cmbAudiencia').val(),
-                "estatus": 2,
-                "page": page,
-                "IntCantidadRegistros": $('#cmbNumeroRegistro').val(),
-                "StrOrdenColumna": "",
-                "StrOrdenDir": "",
-                "IntUsuarioId": 3,
-            };
+            let dependenciaID    = $('select[id=cmbDependenciaEntidad]').val();
 
-            console.log("Filtro");
-            console.log(filtro);
+            var filtro = {
+                "palabraClave"  : $('#txtPalabraClave').val(),
+                "dependencia"   : dependenciaID == '0' ? null : dependenciaID,
+                "modalidad"     : "",
+                "unidad"        : [],
+                "clasificacion" : "",
+                // "audiencia": $('#cmbAudiencia').val() === "" ? null : $('#cmbAudiencia').val(),
+                "IntUsuarioId"  : 3,
+                "estatus"       : 2,
+                "page"          : page,
+                "StrOrdenDir"   : "",
+                "StrOrdenColumna": "",
+                "IntCantidadRegistros": $('#cmbNumeroRegistro').val(),
+            };
 
             $.ajax({
                 data: filtro,
@@ -503,12 +497,6 @@
                 },
                 error: function(data) {
                     $('#loading').hide();
-                    // Swal.fire({
-                    //     icon: data.status,
-                    //     title: '',
-                    //     text: data.message,
-                    //     footer: ''
-                    // });
                 }
             });
         }

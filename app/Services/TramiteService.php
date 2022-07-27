@@ -26,10 +26,11 @@ class TramiteService
 
         if(!is_null($data->palabraClave))
             $query->where('p.name', 'like','%'.$data->palabraClave.'%');
+        if(!is_null($data->dependencia) && $data->dependencia != "")
+            $query->where('d.id', $data->dependencia);
         if(!is_null($data->IntCantidadRegistros))
             $IntCantidadRegistros = $data->IntCantidadRegistros;
-        
-                
+    
         $tramites = $query->paginate($IntCantidadRegistros);
         foreach ($tramites as $tramite) {
             $tramite->TRAM_NIDTRAMITE           = $tramite->id;
@@ -60,5 +61,17 @@ class TramiteService
         }
 
         return [ 'data' => $tramites];
+    }
+
+    /**
+     * Retorna la busqueda de los tramites en base a lo solicitado
+     * @param Request $data
+     * @return array
+     */
+    public function filtros(Request $data){
+        $dependencias = DB::connection('mysql2')->table('dependencies')
+                            ->select('Id as id', 'Name as name', 'Description as description', 'Acronym as acronym')
+                            ->where('IsDeleted', false)->get();
+        return [ 'dependencias' => $dependencias];
     }
 }

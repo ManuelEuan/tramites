@@ -23,20 +23,27 @@ use  Illuminate\Pagination\LengthAwarePaginator;
 class GestorController extends Controller
 {
     /**
-     * Variable para acceder a las APIS de remtysMerida
+     * @var String
      */
-    protected $host = 'https://remtysmerida.azurewebsites.net';
+    private $host = 'https://remtysmerida.azurewebsites.net';
     
     /**
-     * Varibale para la conexion con el servicio
+     * @var TramiteService
      */
     private $tramiteService;
+
+    /**
+     * Construct Gestor
+     */
     public function __construct(){
         $this->middleware('auth');
         $this->tramiteService = new TramiteService();
     }
 
-
+    /**
+     * Retorna la vista inicial del modulo de gestores
+     * @return View
+     */
     public function index() {
         $data       = ['usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => 2];
         $request    = new Request($data);
@@ -46,22 +53,42 @@ class GestorController extends Controller
         return view('MST_GESTOR.index', compact('data_tramite'));
     }
 
-    public function actualizar_pago($id){
-        Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $id])->update(['SSEGTRA_PAGADO' => 1]);
-   	$response = [
-            'data' => "ok"
-        ];
+    /**
+     * Retorna la seccion de la tabla con los datos de la busqueda solicitada
+     * @param Request $request
+     * @return Response
+     */
+    public function consultar(Request $request) {
+        $tramite        =  $this->tramiteService->busqueda($request);
+        $data_tramite   = $tramite['data'];
 
-        return response()->json($response);
+        return response()->json(view('MST_GESTOR.index_partial', compact('data_tramite'))->render());
     }
 
-    public function consultar(Request $request) {
-        if ($request->ajax()) { 
-            $tramite        =  $this->tramiteService->busqueda($request);
-            $data_tramite   = $tramite['data'];
+    /**
+     * Retorna el array de los diferentes filtros a utilizar
+     * @param Request $request
+     * @return Response
+     */
+    public function obtener_filtro(Request $request) {
+        $filtros = $this->tramiteService->filtros($request);
+        $response = [
+            "clasificacion" =>  [],
+            "audiencia"     =>  [],
+            "dependencias"  =>  $filtros['dependencias'],
+            "tramites"      =>  []
+        ];
 
-            return response()->json(view('MST_GESTOR.index_partial', compact('data_tramite'))->render());
-        }
+        return Response()->json($response);
+    }
+
+        
+
+
+
+    public function actualizar_pago($id){
+        Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $id])->update(['SSEGTRA_PAGADO' => 1]);
+        return response()->json(['data' => "ok"]);
     }
 
     //Vista información sobre el trámite (merida)
@@ -302,31 +329,26 @@ class GestorController extends Controller
 
     //Vista donde se realiza configuración del trámite
     public function configurar_tramite($tramiteID, $tramiteIDConfig){
+        $tramite    = [];
+        $edificios  = [];
+        $objTramite = null;
 
-        // $result = Cls_Gestor::TRAM_SP_VALIDAR_UNIDAD_USUARIO_TRAMITE($tramiteID, Auth::user()->USUA_NIDUSUARIO);
 
-        $tramites = new Cls_Gestor();
-        $tramites->TRAM_NIDTRAMITE = $tramiteID;
-        $tramites->TRAM_NIDTRAMITE_CONFIG = $tramiteIDConfig;
-        $registro = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
+        $tramites   = new Cls_Gestor();
+        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
+        $tramites->TRAM_NIDTRAMITE          = $tramiteID;
+        $tramites->TRAM_NIDTRAMITE_CONFIG   = $tramiteIDConfig;
 
         //Obtener tramite
-        $urlTramite = $this->host . '/api/Tramite/Detalle/' . $tramiteID;
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
+        $urlTramite     = $this->host . '/api/Tramite/Detalle/' . $tramiteID;
+        $options        = array('http' => array( 'method' => 'GET',));
+        $context        = stream_context_create($options);
+        $result         = @file_get_contents($urlTramite, false, $context);
 
-        $objTramite = null;
-        $context = stream_context_create($options);
-        $result = @file_get_contents($urlTramite, false, $context);
-        if (strpos($http_response_header[0], "200")) {
+        if (strpos($http_response_header[0], "200"))
             $objTramite = json_decode($result, true);
-        }
 
-        if ($objTramite === null) {
-            $tramite = [];
+        if (is_null($objTramite)) {
             $tramite['VALIDO'] = false;
             $tramite['TRAM_ID_TRAMITE'] = NULL;
             $tramite['ACCE_ID_TRAMITE'] = NULL;
@@ -334,74 +356,73 @@ class GestorController extends Controller
             $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE EN ACCEDE";
             $tramite['TRAM_NIMPLEMENTADO'] = 1;
             $tramite['TRAM_NENLACEOFICIAL'] = 1;
-            return view('DET_GESTOR_CONFIGURACION_TRAMITE.index',  compact('tramite'));
         }
-
-        //Obtener edificios
-        $edificios = [];
-        if ($objTramite != null) {
-
-            $horarios = "";
-            foreach($objTramite['horarios'] as $objHorario){
-                $horarios .= $objHorario ." <br/>";
+        else{
+            //Obtener edificios
+            if ($objTramite != null) {
+    
+                $horarios = "";
+                foreach($objTramite['horarios'] as $objHorario){
+                    $horarios .= $objHorario ." <br/>";
+                }
+                $telefono = "";
+                foreach($objTramite['telefonos'] as $objTelefono){
+                    $telefono .= $objTelefono ." <br/>";
+                }
+                $funcionarios = "";
+                foreach($objTramite['funcionarios'] as $objFuncionarios){
+                    $funcionarios .= $objFuncionarios['nombre'] ."<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
+                }
+                $contEdi = 1;
+                foreach($objTramite['listaDetallesEdificio'] as $objEdificio){
+                    $_objE = [
+                        "id" => $contEdi,
+                        "nombre"=> $objEdificio['nombre'],
+                        "direccion"=> $objEdificio['direccion'],
+                        "horario"=> $horarios,
+                        "latitud"=> $objEdificio['latitud'] ?? 0,
+                        "longitud"=> $objEdificio['longitud'] ?? 0,
+                        "responsable"=> $funcionarios,
+                        "contacto_telefono"=> $telefono,
+                        "contacto_email"=> "",
+                        "informacion_adicional"=> ""
+                    ];
+                    array_push($edificios, $_objE);
+                    $contEdi++;
+                }
             }
-            $telefono = "";
-            foreach($objTramite['telefonos'] as $objTelefono){
-                $telefono .= $objTelefono ." <br/>";
-            }
-            $funcionarios = "";
-            foreach($objTramite['funcionarios'] as $objFuncionarios){
-                $funcionarios .= $objFuncionarios['nombre'] ."<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
-            }
-            $contEdi = 1;
-            foreach($objTramite['listaDetallesEdificio'] as $objEdificio){
-                $_objE = [
-                    "id" => $contEdi,
-                    "nombre"=> $objEdificio['nombre'],
-                    "direccion"=> $objEdificio['direccion'],
-                    "horario"=> $horarios,
-                    "latitud"=> $objEdificio['latitud'] ?? 0,
-                    "longitud"=> $objEdificio['longitud'] ?? 0,
-                    "responsable"=> $funcionarios,
-                    "contacto_telefono"=> $telefono,
-                    "contacto_email"=> "",
-                    "informacion_adicional"=> ""
-                ];
-                array_push($edificios, $_objE);
-                $contEdi++;
-            }
-        }
 
-        $tramite = [];
-        if (count($registro) > 0) {
-            $tramite['VALIDO'] = true;
-            $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
-            $tramite['ACCE_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-            $tramite['ACCE_CLAVE_INTERNA'] = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-            $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['EDIFICIOS'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['TRAM_NIMPLEMENTADO'] = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
-            $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
-        } else {
-
-            if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
-                $tramite['VALIDO'] = false;
-                $tramite['TRAM_ID_TRAMITE'] = NULL;
-                $tramite['ACCE_ID_TRAMITE'] = NULL;
-                $tramite['ACCE_CLAVE_INTERNA'] = "";
-                $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE. USTED ESPECIFICO UN TRÁMITE, PERO NO SE ENCONTRÓ.";
-                $tramite['TRAM_NIMPLEMENTADO'] = null;
-                $tramite['TRAM_NENLACEOFICIAL'] = null;
-            } else {
+            if (count($registro) > 0) {
                 $tramite['VALIDO'] = true;
-                $tramite['TRAM_ID_TRAMITE'] = 0;
-                $tramite['ACCE_ID_TRAMITE'] =  $objTramite['id'];
-                $tramite['ACCE_CLAVE_INTERNA'] = 'Clave interna: ' . $objTramite['id'];
-                $tramite['ACCE_NOMBRE_TRAMITE'] = $objTramite['nombre'];
-                $tramite['TRAM_NIMPLEMENTADO'] = null;
-                $tramite['TRAM_NENLACEOFICIAL'] = null;
+                $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
+                $tramite['ACCE_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+                $tramite['ACCE_CLAVE_INTERNA'] = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+                $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
+                $tramite['EDIFICIOS'] = $registro[0]->TRAM_CNOMBRE;
+                $tramite['TRAM_NIMPLEMENTADO'] = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
+                $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
+            } else {
+    
+                if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
+                    $tramite['VALIDO'] = false;
+                    $tramite['TRAM_ID_TRAMITE'] = NULL;
+                    $tramite['ACCE_ID_TRAMITE'] = NULL;
+                    $tramite['ACCE_CLAVE_INTERNA'] = "";
+                    $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE. USTED ESPECIFICO UN TRÁMITE, PERO NO SE ENCONTRÓ.";
+                    $tramite['TRAM_NIMPLEMENTADO'] = null;
+                    $tramite['TRAM_NENLACEOFICIAL'] = null;
+                } else {
+                    $tramite['VALIDO'] = true;
+                    $tramite['TRAM_ID_TRAMITE'] = 0;
+                    $tramite['ACCE_ID_TRAMITE'] =  $objTramite['id'];
+                    $tramite['ACCE_CLAVE_INTERNA'] = 'Clave interna: ' . $objTramite['id'];
+                    $tramite['ACCE_NOMBRE_TRAMITE'] = $objTramite['nombre'];
+                    $tramite['TRAM_NIMPLEMENTADO'] = null;
+                    $tramite['TRAM_NENLACEOFICIAL'] = null;
+                }
             }
         }
+        
 
         return view('DET_GESTOR_CONFIGURACION_TRAMITE.index',  compact('tramite', 'edificios'));
     }
@@ -940,43 +961,6 @@ class GestorController extends Controller
         return response()->json(Cls_Resolutivo::get());
     }
 
-    //Obtener catalogos necesarios
-    public function obtener_filtro()
-    {
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-
-        $context  = stream_context_create($options);
-        $listaTramites = [];
-        $listClasificacion = [];
-        $listAudiencia = [];
-        $listDependencias = [];
-
-        //Dependencias
-        $urlDependencias = $this->host . '/api/Tramite/Dependencias';
-        $resultDependencias = file_get_contents($urlDependencias, false, $context);
-        $listDependenciasTemporal = json_decode($resultDependencias, true);
-
-        foreach ($listDependenciasTemporal as $dependencia) {
-            $dependenciaTEM = [];
-            $dependenciaTEM['id'] = $dependencia['id'];
-            $dependenciaTEM['name'] =  $dependencia['name'];
-            array_push($listDependencias, $dependenciaTEM);
-        }
-        //Edificios
-
-        $response = [
-            "clasificacion" =>  $listClasificacion,
-            "audiencia" =>  $listAudiencia,
-            "dependencias" =>  $listDependencias,
-            "tramites" =>  $listaTramites
-        ];
-
-        return Response()->json($response);
-    }
 
     public function unidad_administrativa($id){
         $url = $this->host . '/api/vw_accede_unidad_administrativa_centro_id/'.$id;
