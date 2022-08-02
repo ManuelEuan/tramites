@@ -284,103 +284,79 @@ class GestorController extends Controller
     }
 
     
-
     //Vista donde se realiza configuración del trámite
     public function configurar_tramite($tramiteID, $tramiteIDConfig){
-        $tramite    = [];
-        $edificios  = [];
-        $objTramite = null;
+        $tramite        = [];
+        $edificios      = [];
+        $objTramite     = $this->tramiteService->getTramite($tramiteID);
+        $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
+        $horarios       = "";
+        $funcionarios   = "";
+        $telefono       = "";
 
-
-        $tramites   = new Cls_Gestor();
-        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
-        $tramites->TRAM_NIDTRAMITE          = $tramiteID;
-        $tramites->TRAM_NIDTRAMITE_CONFIG   = $tramiteIDConfig;
-        /* dd($registro); */
-        //Obtener tramite
-        $urlTramite     = $this->host . '/api/Tramite/Detalle/' . $tramiteID;
-        $options        = array('http' => array( 'method' => 'GET',));
-        $context        = stream_context_create($options);
-        $result         = @file_get_contents($urlTramite, false, $context);
-
-        if (strpos($http_response_header[0], "200"))
-            $objTramite = json_decode($result, true);
-
-        if (is_null($objTramite)) {
-            $tramite['VALIDO'] = false;
-            $tramite['TRAM_ID_TRAMITE'] = NULL;
-            $tramite['ACCE_ID_TRAMITE'] = NULL;
-            $tramite['ACCE_CLAVE_INTERNA'] = "";
-            $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE EN ACCEDE";
-            $tramite['TRAM_NIMPLEMENTADO'] = 1;
-            $tramite['TRAM_NENLACEOFICIAL'] = 1;
+        foreach($arrayDetalle['horario'] as $horario){
+            $horarios.= $horario->diaNombre.": ".date("h:i a", strtotime($horario->OpeningHour))." - ".date("h:i a", strtotime($horario->ClosingHour))." <br/>";
         }
-        else{
-            //Obtener edificios
-            if ($objTramite != null) {
-    
-                $horarios = "";
-                foreach($objTramite['horarios'] as $objHorario){
-                    $horarios .= $objHorario ." <br/>";
-                }
-                $telefono = "";
-                foreach($objTramite['telefonos'] as $objTelefono){
-                    $telefono .= $objTelefono ." <br/>";
-                }
-                $funcionarios = "";
-                foreach($objTramite['funcionarios'] as $objFuncionarios){
-                    $funcionarios .= $objFuncionarios['nombre'] ."<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
-                }
-                $contEdi = 1;
-                foreach($objTramite['listaDetallesEdificio'] as $objEdificio){
-                    $_objE = [
-                        "id"            => $contEdi,
-                        "nombre"        => $objEdificio['nombre'],
-                        "direccion"     => $objEdificio['direccion'],
-                        "horario"       => $horarios,
-                        "latitud"       => $objEdificio['latitud'] ?? 0,
-                        "longitud"      => $objEdificio['longitud'] ?? 0,
-                        "responsable"   => $funcionarios,
-                        "contacto_telefono"     => $telefono,
-                        "contacto_email"        => "",
-                        "informacion_adicional" => ""
-                    ];
-                    array_push($edificios, $_objE);
-                    $contEdi++;
-                }
-            }
 
-            if (count($registro) > 0) {
-                $tramite['VALIDO'] = true;
-                $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
-                $tramite['ACCE_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-                $tramite['ACCE_CLAVE_INTERNA'] = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-                $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
-                $tramite['EDIFICIOS'] = $registro[0]->TRAM_CNOMBRE;
-                $tramite['TRAM_NIMPLEMENTADO'] = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
-                $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
-            } else {
-    
-                if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
-                    $tramite['VALIDO'] = false;
-                    $tramite['TRAM_ID_TRAMITE'] = NULL;
-                    $tramite['ACCE_ID_TRAMITE'] = NULL;
-                    $tramite['ACCE_CLAVE_INTERNA'] = "";
-                    $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE. USTED ESPECIFICO UN TRÁMITE, PERO NO SE ENCONTRÓ.";
-                    $tramite['TRAM_NIMPLEMENTADO'] = null;
-                    $tramite['TRAM_NENLACEOFICIAL'] = null;
-                } else {
-                    $tramite['VALIDO'] = true;
-                    $tramite['TRAM_ID_TRAMITE'] = 0;
-                    $tramite['ACCE_ID_TRAMITE'] =  $objTramite['id'];
-                    $tramite['ACCE_CLAVE_INTERNA'] = 'Clave interna: ' . $objTramite['id'];
-                    $tramite['ACCE_NOMBRE_TRAMITE'] = $objTramite['nombre'];
-                    $tramite['TRAM_NIMPLEMENTADO'] = null;
-                    $tramite['TRAM_NENLACEOFICIAL'] = null;
-                }
-            }
+        foreach($arrayDetalle['funcionarios']as $funcionario){
+            $funcionarios .= $funcionario->Name."<br/> correo: " . $funcionario->Email. "<br/><hr>";
         }
         
+        /* foreach($objTramite['telefonos'] as $objTelefono){
+            $telefono .= $objTelefono ." <br/>";
+        } */
+
+
+        foreach($arrayDetalle['oficinas'] as $key => $oficina){
+            $_objE = [
+                /* "id"            => $oficina->Id, */
+                "id"            => $key + 1,
+                "nombre"        => $oficina->Name,
+                "direccion"     => "Calle ".$oficina->Street." No Exterior ".$oficina->ExternalNumber." No Interior ". strtoupper($oficina->InternalNumber)." colonia ".$oficina->Colony.", ".$oficina->Municipality.", ".$oficina->State,
+                "horario"       => "</br> Horario: </br>".$horarios,
+                "latitud"       => $oficina->Latitude,
+                "longitud"      => $oficina->Longitude,
+                "responsable"   => $funcionarios,
+                "contacto_email"        => $oficina->Email,
+                "informacion_adicional" => "",
+                "contacto_telefono"     => "Télfono: ".$oficina->NumberPhone." Ext ".$oficina->Ext,
+            ];
+            array_push($edificios, $_objE);
+        }
+
+        #################### Configuraciones anteriores ####################
+        $tramites   = new Cls_Gestor();
+        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
+        if (count($registro) > 0) {
+            $tramite['VALIDO'] = true;
+            $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
+            $tramite['ACCE_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['ACCE_CLAVE_INTERNA'] = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
+            $tramite['EDIFICIOS'] = $registro[0]->TRAM_CNOMBRE;
+            $tramite['TRAM_NIMPLEMENTADO'] = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
+            $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
+        } else {
+
+            if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
+                $tramite['VALIDO'] = false;
+                $tramite['TRAM_ID_TRAMITE'] = NULL;
+                $tramite['ACCE_ID_TRAMITE'] = NULL;
+                $tramite['ACCE_CLAVE_INTERNA'] = "";
+                $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE. USTED ESPECIFICO UN TRÁMITE, PERO NO SE ENCONTRÓ.";
+                $tramite['TRAM_NIMPLEMENTADO'] = null;
+                $tramite['TRAM_NENLACEOFICIAL'] = null;
+            } else {
+                $tramite['VALIDO'] = true;
+                $tramite['TRAM_ID_TRAMITE'] = 0;
+                $tramite['ACCE_ID_TRAMITE'] =  $objTramite->Id;
+                $tramite['ACCE_CLAVE_INTERNA'] = 'Clave interna: ' . $objTramite->Id;
+                $tramite['ACCE_NOMBRE_TRAMITE'] = $objTramite->Name;
+                $tramite['TRAM_NIMPLEMENTADO'] = null;
+                $tramite['TRAM_NENLACEOFICIAL'] = null;
+            }
+        }
+
 
         return view('DET_GESTOR_CONFIGURACION_TRAMITE.index',  compact('tramite', 'edificios'));
     }
