@@ -36,7 +36,7 @@ class GestorController extends Controller
      * Construct Gestor
      */
     public function __construct(){
-        $this->middleware('auth');
+        //$this->middleware('auth');
         $this->tramiteService = new TramiteService();
     }
 
@@ -86,9 +86,8 @@ class GestorController extends Controller
     public function consultar_tramite($tramiteID, $tramiteIDConfig) {
         $objTramite             = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle           = $this->tramiteService->getDetalle($objTramite->Id);
-        $horarios               = $this->tramiteService->getHorario($objTramite->Id);
 
-        //Comienzo a llenar los datos para el tramite
+        ################ Comienzo a llenar los datos para el tramite ################
         $tramite                = [];
         $tramite['id']          = $tramiteID;
         $tramite['nombre']      = $objTramite->Name;
@@ -103,31 +102,48 @@ class GestorController extends Controller
                 "presentacion"  => $documento->presentacion,
                 "observaciones" => $documento->Description,
                 "tipo"          => $documento->tipoDocumento,
-                "informacionComplementaria" => "informacionComplementaria",
+                "informacionComplementaria" => "." //"informacionComplementaria",
             );
             array_push($arrayDocumentos, $array);
         }
-       
-        /* dd($arrayDetalle['oficinas']); */
-        $tramite['oficinas'] = [];
+
+        ################ Horarios ################
+        $tramite['oficinas']    = [];
+        $horarios               = "";
+        foreach($arrayDetalle['horario'] as $horario){
+            $horarios.= $horario->diaNombre.": ".date("h:i a", strtotime($horario->OpeningHour))." - ".date("h:i a", strtotime($horario->ClosingHour))." <br/>";
+        }
+
+        ################ Funcionarios ################
+        $funcionarios = "";
+        foreach($arrayDetalle['funcionarios']as $funcionario){
+            $funcionarios .= $funcionario->Name."<br/> correo: " . $funcionario->Email. "<br/><hr>";
+        }
+
         foreach($arrayDetalle['oficinas'] as $oficina){
             $array = array(
                 "id"            => $oficina->Id,
                 "nombre"        => $oficina->Name,
                 "direccion"     => "Calle ".$oficina->Street." No Exterior ".$oficina->ExternalNumber." No Interior ". strtoupper($oficina->InternalNumber)." colonia ".$oficina->Colony.", ".$oficina->Municipality.", ".$oficina->State,
-                "horario"       => "</br> Horario: </br>".$arrayDetalle['horario'],
+                "horario"       => "</br> Horario: </br>".$horarios,
                 "latitud"       => $oficina->Latitude,
                 "longitud"      => $oficina->Longitude,
-                "responsable"   => [], // $funcionarios,
+                "responsable"   => $funcionarios,
                 "contacto_email"        => $oficina->Email,
                 "informacion_adicional" => "",
-                "contacto_telefono"     => $oficina->NumberPhone." Ext ".$oficina->Ext,
+                "contacto_telefono"     => "Télfono: ".$oficina->NumberPhone." Ext ".$oficina->Ext,
             );
             array_push($tramite['oficinas'], $array);
         }
-        
-     
-        $monto = !is_null($objTramite->StaticAmount) ? $objTramite->StaticAmount : 0;
+
+        ################ Lugares donde pagar ################
+        $lugares = "";
+        foreach($arrayDetalle['lugaresPago']as $lugar){
+            $lugares .= $lugar->Property. ", ";
+        }
+        $lugares    = substr($lugares, 0, -2).".";
+        $monto      = !is_null($objTramite->StaticAmount) ? $objTramite->StaticAmount : 0;
+
         $tramite['costo'] = [
             [
                 "titulo"        => "¿Tiene costo?",
@@ -143,7 +159,7 @@ class GestorController extends Controller
             ],
             [
                 "titulo"        => "Oficinas donde se puede realizar el pago:",
-                "descripcion"   =>  "lugaresPago", //$objTramite['lugaresPago'],
+                "descripcion"   =>  $lugares,
                 "opciones"      => [],
                 "documentos"    => []
             ]
@@ -177,13 +193,13 @@ class GestorController extends Controller
         ];
 
         $vigencia   = $objTramite->VigencyNumber == 0 || is_null($objTramite->VigencyNumber) ? "" : $objTramite->VigencyNumber;
-        $rango      = $objTramite->VigencyNumber == 1 ? substr($objTramite->tipoVigencia, 0, -1): $objTramite->tipoVigencia;
+        $rango      = $objTramite->VigencyNumber == 1 ? substr($objTramite->tipoVigencia, 0, -1)  : $objTramite->tipoVigencia;
         $tramite['informacion_general'] = [
-            [
+            /* [
                 "titulo"        => "Periodo en que puedo realizar el trámite",
-                "descripcion"   => $vigencia." ".$rango,
+                "descripcion"   => "$vigencia." ".$rango",
                 "opciones"      => [],
-            ],
+            ], */
             [
                 "titulo"        => "Usuario a quien está dirigido el trámite:",
                 "descripcion"   => "dirigidoA", //$objTramite['dirigidoA'] ?? "",
@@ -194,31 +210,31 @@ class GestorController extends Controller
                 "descripcion"   => "tipoPersonas", //$tipoPersonas,
                 "opciones"      => [],
             ],
-            [
+            /* [
                 "titulo"        => "Tipo de documento entregado:",
                 "descripcion"   => "presentaFormato", // $objTramite['presentaFormato'] ?? "",
                 "opciones"      => [],
-            ],
+            ], */
             [
                 "titulo"        => "Tiempo hábil promedio de resolución:",
-                "descripcion"   => "diasHabilesResolución", // $objTramite['presentaFormato'] ?? "",
+                "descripcion"   =>  $vigencia." ".$rango,
                 "opciones"      => [],
             ],
-            [
+            /* [
                 "titulo"        => "Vigencias de los documentos:",
                 "descripcion"   => "vigencia", //$objTramite['vigencia'] ?? "",
                 "opciones"      => [],
-            ],
+            ], */
             [
                 "titulo"        => "Audiencia",
                 "descripcion"   => "",
                 "opciones"      => [],
             ],
-            [
+            /* [
                 "titulo"        => "Clasificación",
                 "descripcion"   => "modalidad", // $objTramite['modalidad '] ?? "",
                 "opciones"      => [],
-            ],
+            ], */
             [
                 "titulo"        => "Beneficio del usuario:",
                 "descripcion"   => $objTramite->Benefit,
@@ -280,7 +296,7 @@ class GestorController extends Controller
         $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
         $tramites->TRAM_NIDTRAMITE          = $tramiteID;
         $tramites->TRAM_NIDTRAMITE_CONFIG   = $tramiteIDConfig;
-dd($registro);
+        /* dd($registro); */
         //Obtener tramite
         $urlTramite     = $this->host . '/api/Tramite/Detalle/' . $tramiteID;
         $options        = array('http' => array( 'method' => 'GET',));

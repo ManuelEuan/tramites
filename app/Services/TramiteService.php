@@ -119,20 +119,17 @@ class TramiteService
                             ->select('a.*', 'd.Name as diaNombre')
                             ->where(['po.IdProcedure' => $tramiteID, 'a.isDeleted' => false])->get();
 
-        $arrayHorario = "";
-        foreach($horarios as $horario){
-            $arrayHorario.= $horario->diaNombre.": ".date("h:i a", strtotime($horario->OpeningHour))." - ".date("h:i a", strtotime($horario->ClosingHour))." <br/>";
-        }
+        $funcionarios   = DB::connection('mysql2')->table('procedurecontacts as pc')
+                                ->where(['IdProcedure' => $tramiteID, 'IsDeleted' => false])->get();
         
-        return ["documentos" => $documentos, "oficinas" => $oficinas, "horario" => $arrayHorario ];
-    }
+        $lugaresPago    = DB::connection('mysql2')->table('procedurechanges as pc')
+                                ->where(['IdProcedure' => $tramiteID, 'IsDeleted' => false])
+                                ->where(function ($query) {
+                                    $query->where("pc.property", "like","%Banc%")
+                                            ->orWhere("pc.property", "like","En línea%")
+                                            ->orWhere("pc.property", "like","%Tienda%");
+                                })->get();
 
-    /**
-     * Retorna los horarios de cada oficina asociados al tramite
-     * @param String $tramiteID
-     * @return array
-     */
-    public function getHorario(){
-
+        return ["documentos" => $documentos, "oficinas" => $oficinas, "horario" => $horarios, "funcionarios" => $funcionarios, "lugaresPago" => $lugaresPago ];
     }
 }
