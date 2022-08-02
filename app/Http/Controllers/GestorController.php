@@ -176,10 +176,12 @@ class GestorController extends Controller
             ]
         ];
 
+        $vigencia   = $objTramite->VigencyNumber == 0 || is_null($objTramite->VigencyNumber) ? "" : $objTramite->VigencyNumber;
+        $rango      = $objTramite->VigencyNumber == 1 ? substr($objTramite->tipoVigencia, 0, -1): $objTramite->tipoVigencia;
         $tramite['informacion_general'] = [
             [
                 "titulo"        => "Periodo en que puedo realizar el trámite",
-                "descripcion"   => "Vigencia", //$objTramite['vigencia'] ?? "",
+                "descripcion"   => $vigencia." ".$rango,
                 "opciones"      => [],
             ],
             [
