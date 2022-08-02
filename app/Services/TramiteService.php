@@ -99,8 +99,10 @@ class TramiteService
      */
     public function getDetalle(string $tramiteID){
         $documentos = DB::connection('mysql2')->table('procedurerequisit as pr')
-                            ->join('requisits as r', 'pr.RequisitId', '=', 'r.Id' )
-                            ->select('r.*')
+                            ->join('requisits as r', 'pr.RequisitId', '=', 'r.Id')
+                            ->join('naturetypes as n', 'pr.Nature', '=', 'n.Id')
+                            ->join('naturepresentationtypes as np', 'pr.NatureHow', '=', 'np.Id')
+                            ->select('r.*', 'n.Name as tipoDocumento', 'np.Name as presentacion')
                             ->where(['pr.IdProcedure' => $tramiteID, 'r.IsDeleted' => false])->get();
 
         $oficinas   = DB::connection('mysql2')->table('procedureoffices as po')

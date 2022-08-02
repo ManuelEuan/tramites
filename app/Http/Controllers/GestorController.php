@@ -96,20 +96,18 @@ class GestorController extends Controller
         $tramite['descripcion'] = $objTramite->CitizenDescription;
         $tramite['fundamento_legal'] = array([ "titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento ]);
 
-        /*  dd($objTramite , $arrayDetalle); */
         $arrayDocumentos = [];
         foreach($arrayDetalle['documentos'] as $documento) {
             $array = array(
                 "nombre"        => $documento->Name,
-                "presentacion"  => "Hownature",
+                "presentacion"  => $documento->presentacion,
                 "observaciones" => $documento->Description,
-                "tipo"          => "Naturee",
+                "tipo"          => $documento->tipoDocumento,
                 "informacionComplementaria" => "informacionComplementaria",
             );
             array_push($arrayDocumentos, $array);
         }
        
-
         /* dd($arrayDetalle['oficinas']); */
         $tramite['oficinas'] = [];
         foreach($arrayDetalle['oficinas'] as $oficina){
@@ -154,7 +152,7 @@ class GestorController extends Controller
         $tramite['requerimientos'] = [
             [
                 "titulo"        => "Casos en que se debe realizar el trámite:",
-                "descripcion"   =>  "MAnuel Euan",//$objTramite['casoRealizacion'] ?? "",
+                "descripcion"   =>  "Manuel Euan",//$objTramite['casoRealizacion'] ?? "",
                 "opciones"      => [],
                 "documentos"    => []
             ],
@@ -221,7 +219,7 @@ class GestorController extends Controller
             ],
             [
                 "titulo"        => "Beneficio del usuario:",
-                "descripcion"   => "obtengo", //$objTramite['obtengo'] ?? "",
+                "descripcion"   => $objTramite->Benefit,
                 "opciones"      => [],
             ],
             [
@@ -280,7 +278,7 @@ class GestorController extends Controller
         $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
         $tramites->TRAM_NIDTRAMITE          = $tramiteID;
         $tramites->TRAM_NIDTRAMITE_CONFIG   = $tramiteIDConfig;
-
+dd($registro);
         //Obtener tramite
         $urlTramite     = $this->host . '/api/Tramite/Detalle/' . $tramiteID;
         $options        = array('http' => array( 'method' => 'GET',));
@@ -318,16 +316,16 @@ class GestorController extends Controller
                 $contEdi = 1;
                 foreach($objTramite['listaDetallesEdificio'] as $objEdificio){
                     $_objE = [
-                        "id" => $contEdi,
-                        "nombre"=> $objEdificio['nombre'],
-                        "direccion"=> $objEdificio['direccion'],
-                        "horario"=> $horarios,
-                        "latitud"=> $objEdificio['latitud'] ?? 0,
-                        "longitud"=> $objEdificio['longitud'] ?? 0,
-                        "responsable"=> $funcionarios,
-                        "contacto_telefono"=> $telefono,
-                        "contacto_email"=> "",
-                        "informacion_adicional"=> ""
+                        "id"            => $contEdi,
+                        "nombre"        => $objEdificio['nombre'],
+                        "direccion"     => $objEdificio['direccion'],
+                        "horario"       => $horarios,
+                        "latitud"       => $objEdificio['latitud'] ?? 0,
+                        "longitud"      => $objEdificio['longitud'] ?? 0,
+                        "responsable"   => $funcionarios,
+                        "contacto_telefono"     => $telefono,
+                        "contacto_email"        => "",
+                        "informacion_adicional" => ""
                     ];
                     array_push($edificios, $_objE);
                     $contEdi++;
