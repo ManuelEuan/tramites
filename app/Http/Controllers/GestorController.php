@@ -96,8 +96,6 @@ class GestorController extends Controller
         $tramite['descripcion'] = $objTramite->CitizenDescription;
         $tramite['fundamento_legal'] = array([ "titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento ]);
 
-
-        
         /*  dd($objTramite , $arrayDetalle); */
         $arrayDocumentos = [];
         foreach($arrayDetalle['documentos'] as $documento) {
