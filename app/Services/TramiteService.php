@@ -120,12 +120,7 @@ class TramiteService
         foreach($horarios as $horario){
             $arrayHorario.= $horario->diaNombre.": ".date("h:i a", strtotime($horario->OpeningHour))." - ".date("h:i a", strtotime($horario->ClosingHour))." <br/>";
         }
-
-        $telefonos      = [];
-        $funcionarios   = [];
-        $tipoPersona    = [];
-
-
+        
         return ["documentos" => $documentos, "oficinas" => $oficinas, "horario" => $arrayHorario ];
     }
 
