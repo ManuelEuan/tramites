@@ -102,7 +102,7 @@ class TramiteService
                             ->join('requisits as r', 'pr.RequisitId', '=', 'r.Id' )
                             ->select('r.*')
                             ->where(['pr.IdProcedure' => $tramiteID, 'r.IsDeleted' => false])->get();
-        dd($documentos);
+
         $oficinas   = DB::connection('mysql2')->table('procedureoffices as po')
                             ->join('administrativeunitbuildings as a', 'po.IdAdministrativeUnitBuilding', '=', 'a.Id' )
                             ->join('sepomex as s','a.SepomexId', "=" ,'s.Id')
@@ -120,12 +120,7 @@ class TramiteService
         foreach($horarios as $horario){
             $arrayHorario.= $horario->diaNombre.": ".date("h:i a", strtotime($horario->OpeningHour))." - ".date("h:i a", strtotime($horario->ClosingHour))." <br/>";
         }
-
-        $telefonos      = [];
-        $funcionarios   = [];
-        $tipoPersona    = [];
-
-
+        
         return ["documentos" => $documentos, "oficinas" => $oficinas, "horario" => $arrayHorario ];
     }
 
