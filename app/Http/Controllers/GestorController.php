@@ -47,7 +47,7 @@ class GestorController extends Controller
     public function index() {
         $data       = ['usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => 2];
         $request    = new Request($data);
-        $tramite    =  $this->tramiteService->busqueda($request);
+        $tramite    = $this->tramiteService->busqueda($request);
 
         $data_tramite = $tramite['data'];
         return view('MST_GESTOR.index', compact('data_tramite'));
@@ -82,171 +82,89 @@ class GestorController extends Controller
         return Response()->json($response);
     }
 
-        
-
-
-
-    public function actualizar_pago($id){
-        Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $id])->update(['SSEGTRA_PAGADO' => 1]);
-        return response()->json(['data' => "ok"]);
-    }
-
     //Vista información sobre el trámite (merida)
-    public function consultar_tramite($tramiteID, $tramiteIDConfig)
-    {
-        $tramites = new Cls_Gestor();
-        $tramites->TRAM_NIDTRAMITE = $tramiteID;
-        $registro = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE();
+    public function consultar_tramite($tramiteID, $tramiteIDConfig) {
+        $objTramite             = $this->tramiteService->getTramite($tramiteID);
+        $arrayDetalle           = $this->tramiteService->getDetalle($objTramite->Id);
+        $horarios               = $this->tramiteService->getHorario($objTramite->Id);
 
-        //Consultar tramite
-        $urlTramite = $this->host . '/api/Tramite/Detalle/' . $tramiteID;
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
+        //Comienzo a llenar los datos para el tramite
+        $tramite                = [];
+        $tramite['id']          = $tramiteID;
+        $tramite['nombre']      = $objTramite->Name;
+        $tramite['responsable'] = $objTramite->nameDependencia;
+        $tramite['descripcion'] = $objTramite->CitizenDescription;
+        $tramite['fundamento_legal'] = array([ "titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento ]);
 
-        $objTramite = null;
-        $context = stream_context_create($options);
-        $result = @file_get_contents($urlTramite, false, $context);
-        if (strpos($http_response_header[0], "200")) {
-            $objTramite = json_decode($result, true);
+
+        
+        /*  dd($objTramite , $arrayDetalle); */
+        $arrayDocumentos = [];
+        foreach($arrayDetalle['documentos'] as $documento) {
+            $array = array(
+                "nombre"        => $documento->Name,
+                "presentacion"  => "Hownature",
+                "observaciones" => $documento->Description,
+                "tipo"          => "Naturee",
+                "informacionComplementaria" => "informacionComplementaria",
+            );
+            array_push($arrayDocumentos, $array);
         }
+       
 
-        $tramite = [];
-        $tramite['id'] = $tramiteID;
-        $tramite['nombre'] = $objTramite == null ? '' : $objTramite['nombre'];
-        $tramite['responsable'] = $objTramite == null ? '' : $objTramite['nombreDependencia'];
-        $tramite['descripcion'] = $objTramite == null ? '' : $objTramite['descripcionCiudadana'];
-
-        $documentos_mapped = [];
-        $objDocumentos = null;
-        $urlDocumentos =  $this->host . '/api/Tramite/DocumentosPorTramiteId/' . $tramiteID;
-        $doc_context = stream_context_create($options);
-        $result = @file_get_contents($urlDocumentos, false, $context);
-        if (strpos($http_response_header[0], "200")) {
-            $objDocumentos = json_decode($result, true);
-            //dd($objDocumentos);
+        /* dd($arrayDetalle['oficinas']); */
+        $tramite['oficinas'] = [];
+        foreach($arrayDetalle['oficinas'] as $oficina){
+            $array = array(
+                "id"            => $oficina->Id,
+                "nombre"        => $oficina->Name,
+                "direccion"     => "Calle ".$oficina->Street." No Exterior ".$oficina->ExternalNumber." No Interior ". strtoupper($oficina->InternalNumber)." colonia ".$oficina->Colony.", ".$oficina->Municipality.", ".$oficina->State,
+                "horario"       => "</br> Horario: </br>".$arrayDetalle['horario'],
+                "latitud"       => $oficina->Latitude,
+                "longitud"      => $oficina->Longitude,
+                "responsable"   => [], // $funcionarios,
+                "contacto_email"        => $oficina->Email,
+                "informacion_adicional" => "",
+                "contacto_telefono"     => $oficina->NumberPhone." Ext ".$oficina->Ext,
+            );
+            array_push($tramite['oficinas'], $array);
         }
-
-        if($objDocumentos != null){
-            foreach($objDocumentos as $item){
-                $documentos_mapped[] = array(
-                    "nombre" => $item["requisito"]["nombre"],
-                    "presentacion" => $item["presentacion"],
-                    "observaciones" => $item["descripcion"],
-                    "informacionComplementaria" => $item["informacionComplementaria"],
-                    "tipo" => $item["tipo"]
-                );
-            }
-        }
-
-        //Oficinas
-        $lstOficinas = [];
-        if($objTramite != null){
-            $horarios = "";
-            foreach($objTramite['horarios'] as $objHorario){
-                $horarios .= $objHorario ." <br/>";
-            }
-            $telefono = "";
-            foreach($objTramite['telefonos'] as $objTelefono){
-                $telefono .= $objTelefono ." <br/>";
-            }
-            $funcionarios = "";
-            foreach($objTramite['funcionarios'] as $objFuncionarios){
-                $funcionarios .= $objFuncionarios['nombre'] ."<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
-            }
-            $contEdi = 1;
-            foreach($objTramite['listaDetallesEdificio'] as $objEdificio){
-                $_objE = [
-                    "id" => $contEdi,
-                    "nombre"=> $objEdificio['nombre'],
-                    "direccion"=> $objEdificio['direccion'],
-                    "horario"=> $horarios,
-                    "latitud"=> $objEdificio['latitud'] ?? 0,
-                    "longitud"=> $objEdificio['longitud'] ?? 0,
-                    "responsable"=> $funcionarios,
-                    "contacto_telefono"=> $telefono,
-                    "contacto_email"=> "",
-                    "informacion_adicional"=> ""
-                ];
-                array_push($lstOficinas, $_objE);
-                $contEdi++;
-            }
-        }
-        $tramite['oficinas'] = $lstOficinas;
-
-        //Tipo personas
-        $tipoPersonas = "";
-        foreach($objTramite['tipoPersonas'] as $objTipoPersona){
-            $tipoPersonas .= $objTipoPersona . "<br/>";
-        }
-
-        $tramite['informacion_general'] = [
+        
+     
+        $monto = !is_null($objTramite->StaticAmount) ? $objTramite->StaticAmount : 0;
+        $tramite['costo'] = [
             [
-                "titulo" => "Periodo en que puedo realizar el trámite",
-                "descripcion" => $objTramite['vigencia'] ?? "",
-                "opciones" => [],
+                "titulo"        => "¿Tiene costo?",
+                "descripcion"   => $monto > 0 ? "SI" : "NO",
+                "opciones"      => [],
+                "documentos"    => []
             ],
             [
-                "titulo" => "Usuario a quien está dirigido el trámite:",
-                "descripcion" => $objTramite['dirigidoA'] ?? "",
-                "opciones" => [],
+                "titulo"        => "Costos",
+                "descripcion"   => "$".number_format(round($monto, 2, PHP_ROUND_HALF_UP), 2, ".", ""),
+                "opciones"      => [],
+                "documentos"    => []
             ],
             [
-                "titulo" => "Tipo de persona:",
-                "descripcion" => $tipoPersonas,
-                "opciones" => [],
-            ],
-            [
-                "titulo" => "Tipo de documento entregado:",
-                "descripcion" => $objTramite['presentaFormato'] ?? "",
-                "opciones" => [],
-            ],
-            [
-                "titulo" => "Tiempo hábil promedio de resolución:",
-                "descripcion" => $objTramite['diasHabilesResolución'] ?? "",
-                "opciones" => [],
-            ],
-            [
-                "titulo" => "Vigencias de los documentos:",
-                "descripcion" => $objTramite['vigencia'] ?? "",
-                "opciones" => [],
-            ],
-            [
-                "titulo" => "Audiencia",
-                "descripcion" => "",
-                "opciones" => [],
-            ],
-            [
-                "titulo" => "Clasificación",
-                "descripcion" => $objTramite['modalidad '] ?? "",
-                "opciones" => [],
-            ],
-            [
-                "titulo" => "Beneficio del usuario:",
-                "descripcion" => $objTramite['obtengo'] ?? "",
-                "opciones" => [],
-            ],
-            [
-                "titulo" => "Derechos del usuario:",
-                "descripcion" => "",
-                "opciones" => [],
+                "titulo"        => "Oficinas donde se puede realizar el pago:",
+                "descripcion"   =>  "lugaresPago", //$objTramite['lugaresPago'],
+                "opciones"      => [],
+                "documentos"    => []
             ]
         ];
-
+       
         $tramite['requerimientos'] = [
             [
-                "titulo" => "Casos en que se debe realizar el trámite:",
-                "descripcion" => $objTramite['casoRealizacion'] ?? "",
-                "opciones" => [],
-                "documentos" => []
+                "titulo"        => "Casos en que se debe realizar el trámite:",
+                "descripcion"   =>  "MAnuel Euan",//$objTramite['casoRealizacion'] ?? "",
+                "opciones"      => [],
+                "documentos"    => []
             ],
             [
                 "titulo" => "Requisitos:",
                 "descripcion" => "",
                 "opciones" => [],
-                "documentos" => $documentos_mapped
+                "documentos" => $arrayDocumentos
             ],
             [
                 "titulo" => "¿Puede hacer el trámite alguien más?:",
@@ -262,70 +180,96 @@ class GestorController extends Controller
             ]
         ];
 
+        $tramite['informacion_general'] = [
+            [
+                "titulo"        => "Periodo en que puedo realizar el trámite",
+                "descripcion"   => "Vigencia", //$objTramite['vigencia'] ?? "",
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Usuario a quien está dirigido el trámite:",
+                "descripcion"   => "dirigidoA", //$objTramite['dirigidoA'] ?? "",
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Tipo de persona:",
+                "descripcion"   => "tipoPersonas", //$tipoPersonas,
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Tipo de documento entregado:",
+                "descripcion"   => "presentaFormato", // $objTramite['presentaFormato'] ?? "",
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Tiempo hábil promedio de resolución:",
+                "descripcion"   => "diasHabilesResolución", // $objTramite['presentaFormato'] ?? "",
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Vigencias de los documentos:",
+                "descripcion"   => "vigencia", //$objTramite['vigencia'] ?? "",
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Audiencia",
+                "descripcion"   => "",
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Clasificación",
+                "descripcion"   => "modalidad", // $objTramite['modalidad '] ?? "",
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Beneficio del usuario:",
+                "descripcion"   => "obtengo", //$objTramite['obtengo'] ?? "",
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Derechos del usuario:",
+                "descripcion"   => "",
+                "opciones"      => [],
+            ]
+        ];
+
         $tramite['en_linea'] = [
             [
-                "titulo" => "Tiempo promedio de espera en fila",
-                "descripcion" =>  "",
-                "opciones" => [],
-                "documentos" => []
+                "titulo"        => "Tiempo promedio de espera en fila",
+                "descripcion"   =>  "",
+                "opciones"      => [],
+                "documentos"    => []
             ],
             [
-                "titulo" => "¿Hay información en línea?:",
-                "descripcion" => "",
-                "opciones" => [],
-                "documentos" => []
+                "titulo"        => "¿Hay información en línea?:",
+                "descripcion"   => "",
+                "opciones"      => [],
+                "documentos"    => []
             ],
             [
-                "titulo" => "¿Se pueden recibir solicitudes en línea?:",
-                "descripcion" => "",
-                "opciones" => [],
-                "documentos" => []
+                "titulo"        => "¿Se pueden recibir solicitudes en línea?:",
+                "descripcion"   => "",
+                "opciones"      => [],
+                "documentos"    => []
             ],
             [
-                "titulo" => "Solicitud en línea ¿Requiere formato?:",
-                "descripcion" => "",
-                "opciones" => [],
-                "documentos" => []
+                "titulo"        => "Solicitud en línea ¿Requiere formato?:",
+                "descripcion"   => "",
+                "opciones"      => [],
+                "documentos"    => []
             ]
         ];
-
-        $tieneCosto = "SI";
-        if($objTramite['costoMinimo'] == 0 && $objTramite['costoMaximo'] == 0){
-            $tieneCosto = "NO";
-        }
-        $tramite['costo'] = [
-            [
-                "titulo" => "¿Tiene costo?",
-                "descripcion" => $tieneCosto ?? "",
-                "opciones" => [],
-                "documentos" => []
-            ],
-            [
-                "titulo" => "Costos",
-                "descripcion" => $objTramite['costoDescripcion'] ?? "",
-                // "opciones" => [$objTramite['COSTOS'] ?? ""],
-                "opciones" => [],
-                "documentos" => []
-            ],
-            [
-                "titulo" => "Oficinas donde se puede realizar el pago:",
-                "descripcion" =>  $objTramite['lugaresPago'],
-                "opciones" => [],
-                "documentos" => []
-            ]
-        ];
-
-        $tramite['fundamento_legal'] = [
-            [
-                "titulo" => "",
-                "descripcion" => $objTramite['instrumentoJuridico'],
-                "opciones" => [],
-                "adicional" => []
-            ],
-        ];
-
         return view('MST_GESTOR.DET_TRAMITE', compact('tramite'));
     }
+
+
+
+    public function actualizar_pago($id){
+        Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $id])->update(['SSEGTRA_PAGADO' => 1]);
+        return response()->json(['data' => "ok"]);
+    }
+
+    
 
     //Vista donde se realiza configuración del trámite
     public function configurar_tramite($tramiteID, $tramiteIDConfig){

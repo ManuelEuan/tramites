@@ -79,13 +79,8 @@
                                         <div class="documentInfo">
                                             <span style="width: 100%;"><b>Presentación:</b> {{$documento['presentacion']}}</span>
                                             <span style="width: 100%;"><b>Observaciones:</b> {{$documento['observaciones']}}</span>
-                                            <span style="width: 100%;"><b>Información Complementaria:</b> {{$documento['informacionComplementaria']}}</span>
+                                            {{-- <span style="width: 100%;"><b>Información Complementaria:</b> {{$documento['informacionComplementaria']}}</span> --}}
                                             <span style="width: 100%;"><b>Tipo:</b> {{$documento['tipo']}}</span>
-                                            <!--
-                                                
-                                            "informacionComplementaria" => $item["informacionComplementaria"],
-                    "tipo" => $item["tipo"]
-                                            -->
                                         </div>
                                     </div>
                                     <br>
@@ -151,35 +146,37 @@
                     <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
                         <div class="card-body">
                             @foreach($tramite['costo'] as $costo)
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label class="lblDatos">{{$costo['titulo']}}</label>
-                                    <p class="pDatos">{{$costo['descripcion']}}</p>
-                                </div>
-                                @if(count($costo['opciones'])> 0)
-                                <div class="col-md-12">
-                                    @foreach($costo['opciones'] as $opcion)
-                                    <p class="pDatos">{{$opcion}}</p>
-                                    @endforeach
-                                </div>
-                                @endif
-                                @if(count($costo['documentos'])> 0)
-                                @foreach($costo['documentos'] as $documento)
-                                <div class="col-md-12">
-                                    <div class="documentTitle">
-                                        <span class="spanBorder">.</span>
-                                        <span class="spanTitle">{{$documento['nombre']}}</span>
-                                        <div class="documentInfo">
-                                            <span style="width: 100%;">{{$documento['direccion']}}</span>
-                                            <span style="width: 100%; font-size: small; font-weight: 600;">Responsable: {{$documento['responsable']}}</span>
-                                            <span style="width: 100%; font-size: small; font-weight: 600;">Contacto: {{$documento['contacto_telefono']}}</span>
-                                        </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="lblDatos">{{$costo['titulo']}}</label>
+                                        <p class="pDatos">{{$costo['descripcion']}}</p>
                                     </div>
-                                    <br>
+
+                                    @if(count($costo['opciones'])> 0)
+                                        <div class="col-md-12">
+                                            @foreach($costo['opciones'] as $opcion)
+                                                <p class="pDatos">{{$opcion}}</p>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    
+                                    @if(count($costo['documentos'])> 0)
+                                        @foreach($costo['documentos'] as $documento)
+                                            <div class="col-md-12">
+                                                <div class="documentTitle">
+                                                    <span class="spanBorder">.</span>
+                                                    <span class="spanTitle">{{$documento['nombre']}}</span>
+                                                    <div class="documentInfo">
+                                                        <span style="width: 100%;">{{$documento['direccion']}}</span>
+                                                        <span style="width: 100%; font-size: small; font-weight: 600;">Responsable: {{$documento['responsable']}}</span>
+                                                        <span style="width: 100%; font-size: small; font-weight: 600;">Contacto: {{$documento['contacto_telefono']}}</span>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                            </div>
+                                        @endforeach
+                                    @endif
                                 </div>
-                                @endforeach
-                                @endif
-                            </div>
                             @endforeach
                         </div>
                     </div>
