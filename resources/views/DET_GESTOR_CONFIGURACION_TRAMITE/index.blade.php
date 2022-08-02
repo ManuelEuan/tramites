@@ -82,25 +82,25 @@
             <div class="text-right botones">
                 <a href="{{route('gestor_index')}}" class="btn btn-danger border" style="color: #fff; font-weight: 900;">Cancelar</a>
                 @if($tramite['VALIDO'])
-                @switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE)
-                @case("ADM")
-                <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
-                <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
-                @break
-                @case("ENLOF")
-                <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
-                <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
-                @break
-                @case("ADMCT")
-                <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
-                @if($tramite['TRAM_NENLACEOFICIAL'] == null || $tramite['TRAM_NENLACEOFICIAL'] ==0 )
-                <button onclick="TRAM_FN_ENVIAR_ENLACE()" class="btn btnAzul border">Enviar a Enlace Oficial</button>
-                @else
-                <button disabled class="btn btnAzul border">Enviar a Enlace Oficial</button>
-                @endif
-                @break
-                @default
-                @endswitch
+                    @switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE)
+                        @case("ADM")
+                            <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
+                            <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
+                        @break
+                        @case("ENLOF")
+                            <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
+                            <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
+                        @break
+                        @case("ADMCT")
+                            <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
+                            @if($tramite['TRAM_NENLACEOFICIAL'] == null || $tramite['TRAM_NENLACEOFICIAL'] ==0 )
+                                <button onclick="TRAM_FN_ENVIAR_ENLACE()" class="btn btnAzul border">Enviar a Enlace Oficial</button>
+                            @else
+                                <button disabled class="btn btnAzul border">Enviar a Enlace Oficial</button>
+                            @endif
+                        @break
+                        @default
+                    @endswitch
                 @endif
             </div>
         </div>
