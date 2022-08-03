@@ -391,14 +391,15 @@ class TramitesController extends Controller
             }
 
             //Cambiar estatus y observación de documentos
-            if (count($request->CONF_DOCUMENTOS)) {
+            if(isset($request->CONF_DOCUMENTOS)){
+                if (count($request->CONF_DOCUMENTOS)) {
 
-                foreach ($request->CONF_DOCUMENTOS as $documento) {
-
-                    Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
+                    foreach ($request->CONF_DOCUMENTOS as $documento) {
+    
+                        Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
+                    }
                 }
             }
-
             //Enviar notificacion al ciudadano
             $mensaje_corto = "Usted tiene una notificación sobre datos incompletos en la sección de formularios del trámite " . $request->nombre_tramite . ", el cual tiene el número de folio " . $request->folio_tramite . ".";
             Cls_Seguimiento_Servidor_Publico::crear_notificacion($request->CONF_NIDUSUARIOTRAMITE, "Información incompleta", $request->CONF_NOTIFICACION, $mensaje_corto, $request->nombre_tramite, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO, 1);
