@@ -481,8 +481,7 @@ class GestorController extends Controller
         // $documentos = new Cls_Gestor();
         // $documentos->IntTramite = $IntTramite;
         // $registros = $documentos->TRAM_SP_CONSULTAR_DOCUMENTO_TRAMITE();
-
-        $options = array(
+        /*$options = array(
             'http' => array(
                 'method'  => 'GET',
             )
@@ -491,37 +490,41 @@ class GestorController extends Controller
         $urlDocumento = $this->host . '/api/Tramite/DocumentosPorTramiteId/' . $IntTramite;
         // $urlDocumento = $this->host . '/api/vw_accede_tramite_documento';
         $context = stream_context_create($options);
-        $result = @file_get_contents($urlDocumento, false, $context);
+        $result = @file_get_contents($urlDocumento, false, $context);*/
+
+        $objTramite = $this->tramiteService->getTramite($IntTramite);
+        $rsp = $this->tramiteService->getDetalle($objTramite->Id);
         $lstDocumentos = [];
 
-        if (strpos($http_response_header[0], "200")) {
+        foreach ($rsp['documentos'] as $key => $doc) {
+            $nombre_doc = "";
+
+            /*if(strlen($doc['DOCU_CDESCRIPCION']) <2){
+                $nombre_doc = $doc['OTRODOC'];
+            }else {
+                $nombre_doc = $doc['DOCU_CDESCRIPCION'] . " ". $doc['OTRODOC'];
+            }*/
+            $_objD = [
+                "ACCE_NIDTRAMITEDOCUMENTO" => 1,
+                "ACCE_NIDTRAMITE" => $objTramite->Id ?? "",
+                "ACCE_NIDDOCUMENTO" => $doc->Id ?? "",
+                "ACCE_CNOMBRE" => $doc->Name ?? "",
+                "ACCE_CDESCRIPCION" => $doc->Description ?? "",
+                "ACCE_CEXTENSION" =>  'PDF',
+                "ACCE_NOBLIGATORIO" => 0,
+                "ACCE_NMULTIPLE" => 0,
+            ];
+            array_push($lstDocumentos, (object)$_objD);
+        }
+
+        /*if (strpos($http_response_header[0], "200")) {
             $objDocumento = json_decode($result, true);
             //dd($objDocumento);
-            foreach ($objDocumento as $key => $doc) {
-                $nombre_doc = "";
-
-                /*if(strlen($doc['DOCU_CDESCRIPCION']) <2){
-                    $nombre_doc = $doc['OTRODOC'];
-                }else {
-                    $nombre_doc = $doc['DOCU_CDESCRIPCION'] . " ". $doc['OTRODOC'];
-                }*/
-                $_objD = [
-                    "ACCE_NIDTRAMITEDOCUMENTO" => 1,
-                    "ACCE_NIDTRAMITE" => intval($doc['tramiteGeneralId']) ?? "",
-                    "ACCE_NIDDOCUMENTO" => intval($doc['id']) ?? "",
-                    "ACCE_CNOMBRE" => $doc['requisito']['nombre'],
-                    "ACCE_CDESCRIPCION" => $doc['descripcion'],
-                    "ACCE_CEXTENSION" =>  "pdf",
-                    "ACCE_NOBLIGATORIO" => 0,
-                    "ACCE_NMULTIPLE" => 0,
-                ];
-                array_push($lstDocumentos, (object)$_objD);
-            }
-        }
+            
+        }*/
         ////////////////
-        $response = [
-            'data' => $lstDocumentos,
-        ];
+        
+        $response['data'] = $lstDocumentos;
         return response()->json($response);
     }
 

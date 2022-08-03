@@ -631,7 +631,9 @@
                 url: "/gestores/consultar_documento_tramite/" + IntTramite + "",
                 type: "GET",
                 success: function(response) {
-                    console.log(response);
+                    console.log('resp: - ' + response);
+                    var json = JSON.stringify(response)
+                    console.log('resp: - ' + json);
                     var list_temporal_documentos = [];
 
                     //Guardar y marcar documentos en variable temporal
@@ -691,7 +693,7 @@
                     ///////////////////////////////
                 },
                 error: function(data) {
-
+                    console.log(data)
                 }
             });
         }
@@ -1033,7 +1035,6 @@
                         // if (response.conceptos_pago.length > 0) {
                         //     list_conceptos_temporal = response.conceptos_pago;
                         // }
-
                         console.log('tramite config');
                         console.log(response);
 
