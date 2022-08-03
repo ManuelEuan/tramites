@@ -133,7 +133,7 @@ class TramiteServicioController extends Controller
     }
 
     public function getTramites(Request $request){
-        $estatus = 2; //No seleccionado ningun estatus
+        /*$estatus = 2; //No seleccionado ningun estatus
         $url =   $this->host . '/api/Tramite/Filter';
 
         $dataForPost = array('search' => $request->search, 'dependencies' => $request->dependenci, 'unidadesadmin' => [], 'skipe' => 0, 'take' => 10, 'usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => $estatus);
@@ -147,24 +147,28 @@ class TramiteServicioController extends Controller
 
         $context2  = stream_context_create($options2);
         $result = file_get_contents($url, false, $context2);
-        $arrayTramites = json_decode($result);
-        foreach ($arrayTramites as $i) {
-            return '<div class="card text-left" style="margin-bottom: 2rem;">
+        $arrayTramites = json_decode($result);*/
+
+        $resultTram = Cls_Tramite_Servicio::TRAM_OBTENER_TRAMITES();
+        $html = '';
+        foreach ($resultTram as $i) {
+            $html .= '<div class="card text-left" style="margin-bottom: 2rem;">
                 <div class="card-header text-primary titleCard">
-                    '.$i->name. ' <span class="badge badge-warning">'.$i->legalBasisOriginName.'</span>
+                    '.$i->TRAM_CNOMBRE. ' <span class="badge badge-warning">'.$i->TRAM_CNOMBRE.'</span>
                 </div>
                 <div class="card-body">
                     <h6 class="card-text" style="color: #212529;">
-                        '.$i->citizenDescription.'
+                        '.$i->TRAM_CDESCRIPCION.'
                     </h6>
                 </div>
                 <div class="card-footer text-muted" style="background-color: transparent; border-top: none; border-bottom: none;">
-                    <span class="text-left" style="margin-right: 30px;">Creado: '.date("d/m/Y", strtotime($i->createdDate)).'</span>
-                    <span class="text-left">Ultima Modificación: '.date("d/m/Y", strtotime($i->createdDate)).'</span>
-                    <a href="'.route('detalle_tramite', ['id' => $i->id]).'" class="btn btn-primary" style="float: right;">Ver trámite</a>
+                    <span class="text-left" style="margin-right: 30px;">Creado: '.date("d/m/Y", strtotime($i->created_at)).'</span>
+                    <span class="text-left">Ultima Modificación: '.date("d/m/Y", strtotime($i->created_at)).'</span>
+                    <a href="'.route('detalle_tramite', ['id' => $i->TRAM_NIDTRAMITE]).'" class="btn btn-primary" style="float: right;">Ver trámite</a>
                 </div>
             </div>';
         }
+        return $html;
     }
 
     public function tramite_edificios($id)

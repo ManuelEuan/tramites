@@ -305,7 +305,7 @@ class GestorController extends Controller
 
         #################### Configuraciones anteriores ####################
         $tramites   = new Cls_Gestor();
-        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
+        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
         if (count($registro) > 0) {
             $tramite['VALIDO'] = true;
             $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
@@ -569,7 +569,7 @@ class GestorController extends Controller
                 return response()->json([
                     "estatus" => "error",
                     "codigo" => 400,
-                    "DataError" => $tramite->TRAM_CTIPO
+                    "DataError" => $tramite[0]->TRAM_CTIPO
                 ]);
             }
         } catch (\Throwable $e) {
@@ -585,6 +585,7 @@ class GestorController extends Controller
     /********* Auxiliares del guardado de configuración de trámite *********/
     private function TRAM_SP_AGREGAR_TRAMITE(Request $request)
     {
+        
         $response = [];
 
         try {
