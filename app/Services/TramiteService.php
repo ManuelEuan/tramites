@@ -43,6 +43,10 @@ class TramiteService
             $tramite->TRAM_DFECHAACTUALIZACION  = $tramite->CreatedDate;
         
             $tramite->TRAM_NIMPLEMENTADO = 1;
+
+            $segundo = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE_ACCEDE',  $tramite->remtisId)->first();
+            if(!is_null($segundo))
+                $tramite->TRAM_NIDTRAMITE_CONFIG = $segundo->TRAM_NIDTRAMITE;
         }
 
         return [ 'data' => $tramites];
