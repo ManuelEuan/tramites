@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use stdClass;
+use Exception;
 use App\Cls_Gestor;
 use App\Cls_Resolutivo;
 use Hamcrest\Type\IsNumeric;
 use Illuminate\Http\Request;
 use App\Cls_Tramite_Servicio;
 use App\Cls_Seccion_Seguimiento;
+use App\Services\TramiteService;
 use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +18,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use  Illuminate\Pagination\Paginator;
 use App\Http\Controllers\FormularioController;
-use App\Services\TramiteService;
 use  Illuminate\Pagination\LengthAwarePaginator;
 
 
@@ -86,7 +87,7 @@ class GestorController extends Controller
     public function consultar_tramite($tramiteID, $tramiteIDConfig) {
         $objTramite             = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle           = $this->tramiteService->getDetalle($objTramite->Id);
-
+  
         ################ Comienzo a llenar los datos para el tramite ################
         $tramite                = [];
         $tramite['id']          = $tramiteID;
@@ -195,11 +196,6 @@ class GestorController extends Controller
         $vigencia   = $objTramite->VigencyNumber == 0 || is_null($objTramite->VigencyNumber) ? "" : $objTramite->VigencyNumber;
         $rango      = $objTramite->VigencyNumber == 1 ? substr($objTramite->tipoVigencia, 0, -1)  : $objTramite->tipoVigencia;
         $tramite['informacion_general'] = [
-            /* [
-                "titulo"        => "Periodo en que puedo realizar el trámite",
-                "descripcion"   => "$vigencia." ".$rango",
-                "opciones"      => [],
-            ], */
             [
                 "titulo"        => "Usuario a quien está dirigido el trámite:",
                 "descripcion"   => "dirigidoA", //$objTramite['dirigidoA'] ?? "",
@@ -210,31 +206,16 @@ class GestorController extends Controller
                 "descripcion"   => "tipoPersonas", //$tipoPersonas,
                 "opciones"      => [],
             ],
-            /* [
-                "titulo"        => "Tipo de documento entregado:",
-                "descripcion"   => "presentaFormato", // $objTramite['presentaFormato'] ?? "",
-                "opciones"      => [],
-            ], */
             [
                 "titulo"        => "Tiempo hábil promedio de resolución:",
                 "descripcion"   =>  $vigencia." ".$rango,
                 "opciones"      => [],
             ],
-            /* [
-                "titulo"        => "Vigencias de los documentos:",
-                "descripcion"   => "vigencia", //$objTramite['vigencia'] ?? "",
-                "opciones"      => [],
-            ], */
             [
                 "titulo"        => "Audiencia",
                 "descripcion"   => "",
                 "opciones"      => [],
             ],
-            /* [
-                "titulo"        => "Clasificación",
-                "descripcion"   => "modalidad", // $objTramite['modalidad '] ?? "",
-                "opciones"      => [],
-            ], */
             [
                 "titulo"        => "Beneficio del usuario:",
                 "descripcion"   => $objTramite->Benefit,
@@ -276,8 +257,6 @@ class GestorController extends Controller
         return view('MST_GESTOR.DET_TRAMITE', compact('tramite'));
     }
 
-
-
     public function actualizar_pago($id){
         Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $id])->update(['SSEGTRA_PAGADO' => 1]);
         return response()->json(['data' => "ok"]);
@@ -309,8 +288,8 @@ class GestorController extends Controller
 
         foreach($arrayDetalle['oficinas'] as $key => $oficina){
             $_objE = [
-                /* "id"            => $oficina->Id, */
-                "id"            => $key + 1,
+                /* "id"            => $key + 1, */
+                "id"            => $oficina->Id,
                 "nombre"        => $oficina->Name,
                 "direccion"     => "Calle ".$oficina->Street." No Exterior ".$oficina->ExternalNumber." No Interior ". strtoupper($oficina->InternalNumber)." colonia ".$oficina->Colony.", ".$oficina->Municipality.", ".$oficina->State,
                 "horario"       => "</br> Horario: </br>".$horarios,
@@ -343,16 +322,16 @@ class GestorController extends Controller
                 $tramite['TRAM_ID_TRAMITE'] = NULL;
                 $tramite['ACCE_ID_TRAMITE'] = NULL;
                 $tramite['ACCE_CLAVE_INTERNA'] = "";
-                $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE. USTED ESPECIFICO UN TRÁMITE, PERO NO SE ENCONTRÓ.";
+                $tramite['ACCE_NOMBRE_TRAMITE'] = "test.";
                 $tramite['TRAM_NIMPLEMENTADO'] = null;
                 $tramite['TRAM_NENLACEOFICIAL'] = null;
             } else {
                 $tramite['VALIDO'] = true;
-                $tramite['TRAM_ID_TRAMITE'] = 0;
-                $tramite['ACCE_ID_TRAMITE'] =  $objTramite->Id;
-                $tramite['ACCE_CLAVE_INTERNA'] = 'Clave interna: ' . $objTramite->Id;
+                $tramite['TRAM_ID_TRAMITE']     = 0;
+                $tramite['ACCE_ID_TRAMITE']     =  $objTramite->remtisId;
+                $tramite['ACCE_CLAVE_INTERNA']  = 'Clave interna: ' . $objTramite->Id;
                 $tramite['ACCE_NOMBRE_TRAMITE'] = $objTramite->Name;
-                $tramite['TRAM_NIMPLEMENTADO'] = null;
+                $tramite['TRAM_NIMPLEMENTADO']  = null;
                 $tramite['TRAM_NENLACEOFICIAL'] = null;
             }
         }
@@ -555,30 +534,23 @@ class GestorController extends Controller
     }
 
     //Guardar configuración de trámite
-    public function save(Request $request)
-    {
-        $response = [];
-        $tram = null;
+    public function save(Request $request) {
+       /*  $response = [];
+        $tram = null; */
+
         try {
-
             $tramite = $this->TRAM_SP_AGREGAR_TRAMITE($request);
-            $tram = $tramite;
-
-            //dd($tramite);
-
             if ($tramite->TRAM_CTIPO == "Creación" || $tramite->TRAM_CTIPO == "Actualización") {
 
                 $resultSecciones = $this->TRAM_SP_AGREGAR_SECCIONES($request->TRAM_LIST_SECCION, $tramite->TRAM_NIDTRAMITE_CONFIG);
-
                 if ($resultSecciones['codigo'] == 200) {
-
-                    $rutaNew =  route('gestor_configurar_tramite', ['tramiteID' =>  $tramite->TRAM_NIDTRAMITE_ACCEDE, 'tramiteIDConfig' => $tramite->TRAM_NIDTRAMITE_CONFIG]);
-                    $result = null;
+                    $rutaNew    = route('gestor_configurar_tramite', ['tramiteID' =>  $tramite->TRAM_NIDTRAMITE_ACCEDE, 'tramiteIDConfig' => $tramite->TRAM_NIDTRAMITE_CONFIG]);
+                    $result     = null;
 
                     //Implementar en caso de implementar
                     if ($request->TRAM_NIMPLEMENTADO == 1) {
-                        $gestor_im = new Cls_Gestor();
-                        $result = $gestor_im->TRAM_SP_CAMBIAR_ESTATUS_TRAMITE($tramite->TRAM_NIDTRAMITE_CONFIG, 1);
+                        $gestor_im  = new Cls_Gestor();
+                        $result     = $gestor_im->TRAM_SP_CAMBIAR_ESTATUS_TRAMITE($tramite->TRAM_NIDTRAMITE_CONFIG, 1);
                     }
 
                     return response()->json([
@@ -611,83 +583,49 @@ class GestorController extends Controller
     }
 
     /********* Auxiliares del guardado de configuración de trámite *********/
-    private function TRAM_SP_AGREGAR_TRAMITE($tramite)
+    private function TRAM_SP_AGREGAR_TRAMITE(Request $request)
     {
         $response = [];
+
         try {
-
-            //Consultar tramite
-            $urlTramite = $this->host . '/api/Tramite/Detalle/' . $tramite->TRAM_NIDTRAMITE_ACCEDE;
-            $options = array(
-                'http' => array(
-                    'method'  => 'GET',
-                )
-            );
-
-            $objTramite = null;
-            $context = stream_context_create($options);
-            $result = @file_get_contents($urlTramite, false, $context);
-            if (strpos($http_response_header[0], "200")) {
-                $objTramite = json_decode($result, true);
-            }
-
-            //----- Creamos Json ------
-            $objJson = [];
-            if ($objTramite != null) {
-
-                //Verificamos solo los atributos con nombre
-                foreach ($objTramite as $key => $value) {
-                    if (is_int($key)) {
-                        continue;
-                    }
-                    $objJson[$key] = $value;
-                }
-            }
-
+            $objTramite     = $this->tramiteService->getTramite($request->TRAM_NIDTRAMITE_ACCEDE);
             $tramites = new Cls_Gestor();
-            $tramites->TRAM_NIDTRAMITE_ACCEDE = $tramite->TRAM_NIDTRAMITE_ACCEDE;
-            $tramites->TRAM_NIDTRAMITE_CONFIG = $tramite->TRAM_NIDTRAMITE_CONFIG;
-            $tramites->TRAM_NDIASHABILESRESOLUCION = $tramite->TRAM_NDIASHABILESRESOLUCION;
-            $tramites->TRAM_NDIASHABILESNOTIFICACION = $tramite->TRAM_NDIASHABILESNOTIFICACION;
-            $tramites->TRAM_NIDFORMULARIO = $tramite->TRAM_NIDFORMULARIO;
+            $tramites->TRAM_NIDTRAMITE_ACCEDE       = (int)$request->TRAM_NIDTRAMITE_ACCEDE;
+            $tramites->TRAM_NIDTRAMITE_CONFIG       = (int)$request->TRAM_NIDTRAMITE_CONFIG;
+            $tramites->TRAM_NDIASHABILESRESOLUCION  = $request->TRAM_NDIASHABILESRESOLUCION;
+            $tramites->TRAM_NIDFORMULARIO           = $request->TRAM_NIDFORMULARIO;
+            $tramites->TRAM_NDIASHABILESNOTIFICACION = $request->TRAM_NDIASHABILESNOTIFICACION;
 
             $tramites->TRAM_NIDUNIDADADMINISTRATIVA =  1;
-            $tramites->TRAM_CUNIDADADMINISTRATIVA =  "";
-            $tramites->TRAM_NIDCENTRO =  $objTramite['idDependencia'];
-            $tramites->TRAM_CCENTRO =  $objTramite['nombreDependencia'];
-            $tramites->TRAM_CNOMBRE =  $objTramite['nombre'];
-            $tramites->TRAM_CENCARGADO =  "";
-            $tramites->TRAM_CCONTACTO =  "";
-            $tramites->TRAM_CDESCRIPCION =  $objTramite['descripcionCiudadana'];
-            $tramites->TRAM_NTIPO =  0;
+            $tramites->TRAM_CUNIDADADMINISTRATIVA   =  "";
+            $tramites->TRAM_NIDCENTRO               =  $objTramite->dependenciaId;
+            $tramites->TRAM_CCENTRO                 =  $objTramite->nameDependencia;
+            $tramites->TRAM_CNOMBRE                 =  $objTramite->Name;
+            $tramites->TRAM_CENCARGADO              =  "";
+            $tramites->TRAM_CCONTACTO               =  "";
+            $tramites->TRAM_CDESCRIPCION            = $objTramite->CitizenDescription;
+            $tramites->TRAM_NTIPO                   =  0;
 
-            $tramites->TRAM_NLINEA =  0;
-            $tramites->TRAM_NPRESENCIAL =  0;
-            $tramites->TRAM_NTELEFONO =  0;
-            $tramites->TRAM_CAUDIENCIA =  "";
-            $tramites->TRAM_CID_AUDIENCIA =  0;
+            $tramites->TRAM_NLINEA          =  0;
+            $tramites->TRAM_NPRESENCIAL     =  0;
+            $tramites->TRAM_NTELEFONO       =  0;
+            $tramites->TRAM_CAUDIENCIA      =  "";
+            $tramites->TRAM_CID_AUDIENCIA   =  0;
+            $tramites->TRAM_CTRAMITE_JSON   = '{"item": 1}';
 
-            $tramites->TRAM_CTRAMITE_JSON = '{"item": 1}';
-            if ($tramite->TRAM_NENLACEOFICIAL < 1) {
-                if (Gate::allows('isAdministradorOrEnlace')) {
-                    $tramites->TRAM_NENLACEOFICIAL = 1;
-                } else {
-                    $tramites->TRAM_NENLACEOFICIAL = 0;
-                }
-            } else {
+            if ($request->TRAM_NENLACEOFICIAL < 1)
+                $tramites->TRAM_NENLACEOFICIAL = Gate::allows('isAdministradorOrEnlace') ? 1 : 0;
+            else 
                 $tramites->TRAM_NENLACEOFICIAL = 1;
-            }
 
             $result = $tramites->TRAM_SP_AGREGAR_TRAMITE();
-
             return $result[0];
-
-        } catch (\Throwable $e) {
+        } catch (Exception $ex) {
             $response = [
                 "TRAM_CTIPO" => "error",
                 "estatus" => "error",
                 "codigo" => 400,
-                "mensaje" => "Ocurrió una excepción, favor de contactar al administrador del sistema " . $e->getMessage(),
+                "mensaje" => "Ocurrió una excepción, favor de contactar al administrador del sistema " . $ex->getMessage(),
             ];
         }
 
@@ -696,13 +634,9 @@ class GestorController extends Controller
 
     private function TRAM_SP_AGREGAR_SECCIONES(array $listSecciones, $TramiteID)
     {
-        //dd($listSecciones);
-
         $response = [];
         try {
-
             if (count($listSecciones) > 0) {
-
                 $seccionesEliminadas = new Cls_Gestor();
                 $seccionesEliminadas->TRAM_SP_ELIMINAR_SECCION($TramiteID);
 
@@ -725,7 +659,6 @@ class GestorController extends Controller
                         $TRAM_LIST_FORMULARIO =  $seccion['CONF_LIST_FORMULARIO'];
 
                         $this->TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TramiteID);
-                        //dd($seccion['CONF_LIST_DOCUMENTO']);
                         $doc_exist = array_key_exists('CONF_LIST_DOCUMENTO', $seccion);
                         if($doc_exist){
                             $TRAM_LIST_DOCUMENTO =  $seccion['CONF_LIST_DOCUMENTO'];
