@@ -322,7 +322,7 @@ class GestorController extends Controller
                 $tramite['TRAM_ID_TRAMITE'] = NULL;
                 $tramite['ACCE_ID_TRAMITE'] = NULL;
                 $tramite['ACCE_CLAVE_INTERNA'] = "";
-                $tramite['ACCE_NOMBRE_TRAMITE'] = "test.";
+                $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE EN ACCEDE.";
                 $tramite['TRAM_NIMPLEMENTADO'] = null;
                 $tramite['TRAM_NENLACEOFICIAL'] = null;
             } else {
