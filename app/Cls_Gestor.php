@@ -117,13 +117,13 @@ class Cls_Gestor extends Model
     }
 
     //Obtiene detalle de trámite con configuración
-    public function TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION()
+    public function TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig)
     {
         return DB::select(
             'call TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION(?,?)',
             array(
-                $this->TRAM_NIDTRAMITE,
-                $this->TRAM_NIDTRAMITE_CONFIG
+                $tramiteID,
+                $tramiteIDConfig
             )
         );
     }

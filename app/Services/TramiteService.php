@@ -21,7 +21,7 @@ class TramiteService
         $query = DB::connection('mysql2')->table('procedures as p')
                     ->join('administrativeunits as a', 'p.IdAdministrativeUnit', '=', 'a.Id')
                     ->join('dependencies as d', 'a.IdDependency', '=', 'd.Id')
-                    ->select('p.id','p.CitizenDescription', 'p.name', 'd.name as nameDependencia', 'd.Description as descripcionDependencia', 'p.CreatedDate')
+                    ->select('p.id as uid','p.iId as id','p.CitizenDescription', 'p.name', 'd.name as nameDependencia', 'd.Description as descripcionDependencia', 'p.CreatedDate')
                     ->where('p.HasProcedureOnline', true);
 
         if(!is_null($data->palabraClave))
@@ -87,7 +87,7 @@ class TramiteService
                     ->join('instruments as i', 'p.IdInstrument', '=', 'i.Id')
                     ->join('daysrange as v','p.idVigencyRange', '=', 'v.id')
                     ->select('p.*','d.name as nameDependencia', 'i.Name as nameInstrumento', 'v.Name as tipoVigencia')
-                    ->where('p.Id', $tramiteID)->first();
+                    ->where('p.iId', $tramiteID)->first();
      
         /* ->select('p.Id','p.CitizenDescription', 'p.name', 'p.description', 'p.Acronym' ,'d.name as nameDependencia', 'd.Description as descripcionDependencia', 'p.CreatedDate') */
         return $query;        

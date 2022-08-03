@@ -326,7 +326,7 @@ class GestorController extends Controller
 
         #################### Configuraciones anteriores ####################
         $tramites   = new Cls_Gestor();
-        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
+        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
         if (count($registro) > 0) {
             $tramite['VALIDO'] = true;
             $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
@@ -566,19 +566,19 @@ class GestorController extends Controller
 
             //dd($tramite);
 
-            if ($tramite->TRAM_CTIPO == "Creación" || $tramite->TRAM_CTIPO == "Actualización") {
+            if ($tramite[0]->TRAM_CTIPO == "Creación" || $tramite[0]->TRAM_CTIPO == "Actualización") {
 
-                $resultSecciones = $this->TRAM_SP_AGREGAR_SECCIONES($request->TRAM_LIST_SECCION, $tramite->TRAM_NIDTRAMITE_CONFIG);
+                $resultSecciones = $this->TRAM_SP_AGREGAR_SECCIONES($request->TRAM_LIST_SECCION, $tramite[0]->TRAM_NIDTRAMITE_CONFIG);
 
                 if ($resultSecciones['codigo'] == 200) {
 
-                    $rutaNew =  route('gestor_configurar_tramite', ['tramiteID' =>  $tramite->TRAM_NIDTRAMITE_ACCEDE, 'tramiteIDConfig' => $tramite->TRAM_NIDTRAMITE_CONFIG]);
+                    $rutaNew =  route('gestor_configurar_tramite', ['tramiteID' =>  $tramite[0]->TRAM_NIDTRAMITE_ACCEDE, 'tramiteIDConfig' => $tramite[0]->TRAM_NIDTRAMITE_CONFIG]);
                     $result = null;
 
                     //Implementar en caso de implementar
                     if ($request->TRAM_NIMPLEMENTADO == 1) {
                         $gestor_im = new Cls_Gestor();
-                        $result = $gestor_im->TRAM_SP_CAMBIAR_ESTATUS_TRAMITE($tramite->TRAM_NIDTRAMITE_CONFIG, 1);
+                        $result = $gestor_im->TRAM_SP_CAMBIAR_ESTATUS_TRAMITE($tramite[0]->TRAM_NIDTRAMITE_CONFIG, 1);
                     }
 
                     return response()->json([
@@ -597,7 +597,7 @@ class GestorController extends Controller
                 return response()->json([
                     "estatus" => "error",
                     "codigo" => 400,
-                    "DataError" => $tramite->TRAM_CTIPO
+                    "DataError" => $tramite[0]->TRAM_CTIPO
                 ]);
             }
         } catch (\Throwable $e) {
@@ -613,36 +613,10 @@ class GestorController extends Controller
     /********* Auxiliares del guardado de configuración de trámite *********/
     private function TRAM_SP_AGREGAR_TRAMITE($tramite)
     {
+        
         $response = [];
         try {
-
-            //Consultar tramite
-            $urlTramite = $this->host . '/api/Tramite/Detalle/' . $tramite->TRAM_NIDTRAMITE_ACCEDE;
-            $options = array(
-                'http' => array(
-                    'method'  => 'GET',
-                )
-            );
-
-            $objTramite = null;
-            $context = stream_context_create($options);
-            $result = @file_get_contents($urlTramite, false, $context);
-            if (strpos($http_response_header[0], "200")) {
-                $objTramite = json_decode($result, true);
-            }
-
-            //----- Creamos Json ------
-            $objJson = [];
-            if ($objTramite != null) {
-
-                //Verificamos solo los atributos con nombre
-                foreach ($objTramite as $key => $value) {
-                    if (is_int($key)) {
-                        continue;
-                    }
-                    $objJson[$key] = $value;
-                }
-            }
+            $rsp = $this->tramiteService->getTramite($tramite->TRAM_NIDTRAMITE_ACCEDE);
 
             $tramites = new Cls_Gestor();
             $tramites->TRAM_NIDTRAMITE_ACCEDE = $tramite->TRAM_NIDTRAMITE_ACCEDE;
@@ -653,13 +627,14 @@ class GestorController extends Controller
 
             $tramites->TRAM_NIDUNIDADADMINISTRATIVA =  1;
             $tramites->TRAM_CUNIDADADMINISTRATIVA =  "";
-            $tramites->TRAM_NIDCENTRO =  $objTramite['idDependencia'];
-            $tramites->TRAM_CCENTRO =  $objTramite['nombreDependencia'];
-            $tramites->TRAM_CNOMBRE =  $objTramite['nombre'];
+            $tramites->TRAM_NIDCENTRO =  $rsp->iId;
+            $tramites->TRAM_CCENTRO =  $rsp->nameDependencia;
+            $tramites->TRAM_CNOMBRE =  $rsp->Name;
             $tramites->TRAM_CENCARGADO =  "";
             $tramites->TRAM_CCONTACTO =  "";
-            $tramites->TRAM_CDESCRIPCION =  $objTramite['descripcionCiudadana'];
+            $tramites->TRAM_CDESCRIPCION =  $rsp->CitizenDescription;
             $tramites->TRAM_NTIPO =  0;
+            $tramites->TRAM_CTIPO =  "Creación";
 
             $tramites->TRAM_NLINEA =  0;
             $tramites->TRAM_NPRESENCIAL =  0;
@@ -680,14 +655,14 @@ class GestorController extends Controller
 
             $result = $tramites->TRAM_SP_AGREGAR_TRAMITE();
 
-            return $result[0];
+            return $result;
 
         } catch (\Throwable $e) {
             $response = [
                 "TRAM_CTIPO" => "error",
                 "estatus" => "error",
                 "codigo" => 400,
-                "mensaje" => "Ocurrió una excepción, favor de contactar al administrador del sistema " . $e->getMessage(),
+                "mensaje" => "Ocurrió una excepción, favor de contactar al administrador del sistema: " . $e->getMessage(),
             ];
         }
 
