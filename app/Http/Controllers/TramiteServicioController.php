@@ -240,7 +240,7 @@ class TramiteServicioController extends Controller
 
         ################ Comienzo a llenar los datos para el tramite ################
         $tramite                = [];
-        $tramite['id']          = $objTramite->Id;
+        $tramite['id']          = $detalle->TRAM_NIDTRAMITE;
         $tramite['nombre']      = $objTramite->Name;
         $tramite['responsable'] = $objTramite->nameDependencia;
         $tramite['descripcion'] = $objTramite->CitizenDescription;
