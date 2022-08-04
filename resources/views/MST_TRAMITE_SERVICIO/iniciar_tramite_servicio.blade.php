@@ -43,12 +43,13 @@
             </div>
         </div>
     </div>
+
     <div class="row seccion-representar" style="display: none !important;">
         <div class="col-md-12">
             <label style="font-weight: bold; font-size:20px;">Por favor ingrese la información solicitada:</label>
         </div>
-    </div>
-    <br/>
+    </div><br/>
+
     <div class="row seccion-representar" style="display: none !important;">
         <div class="col-md-6 text-right">
             <label style="font-weight: bold; font-size:16px;">¿El trámite se realizará en representación de otra persona?</label>
@@ -64,6 +65,7 @@
             </div>
         </div>
     </div>
+
     <div class="row seccion-representar" style="display: none !important;">
         <div class="col-md-6 text-right seccion-tipopersona" style="display: none !important;">
             <label style="font-weight: bold; font-size:16px;">Por favor, selecciona una opción.</label>
@@ -79,6 +81,7 @@
             </div>
         </div>
     </div>
+
     <div class="row seccion-representar" style="display: none !important;">
         <div class="col-md-6 cmb-tipopersona-fisica" style="display: none !important;">
             <div class="form-group">
@@ -125,11 +128,13 @@
             </div>
         </div>
     </div>
+
     <div class="row seccion-representar" style="display: none !important;">
         <div class="col-md-12">
             <hr/>
         </div>
     </div>
+
     <div class="row seccion-tramite" style="display: none !important;">
         <div class="col-md-12">
             <label style="font-weight: bold; font-size:20px;">Indique el módulo en el cuál prefiere que se lleve a cabo el trámite</label>
@@ -471,6 +476,7 @@
         </div>
     </div>
 </div>
+
 <div id="loading_save" class="loadingFrame" class="text-center" style="display: none !important;">
     <div class="inner">
         <div class="spinner-grow text-secondary" role="status">
@@ -748,16 +754,8 @@
         margin-top: 5px !important;
         margin-bottom: 5px !important;
         cursor: pointer !important;
+
     }
-
-    /* ----------*/
-    /* ----------*/
-
-
-
-
-
-
     .contentPage {
         background-color: #ffffff;
         height: calc(100% - 104px);
@@ -901,13 +899,10 @@
             }
         });
 
-
         $(".chckdfiles").change();
-
         $("#btnEnviar").hide();
 
         $(".progress_circle").each(function() {
-
             var value = $(this).attr('data-value');
             var left = $(this).find('.progress_circle-left .progress_circle-bar');
             var right = $(this).find('.progress_circle-right .progress_circle-bar');
@@ -920,7 +915,7 @@
                     left.css('transform', 'rotate(' + TRAM_FN_CALCULARPORCENTAJE(value - 50) + 'deg)')
                 }
             }
-        })
+        });
 
         $("#frmForm").validate({
             focusInvalid: false,
@@ -928,6 +923,7 @@
                 $(this).find(":input.error:first").focus();
             }
         });
+
         //Validar el tamaño del campo y mostrar el mensaje MJN-036.
         $(".txt_abierta").each(function() {
             $(this).rules('add', {
@@ -941,7 +937,6 @@
         });
 
         $("#cmbMunicipio").change(function() {
-
             var id_municipio = $(this).val();
             if (id_municipio != "") {
                 $('#cmbModulo').prop('disabled', false);
@@ -1028,34 +1023,6 @@
             return 0;
         }
 
-        function TRAM_AJX_CONSULTARMUNICIPIO() {
-            var cmbMunicipio = $("#cmbMunicipio");
-            $.ajax({
-                url: "/tramite_servicio/obtener_municipio/" + id_accede,
-                type: "GET",
-                success: function(data) {
-
-                    // Limpiamos el select
-                    cmbMunicipio.find('option').remove();
-
-                    //Opcion por defecto
-                    cmbMunicipio.append('<option disabled selected>Seleccione</option>');
-
-                    $(data).each(function(i, v) { // indice, valor
-                        cmbMunicipio.append('<option value="' + v.id + '">' + v.nombre + '</option>');
-                    })
-                },
-                error: function(data) {
-                    Swal.fire({
-                        icon: data.status,
-                        title: '',
-                        text: data.message,
-                        footer: ''
-                    });
-                }
-            });
-        }
-
         function TRAM_AJX_CONSULTARMODULO(id_municipio, id_accede) {
             var cmbModulo = $("#cmbModulo");
 
@@ -1105,6 +1072,7 @@
                 }
             });
         });
+
         TRAM_AJX_CONSULTARMUNICIPIO();
         TRAM_FN_DESACTIVARMODULO();
         TRAM_FN_OCULTAR_FORM();
@@ -1258,6 +1226,7 @@
                 }
             });
     }
+
     function TRAM_FN_CAMBIAR_NOMBRE(name,id){
         var bla = $('#txt_'+id).val();
 
@@ -1268,6 +1237,7 @@
         $("#docs_file_" + id).val(nombreNuevo);
 
     }
+
     function TRAM_FN_GENERATE(n) {
         var add = 1, max = 12 - add;   // 12 is the min safe number Math.random() can generate without it starting to pad the end with zeros.
 
@@ -1280,13 +1250,10 @@
         var number = Math.floor( Math.random() * (max - min + 1) ) + min;
 
         return ("" + number).substring(add);
-}
+    }
 
     function TRAM_FN_AGREGAR_ROW(name){
-
-
-
-      var iddata = TRAM_FN_GENERATE(8);
+    var iddata = TRAM_FN_GENERATE(8);
             $("#documentosP4").append('<tr>'+
             '<td> '+ "<div  class='form-check'> <input class='form-check-input' type='checkbox' value='' id=defaultCheck2' disabled> </div>"+'</td>' +
             '<td>'+
@@ -1488,6 +1455,34 @@
 
         return size.toFixed(2) + ' TB';
     };
+
+    /**
+        * Funcion para obtener los municipios
+        */
+    function TRAM_AJX_CONSULTARMUNICIPIO() {
+        var cmbMunicipio = $("#cmbMunicipio");
+        cmbMunicipio.find('option').remove();
+
+        $.ajax({
+            url: "/tramite_servicio/obtener_municipio/" + id_accede,
+            type: "GET",
+            success: function(data) {
+                cmbMunicipio.append('<option disabled selected>Seleccione</option>');
+
+                $(data).each(function(i, v) {
+                    cmbMunicipio.append('<option value="' + v.id + '">' + v.nombre + '</option>');
+                })
+            },
+            error: function(data) {
+                Swal.fire({
+                    icon: data.status,
+                    title: '',
+                    text: data.message,
+                    footer: ''
+                });
+            }
+        });
+    }
 
 </script>
 @endsection
