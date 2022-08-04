@@ -27,7 +27,7 @@ class GestorController extends Controller
      * @var String
      */
     private $host = 'https://remtysmerida.azurewebsites.net';
-    
+
     /**
      * @var TramiteService
      */
@@ -92,7 +92,7 @@ class GestorController extends Controller
     public function consultar_tramite($tramiteID, $tramiteIDConfig) {
         $objTramite             = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle           = $this->tramiteService->getDetalle($objTramite->Id);
-  
+
         ################ Comienzo a llenar los datos para el tramite ################
         $tramite                = [];
         $tramite['id']          = $tramiteID;
@@ -115,7 +115,7 @@ class GestorController extends Controller
         return response()->json(['data' => "ok"]);
     }
 
-    
+
     //Vista donde se realiza configuración del trámite
     public function configurar_tramite($tramiteID, $tramiteIDConfig){
         $tramite        = [];
@@ -133,7 +133,7 @@ class GestorController extends Controller
         foreach($arrayDetalle['funcionarios']as $funcionario){
             $funcionarios .= $funcionario->Name."<br/> correo: " . $funcionario->Email. "<br/><hr>";
         }
-        
+
         /* foreach($objTramite['telefonos'] as $objTelefono){
             $telefono .= $objTelefono ." <br/>";
         } */
@@ -441,7 +441,7 @@ class GestorController extends Controller
     /********* Auxiliares del guardado de configuración de trámite *********/
     private function TRAM_SP_AGREGAR_TRAMITE(Request $request)
     {
-        
+
         $response = [];
 
         try {
@@ -472,7 +472,7 @@ class GestorController extends Controller
 
             if ($request->TRAM_NENLACEOFICIAL < 1)
                 $tramites->TRAM_NENLACEOFICIAL = Gate::allows('isAdministradorOrEnlace') ? 1 : 0;
-            else 
+            else
                 $tramites->TRAM_NENLACEOFICIAL = 1;
 
             $result = $tramites->TRAM_SP_AGREGAR_TRAMITE();
