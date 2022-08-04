@@ -330,7 +330,7 @@ class TramiteServicioController extends Controller
 
             //Verificar seccion seguiente, para activar
             foreach ($configaracion['secciones'] as $item) {
-                if (array_key_exists('SSEGTRA_NIDSECCION_SEGUIMIENTO', $item)) {
+                if (isset($item->SSEGTRA_NIDSECCION_SEGUIMIENTO)) {
                     if ($item->CONF_NESTATUS_SEGUIMIENTO == 0) {
                         $this->seccion_active = $item->SSEGTRA_NIDSECCION_SEGUIMIENTO;
                         break;
