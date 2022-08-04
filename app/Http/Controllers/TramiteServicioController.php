@@ -11,13 +11,14 @@ use App\Cls_Usuario_Concepto;
 use App\Cls_Usuario_Documento;
 use App\Cls_Usuario_Respuesta;
 use App\Models\Cls_Cat_Seccion;
+use App\Services\GestorService;
 use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
 use App\Cls_Encuesta_Satisfaccion;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Pagination\Paginator;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Cls_Seguimiento_Servidor_Publico;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -34,13 +35,17 @@ class TramiteServicioController extends Controller
     protected $seccion_active = 0;
     protected $host = "https://remtysmerida.azurewebsites.net";
     protected $host_pagos = "https://ipagostest.chihuahua.gob.mx/WSPagosDiversos/consultas/consultas1/obtieneEstatus";
+    
     protected $tramiteService;
+    protected $gestorService;
 
     /**
      * Construct Gestor
      */
     public function __construct() {
-        $this->tramiteService = new TramiteService();
+        $this->middleware('auth');
+        $this->tramiteService   = new TramiteService();
+        $this->gestorService    = new GestorService();
     }
 
     public function index()
@@ -263,66 +268,40 @@ class TramiteServicioController extends Controller
         return view('MST_TRAMITE_SERVICIO.DET_TRAMITE', compact('tramite'));
     }
 
-    public function iniciar_tramite_servicio($id)
-    {
-        $tramites = new Cls_Tramite_Servicio();
-        $detalle = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE($id);
-        $serie = strtoupper(substr($detalle->TRAM_CCENTRO, 0, 3));
-        $anio = substr(date("Y"), -2);
-        $folio = $serie . $anio;
+    public function iniciar_tramite_servicio($id) {
+        $tramites   = new Cls_Tramite_Servicio();
+        $detalle    = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE($id);
+        $folio      = strtoupper(substr($detalle->TRAM_CCENTRO, 0, 3)).substr(date("Y"), -2);
+        $gestoresFisicos    = $this->gestorService->getGestores('FISICA');
+        $gestoresMorales    = $this->gestorService->getGestores('MORAL');
+        $totalGestores      = sizeof($gestoresFisicos) + sizeof($gestoresMorales);
 
-        $cont_gestor = 0;
-        $gestores_fisica = DB::table('tram_mdv_gestores as g')
-            ->join('tram_mst_usuario as u', 'g.GES_NUSUARIOID', '=', 'u.USUA_NIDUSUARIO')
-            ->select('u.USUA_CRFC', 'u.USUA_CCURP', 'u.USUA_NIDUSUARIO', 'u.USUA_CNOMBRES', 'u.USUA_CPRIMER_APELLIDO', 'u.USUA_CSEGUNDO_APELLIDO', 'u.USUA_CRAZON_SOCIAL', 'g.*')
-            ->where('g.GES_NGESTORID', Auth::user()->USUA_NIDUSUARIO)
-            ->where('u.USUA_NTIPO_PERSONA', 'FISICA')
-            ->where('g.GES_CESTATUS', 'Autorizado')
-            ->get();
-
-        $gestores_moral = DB::table('tram_mdv_gestores as g')
-            ->join('tram_mst_usuario as u', 'g.GES_NUSUARIOID', '=', 'u.USUA_NIDUSUARIO')
-            ->select('u.USUA_CRFC', 'u.USUA_CCURP', 'u.USUA_NIDUSUARIO', 'u.USUA_CNOMBRES', 'u.USUA_CPRIMER_APELLIDO', 'u.USUA_CSEGUNDO_APELLIDO', 'u.USUA_CRAZON_SOCIAL', 'g.*')
-            ->where('g.GES_NGESTORID', Auth::user()->USUA_NIDUSUARIO)
-            ->where('u.USUA_NTIPO_PERSONA', 'MORAL')
-            ->where('g.GES_CESTATUS', 'Autorizado')
-            ->get();
-
-        if (count($gestores_fisica) > 0)
-            $cont_gestor += count($gestores_fisica);
-        if (count($gestores_moral) > 0)
-            $cont_gestor += count($gestores_moral);
-
-        $tramite = [];
-        $tramite['id'] = $id;
-        $tramite['idtramiteaccede'] = $detalle->TRAM_NIDTRAMITE_ACCEDE;
-        $tramite['fechaactualizacion'] = $detalle->updated_at;
-        $tramite['folio'] = $folio;
-        $tramite['idsuario'] = Auth::user()->USUA_NIDUSUARIO;
-        $tramite['nombre'] = $detalle->TRAM_CNOMBRE;
-        $tramite['gestores_fisica'] = $gestores_fisica;
-        $tramite['gestores_moral'] = $gestores_moral;
-        $tramite['es_gestor'] = $cont_gestor;
+        ################ Llenado de datos del tramite ################
+        $tramite        = [];
+        $tramite['id']  = $id;
+        $tramite['folio']       = $folio;
+        $tramite['idsuario']    = Auth::user()->USUA_NIDUSUARIO;
+        $tramite['nombre']      = $detalle->TRAM_CNOMBRE;
+        $tramite['es_gestor']   = $totalGestores;
         $tramite['responsable'] = $detalle->TRAM_CCENTRO;
         $tramite['descripcion'] = $detalle->TRAM_CDESCRIPCION;
-        $tramite['estatus'] = $detalle->TRAM_NESTATUS_PROCESO == null ? 1 : $detalle->TRAM_NESTATUS_PROCESO;
+        $tramite['estatus']     = $detalle->TRAM_NESTATUS_PROCESO == null ? 1 : $detalle->TRAM_NESTATUS_PROCESO;
+        $tramite['idtramiteaccede']     = $detalle->TRAM_NIDTRAMITE_ACCEDE;
+        $tramite['fechaactualizacion']  = $detalle->updated_at;
+        $tramite['gestores_fisica']     = $gestoresFisicos;
+        $tramite['gestores_moral']      = $gestoresMorales;
         $tramite['encuesta_contestada'] = $detalle->USTR_NENCUESTA_CONTESTADA;
-        if ($detalle->TRAM_NESTATUS_PROCESO == null) {
-            $tramite['disabled'] = "";
-        } else {
-            $tramite['disabled'] = $detalle->TRAM_NESTATUS_PROCESO == 1 ? "" : "disabled";
-        }
+        $tramite['disabled']            = is_null($detalle->TRAM_NESTATUS_PROCESO) && $detalle->TRAM_NESTATUS_PROCESO != 1 ?  "disabled" : "";
+        $tramite['configuracion']       = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
 
-
-        //DOcumentos en General Para el Repositorio
+        //Documentos en General Para el Repositorio
         $repositorio = Cls_Usuario_Documento::where('USDO_NIDUSUARIOBASE', Auth::user()->USUA_NIDUSUARIO)
-            ->select('USDO_CDOCNOMBRE', 'USDO_CEXTENSION', 'USDO_CRUTADOC', 'USDO_NPESO', 'created_at')
-            ->distinct()
-            ->orderBy('created_at', 'desc')
-            ->get()->toArray();
+                            ->select('USDO_CDOCNOMBRE', 'USDO_CEXTENSION', 'USDO_CRUTADOC', 'USDO_NPESO', 'created_at')
+                            ->distinct()
+                            ->orderBy('created_at', 'desc')
+                            ->get()->toArray();
 
         $tramite['repositorio'] = [];
-
         foreach ($repositorio as $_doc) {
             $repodoc = new Cls_Usuario_Documento;
             $repodoc->USDO_CDOCNOMBRE = $_doc['USDO_CDOCNOMBRE'];
@@ -331,12 +310,8 @@ class TramiteServicioController extends Controller
             $repodoc->USDO_NPESO = $_doc['USDO_NPESO'];
 
             $tramite['repositorio'][] = $repodoc;
-            //break;
         }
 
-
-        $configaracion = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
-        $tramite['configuracion'] = $configaracion;
         return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite'));
     }
 
@@ -680,82 +655,23 @@ class TramiteServicioController extends Controller
         return Response()->json($collection);
     }
 
-    public function obtener_municipio($id)
-    {
-        $lstMunicipios = [];
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
+    public function obtener_municipio($id) {
+        $objTramite = $this->tramiteService->getTramite($id);
+        $direccion  = $this->tramiteService->getEstadoandMunicipio($objTramite->dependenciaId);
+        $municipios = array();
 
-        $url = $this->host . '/api/Tramite/Municipios';
-        $context = stream_context_create($options);
-        $result_m = @file_get_contents($url, false, $context);
-        if (strpos($http_response_header[0], "200")) {
-            $arr = json_decode($result_m, true);
-            foreach ($arr as $doc) {
-                $_objD = [
-                    "id" => $doc['id'] ?? "",
-                    "nombre" => $doc['nombre'] ?? ""
-                ];
-                array_push($lstMunicipios, $_objD);
-            }
-        }
+        if(!is_null($direccion))
+            $municipios =[ "id" => $direccion->municipioId, "nombre" => $direccion->municipio ];
 
-        return Response()->json($lstMunicipios);
+        return Response()->json($municipios);
     }
 
-    public function obtener_modulo($id, $idaccede)
-    {
-        $lstModulos = [];
-        $urlTramite = $this->host . '/api/Tramite/Detalle/' . $idaccede;
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-
-        $objTramite = null;
-        $context = stream_context_create($options);
-        $result = @file_get_contents($urlTramite, false, $context);
-        if (strpos($http_response_header[0], "200")) {
-            $objTramite = json_decode($result, true);
-        }
-        $lstOficinas = [];
-        if ($objTramite != null) {
-            $horarios = "";
-            foreach ($objTramite['horarios'] as $objHorario) {
-                $horarios .= $objHorario . " <br/>";
-            }
-            $telefono = "";
-            foreach ($objTramite['telefonos'] as $objTelefono) {
-                $telefono .= $objTelefono . " <br/>";
-            }
-            $funcionarios = "";
-            foreach ($objTramite['funcionarios'] as $objFuncionarios) {
-                $funcionarios .= $objFuncionarios['nombre'] . "<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
-            }
-            $contEdi = 1;
-            foreach ($objTramite['listaDetallesEdificio'] as $objEdificio) {
-                $_objE = [
-                    "id" => $contEdi,
-                    "nombre" => $objEdificio['nombre'],
-                    "direccion" => $objEdificio['direccion'],
-                    "horario" => $horarios,
-                    "latitud" => $objEdificio['latitud'] ?? 0,
-                    "longitud" => $objEdificio['longitud'] ?? 0,
-                    "responsable" => $funcionarios,
-                    "contacto_telefono" => $telefono,
-                    "contacto_email" => "",
-                    "informacion_adicional" => ""
-                ];
-                array_push($lstOficinas, $_objE);
-                $contEdi++;
-            }
-        }
-
-        return Response()->json($lstOficinas);
+    public function obtener_modulo($id, $idaccede) {
+        $objTramite     = $this->tramiteService->getTramite($id);
+        $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
+        $datosGenerales = $this->tramiteService->valoresDefaulTramite($arrayDetalle, $objTramite);
+        
+        return Response()->json($datosGenerales['oficinas']);
     }
 
     public function obtener_modulo_detalle($id)

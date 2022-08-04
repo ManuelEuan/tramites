@@ -301,4 +301,32 @@ class TramiteService
 
         return $tramite;
     }
+
+    /**
+     * Retorna el estado y municipio del tramite
+     * @param int $dependenciaID
+     * @return object
+     */
+    public function getEstadoandMunicipio(int $dependenciaID){
+        $datos = DB::connection('mysql2')->table('dependencies as d')
+                        ->join('states as s', 'd.IdState', '=', 's.Id')
+                        ->join('municipalities as m', 'd.IdMunicipal', '=', 'm.Id')
+                        ->select('s.Id as estadoId', 's.Name as estado', 'm.Id as municipioId', 'm.Name as municipio')
+                        ->where('d.iId',$dependenciaID)->first();
+        return $datos;
+    }
+
+    /**
+     * Retorna los modoeulos en base al municipio seleccionado
+     * @param int $dependenciaID
+     * @return object
+     */
+    public function getModulo(int $dependenciaID){
+        $datos = DB::connection('mysql2')->table('dependencies as d')
+                        ->join('states as s', 'd.IdState', '=', 's.Id')
+                        ->join('municipalities as m', 'd.IdMunicipal', '=', 'm.Id')
+                        ->select('s.Id as estadoId', 's.Name as estado', 'm.Id as municipioId', 'm.Name as municipio')
+                        ->where('d.iId',$dependenciaID)->first();
+        return $datos;
+    }
 }
