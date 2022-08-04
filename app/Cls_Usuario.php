@@ -35,9 +35,9 @@ class Cls_Usuario extends Model
         ));
     }
 
-    static function getTipoDocs()
+    static function getTipoDocs($tipoUser)
     {
-        $docsUser = DB::select("SELECT * FROM `tram_mst_configdocumentos`");
+        $docsUser = DB::select("SELECT * FROM `tram_mst_configdocumentos` WHERE TIPO_PERSONA = 'AMBAS' OR TIPO_PERSONA = '".$tipoUser."'");
         return $docsUser;
     }
     static function getDocsUser($id){
