@@ -19,7 +19,7 @@ class PerfilController extends Controller
         if ($ObjAuth == null) {
             return view('MSTP_LOGIN.index');
         }
-        $docsUser = Cls_Usuario::getTipoDocs();
+        $docsUser = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
         $docsUpdates = Cls_Usuario::getDocsUser($ObjAuth->USUA_NIDUSUARIO);
         $data = array();
         foreach ($docsUser as $key => $i) {
@@ -52,7 +52,7 @@ class PerfilController extends Controller
     }
     public function listarDocs(){
         $ObjAuth = Auth::user();
-        $docsUser = Cls_Usuario::getTipoDocs();
+        $docsUser = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
         $docsUpdates = Cls_Usuario::getDocsUser($ObjAuth->USUA_NIDUSUARIO);
         $data = array();
 

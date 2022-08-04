@@ -81,6 +81,17 @@ class TramiteService
     }
 
     /**
+     * Retorna los documentos para el expediente
+     * 
+     */
+    public function getDocumentosExpediente(){
+        $query = DB::connection('mysql2')->table('requisits')
+                    ->select()
+                    ->get();
+        return $query;
+    }
+
+    /**
      * Retorna los documentos asociados al tramite
      * @param String $tramiteID
      * @return array
