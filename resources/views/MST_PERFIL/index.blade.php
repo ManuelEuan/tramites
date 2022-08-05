@@ -1554,6 +1554,7 @@
                                                                         <th scope="col">Nombre</th>
                                                                         <th scope="col">Tamaño</th>
                                                                         <th scope="col">Estatus</th>
+                                                                        <th scope="col">Vigencia</th>
                                                                         <th>Acciones</th>
                                                                     </tr>
                                                                 </thead>

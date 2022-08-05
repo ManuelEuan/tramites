@@ -447,7 +447,8 @@
         };
 
 
-        function TRAM_AJX_TRAMITES(id){            
+        function TRAM_AJX_TRAMITES(id){  
+            console.log(id.toString())          
             //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
             $.get('/general/obtenerTramites/' + id.toString(), function (data) {
 
@@ -479,10 +480,13 @@
         }
         
         function TRAM_AJX_UNIDAD_ADMINISTRATIVA(id){
+            console.log(id.toString())
             unidad = $.ajax({
-                url: "/general/unidades_administrativas",
+                //Estos llaman al nuevo remapeo del retys
+                //url: "/servidorespublicos/getUnity",
+                url:"/general/unidades_administrativas",
                 type: "get",
-                data: {"tipo":"multiple","dependencia_id": id.toString() }
+                data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
 
             });
         
@@ -526,7 +530,10 @@
         
 
         function TRAM_AJX_DEPENDENCIAS(){
-            $.get('/general/dependencias', function (data) {
+            //Estos llaman al nuevo remapeo del retys
+            //$.get('/servidorespublicos/getDep', function (data) {
+                $.get('/general/dependencias', function (data) {
+
                 var html = '<select id="cmbDependencias" class="selectpicker form-control"  data-live-search="true" multiple>';
 
                 data.forEach(function(value) {
@@ -562,6 +569,7 @@
 
         function TRAM_AJX_EDIFICIOS(tramites = []){
             var myJSON = JSON.stringify(tramites);
+            console.log(myJSON)
             $.get('/general/edificios?tramite_id='+ myJSON, function (data) {
                 var html = '<select id="cmbEdificios" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
@@ -592,7 +600,7 @@
         //acceso
         function TRAM_AJX_TRAMITES_ACCESO(id){
             //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
-                $.get('/general/obtenerTramites/' + id.toString(), function (data) {
+                $.get('/general/obtenerTramites?=unidad_id' + id.toString(), function (data) {
 
                 var html = '<select id="cmbTramites_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
