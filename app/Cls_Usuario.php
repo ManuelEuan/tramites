@@ -361,12 +361,16 @@ class Cls_Usuario extends Model
         return $this->hasMany('App\Cls_Sucursal', 'SUCU_NIDUSUARIO', 'USUA_NIDUSUARIO');
     }
     static function guardarDocs($request, $idU, $nombre){
+        $hoy = date('Y-m-d');
+
+        $actualizar = DB::update('update tram_mst_documentosbase set isActual = 0 where ID_CDOCUMENTOS = ?', [$request->tipo]);
+
         $insert = DB::insert('insert into tram_mst_documentosbase (FORMATO, PESO, VIGENCIA_INICIO, VIGENCIA_FIN, ID_CDOCUMENTOS, ID_USUARIO, estatus, ruta, isDelete, isActual) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
             $request->formato,
             $request->peso,
-            '2022-10-01',
-            '2023-10-01',
+            $hoy,
+            '',
             $request->tipo,
             $idU,
             1,

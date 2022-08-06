@@ -21,6 +21,7 @@ class PerfilController extends Controller
         }
         $docsUser = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
         $docsUpdates = Cls_Usuario::getDocsUser($ObjAuth->USUA_NIDUSUARIO);
+        $hoy = date('Y-m-d');
         $data = array();
         foreach ($docsUser as $key => $i) {
             $tiene = false;
@@ -55,6 +56,7 @@ class PerfilController extends Controller
         $docsUser = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
         $docsUpdates = Cls_Usuario::getDocsUser($ObjAuth->USUA_NIDUSUARIO);
         $data = array();
+        $hoy = date('Y-m-d');
 
         foreach ($docsUser as $key => $i) {
             $tiene = false;
@@ -62,22 +64,39 @@ class PerfilController extends Controller
             $estatus = '';
             $icono = '';
             $idDoc = '';
+            $btnRemplazar = '';
+            $vencido = '';
             foreach ($docsUpdates as $key => $j) {
                 if ($j->ID_CDOCUMENTOS == $i->id) {
                     $tiene = true;
                     $peso = (intval($j->PESO) / 1024).' KB';
                     $estatus = $j->estatus;
                     $idDoc = $j->id;
-                    if (intval($estatus) == 1){
-                        $icono = '<span title="Pendiente revision" class="fa fa-warning" style="color:#eddb04"></span>';
+
+                    if($j->isActual == 1){
+                        if($j->VIGENCIA_FIN != ''){
+                            if($j->VIGENCIA_FIN < $hoy){
+                                $btnRemplazar = '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>';
+                                $vencido = '<span>Vencido</span>';
+                            }else{
+                                $vencido = $j->VIGENCIA_FIN;
+                            }
+                        }else{
+                            $vencido = 'N/A';
+                        }
+                        if (intval($estatus) == 1){
+                            $icono = '<span title="Pendiente revision" class="fa fa-warning" style="color:#eddb04"></span>';
+                        }
                     }
+                    
                 }
             }
             $data[] = array(
                 '0' => $i->NOMBRE,
                 '1' => $peso,
                 '2' => $icono,
-                '3' => ($tiene) ? '<button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button> <button onclick="deleteDocUser('.$idDoc.')" title="Eliminar documento" class="btn btn-danger"><i class="fa fa-times"></i></button></td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>',
+                '3' => $vencido,
+                '4' => ($tiene) ? $btnRemplazar.' <button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button> <button onclick="deleteDocUser('.$idDoc.')" title="Eliminar documento" class="btn btn-danger"><i class="fa fa-times"></i></button></td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>',
             );
         }
         $results = array(

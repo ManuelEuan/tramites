@@ -10,9 +10,17 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\GeneralController;
 use App\Mail\MailService;
 use Illuminate\Support\Facades\Mail;
+use App\Services\ServidoresService;
 
 class ServidorPublicoController extends Controller
 {
+
+    protected $servidoresService;
+
+    public function __construct() {
+        $this->servidoresService   = new ServidoresService();
+    }
+
     public function index(Request $request)
     {
         return view('CAT_SERVIDOR_PUBLICO.index');
@@ -262,6 +270,79 @@ class ServidorPublicoController extends Controller
         ];
 
         return Response()->json($response);
+    }
+
+    public function getDep(){
+        $objDep     = $this->servidoresService->getDependencias();
+
+        $dependencies = array();
+
+        foreach ($objDep as $key => $value) {
+            array_push($dependencies, [
+                    'ID_CENTRO' => $value->iId,
+                    '0' => $value->iId,
+                    'CLAVE' => $value->Acronym,
+                    '1' => $value->iId,
+                    'DESCRIPCION' => $value->Description,
+                    '2' => $value->Name,
+                    'TIPO' => $value->iId,
+                    '3' => $value->iId,
+                ]
+            );
+
+        }
+        
+
+        return $dependencies;
+    }
+
+    public function getUnity(Request $request){
+        $objUnidad    = $this->servidoresService->getUnidadesAdministrativas($request);
+
+        $unidades = array();
+
+        foreach ($objUnidad as $key => $value) {
+            array_push($unidades, [
+                    'ID_CENTRO' => $value->iId,
+                    '0' => $value->iId,
+                    'CLAVE' => $value->Acronym,
+                    '1' => $value->iId,
+                    'DESCRIPCION' => $value->Description,
+                    '2' => $value->Name,
+                    'TIPO' => $value->iId,
+                    '3' => $value->iId,
+                ]
+            );
+
+        }
+        
+
+        return $unidades;
+    }
+
+    public function getTramites(Request $request){
+
+        $objUnidad    = $this->servidoresService->getTramites($request);
+
+        /*$unidades = array();
+
+        foreach ($objUnidad as $key => $value) {
+            array_push($unidades, [
+                    'ID_CENTRO' => $value->iId,
+                    '0' => $value->iId,
+                    'CLAVE' => $value->Acronym,
+                    '1' => $value->iId,
+                    'DESCRIPCION' => $value->Description,
+                    '2' => $value->Name,
+                    'TIPO' => $value->iId,
+                    '3' => $value->iId,
+                ]
+            );
+
+        }*/
+        
+
+        return count($objUnidad);
     }
 
     public function detalle($id){
