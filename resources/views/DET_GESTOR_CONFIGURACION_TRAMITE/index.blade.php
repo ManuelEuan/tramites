@@ -631,9 +631,7 @@
                 url: "/gestores/consultar_documento_tramite/" + IntTramite + "",
                 type: "GET",
                 success: function(response) {
-                    console.log('resp: - ' + response);
-                    var json = JSON.stringify(response)
-                    console.log('resp: - ' + json);
+                    var json = JSON.stringify(response);
                     var list_temporal_documentos = [];
 
                     //Guardar y marcar documentos en variable temporal
@@ -1951,9 +1949,6 @@
 
         $('#listDocumentos').html('');
         var divSectionContainer = $('#listDocumentos');
-
-        console.log('ver documentos');
-        console.log(list_default_documentos);
 
         $.each(list_default_documentos, function(i, v) {
 

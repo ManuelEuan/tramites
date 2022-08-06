@@ -81,17 +81,6 @@ class TramiteService
     }
 
     /**
-     * Retorna los documentos para el expediente
-     * 
-     */
-    public function getDocumentosExpediente(){
-        $query = DB::connection('mysql2')->table('requisits')
-                    ->select()
-                    ->get();
-        return $query;
-    }
-
-    /**
      * Retorna los documentos asociados al tramite
      * @param String $tramiteID
      * @return array
@@ -101,8 +90,9 @@ class TramiteService
                             ->join('requisits as r', 'pr.RequisitId', '=', 'r.Id')
                             ->join('naturetypes as n', 'pr.Nature', '=', 'n.Id')
                             ->join('naturepresentationtypes as np', 'pr.NatureHow', '=', 'np.Id')
-                            ->select('r.*', 'n.Name as tipoDocumento', 'np.Name as presentacion')
-                            ->where(['pr.IdProcedure' => $tramiteID, 'r.IsDeleted' => false])->get();
+                            ->select('r.*', 'r.iId as Id' ,'n.Name as tipoDocumento', 'np.Name as presentacion')
+                            ->where(['pr.IdProcedure' => $tramiteID, 'r.IsDeleted' => false])
+                            ->groupBy('r.Id','n.Name', 'np.Name')->get();
 
         $oficinas   = DB::connection('mysql2')->table('procedureoffices as po')
                             ->join('administrativeunitbuildings as a', 'po.IdAdministrativeUnitBuilding', '=', 'a.Id' )

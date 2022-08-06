@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use stdClass;
 use Exception;
 use App\Cls_Gestor;
 use App\Cls_Resolutivo;
-use Hamcrest\Type\IsNumeric;
 use Illuminate\Http\Request;
 use App\Cls_Tramite_Servicio;
 use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
-use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use  Illuminate\Pagination\Paginator;
@@ -119,42 +115,10 @@ class GestorController extends Controller
     //Vista donde se realiza configuración del trámite
     public function configurar_tramite($tramiteID, $tramiteIDConfig){
         $tramite        = [];
-        $edificios      = [];
         $objTramite     = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
-        $horarios       = "";
-        $funcionarios   = "";
-        $telefono       = "";
-
-        foreach($arrayDetalle['horario'] as $horario){
-            $horarios.= $horario->diaNombre.": ".date("h:i a", strtotime($horario->OpeningHour))." - ".date("h:i a", strtotime($horario->ClosingHour))." <br/>";
-        }
-
-        foreach($arrayDetalle['funcionarios']as $funcionario){
-            $funcionarios .= $funcionario->Name."<br/> correo: " . $funcionario->Email. "<br/><hr>";
-        }
-
-        /* foreach($objTramite['telefonos'] as $objTelefono){
-            $telefono .= $objTelefono ." <br/>";
-        } */
-
-
-        foreach($arrayDetalle['oficinas'] as $key => $oficina){
-            $_objE = [
-                /* "id"            => $key + 1, */
-                "id"            => $oficina->Id,
-                "nombre"        => $oficina->Name,
-                "direccion"     => "Calle ".$oficina->Street." No Exterior ".$oficina->ExternalNumber." No Interior ". strtoupper($oficina->InternalNumber)." colonia ".$oficina->Colony.", ".$oficina->Municipality.", ".$oficina->State,
-                "horario"       => "</br> Horario: </br>".$horarios,
-                "latitud"       => $oficina->Latitude,
-                "longitud"      => $oficina->Longitude,
-                "responsable"   => $funcionarios,
-                "contacto_email"        => $oficina->Email,
-                "informacion_adicional" => "",
-                "contacto_telefono"     => "Télfono: ".$oficina->NumberPhone." Ext ".$oficina->Ext,
-            ];
-            array_push($edificios, $_objE);
-        }
+        $datosGenerales = $this->tramiteService->valoresDefaulTramite($arrayDetalle, $objTramite);
+        $edificios      = $datosGenerales['oficinas'];
 
         #################### Configuraciones anteriores ####################
         $tramites   = new Cls_Gestor();
@@ -188,7 +152,6 @@ class GestorController extends Controller
                 $tramite['TRAM_NENLACEOFICIAL'] = null;
             }
         }
-
 
         return view('DET_GESTOR_CONFIGURACION_TRAMITE.index',  compact('tramite', 'edificios'));
     }
@@ -331,51 +294,23 @@ class GestorController extends Controller
     //Obtener documentos necesarios del trámite
     public function consultar_documento_tramite($IntTramite)
     {
-        // $documentos = new Cls_Gestor();
-        // $documentos->IntTramite = $IntTramite;
-        // $registros = $documentos->TRAM_SP_CONSULTAR_DOCUMENTO_TRAMITE();
-        /*$options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-        //$urlDocumento = $this->host . '/api/vw_accede_tramite_documento_tram_id/' . $IntTramite;
-        $urlDocumento = $this->host . '/api/Tramite/DocumentosPorTramiteId/' . $IntTramite;
-        // $urlDocumento = $this->host . '/api/vw_accede_tramite_documento';
-        $context = stream_context_create($options);
-        $result = @file_get_contents($urlDocumento, false, $context);*/
-
         $objTramite = $this->tramiteService->getTramite($IntTramite);
         $rsp = $this->tramiteService->getDetalle($objTramite->Id);
         $lstDocumentos = [];
 
         foreach ($rsp['documentos'] as $key => $doc) {
-            $nombre_doc = "";
-
-            /*if(strlen($doc['DOCU_CDESCRIPCION']) <2){
-                $nombre_doc = $doc['OTRODOC'];
-            }else {
-                $nombre_doc = $doc['DOCU_CDESCRIPCION'] . " ". $doc['OTRODOC'];
-            }*/
             $_objD = [
-                "ACCE_NIDTRAMITEDOCUMENTO" => 1,
-                "ACCE_NIDTRAMITE" => $objTramite->Id ?? "",
-                "ACCE_NIDDOCUMENTO" => $doc->Id ?? "",
-                "ACCE_CNOMBRE" => $doc->Name ?? "",
-                "ACCE_CDESCRIPCION" => $doc->Description ?? "",
-                "ACCE_CEXTENSION" =>  'PDF',
-                "ACCE_NOBLIGATORIO" => 0,
-                "ACCE_NMULTIPLE" => 0,
+                "ACCE_NIDTRAMITEDOCUMENTO"  => 1,
+                "ACCE_NIDTRAMITE"           => $objTramite->Id ?? "",
+                "ACCE_NIDDOCUMENTO"         => $doc->Id ?? "",
+                "ACCE_CNOMBRE"              => $doc->Name ?? "",
+                "ACCE_CDESCRIPCION"         => $doc->Description ?? "",
+                "ACCE_CEXTENSION"           =>  'PDF',
+                "ACCE_NOBLIGATORIO"         => 0,
+                "ACCE_NMULTIPLE"            => 0,
             ];
             array_push($lstDocumentos, (object)$_objD);
         }
-
-        /*if (strpos($http_response_header[0], "200")) {
-            $objDocumento = json_decode($result, true);
-            //dd($objDocumento);
-            
-        }*/
-        ////////////////
         
         $response['data'] = $lstDocumentos;
         return response()->json($response);
@@ -391,9 +326,6 @@ class GestorController extends Controller
 
     //Guardar configuración de trámite
     public function save(Request $request) {
-       /*  $response = [];
-        $tram = null; */
-
         try {
             $tramite = $this->TRAM_SP_AGREGAR_TRAMITE($request);
             if ($tramite->TRAM_CTIPO == "Creación" || $tramite->TRAM_CTIPO == "Actualización") {
@@ -516,11 +448,8 @@ class GestorController extends Controller
                         $TRAM_LIST_FORMULARIO =  $seccion['CONF_LIST_FORMULARIO'];
 
                         $this->TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TramiteID);
-                        $doc_exist = array_key_exists('CONF_LIST_DOCUMENTO', $seccion);
-                        if($doc_exist){
-                            $TRAM_LIST_DOCUMENTO =  $seccion['CONF_LIST_DOCUMENTO'];
-                            $this->TRAM_AGREGAR_DOCUMENTO($TRAM_LIST_DOCUMENTO, $TramiteID);
-                        }
+                        if(isset($seccion['CONF_LIST_DOCUMENTO']))
+                            $this->TRAM_AGREGAR_DOCUMENTO($seccion['CONF_LIST_DOCUMENTO'], $TramiteID);
                     }
 
                     //Agregas edificios
@@ -586,7 +515,6 @@ class GestorController extends Controller
     private function TRAM_AGREGAR_DOCUMENTO($TRAM_LIST_DOCUMENTO, $TRAM_NIDTRAMITE)
     {
         try {
-
             //Eliminas secciones del trámite
             $gestor = new Cls_Gestor();
             $gestor->TRAM_SP_ELIMINAR_DOCUMENTO($TRAM_NIDTRAMITE);
@@ -595,26 +523,20 @@ class GestorController extends Controller
             $gestor->TRAM_SP_ELIMINAR_EDIFICIO($TRAM_NIDTRAMITE);
             $gestor->TRAM_SP_ELIMINAR_RESOLUTIVO($TRAM_NIDTRAMITE);
             $gestor->TRAM_SP_ELIMINAR_CONCEPTO($TRAM_NIDTRAMITE);
-
-            if(count($TRAM_LIST_DOCUMENTO) > 0){
-                for ($i = 0; $i < count($TRAM_LIST_DOCUMENTO); $i++) {
-
-                    $TRAM_LIST_DOCUMENTO[$i]['TRAD_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
-
-                    $gestor->TRAM_SP_AGREGAR_DOCUMENTO(
-                        $TRAM_LIST_DOCUMENTO[$i]['TRAD_NIDTRAMITE'],
-                        $TRAM_LIST_DOCUMENTO[$i]['TRAD_NIDDOCUMENTO'],
-                        $TRAM_LIST_DOCUMENTO[$i]['TRAD_CNOMBRE'],
-                        $TRAM_LIST_DOCUMENTO[$i]['TRAD_CDESCRIPCION'],
-                        $TRAM_LIST_DOCUMENTO[$i]['TRAD_CEXTENSION'],
-                        $TRAM_LIST_DOCUMENTO[$i]['TRAD_NOBLIGATORIO'],
-                        $TRAM_LIST_DOCUMENTO[$i]['TRAD_NMULTIPLE']
-                    );
-                }
+            
+            foreach ($TRAM_LIST_DOCUMENTO as  $documentos) {
+                $gestor->TRAM_SP_AGREGAR_DOCUMENTO(
+                    $TRAM_NIDTRAMITE,
+                    $documentos['TRAD_NIDDOCUMENTO'],
+                    $documentos['TRAD_CNOMBRE'],
+                    $documentos['TRAD_CDESCRIPCION'],
+                    $documentos['TRAD_CEXTENSION'],
+                    $documentos['TRAD_NOBLIGATORIO'],
+                    $documentos['TRAD_NMULTIPLE']
+                );
             }
-
-        } catch (\Throwable $th) {
-
+        } catch (EXception $ex) { dd($ex);
+            throw $ex;
         }
     }
 
