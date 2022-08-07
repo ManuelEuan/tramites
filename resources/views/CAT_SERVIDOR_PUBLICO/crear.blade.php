@@ -450,7 +450,18 @@
         function TRAM_AJX_TRAMITES(id){  
             console.log(id.toString())          
             //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
-            $.get('/general/obtenerTramites/' + id.toString(), function (data) {
+            // $.get('/general/obtenerTramites/' + id.toString(), function (data) {
+
+                unidad = $.ajax({
+                //Estos llaman al nuevo remapeo del retys
+                url: "/servidorespublicos/getTramites",
+                // url:"/general/unidades_administrativas",
+                    type: "get",
+                    data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
+
+                });
+            
+                unidad.done(function (data, textStatus, jqXHR){
 
                 var html = '<select id="cmbTramites" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
@@ -483,8 +494,8 @@
             console.log(id.toString())
             unidad = $.ajax({
                 //Estos llaman al nuevo remapeo del retys
-                //url: "/servidorespublicos/getUnity",
-                url:"/general/unidades_administrativas",
+                url: "/servidorespublicos/getUnity",
+                // url:"/general/unidades_administrativas",
                 type: "get",
                 data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
 
@@ -494,7 +505,7 @@
             unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbUnidad_administrativa" class="selectpicker form-control"  data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_UNIDAD +'">' + value.DESCRIPCION + '</option>';
+                    html += '<option value="'+ value.ID_CENTRO +'">' + value.DESCRIPCION + '</option>';
                     // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
                 });
                 html += '</select>';
@@ -531,8 +542,8 @@
 
         function TRAM_AJX_DEPENDENCIAS(){
             //Estos llaman al nuevo remapeo del retys
-            //$.get('/servidorespublicos/getDep', function (data) {
-                $.get('/general/dependencias', function (data) {
+            $.get('/servidorespublicos/getDep', function (data) {
+                // $.get('/general/dependencias', function (data) {
 
                 var html = '<select id="cmbDependencias" class="selectpicker form-control"  data-live-search="true" multiple>';
 
@@ -567,10 +578,18 @@
         TRAM_AJX_DEPENDENCIAS();
 
 
-        function TRAM_AJX_EDIFICIOS(tramites = []){
-            var myJSON = JSON.stringify(tramites);
-            console.log(myJSON)
-            $.get('/general/edificios?tramite_id='+ myJSON, function (data) {
+        function TRAM_AJX_EDIFICIOS(id){
+            // var myJSON = JSON.stringify(tramites);
+            unidad = $.ajax({
+                //Estos llaman al nuevo remapeo del retys
+                url: "/servidorespublicos/getEdificios",
+                // url:"/general/unidades_administrativas",
+                    type: "get",
+                    data: {"tipo":"multiple","tramite_id": id.toString() ?? '0' }
+
+                });
+            
+                unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbEdificios" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
                     html += '<option value="'+ value.ID_EDIFICIO +'">' + value.EDIFICIO + '</option>';
@@ -600,7 +619,20 @@
         //acceso
         function TRAM_AJX_TRAMITES_ACCESO(id){
             //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
-                $.get('/general/obtenerTramites?=unidad_id' + id.toString(), function (data) {
+                console.log(id.toString())          
+            //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
+            // $.get('/general/obtenerTramites/' + id.toString(), function (data) {
+
+                unidad = $.ajax({
+                //Estos llaman al nuevo remapeo del retys
+                url: "/servidorespublicos/getTramites",
+                // url:"/general/unidades_administrativas",
+                    type: "get",
+                    data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
+
+                });
+            
+                unidad.done(function (data, textStatus, jqXHR) {
 
                 var html = '<select id="cmbTramites_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
@@ -631,10 +663,20 @@
         
         function TRAM_AJX_UNIDAD_ADMINISTRATIVA_ACCESO(id){
 
-            $.get('/general/unidades_administrativas?tipo=multiple&dependencia_id=' + id.toString(), function (data) {
+            unidad = $.ajax({
+                //Estos llaman al nuevo remapeo del retys
+                url: "/servidorespublicos/getUnity",
+                // url:"/general/unidades_administrativas",
+                type: "get",
+                data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
+
+            });
+        
+            // Callback handler that will be called on success
+            unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbUnidad_administrativa_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_UNIDAD +'">' + value.DESCRIPCION + '</option>';
+                    html += '<option value="'+ value.ID_CENTRO +'">' + value.DESCRIPCION + '</option>';
                     // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
                 });
                 html += '</select>';
@@ -660,7 +702,9 @@
         }
 
         function TRAM_AJX_DEPENDENCIAS_ACCESO(selected){
-            $.get('/general/dependencias', function (data) {
+            // $.get('/general/dependencias', function (data) {
+            $.get('/servidorespublicos/getDep', function (data) {
+
                 var data_max = "";
                 if(StrRol == "ENLOF" || StrRol == "ADMCT"){
                     data_max = 'data-max-options="1"';
@@ -700,9 +744,17 @@
             });
         }
 
-        function TRAM_AJX_EDIFICIOS_ACCESO(tramites = []){
-            var myJSON = JSON.stringify(tramites);
-            $.get('/general/edificios?tramite_id='+ myJSON, function (data) {
+        function TRAM_AJX_EDIFICIOS_ACCESO(id){
+            unidad = $.ajax({
+                //Estos llaman al nuevo remapeo del retys
+                url: "/servidorespublicos/getEdificios",
+                // url:"/general/unidades_administrativas",
+                    type: "get",
+                    data: {"tipo":"multiple","tramite_id": id.toString() ?? '0' }
+
+                });
+            
+                unidad.done(function (data, textStatus, jqXHR) {
                 
                 var html = '<select id="cmbEdificios_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {

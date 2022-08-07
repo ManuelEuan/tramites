@@ -52,12 +52,38 @@ class ServidoresService
 
         $registros = DB::connection('mysql2')->table('procedures')
             ->select()
-            ->where('ProcedureState', 4)
+            ->where('ProcedureState', 0)
             ->get();
 
         foreach  ($unidades as $unidad) {
             foreach ($registros as $registro) {
                 if ($unidad == $registro->IdAdministrativeUnit)
+                    array_push($final, $registro);
+            }
+        }
+
+        if(isset($request->tipo) && $request->tipo == 'all')
+            return response()->json($registros, 200);
+
+        return $final;
+    }
+    public function getEdificios($request){
+        $final      = [];
+        $unidades   = explode(",", $request->tramite_id);
+
+        $registros = DB::connection('mysql2')->table('administrativeunitbuildings')
+            ->select()
+            ->join('administrativeunitbuildingsunits', 'administrativeunitbuildings.Id', '=', 'administrativeunitbuildingsunits.AdministrativeUnitBuildingId')
+            ->where('administrativeunitbuildingsunits.AdministrativeUnitId', $unidades )
+            ->get();
+
+            // if(!is_null($unidades) && !isset($request->tipo)){
+
+            // }
+
+        foreach  ($unidades as $unidad) {
+            foreach ($registros as $registro) {
+                if ($unidad == $registro->AdministrativeUnitId)
                     array_push($final, $registro);
             }
         }

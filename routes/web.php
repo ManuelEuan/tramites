@@ -218,6 +218,7 @@ Route::group(['prefix' => 'servidorespublicos'], function () {
     Route::get('/getDep',array('uses' => 'ServidorPublicoController@getDep'));
     Route::get('/getUnity',array('uses' => 'ServidorPublicoController@getUnity'));
     Route::get('/getTramites',array('uses' => 'ServidorPublicoController@getTramites'));
+    Route::get('/getEdificios',array('uses' => 'ServidorPublicoController@getEdificios'));
 });
 
 Route::get('/edificios', array('uses' => 'DatosDurosController@edificios'));

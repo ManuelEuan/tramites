@@ -279,7 +279,7 @@ class ServidorPublicoController extends Controller
 
         foreach ($objDep as $key => $value) {
             array_push($dependencies, [
-                    'ID_CENTRO' => $value->iId,
+                    'ID_CENTRO' => $value->Id,
                     '0' => $value->iId,
                     'CLAVE' => $value->Acronym,
                     '1' => $value->iId,
@@ -303,7 +303,7 @@ class ServidorPublicoController extends Controller
 
         foreach ($objUnidad as $key => $value) {
             array_push($unidades, [
-                    'ID_CENTRO' => $value->iId,
+                    'ID_CENTRO' => $value->Id,
                     '0' => $value->iId,
                     'CLAVE' => $value->Acronym,
                     '1' => $value->iId,
@@ -324,25 +324,41 @@ class ServidorPublicoController extends Controller
 
         $objUnidad    = $this->servidoresService->getTramites($request);
 
-        /*$unidades = array();
+        $unidades = array();
 
         foreach ($objUnidad as $key => $value) {
             array_push($unidades, [
-                    'ID_CENTRO' => $value->iId,
-                    '0' => $value->iId,
-                    'CLAVE' => $value->Acronym,
-                    '1' => $value->iId,
-                    'DESCRIPCION' => $value->Description,
-                    '2' => $value->Name,
-                    'TIPO' => $value->iId,
-                    '3' => $value->iId,
+                    'ID_TRAM' => $value->IdAdministrativeUnit,
+                    '0' => $value->Id,
+                    'TRAMITE' => $value->Key,
+                    '1' => $value->Id,
                 ]
             );
 
-        }*/
+        }
         
 
-        return count($objUnidad);
+        return $unidades;
+    }
+    public function getEdificios(Request $request){
+
+        $objUnidad    = $this->servidoresService->getEdificios($request);
+
+        $unidades = array();
+
+        foreach ($objUnidad as $key => $value) {
+            array_push($unidades, [
+                    'ID_EDIFICIO' => $value->Id,
+                    '0' => $value->Id,
+                    'EDIFICIO' => $value->Name,
+                    '1' => $value->Id,
+                ]
+            );
+
+        }
+        
+
+        return $unidades;
     }
 
     public function detalle($id){
