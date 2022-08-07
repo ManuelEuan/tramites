@@ -204,6 +204,7 @@ class FormularioController extends Controller
            
             $array = json_decode($request->preguntas);
            
+                $res = null;
             foreach ($array as $datos) { 
                 $valP   = strpos($datos->name,  'pregunta_');
                 $valTR  = strpos($datos->name,  'tipoRespuesta_');
@@ -211,20 +212,55 @@ class FormularioController extends Controller
                 $valTE  = strpos($datos->name,  'select_');
                 $valCh  = strpos($datos->name,  'bloqueo_');
                 $valEO  = strpos($datos->name,  'opcionEspecial_');
+                $valEO  = strpos($datos->name,  'opcionEspecial_');
+                $valRes  = strpos($datos->name,  'update_resolutivo_');
+                $valResol  = strpos($datos->name,  'resolutivo_');
                 
+                $resolutivo = $datos->id;
+                // if($valRes !== FALSE) {
+                //     $res = $datos->value;
+                    
+                // }
+                
+                // if($res ==null){
+                    if($valResol !== FALSE) {
+
+                        if($resolutivo == 0){
+                            $res =$datos->value;
+
+                        }else{
+
+                            $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->select('*')->first('FORM_NID');
+                            Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->update(['FORM_BRESOLUTIVO' => $datos->value]);
+                        }
+                        
+                    }else{
+                        $res =$datos->value;
+
+                    }
+                // }
+                // return response()->json($resolutivo);
                 if($valP !== FALSE) {
+                    // $resolutivo =$datos->id;
                     if($datos->id == 0){
                         $pregunta = new Cls_Formulario_Pregunta();
                         $pregunta->FORM_NFORMULARIOID   = $request->formulario_id;
                         $pregunta->FORM_NSECCIONID      = $request->seccion_id;
                         $pregunta->FORM_CPREGUNTA       = $datos->value;
+                        $pregunta->FORM_BRESOLUTIVO       = $res;
                         $pregunta->save();
                     }
                     else{
+                        // $resps = 0;
+                        // if($valResol !== FALSE) {
+                        //     $resps = $datos->value;
+                        // }
                         $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->select('*')->first('FORM_NID');
                         Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->update(['FORM_CPREGUNTA' => $datos->value]);
                     }
                 }
+                
+              
     
                 if($valTR !== FALSE)
                     $tiRes = $datos->value;

@@ -872,6 +872,13 @@
                                         <option value= 'especial'>Especial</option>
                                     </select>
                                 </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="resolutivo_${pregunda_id}">Tipo respuesta</label>
+                                    <select name="resolutivo_${pregunda_id}" id="resolutivo_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                        <option value= '1' selected>SI</option>
+                                        <option value= '0'>NO</option>
+                                    </select>
+                                </div>
 
                                 <span  style="margin-top: 1%;">
                                     <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${pregunda_id}')">
@@ -890,15 +897,17 @@
                         response.forEach(element => {
                             let tipo_respuesta  =  element.respuestas.length > 0 ? element.respuestas[0].FORM_CTIPORESPUESTA : "abierta";
                             let nom_pregunta    = element.FORM_CPREGUNTA;
+                            let resol    = element.FORM_BRESOLUTIVO;
                             
                             let preguntas = `<div class="form-row contenedorPregunta" id="div_pregunta_update${element.FORM_NID}">
-                                <div class=" col-md-7 mb-3">
+                                <div class=" col-md-5 mb-3">
                                     <label for="update_pregunta_${element.FORM_NID}">Pregunta</label>
                                     <div class="input-group">
                                         <input type="text" minlength="2" maxlength="100" value='${nom_pregunta}' class="form-control" name="update_pregunta_${element.FORM_NID}" id="pregunta_${element.FORM_NID}" placeholder="Pregunta" aria-describedby="inputGroupPrepend2" required>
                                     </div>
                                     <em class="text-danger" id="error_${element.FORM_NID}"></em>
                                 </div>
+                                
                                 <div class="col-md-4 mb-3">
                                     <label for="tipoRespuesta_update_${element.FORM_NID}">Tipo respuesta</label>
                                     <select name="tipoRespuesta_update_${element.FORM_NID}" id="tipoRespuesta_update_${element.FORM_NID}" class="form-control" onchange="cambiaTipoRespuesta(this);">
@@ -908,6 +917,16 @@
                                         <option value= 'enriquecido' ${tipo_respuesta   == 'enriquecido' ? 'selected': ''}>Texto enriquecido</option>
                                         <option value= 'especial'    ${tipo_respuesta   == 'especial' ? 'selected': ''}>Especial</option>
                                     </select>
+                                </div>
+                                
+                                <div class=" col-md-3 mb-3">
+                                    <label for="update_resolutivo_${element.FORM_NID}">Pregunta</label>
+                                    <select name="update_resolutivo_${element.FORM_NID}" id="update_resolutivo_${element.FORM_NID}" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                        <option value= '1'     ${resol   == 1 ? 'selected': ''}>SI</option>
+                                        <option value= '0'       ${resol   == 0 ? 'selected': ''}>NO</option>
+                                        
+                                    </select>
+                                    <em class="text-danger" id="error_${element.FORM_NID}"></em>
                                 </div>
 
                                 <span  style="margin-top: 1%;">
@@ -1468,6 +1487,11 @@
                         array = name.split("update_pregunta_");
                         completo[i].id = array[1];
                         completo[i].name = "pregunta_" + array[1];
+                    }
+                    if(name.includes("update_resolutivo_")){
+                        array = name.split("update_resolutivo_");
+                        completo[i].id = array[1];
+                        completo[i].name = "resolutivo_" + array[1];
                     }
                     else if(name.includes("update_respuesta")){
                         array = name.split("_");
