@@ -1166,7 +1166,6 @@
                 url: "/tramite_servicio_cemr/obtener_tramite/" + id + "",
                 type: "GET",
                 success: function(data) {
-
                     var tramite = data.tramite[0];
                     objTramite = data.tramite[0];
                     list_secciones_estatus = data.configuracion.secciones_estatus;
@@ -1431,7 +1430,7 @@
                             ruta: value.TRAD_CRUTADOC === null ? "" : value.TRAD_CRUTADOC,
                             nombre: value.TRAD_CNOMBRE,
                             extension: value.TRAD_CEXTENSION,
-                            vigencia: ""
+                            vigencia: value.vigencia ?? "",
                         };
 
                         list_documentos.push(documento_add);
@@ -1486,7 +1485,12 @@
                         itemDocumento += '</div>'; //col-2
                         itemDocumento += '</div>' + //row
                             '</div>'; //col-md-5
-                        itemDocumento += '<div class="col-2" id="divVigencia'+ value.TRAD_NIDTRAMITEDOCUMENTO +'"></div>';
+                        if(documento_add.vigencia != ''){
+                            itemDocumento += '<div class="col-2" id="divVigencia'+ value.TRAD_NIDTRAMITEDOCUMENTO +'"><input type="date" id="vigencia'+id+'" name="fechaV" value="'+documento_add.vigencia+'" disabled></div>';
+                        }else{
+                            itemDocumento += '<div class="col-2" id="divVigencia'+ value.TRAD_NIDTRAMITEDOCUMENTO +'"></div>';
+                        }
+                        
                         itemDocumento += '<div class="col-md-3 validatePregunta" style="display: block;">' +
                             '<div class="form-check form-check-inline">' +
                             '<input ' + checkAceptado + ' onchange="TRAM_FN_ACEPTAR_DOCUMENTO(' + value.TRAD_NIDTRAMITEDOCUMENTO + ');" class="form-check-input" type="radio" name="radio_documento_' + value.TRAD_NIDTRAMITEDOCUMENTO + '" id="radio_aceptar_d_' + value.TRAD_NIDTRAMITEDOCUMENTO + '" value="2">' +
@@ -1598,7 +1602,7 @@
     });
 
     function vigencia(id, event){
-
+        
         if(event.checked){
             $("#divVigencia"+id).html('<input type="date" id="vigencia'+id+'" name="fechaV" value="2022-08-08" >');
             var documento = list_documentos.find(x => x.documento_id === parseInt(id));

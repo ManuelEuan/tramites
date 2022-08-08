@@ -332,6 +332,9 @@ class TramitesController extends Controller
                     $doc->TRAD_CEXTENSION = $_doc['USDO_CEXTENSION'];
                     $doc->TRAD_CRUTADOC = $_doc['USDO_CRUTADOC'];
                     $doc->TRAD_NPESO = $_doc['USDO_NPESO'];
+                    $doc->idDocExpediente = $_doc['idDocExpediente'];
+                    $consulartVigencia = Cls_Seguimiento_Servidor_Publico::getVigencia($doc->idDocExpediente);
+                    $doc->vigencia = $consulartVigencia->vigencia ?? "";
                     break;
                 }
             }
@@ -435,6 +438,13 @@ class TramitesController extends Controller
 
             Cls_Seguimiento_Servidor_Publico::TRAM_ACEPTAR_SECCION_REVISION_DOCUMENTOS($request->CONF_NIDUSUARIOTRAMITE, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO);
             $this->enviar_correo_aprobacion($request->CONF_NIDUSUARIOTRAMITE);
+            if (count($request->CONF_DOCUMENTOS)) {
+
+                foreach ($request->CONF_DOCUMENTOS as $documento) {
+                    //Aqui se hace la busqueda.
+                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($documento['documento_id'], $documento['vigencia']);
+                }
+            }
 
             $response = [
                 "estatus" => "success",
@@ -477,7 +487,7 @@ class TramitesController extends Controller
 
                     Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
                     //Aqui se hace la busqueda.
-                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($documento['documento_id'], $documento['vigencia']);
+                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario(5, $documento['vigencia']);
                 }
             }
 

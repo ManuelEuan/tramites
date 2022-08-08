@@ -348,6 +348,14 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         return $affected;
     }
 
+    static function getVigencia($idDoc){
+        $sql = DB::table('tram_mst_documentosbase')
+                ->select('VIGENCIA_FIN as vigencia')
+                ->where('id', $idDoc)
+                ->first();
+        return $sql;
+    }
+
     /********* Formulario ******** */
 
     //Aprobar sección de formulario
