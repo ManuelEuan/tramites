@@ -397,6 +397,8 @@ class TramitesController extends Controller
                     foreach ($request->CONF_DOCUMENTOS as $documento) {
     
                         Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
+                        //Aqui se agrega la vigencia
+                        Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($documento['documento_id'], $documento['vigencia']);
                     }
                 }
             }
@@ -474,6 +476,8 @@ class TramitesController extends Controller
                 foreach ($request->CONF_DOCUMENTOS as $documento) {
 
                     Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
+                    //Aqui se hace la busqueda.
+                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($documento['documento_id'], $documento['vigencia']);
                 }
             }
 

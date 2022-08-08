@@ -1430,7 +1430,8 @@
                             observaciones: value.TRAD_COBSERVACION === null ? "" : value.TRAD_COBSERVACION,
                             ruta: value.TRAD_CRUTADOC === null ? "" : value.TRAD_CRUTADOC,
                             nombre: value.TRAD_CNOMBRE,
-                            extension: value.TRAD_CEXTENSION
+                            extension: value.TRAD_CEXTENSION,
+                            vigencia: ""
                         };
 
                         list_documentos.push(documento_add);
@@ -1466,24 +1467,26 @@
                         var rutaDocumento = value.TRAD_CRUTADOC !== null && value.TRAD_CRUTADOC !== "" ? value.TRAD_CRUTADOC : "";
 
                         itemDocumento += '<div class="row">' +
-                            '<div class="col-md-5">' +
+                            '<div class="col-md-6">' +
                             '<div class="row">' +
                             '<div class="col-2">' +
                             '<img src="' + icon + '" width="25" height="25">' +
                             '</div>' +
-                            '<div class="col-8">' +
+                            '<div class="col-4">' +
                             '<p><label class="titulo_pequeno">' + value.TRAD_CNOMBRE + '</label></p>' +
                             '</div>';
 
-                        itemDocumento += '<div class="col-2">';
+                        itemDocumento += '<div class="col-4">';
                         if (value.existe > 0 && rutaDocumento != "") {
                             itemDocumento += '<span style="padding-right: 15px;font-size: 20px;"><i title="Ver documento" style="cursor:pointer;" onclick="TRAM_FN_VER_DOCUMENTO(' + value.TRAD_NIDTRAMITEDOCUMENTO + ')" class="fas fa-eye"></i></span>' +
-                                "<a href='{{ asset('') }}" + rutaDocumento + "' style='padding-right: 15px;font-size: 20px;' download='" + documento_add.nombre + "'><i title='Descargar documento' class='fas fa-download'></i></a>";
+                                "<a href='{{ asset('') }}" + rutaDocumento + "' style='padding-right: 15px;font-size: 20px;' download='" + documento_add.nombre + "'><i title='Descargar documento' class='fas fa-download'></i></a> ";
+                            itemDocumento += '<label class="divV"><input class="vigencia" id="vig'+value.TRAD_NIDTRAMITEDOCUMENTO+'" onchange="vigencia('+ value.TRAD_NIDTRAMITEDOCUMENTO +', this);" type="checkbox" name="vigencia">¿Vigencia?</label>';
+                            
                         }
                         itemDocumento += '</div>'; //col-2
                         itemDocumento += '</div>' + //row
                             '</div>'; //col-md-5
-
+                        itemDocumento += '<div class="col-2" id="divVigencia'+ value.TRAD_NIDTRAMITEDOCUMENTO +'"></div>';
                         itemDocumento += '<div class="col-md-3 validatePregunta" style="display: block;">' +
                             '<div class="form-check form-check-inline">' +
                             '<input ' + checkAceptado + ' onchange="TRAM_FN_ACEPTAR_DOCUMENTO(' + value.TRAD_NIDTRAMITEDOCUMENTO + ');" class="form-check-input" type="radio" name="radio_documento_' + value.TRAD_NIDTRAMITEDOCUMENTO + '" id="radio_aceptar_d_' + value.TRAD_NIDTRAMITEDOCUMENTO + '" value="2">' +
@@ -1499,14 +1502,18 @@
                             '</div>';
 
                         itemDocumento += ' </div>'; //row
+                        
                     });
 
                     itemDocumento += '</div>'; //card-body
 
                     divSectionContainer_documento.append(itemDocumento);
                     ///////////////////////////////////7
-
+                    /*$('.vigencia').change(function() {
+                        console.log("Clickando")  
+                    });*/
                     $(".validatePregunta").hide();
+                    $(".divV").hide();
                     $("#txtRevisionInfo").hide();
                     setTimeout(function() {
                         $('#loading_').hide();
@@ -1589,6 +1596,19 @@
             });
         }, 1000);
     });
+
+    function vigencia(id, event){
+
+        if(event.checked){
+            $("#divVigencia"+id).html('<input type="date" id="vigencia'+id+'" name="fechaV" value="2022-08-08" >');
+            var documento = list_documentos.find(x => x.documento_id === parseInt(id));
+            var vigencia = $("#vigencia"+id).val();
+            documento.vigencia = vigencia;
+        }else{
+            $("#divVigencia"+id).html("");
+        }
+       
+    }
 
     function TRAM_FN_VER_DOCUMENTO(id) {
 
@@ -1773,6 +1793,7 @@
                 $(".validatePregunta").show();
                 $("#txtRevisionInfo").show();
                 $("#areaNotificacionRevision").show();
+                $(".divV").show();
             } else {
                 $(".validatePregunta").hide();
                 $("#txtRevisionInfo").hide();
@@ -2120,6 +2141,7 @@
                 $("#areaNotificacionRevision").show();
                 $(".validatePregunta").show();
                 $("#txtRevisionInfo").show();
+                $(".divV").show();
             } else {
                 $("#areaNotificacionRevision").hide();
                 $(".validatePregunta").hide();

@@ -341,6 +341,13 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         }
     }
 
+    static function ActualizarDocsUsuario($docId, $vigencia){
+        $affected = DB::table('tram_mst_documentosbase')
+              ->where('id', $docId)
+              ->update(['VIGENCIA_FIN' => $vigencia]);
+        return $affected;
+    }
+
     /********* Formulario ******** */
 
     //Aprobar sección de formulario
