@@ -217,12 +217,7 @@ class FormularioController extends Controller
                 $valResol  = strpos($datos->name,  'resolutivo_');
                 
                 $resolutivo = $datos->id;
-                // if($valRes !== FALSE) {
-                //     $res = $datos->value;
-                    
-                // }
-                
-                // if($res ==null){
+               
                     if($valResol !== FALSE) {
 
                         if($resolutivo == 0){
@@ -234,27 +229,21 @@ class FormularioController extends Controller
                             Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->update(['FORM_BRESOLUTIVO' => $datos->value]);
                         }
                         
-                    }else{
-                        $res =$datos->value;
-
                     }
                 // }
-                // return response()->json($resolutivo);
                 if($valP !== FALSE) {
                     // $resolutivo =$datos->id;
                     if($datos->id == 0){
+                       
                         $pregunta = new Cls_Formulario_Pregunta();
                         $pregunta->FORM_NFORMULARIOID   = $request->formulario_id;
                         $pregunta->FORM_NSECCIONID      = $request->seccion_id;
                         $pregunta->FORM_CPREGUNTA       = $datos->value;
-                        $pregunta->FORM_BRESOLUTIVO       = $res;
+                        $pregunta->FORM_BRESOLUTIVO       = $request->resolutivo;
                         $pregunta->save();
                     }
                     else{
-                        // $resps = 0;
-                        // if($valResol !== FALSE) {
-                        //     $resps = $datos->value;
-                        // }
+                       
                         $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->select('*')->first('FORM_NID');
                         Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->update(['FORM_CPREGUNTA' => $datos->value]);
                     }
