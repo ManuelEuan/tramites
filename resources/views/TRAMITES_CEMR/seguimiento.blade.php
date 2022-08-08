@@ -1485,11 +1485,7 @@
                         itemDocumento += '</div>'; //col-2
                         itemDocumento += '</div>' + //row
                             '</div>'; //col-md-5
-                        if(documento_add.vigencia != ''){
-                            itemDocumento += '<div class="col-2" id="divVigencia'+ value.TRAD_NIDTRAMITEDOCUMENTO +'"><input type="date" id="vigencia'+id+'" name="fechaV" value="'+documento_add.vigencia+'" disabled></div>';
-                        }else{
-                            itemDocumento += '<div class="col-2" id="divVigencia'+ value.TRAD_NIDTRAMITEDOCUMENTO +'"></div>';
-                        }
+                        itemDocumento += '<div class="col-2" id="divVigencia'+ value.TRAD_NIDTRAMITEDOCUMENTO +'"></div>';
                         
                         itemDocumento += '<div class="col-md-3 validatePregunta" style="display: block;">' +
                             '<div class="form-check form-check-inline">' +
@@ -1605,9 +1601,16 @@
         
         if(event.checked){
             $("#divVigencia"+id).html('<input type="date" id="vigencia'+id+'" name="fechaV" value="2022-08-08" >');
-            var documento = list_documentos.find(x => x.documento_id === parseInt(id));
-            var vigencia = $("#vigencia"+id).val();
-            documento.vigencia = vigencia;
+            var fecha = '';
+            $('#vigencia'+id).change(function() {
+                var date = $(this).val();
+                fecha = date;
+                console.log(fecha, 'change')
+                var documento = list_documentos.find(x => x.documento_id === parseInt(id));
+                //var vigencia = $("#vigencia"+id).val();
+                documento.vigencia = fecha;
+            });
+            
         }else{
             $("#divVigencia"+id).html("");
         }

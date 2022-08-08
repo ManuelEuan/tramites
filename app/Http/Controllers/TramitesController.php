@@ -401,7 +401,8 @@ class TramitesController extends Controller
     
                         Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
                         //Aqui se agrega la vigencia
-                        Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($documento['documento_id'], $documento['vigencia']);
+                        $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
+                        Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
                     }
                 }
             }
@@ -442,7 +443,8 @@ class TramitesController extends Controller
 
                 foreach ($request->CONF_DOCUMENTOS as $documento) {
                     //Aqui se hace la busqueda.
-                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($documento['documento_id'], $documento['vigencia']);
+                    $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
+                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
                 }
             }
 
@@ -487,7 +489,8 @@ class TramitesController extends Controller
 
                     Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
                     //Aqui se hace la busqueda.
-                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario(5, $documento['vigencia']);
+                    $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
+                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
                 }
             }
 

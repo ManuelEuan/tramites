@@ -356,6 +356,14 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         return $sql;
     }
 
+    static function getIdDocExp($idDoc){
+        $sql = DB::table('tram_mdv_usuariordocumento')
+                ->select('idDocExpediente as id')
+                ->where('USDO_NIDTRAMITEDOCUMENTO', $idDoc)
+                ->first();
+        return $sql;
+    }
+
     /********* Formulario ******** */
 
     //Aprobar sección de formulario
