@@ -1419,12 +1419,12 @@ class TramiteServicioController extends Controller
         $IntSize = $File->getSize();
         $StrExtension = $File->getClientOriginalExtension();
         $StrName = rand() . '.' . $StrExtension;
-        
+       
         ############### Esta se utiliza en una carpeta diferente por configuracion del server ##########
         $public = public_path();
         $string = explode('/', $public, -2);
         $url    = implode("/", $string);
-        $File->move($url.'files/documentos/', $StrName);
+        $File->move($url.'/public/files/documentos/', $StrName);
         ############### Esta se utiliza en una carpeta diferente por configuracion del server ##########
 
         /* $File->move(public_path('files/documentos/'), $StrName); */
