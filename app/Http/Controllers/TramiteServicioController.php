@@ -43,7 +43,7 @@ class TramiteServicioController extends Controller
      * Construct Gestor
      */
     public function __construct() {
-        $this->middleware('auth');
+        /* $this->middleware('auth'); */
         $this->tramiteService   = new TramiteService();
         $this->gestorService    = new GestorService();
     }
@@ -1419,15 +1419,22 @@ class TramiteServicioController extends Controller
         $IntSize = $File->getSize();
         $StrExtension = $File->getClientOriginalExtension();
         $StrName = rand() . '.' . $StrExtension;
-        $File->move(public_path('files/documentos/'), $StrName);
+        
+        ############### Esta se utiliza en una carpeta diferente por configuracion del server ##########
+        $public = public_path();
+        $string = explode('/', $public, -2);
+        $url    = implode("/", $string);
+        $File->move($url.'files/documentos/', $StrName);
+        ############### Esta se utiliza en una carpeta diferente por configuracion del server ##########
 
+        /* $File->move(public_path('files/documentos/'), $StrName); */
         return response()->json([
             'message'   => 'correctamente',
-            'path' => 'files/documentos/' . $StrName,
+            'path'      => 'files/documentos/' . $StrName,
             'extension' => $StrExtension,
-            'size' => $IntSize,
-            'typename' => $DocType,
-            'status'  => 'success'
+            'size'      => $IntSize,
+            'typename'  => $DocType,
+            'status'    => 'success'
         ]);
     }
 
