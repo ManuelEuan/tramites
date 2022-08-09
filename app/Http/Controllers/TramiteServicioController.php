@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Cls_Bitacora;
 use App\Cls_Usuario_Tramite;
 use Illuminate\Http\Request;
