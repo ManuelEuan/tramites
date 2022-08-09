@@ -270,17 +270,20 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                 SELECT 
                 tr.RESO_NID,
                 tut.USTR_NIDUSUARIOTRAMITE,
+                tt.TRAM_NIDTRAMITE,
                 tr.RESO_NIDRESOLUTIVO,
                 tr.RESO_CNOMBRE,
                 tfp.FORM_NSECCIONID,
                 tfp.FORM_CPREGUNTA,
+                tur.USRE_NIDUSUARIORESP,
                 tur.USRE_CRESPUESTA,
                 trm.TRAM_CNOMBRECAMPO
                 FROM tram_mdv_usuariorespuestas tur
                 INNER JOIN tram_form_pregunta tfp ON tfp.FORM_NID = tur.USRE_NIDPREGUNTA
                 INNER JOIN tram_mst_resolutivo_mapeo trm ON tur.USRE_NIDPREGUNTA = trm.TRAM_NIDPRGUNTA
                 INNER JOIN tram_mdv_usuariotramite tut ON tut.USTR_NIDUSUARIOTRAMITE = tur.USRE_NIDUSUARIOTRAMITE
-                INNER JOIN tram_mst_resolutivo tr ON tr.RESO_NID = trm.TRAM_RESODOCU_NID
+                INNER JOIN tram_mst_tramite tt ON tut.USTR_NIDTRAMITE = tt.TRAM_NIDTRAMITE
+                INNER JOIN tram_mst_resolutivo tr ON tr.RESO_NIDTRAMITE = tt.TRAM_NIDTRAMITE
                 WHERE tr.RESO_NID = ? AND tut.USTR_NIDUSUARIOTRAMITE = ?',
                 array($NIDRESOLUTIVO, $NIDUSUARIOTRAMITE)
             );
@@ -380,26 +383,29 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         }
     }
 
-    static function ActualizarDocsUsuario($docId, $vigencia){
+    static function ActualizarDocsUsuario($docId, $vigencia)
+    {
         $affected = DB::table('tram_mst_documentosbase')
-              ->where('id', $docId)
-              ->update(['VIGENCIA_FIN' => $vigencia]);
+            ->where('id', $docId)
+            ->update(['VIGENCIA_FIN' => $vigencia]);
         return $affected;
     }
 
-    static function getVigencia($idDoc){
+    static function getVigencia($idDoc)
+    {
         $sql = DB::table('tram_mst_documentosbase')
-                ->select('VIGENCIA_FIN as vigencia')
-                ->where('id', $idDoc)
-                ->first();
+            ->select('VIGENCIA_FIN as vigencia')
+            ->where('id', $idDoc)
+            ->first();
         return $sql;
     }
 
-    static function getIdDocExp($idDoc){
+    static function getIdDocExp($idDoc)
+    {
         $sql = DB::table('tram_mdv_usuariordocumento')
-                ->select('idDocExpediente as id')
-                ->where('USDO_NIDTRAMITEDOCUMENTO', $idDoc)
-                ->first();
+            ->select('idDocExpediente as id')
+            ->where('USDO_NIDTRAMITEDOCUMENTO', $idDoc)
+            ->first();
         return $sql;
     }
 
