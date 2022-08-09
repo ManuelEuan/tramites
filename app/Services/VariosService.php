@@ -3,9 +3,10 @@
 namespace App\Services;
 
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
-class Varios {
+class VariosService {
     /**
      * Retorna el QR en base a la leyenda indicada
      * @param string $data
@@ -25,5 +26,25 @@ class Varios {
         } catch (Exception $ex) {
             throw $ex;
         }
+    }
+
+    /**
+     * Sube archivos al servidor
+     * @param File $request
+     * @param string $path
+     */
+    public function subeArchivo($archivo, string $path='files/documentos/'){
+        $extencion  = $archivo->getClientOriginalExtension();
+        $tamaño     = $archivo->getSize();
+        $nombre     = rand().'.'.$extencion;
+        $archivo->move(siegy_path($path), $nombre);
+
+        return [
+            'message'   => 'correctamente',
+            'path'      => $path.$nombre,
+            'extension' => $extencion,
+            'size'      => $tamaño,
+            'status'    => 'success'
+        ];
     }
 }

@@ -13,6 +13,7 @@ use App\Cls_Usuario_Documento;
 use App\Cls_Usuario_Respuesta;
 use App\Models\Cls_Cat_Seccion;
 use App\Services\GestorService;
+use App\Services\VariosService;
 use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
 use App\Cls_Encuesta_Satisfaccion;
@@ -39,7 +40,7 @@ class TramiteServicioController extends Controller
     
     protected $tramiteService;
     protected $gestorService;
-
+    protected $variosService;
     /**
      * Construct Gestor
      */
@@ -47,6 +48,7 @@ class TramiteServicioController extends Controller
         /* $this->middleware('auth'); */
         $this->tramiteService   = new TramiteService();
         $this->gestorService    = new GestorService();
+        $this->variosService    = new VariosService();
     }
 
     public function index()
@@ -1413,23 +1415,13 @@ class TramiteServicioController extends Controller
         return Response()->json($response);
     }
 
-    public function subir_documento(Request $request)
-    {
-        $File = $request->file('file');
-        $DocType = $request->doctype;
-        $IntSize = $File->getSize();
-        $StrExtension = $File->getClientOriginalExtension();
-        $StrName = rand() . '.' . $StrExtension;
+    public function subir_documento(Request $request) {
+        $path       = 'files/documentos/';
+        $archivo    = $request->file('file');
+        $response   = $this->variosService->subeArchivo($archivo, $path);
+        $response   = array_merge($response, [ "typename" => $request->doctype]);
 
-        $File->move(siegy_path('files/documentos/'), $StrName);
-        return response()->json([
-            'message'   => 'correctamente',
-            'path'      => 'files/documentos/' . $StrName,
-            'extension' => $StrExtension,
-            'size'      => $IntSize,
-            'typename'  => $DocType,
-            'status'    => 'success'
-        ]);
+        return response()->json($response);
     }
 
     public function download_tramite_detalle($id)
