@@ -18,6 +18,23 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
+###################### Pruebas Manuel Euan ######################
+Route::get('/getFiltros', 'GestorController@obtener_filtro');
+Route::get('/getTramite/{id}/{configuracionID}', 'GestorController@consultar_tramite');
+Route::get('/configurarTramite/{tramiteID}/{tramiteIDConfig}','GestorController@configurar_tramite');
+Route::get('/tramite_servicio/{id}','TramiteServicioController@obtener_detalle_tramite');
+Route::get('/tramite_servicio/iniciar_tramite_servicio/{id}', 'TramiteServicioController@iniciar_tramite_servicio');
+Route::get('/tramite_servicio_cemr/detalle/{id}', 'TramitesController@detalle');
+Route::post('/gestores/crear', 'GestorController@save');
+Route::get('/obtener_municipio/{id}','TramiteServicioController@obtener_municipio');
+Route::get('/obtener_modulo/{id}/{idaccede}', 'TramiteServicioController@obtener_modulo');
+Route::post('/subir_documento', 'TramiteServicioController@subir_documento');
+###################### Pruebas Manuel Euan ######################
+
+
+
+
+
 Route::post('/agregar_permiso', array('uses' => 'PermisoController@agregar'));
 Route::post('/modificar_permiso', array('uses' => 'PermisoController@modificar'));
 Route::post('/eliminar_permiso', array('uses' => 'PermisoController@eliminar'));
