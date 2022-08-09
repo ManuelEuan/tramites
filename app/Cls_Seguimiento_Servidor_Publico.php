@@ -271,6 +271,7 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                 tr.RESO_NID,
                 tut.USTR_NIDUSUARIOTRAMITE,
                 tt.TRAM_NIDTRAMITE,
+                tur.USRE_NIDPREGUNTA,
                 tr.RESO_NIDRESOLUTIVO,
                 tr.RESO_CNOMBRE,
                 tfp.FORM_NSECCIONID,
@@ -280,10 +281,10 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                 trm.TRAM_CNOMBRECAMPO
                 FROM tram_mdv_usuariorespuestas tur
                 INNER JOIN tram_form_pregunta tfp ON tfp.FORM_NID = tur.USRE_NIDPREGUNTA
-                INNER JOIN tram_mst_resolutivo_mapeo trm ON tur.USRE_NIDPREGUNTA = trm.TRAM_NIDPRGUNTA
                 INNER JOIN tram_mdv_usuariotramite tut ON tut.USTR_NIDUSUARIOTRAMITE = tur.USRE_NIDUSUARIOTRAMITE
                 INNER JOIN tram_mst_tramite tt ON tut.USTR_NIDTRAMITE = tt.TRAM_NIDTRAMITE
                 INNER JOIN tram_mst_resolutivo tr ON tr.RESO_NIDTRAMITE = tt.TRAM_NIDTRAMITE
+                INNER JOIN tram_mst_resolutivo_mapeo trm ON tr.RESO_NID = trm.TRAM_RESODOCU_NID  AND tur.USRE_NIDPREGUNTA = trm.TRAM_NIDPRGUNTA
                 WHERE tr.RESO_NID = ? AND tut.USTR_NIDUSUARIOTRAMITE = ?',
                 array($NIDRESOLUTIVO, $NIDUSUARIOTRAMITE)
             );
