@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Gate;
 use  Illuminate\Pagination\Paginator;
 use App\Http\Controllers\FormularioController;
 use  Illuminate\Pagination\LengthAwarePaginator;
-
+use Illuminate\Support\Arr;
 
 class GestorController extends Controller
 {
@@ -32,7 +32,8 @@ class GestorController extends Controller
     /**
      * Construct Gestor
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->tramiteService = new TramiteService();
     }
@@ -41,7 +42,8 @@ class GestorController extends Controller
      * Retorna la vista inicial del modulo de gestores
      * @return View
      */
-    public function index() {
+    public function index()
+    {
         $data       = ['usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => 2];
         $request    = new Request($data);
         $tramite    = $this->tramiteService->busqueda($request);
@@ -55,7 +57,8 @@ class GestorController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function consultar(Request $request) {
+    public function consultar(Request $request)
+    {
         $tramite        =  $this->tramiteService->busqueda($request);
         $data_tramite   = $tramite['data'];
 
@@ -67,7 +70,8 @@ class GestorController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function obtener_filtro(Request $request) {
+    public function obtener_filtro(Request $request)
+    {
         $filtros = $this->tramiteService->filtros($request);
         $response = [
             "clasificacion" =>  [],
@@ -85,7 +89,8 @@ class GestorController extends Controller
      * @param int $tramiteIDConfig
      * @return View
      */
-    public function consultar_tramite($tramiteID, $tramiteIDConfig) {
+    public function consultar_tramite($tramiteID, $tramiteIDConfig)
+    {
         $objTramite             = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle           = $this->tramiteService->getDetalle($objTramite->Id);
 
@@ -101,19 +106,21 @@ class GestorController extends Controller
         $tramite['costo']       = $datosGenerales['costo'];
         $tramite['requerimientos']      = $datosGenerales['requerimientos'];
         $tramite['informacion_general'] = $datosGenerales['informacion_general'];
-        $tramite['fundamento_legal']    = array([ "titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento ]);
+        $tramite['fundamento_legal']    = array(["titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento]);
 
         return view('MST_GESTOR.DET_TRAMITE', compact('tramite'));
     }
 
-    public function actualizar_pago($id){
+    public function actualizar_pago($id)
+    {
         Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $id])->update(['SSEGTRA_PAGADO' => 1]);
         return response()->json(['data' => "ok"]);
     }
 
 
     //Vista donde se realiza configuración del trámite
-    public function configurar_tramite($tramiteID, $tramiteIDConfig){
+    public function configurar_tramite($tramiteID, $tramiteIDConfig)
+    {
         $tramite        = [];
         $objTramite     = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
@@ -184,30 +191,30 @@ class GestorController extends Controller
         $edificios = [];
         if ($objTramite != null) {
             $horarios = "";
-            foreach($objTramite['horarios'] as $objHorario){
-                $horarios .= $objHorario ." <br/>";
+            foreach ($objTramite['horarios'] as $objHorario) {
+                $horarios .= $objHorario . " <br/>";
             }
             $telefono = "";
-            foreach($objTramite['telefonos'] as $objTelefono){
-                $telefono .= $objTelefono ." <br/>";
+            foreach ($objTramite['telefonos'] as $objTelefono) {
+                $telefono .= $objTelefono . " <br/>";
             }
             $funcionarios = "";
-            foreach($objTramite['funcionarios'] as $objFuncionarios){
-                $funcionarios .= $objFuncionarios['nombre'] ."<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
+            foreach ($objTramite['funcionarios'] as $objFuncionarios) {
+                $funcionarios .= $objFuncionarios['nombre'] . "<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
             }
             $contEdi = 1;
-            foreach($objTramite['listaDetallesEdificio'] as $objEdificio){
+            foreach ($objTramite['listaDetallesEdificio'] as $objEdificio) {
                 $_objE = [
                     "id" => $contEdi,
-                    "nombre"=> $objEdificio['nombre'],
-                    "direccion"=> $objEdificio['direccion'],
-                    "horario"=> $horarios,
-                    "latitud"=> $objEdificio['latitud'] ?? 0,
-                    "longitud"=> $objEdificio['longitud'] ?? 0,
-                    "responsable"=> $funcionarios,
-                    "contacto_telefono"=> $telefono,
-                    "contacto_email"=> "",
-                    "informacion_adicional"=> ""
+                    "nombre" => $objEdificio['nombre'],
+                    "direccion" => $objEdificio['direccion'],
+                    "horario" => $horarios,
+                    "latitud" => $objEdificio['latitud'] ?? 0,
+                    "longitud" => $objEdificio['longitud'] ?? 0,
+                    "responsable" => $funcionarios,
+                    "contacto_telefono" => $telefono,
+                    "contacto_email" => "",
+                    "informacion_adicional" => ""
                 ];
                 array_push($edificios, $_objE);
                 $contEdi++;
@@ -311,7 +318,7 @@ class GestorController extends Controller
             ];
             array_push($lstDocumentos, (object)$_objD);
         }
-        
+
         $response['data'] = $lstDocumentos;
         return response()->json($response);
     }
@@ -325,7 +332,8 @@ class GestorController extends Controller
     }
 
     //Guardar configuración de trámite
-    public function save(Request $request) {
+    public function save(Request $request)
+    {
         try {
             $tramite = $this->TRAM_SP_AGREGAR_TRAMITE($request);
             if ($tramite->TRAM_CTIPO == "Creación" || $tramite->TRAM_CTIPO == "Actualización") {
@@ -346,12 +354,11 @@ class GestorController extends Controller
                         "codigo" => 200,
                         "mensaje" => "Trámite y secciones agregadas correctamente",
                         "ruta" => $rutaNew,
-                        "result"=> $result,
+                        "result" => $result,
                     ]);
-                }else{
+                } else {
                     return response()->json($resultSecciones);
                 }
-
             } else {
 
                 return response()->json([
@@ -424,6 +431,7 @@ class GestorController extends Controller
     private function TRAM_SP_AGREGAR_SECCIONES(array $listSecciones, $TramiteID)
     {
         $response = [];
+        //dd($listSecciones);
         try {
             if (count($listSecciones) > 0) {
                 $seccionesEliminadas = new Cls_Gestor();
@@ -448,7 +456,7 @@ class GestorController extends Controller
                         $TRAM_LIST_FORMULARIO =  $seccion['CONF_LIST_FORMULARIO'];
 
                         $this->TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TramiteID);
-                        if(isset($seccion['CONF_LIST_DOCUMENTO']))
+                        if (isset($seccion['CONF_LIST_DOCUMENTO']))
                             $this->TRAM_AGREGAR_DOCUMENTO($seccion['CONF_LIST_DOCUMENTO'], $TramiteID);
                     }
 
@@ -460,7 +468,7 @@ class GestorController extends Controller
 
                     //Agregar resolutivos
                     if ($seccion['CONF_NSECCION'] === "Resolutivo electrónico") {
-                        $TRAM_LIST_RESOLUTIVO = $seccion['CONF_LIST_RESOLUTIVO'];
+                        $TRAM_LIST_RESOLUTIVO = $seccion['CONF_DATA_RESOLUTIVO'];
                         $this->TRAM_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO, $TramiteID, $Seccion_id);
                     }
 
@@ -494,19 +502,19 @@ class GestorController extends Controller
         return $response;
     }
 
-    private function TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TRAM_NIDTRAMITE){
+    private function TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TRAM_NIDTRAMITE)
+    {
 
         try {
 
             $gestor = new Cls_Gestor();
             $gestor->TRAM_SP_ELIMINAR_FORMULARIO($TRAM_NIDTRAMITE);
 
-            for ($i=0; $i < count($TRAM_LIST_FORMULARIO); $i++) {
+            for ($i = 0; $i < count($TRAM_LIST_FORMULARIO); $i++) {
 
                 $TRAM_LIST_FORMULARIO[$i]['TRAM_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
                 $gestor->TRAM_SP_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO[$i]['TRAM_NIDFORMULARIO'], $TRAM_LIST_FORMULARIO[$i]['TRAM_NIDTRAMITE']);
             }
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -523,7 +531,7 @@ class GestorController extends Controller
             $gestor->TRAM_SP_ELIMINAR_EDIFICIO($TRAM_NIDTRAMITE);
             $gestor->TRAM_SP_ELIMINAR_RESOLUTIVO($TRAM_NIDTRAMITE);
             $gestor->TRAM_SP_ELIMINAR_CONCEPTO($TRAM_NIDTRAMITE);
-            
+
             foreach ($TRAM_LIST_DOCUMENTO as  $documentos) {
                 $gestor->TRAM_SP_AGREGAR_DOCUMENTO(
                     $TRAM_NIDTRAMITE,
@@ -535,7 +543,8 @@ class GestorController extends Controller
                     $documentos['TRAD_NMULTIPLE']
                 );
             }
-        } catch (EXception $ex) { dd($ex);
+        } catch (EXception $ex) {
+            dd($ex);
             throw $ex;
         }
     }
@@ -544,13 +553,48 @@ class GestorController extends Controller
     {
         $gestor = new Cls_Gestor();
 
-        for ($i=0; $i < count($TRAM_LIST_EDIFICIO); $i++) {
+        for ($i = 0; $i < count($TRAM_LIST_EDIFICIO); $i++) {
 
             $TRAM_LIST_EDIFICIO[$i]['EDIF_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
             $gestor->TRAM_SP_AGREGAR_EDIFICIO_TRAMITE($TRAM_LIST_EDIFICIO[$i]['EDIF_NIDTRAMITE'], $TRAM_LIST_EDIFICIO[$i]['EDIF_CNOMBRE'], $TRAM_NIDSECCION, $TRAM_LIST_EDIFICIO[$i]['EDIF_CCALLE'], $TRAM_LIST_EDIFICIO[$i]['EDIF_CLATITUD'], $TRAM_LIST_EDIFICIO[$i]['EDIF_CLONGITUD'], intval($TRAM_LIST_EDIFICIO[$i]['EDIF_NIDEDIFICIO']));
         }
     }
 
+    private function TRAM_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO, $TRAM_NIDTRAMITE, $TRAM_NIDSECCION)
+    {
+        $gestor = new Cls_Gestor();
+        //dd($TRAM_LIST_RESOLUTIVO);
+
+
+        $fileName = '';
+
+        if (!empty($TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE'])) {
+
+            $fileName = md5(time() . $TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE']) . '.' . 'docx';
+
+            //Storage::disk('public')->put($fileName, base64_decode($TRAM_LIST_RESOLUTIVO['RESO_FILEBASE64']));
+
+            $ifp = fopen(public_path() . '/docts/resolutivos/' . $fileName, 'wb');
+
+
+            fwrite($ifp, base64_decode($TRAM_LIST_RESOLUTIVO['RESO_FILEBASE64']));
+
+            // clean up the file resource
+            fclose($ifp);
+        }
+
+
+        $TRAM_LIST_RESOLUTIVO['RESO_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
+        $TRAM_LIST_RESOLUTIVO['RESO_NIDRESOLUTIVO'] = 1;
+        $documentoResolutivo =  $gestor->TRAM_SP_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO['RESO_NIDTRAMITE'], $TRAM_LIST_RESOLUTIVO['RESO_NIDRESOLUTIVO'], $TRAM_LIST_RESOLUTIVO['RESO_CNOMBRE'], $TRAM_NIDSECCION, $fileName);
+        $documentoResolutivoId = $documentoResolutivo[0]->ResolutivoID;
+        if (!empty($TRAM_LIST_RESOLUTIVO["MAPEO"])) {
+            foreach ($TRAM_LIST_RESOLUTIVO["MAPEO"] as $MAPEO) {
+                $gestor->TRAM_SP_AGREGAR_RESOLUTIVO_MAPEO($documentoResolutivoId, $MAPEO['idFormulario'], $MAPEO['idPregunta'], $MAPEO['campo']);
+            }
+        }
+    }
+    /* 
     private function TRAM_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO, $TRAM_NIDTRAMITE, $TRAM_NIDSECCION)
     {
         $gestor = new Cls_Gestor();
@@ -561,7 +605,7 @@ class GestorController extends Controller
             $TRAM_LIST_RESOLUTIVO[$i]['RESO_NIDRESOLUTIVO'] = $i + 1;
             $gestor->TRAM_SP_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO[$i]['RESO_NIDTRAMITE'], $TRAM_LIST_RESOLUTIVO[$i]['RESO_NIDRESOLUTIVO'], $TRAM_LIST_RESOLUTIVO[$i]['RESO_CNOMBRE'], $TRAM_NIDSECCION);
         }
-    }
+    } */
 
     private function TRAM_AGREGAR_CONCEPTO_PAGO_TRAMITE($TRAM_LIST_CONCEPTO, $TRAM_NIDTRAMITE, $TRAM_NIDSECCION)
     {
@@ -603,13 +647,63 @@ class GestorController extends Controller
     }
 
     //Obtener resolutivos
-    public function consultar_resolutivo(){
+    public function consultar_resolutivo()
+    {
         return response()->json(Cls_Resolutivo::get());
     }
 
+    //Obtener resolutivos
+    public function consultar_preguntas_formulario()
+    {
+        $gestor = new Cls_Gestor();
+        $formulariosPreguntas = $gestor->TRAM_SP_OBTENER_PREGUNTAS_RESOLUTIVO();
 
-    public function unidad_administrativa($id){
-        $url = $this->host . '/api/vw_accede_unidad_administrativa_centro_id/'.$id;
+        $formularios = array();
+
+        foreach ($formulariosPreguntas as $fkey => $formularioPreguntas) {
+
+            $inArray = false;
+            $data = array();
+            foreach ($formularios as $formulario) {
+                if ($formularioPreguntas->FORMID == $formulario["FORMID"]) {
+                    $inArray = true;
+                }
+            }
+
+            if ($inArray == false) {
+                $data = array("FORMID" => $formularioPreguntas->FORMID, "FORM_CNOMBRE" => $formularioPreguntas->FORM_CNOMBRE, "FORM_CDESCRIPCION" => $formularioPreguntas->FORM_CDESCRIPCION);
+
+                $formularios[] = $data;
+            }
+        }
+
+        foreach ($formularios as $key => $formulario) {
+            $preguntas = array();
+
+            foreach ($formulariosPreguntas as $fkey => $formularioPreguntas) {
+
+                if ($formulario["FORMID"] == $formularioPreguntas->FORMID) {
+                    $preguntas[] = array(
+                        "PREID" => $formularioPreguntas->PREID,
+                        "FORM_NSECCIONID" => $formularioPreguntas->FORM_NSECCIONID,
+                        "FORM_CPREGUNTA" => $formularioPreguntas->FORM_CPREGUNTA
+                    );
+                }
+            }
+
+            $formularios[$key]["preguntas"] = $preguntas;
+        }
+
+
+
+
+        return response()->json($formularios);
+    }
+
+
+    public function unidad_administrativa($id)
+    {
+        $url = $this->host . '/api/vw_accede_unidad_administrativa_centro_id/' . $id;
         $options = array(
             'http' => array(
                 'method'  => 'GET',
@@ -631,7 +725,8 @@ class GestorController extends Controller
         ]);
     }
 
-    public function set_json_value_tramite(){
+    public function set_json_value_tramite()
+    {
 
         try {
 
@@ -668,22 +763,19 @@ class GestorController extends Controller
                 }
 
                 //Actualiamos campo Json
-                Cls_Tramite_Servicio::where(['TRAM_NIDTRAMITE' => $value['TRAM_NIDTRAMITE']])->update(['TRAM_CTRAMITE_JSON' => json_encode($objJson,JSON_UNESCAPED_UNICODE)]);
+                Cls_Tramite_Servicio::where(['TRAM_NIDTRAMITE' => $value['TRAM_NIDTRAMITE']])->update(['TRAM_CTRAMITE_JSON' => json_encode($objJson, JSON_UNESCAPED_UNICODE)]);
             }
 
-            return Response()->json(['ok'=> 'si ok ok']);
-
+            return Response()->json(['ok' => 'si ok ok']);
         } catch (\Throwable $th) {
-            return Response()->json(['ok'=> $th->getMessage()]);
+            return Response()->json(['ok' => $th->getMessage()]);
         }
-
     }
 
-    public function formulario(){
+    public function formulario()
+    {
         $formulario = new FormularioController();
         $formulario->open_modal = 1;
         return $formulario->list();
     }
-
-
 }

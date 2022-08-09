@@ -356,13 +356,12 @@
                                 </div>
                             </div>
                             @endif
-			    @if($seccion->SSEGTRA_PAGADO == 1)
-                            	<div class="alert alert-success" role="alert" style="font-size: 16px">
-				   ¡Pago realizado con éxito!
-				</div>
-			    @endif
-                            @if($conceptos > 0 && $tramite->USTR_NESTATUS < 8)
-                            <form id="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" name="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                            @if($seccion->SSEGTRA_PAGADO == 1)
+                            <div class="alert alert-success" role="alert" style="font-size: 16px">
+                                ¡Pago realizado con éxito!
+                            </div>
+                            @endif
+                            @if($conceptos > 0 && $tramite->USTR_NESTATUS < 8) <form id="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" name="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
                                 <input type="hidden" name="txtIdUsuarioTramite" value="{{$tramite->USTR_NIDUSUARIOTRAMITE}}">
                                 <input type="hidden" name="txtIdSeccion" value="{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
                                 <table class="table">
@@ -405,61 +404,61 @@
                                 <div class="row row-pago" id="pagos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
                                     <div class="col-md-12">
                                         <div class="row columna">
-                                        <div class=" col-md-4">
-                                            <label class="titulo_cita">Estatus del pago</label>
+                                            <div class=" col-md-4">
+                                                <label class="titulo_cita">Estatus del pago</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <label class="respuesta_cita" id="txtEstatus_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
+                                            </div>
                                         </div>
-                                        <div class="col-md-8">
-                                            <label class="respuesta_cita" id="txtEstatus_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
+                                        <div class="row columna">
+                                            <div class="col-md-12">
+                                                <label class="titulo_cita">Datos del pago</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row columna">
-                                        <div class="col-md-12">
-                                            <label class="titulo_cita">Datos del pago</label>
+                                        <div class="row columna">
+                                            <div class="col-md-4">
+                                                <label class="titulo_pequeno">Folio del trámite</label> <br>
+                                                <label class='respuesta_pequena'>{{$tramite->USTR_CFOLIO}}</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row columna">
-                                        <div class="col-md-4">
-                                            <label class="titulo_pequeno">Folio del trámite</label> <br>
-                                            <label class='respuesta_pequena'>{{$tramite->USTR_CFOLIO}}</label>
+                                        <div class="row columna">
+                                            <div class="col-md-12">
+                                                <label class="titulo_pequeno">Nombre del trámite</label> <br>
+                                                <label class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_TRAMITE}}</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row columna">
-                                        <div class="col-md-12">
-                                            <label class="titulo_pequeno">Nombre del trámite</label> <br>
-                                            <label class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_TRAMITE}}</label>
-                                        </div>
-                                    </div>
 
-                                    <div class="row columna_2">
-                                        <!-- <div class="col-md-4">
+                                        <div class="row columna_2">
+                                            <!-- <div class="col-md-4">
                                             <label class="titulo_pequeno">Fecha de pago</label> <br>
                                             <label class='respuesta_pequena'>1 de febrero de 2021</label>
                                         </div> -->
-                                        <div class="col-md-6">
-                                            <label class="titulo_pequeno">Número de referencia del pago</label> <br>
-                                            <label class='respuesta_pequena' id="txtReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="titulo_pequeno">Número de referencia</label> <br>
-                                            <label class='respuesta_pequena' id="txtIdReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">033-6622</label>
-                                        </div>
-                                        <div class="col-md-12">
-                                           <!-- <label class="titulo_pequeno">Mensaje</label> <br>
+                                            <div class="col-md-6">
+                                                <label class="titulo_pequeno">Número de referencia del pago</label> <br>
+                                                <label class='respuesta_pequena' id="txtReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="titulo_pequeno">Número de referencia</label> <br>
+                                                <label class='respuesta_pequena' id="txtIdReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">033-6622</label>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <!-- <label class="titulo_pequeno">Mensaje</label> <br>
                                             <label class='respuesta_pequena' id="txtMensaje_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">033-6622</label> -->
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row columna_2">
-                                        <div class="col-md-12">
-                                            <label class="titulo_pequeno">Unidad administrativa</label> <br>
-                                            <label class='respuesta_pequena'>{{$tramite->USTR_CUNIDADADMINISTRATIVA}}</label>
+                                        <div class="row columna_2">
+                                            <div class="col-md-12">
+                                                <label class="titulo_pequeno">Unidad administrativa</label> <br>
+                                                <label class='respuesta_pequena'>{{$tramite->USTR_CUNIDADADMINISTRATIVA}}</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row columna_2">
-                                        <div class="col-md-12">
-                                            <label class="titulo_pequeno">Secretaria o Entidad</label> <br>
-                                            <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
+                                        <div class="row columna_2">
+                                            <div class="col-md-12">
+                                                <label class="titulo_pequeno">Secretaria o Entidad</label> <br>
+                                                <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
+                                            </div>
                                         </div>
-                                    </div>
                                     </div>
                                 </div>
 
@@ -475,14 +474,61 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    @endif
                                 </div>
-                                @endif
                         </div>
+                        @break
+
+                        @case('Módulo de análisis interno del área')
+                        <div id="tab_analisis_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
+                            @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                            <div class="row columna">
+                                <div class=" col-md-12">
+                                    <div class="alert alert-warning" role="alert" style="font-size: 16px;">
+                                        ¡Se requiere aprobar la sección anterior!
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            <div class="row columna">
+                                <div class=" col-md-12">
+                                    <label class="respuesta_cita">El trámite actualmente se encuentra en el módulo de analisis interno del área, por lo que los plazos del tramite siguen contando.</label>
+                                </div>
+                            </div>
+                            <div class="row columna">
+                                <div class="col-md-12">
+                                    <label class="titulo_pequeno">Fecha de recepción del tramite:</label> <br>
+                                    <label class='respuesta_pequena'>{{date("d/m/Y", strtotime($tramite->USTR_DFECHACREACION))}}</label>
+                                </div>
+                            </div>
+                            <div class="row columna">
+                                <div class="col-md-12">
+                                    <label class="titulo_pequeno">Días transcurridos desde el inicio del tramite:</label> <br>
+                                    <label class='respuesta_pequena' id="diastranscurridos">0</label>
+                                </div>
+                            </div>
+                            <div class="row columna">
+                                <div class="col-md-12">
+                                    <label class="titulo_pequeno">Exportar información del tramite: </label><br>
+                                    <span>
+                                        <button onclick="descargar({{$tramite->USTR_NIDUSUARIOTRAMITE}}, 'TRAM_{{$tramite->USTR_CFOLIO}}')" type="button" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                            <br>
+                            @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) <div class="col-md-12 mt-5 contenedorBtn">
+                                <div class="text-right botones">
+                                    <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite </button>
+                                    <button onclick="TRAM_FN_APROBAR_ANALISIS_INTERNO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Activar el siguiente módulo </button>
+                                </div>
+                        </div>
+                        @endif
                     </div>
                     @break
 
-                    @case('Módulo de análisis interno del área')
-                    <div id="tab_analisis_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
+                    @case('Resolutivo electrónico')
+                    <div id="tab_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
                         @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
                         <div class="row columna">
                             <div class=" col-md-12">
@@ -493,177 +539,140 @@
                         </div>
                         @endif
                         <div class="row columna">
-                            <div class=" col-md-12">
-                                <label class="respuesta_cita">El trámite actualmente se encuentra en el módulo de analisis interno del área, por lo que los plazos del tramite siguen contando.</label>
+                            <div class=" col-md-4">
+                                <label class="titulo_cita">Resolutivo electrónico</label>
                             </div>
                         </div>
-                        <div class="row columna">
-                            <div class="col-md-12">
-                                <label class="titulo_pequeno">Fecha de recepción del tramite:</label> <br>
-                                <label class='respuesta_pequena'>{{date("d/m/Y", strtotime($tramite->USTR_DFECHACREACION))}}</label>
-                            </div>
-                        </div>
-                        <div class="row columna">
-                            <div class="col-md-12">
-                                <label class="titulo_pequeno">Días transcurridos desde el inicio del tramite:</label> <br>
-                                <label class='respuesta_pequena' id="diastranscurridos">0</label>
-                            </div>
-                        </div>
-                        <div class="row columna">
-                            <div class="col-md-12">
-                                <label class="titulo_pequeno">Exportar información del tramite: </label><br>
-                                <span>
-                                    <button onclick="descargar({{$tramite->USTR_NIDUSUARIOTRAMITE}}, 'TRAM_{{$tramite->USTR_CFOLIO}}')" type="button" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                </span>
-                            </div>
-                        </div>
-                        <br>
-                        @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) <div class="col-md-12 mt-5 contenedorBtn">
-                            <div class="text-right botones">
-                                <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite </button>
-                                <button onclick="TRAM_FN_APROBAR_ANALISIS_INTERNO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Activar el siguiente módulo </button>
-                            </div>
-                    </div>
-                    @endif
-                </div>
-                @break
-
-                @case('Resolutivo electrónico')
-                <div id="tab_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                    @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
-                    <div class="row columna">
-                        <div class=" col-md-12">
-                            <div class="alert alert-warning" role="alert" style="font-size: 16px;">
-                                ¡Se requiere aprobar la sección anterior!
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-                    <div class="row columna">
-                        <div class=" col-md-4">
-                            <label class="titulo_cita">Resolutivo electrónico</label>
-                        </div>
-                    </div>
-                    @foreach($resolutivos as $resolutivo)
-                    <div class="row columna">
-                        <div class=" col-md-4">
-                            <label class="titulo_pequeno">Nombre</label>
-                        </div>
-                        <div class=" col-md-8">
-                            <label class="respuesta_pequena">{{$resolutivo->RESO_CNOMBRE}}</label>
-                        </div>
-                    </div>
-                    @endforeach
-                    <div class="row columna">
-                        <div class=" col-md-4">
-                            <label class="titulo_pequeno">Estatus</label>
-                        </div>
-                        <div class="col-md-8">
-                            @if($seccion->SSEGTRA_NIDESTATUS != 2)
-                            <label class="respuesta_pequena">Pendiente</label>
-                            @else
-                            <label class="respuesta_pequena">Atendido</label>
-                            @endif
-                        </div>
-                    </div>
-                    @if($seccion->SSEGTRA_NIDESTATUS != 2 && $secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $tramite->USTR_NESTATUS < 8) <form enctype="multipart/form-data">
-                        <div class="row columna">
-                            <div class="col-md-4">
-                                <label class="titulo_pequeno">Estatus del resolutivo</label>
-                            </div>
-                            <div class="col-md-4">
-                                <select class="form-control" name="estatus_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" id="estatus_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                    <option value="default" disabled>Seleccione una opción </option>
-                                    <option value="aprobado">Aprobado</option>
-                                    <option value="rechazado">Rechazado</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row columna">
-                            <div class="col-md-4">
-                                <label class="titulo_pequeno">Cargar documento</label><br>
-                                <small class="helper">Solo se acepta un archivo con formato PDF, JPG, GIF, PNG que no exceda de los 4 MB</small>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="file" class="form-control-file" name="documento_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" id="documento_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                            </div>
-                        </div>
-                        <div class="col-md-12 mt-5 contenedorBtn">
-                            <div class="text-right botones">
-                                <button type="button" class="btn btn-success border btnLetras" onclick="TRAM_FN_EMITIR_RESOLUTIVO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Emitir resolutivo </button>
-                            </div>
-                        </div>
-                        </form>
-                        @else
+                        @foreach($resolutivos as $resolutivo)
                         <div class="row columna">
                             <div class=" col-md-4">
-                                <label class="titulo_pequeno">Estatus del resolutivo</label>
+                                <label class="titulo_pequeno">Nombre</label>
+                            </div>
+                            <div class=" col-md-8">
+                                <label class="respuesta_pequena">{{$resolutivo->RESO_CNOMBRE}}</label>
+                            </div>
+                        </div>
+                        @if ($resolutivo->RESO_CNAMEFILE != null)
+                        <div class="row columna">
+                            <div class=" col-md-4">
+                                <label class="titulo_pequeno">Archivo Autogenerado</label>
+                            </div>
+                            <div class=" col-md-8">
+                                <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE  ])}}">Vista Previa</a>
+                            </div>
+                        </div>
+                        @endif
+                        @endforeach
+                        <div class="row columna">
+                            <div class=" col-md-4">
+                                <label class="titulo_pequeno">Estatus</label>
                             </div>
                             <div class="col-md-8">
-                                @if ($seccion->SSEGTRA_NIDESTATUS == 2)
-                                Aprobado
+                                @if($seccion->SSEGTRA_NIDESTATUS != 2)
+                                <label class="respuesta_pequena">Pendiente</label>
                                 @else
-                                Pendiente
+                                <label class="respuesta_pequena">Atendido</label>
                                 @endif
                             </div>
                         </div>
-                        <div class="row columna">
-                            <div class=" col-md-4">
-                                <label class="titulo_pequeno">Archivo del resolutivo</label>
+                        @if($seccion->SSEGTRA_NIDESTATUS != 2 && $secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $tramite->USTR_NESTATUS < 8) <form enctype="multipart/form-data">
+                            <div class="row columna">
+                                <div class="col-md-4">
+                                    <label class="titulo_pequeno">Estatus del resolutivo</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control" name="estatus_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" id="estatus_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                        <option value="default" disabled>Seleccione una opción </option>
+                                        <option value="aprobado">Aprobado</option>
+                                        <option value="rechazado">Rechazado</option>
+                                    </select>
+                                </div>
                             </div>
-                            @if ($seccion->SSEGTRA_NIDESTATUS == 2)
-                            <div class="col-md-8" id="archivo_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                <span><i class="fas fa-eye"></i></span> <span><i class="fas fa-download"></i></span>
+                            <div class="row columna">
+                                <div class="col-md-4">
+                                    <label class="titulo_pequeno">Cargar documento</label><br>
+                                    <small class="helper">Solo se acepta un archivo con formato PDF, JPG, GIF, PNG que no exceda de los 4 MB</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="file" class="form-control-file" name="documento_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" id="documento_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                </div>
                             </div>
+                            <div class="col-md-12 mt-5 contenedorBtn">
+                                <div class="text-right botones">
+                                    <button type="button" class="btn btn-success border btnLetras" onclick="TRAM_FN_EMITIR_RESOLUTIVO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Emitir resolutivo </button>
+                                </div>
+                            </div>
+                            </form>
                             @else
-                            <div class="col-md-8" id="archivo_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                Pendiente
+                            <div class="row columna">
+                                <div class=" col-md-4">
+                                    <label class="titulo_pequeno">Estatus del resolutivo</label>
+                                </div>
+                                <div class="col-md-8">
+                                    @if ($seccion->SSEGTRA_NIDESTATUS == 2)
+                                    Aprobado
+                                    @else
+                                    Pendiente
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="row columna">
+                                <div class=" col-md-4">
+                                    <label class="titulo_pequeno">Archivo del resolutivo</label>
+                                </div>
+                                @if ($seccion->SSEGTRA_NIDESTATUS == 2)
+                                <div class="col-md-8" id="archivo_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                    <span><i class="fas fa-eye"></i></span> <span><i class="fas fa-download"></i></span>
+                                </div>
+                                @else
+                                <div class="col-md-8" id="archivo_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                    Pendiente
+                                </div>
+                                @endif
                             </div>
                             @endif
-                        </div>
-                        @endif
-                </div>
-                @break
-
-                @default
-                <div id="tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana active show">
-                    <div id="infoCompleteRevision" style="display: none !important;" class="row columna">
-                        <div class=" col-md-12">
-                            <div class="alert alert-warning" role="alert" style="font-size: 16px;">
-                                ¡Se requiere aprobar la sección anterior!
-                            </div>
-                        </div>
                     </div>
-                    @include('TRAMITES_CEMR_SEGUIMIENTO.DET_FORMULARIO')
-                    <div id="areaNotificacionRevision" style="display: none !important;">
-                        <div class="row columna" style="margin-bottom: 80px;">
-                            <div class="col-md-12">
-                                <h3 class="indicaciones">Notificación al solicitante</h3>
-                                <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
-                                <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
-                                <textarea name="txtAreaRevision"></textarea>
+                    @break
+
+                    @default
+                    <div id="tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana active show">
+                        <div id="infoCompleteRevision" style="display: none !important;" class="row columna">
+                            <div class=" col-md-12">
+                                <div class="alert alert-warning" role="alert" style="font-size: 16px;">
+                                    ¡Se requiere aprobar la sección anterior!
+                                </div>
                             </div>
                         </div>
-                        <div class="row columna">
-                            <div class="col-md-12">
-                                <div class="col-md-12 mt-5 contenedorBtn">
-                                    <div class="text-right botones">
-                                        <button id="btnFormularioIncompleto" onclick="TRAM_FN_FORMULARIO_INCOMPLETO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-warning border btnLetras">Notificar información incompleta</button>
-                                        <button id="btnFormularioRechazar" onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Notificar rechazo de trámite</button>
-                                        <button id="btnFormularioAprobar" onclick="TRAM_FN_APROBAR_FORMULARIO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar documentación</button>
+                        @include('TRAMITES_CEMR_SEGUIMIENTO.DET_FORMULARIO')
+                        <div id="areaNotificacionRevision" style="display: none !important;">
+                            <div class="row columna" style="margin-bottom: 80px;">
+                                <div class="col-md-12">
+                                    <h3 class="indicaciones">Notificación al solicitante</h3>
+                                    <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
+                                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
+                                    <textarea name="txtAreaRevision"></textarea>
+                                </div>
+                            </div>
+                            <div class="row columna">
+                                <div class="col-md-12">
+                                    <div class="col-md-12 mt-5 contenedorBtn">
+                                        <div class="text-right botones">
+                                            <button id="btnFormularioIncompleto" onclick="TRAM_FN_FORMULARIO_INCOMPLETO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-warning border btnLetras">Notificar información incompleta</button>
+                                            <button id="btnFormularioRechazar" onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Notificar rechazo de trámite</button>
+                                            <button id="btnFormularioAprobar" onclick="TRAM_FN_APROBAR_FORMULARIO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar documentación</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @break
+                    @endswitch
+                    @endforeach
                 </div>
-                @break
-                @endswitch
-                @endforeach
             </div>
         </div>
     </div>
-</div>
 </div>
 </div>
 </div>
@@ -934,7 +943,7 @@
                 url: "/consultar_pago/" + _id_seccion,
                 type: "GET",
                 dataType: 'json',
-                success: function (data) {
+                success: function(data) {
                     estatus_pagos = data[0].NO_ERROR;
                     $("#txtEstatus_" + _id_seccion).html(data[0].MENSAJE_ERROR);
                     $("#txtReferencia_" + _id_seccion).html(data[0].REFERENCIA);
@@ -942,21 +951,20 @@
                     $("#txtMensaje_" + _id_seccion).html(data[0].MENSAJE + " <br/>" + data[0].MENSAJE_2);
 
                     //Se habilita el btn de pagar unicamente cuando el estatus sea igual 0, tomando en cuenta que 0 es Pagado correctamente
-                    if(estatus_pagos == 0){
+                    if (estatus_pagos == 0) {
                         $("#linkPago_" + _arr[1]).show();
-                    }else {
+                    } else {
                         $("#linkPago_" + _arr[1]).hide();
                     }
 
                     //Guardar conceptos
-                    if(estatus_pagos == 0 || estatus_pagos == 4){
+                    if (estatus_pagos == 0 || estatus_pagos == 4) {
                         $("#guardar_concepto_" + _arr[1]).hide();
-                    }else {
+                    } else {
                         $("#guardar_concepto_" + _arr[1]).show();
                     }
                 },
-                error: function (data) {
-                }
+                error: function(data) {}
             });
         });
 
@@ -1567,7 +1575,7 @@
             var longitud = lon != 0 ? lon : -106.07436882706008;
             map = new google.maps.Map(document.getElementById('mapaEdificioVentanilla'), {
                 center: {
-                    lat : latitud,
+                    lat: latitud,
                     lng: longitud
                     //lat: -34.5862088,
                     //lng: -58.415677500000015
@@ -3553,8 +3561,7 @@
                         var ruta = host + "/" + response.name;
                         window.location = ruta;
                     },
-                    error: function(blob) {
-                    }
+                    error: function(blob) {}
                 });
             }
         });

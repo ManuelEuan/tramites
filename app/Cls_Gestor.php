@@ -116,6 +116,27 @@ class Cls_Gestor extends Model
         );
     }
 
+    //Obtiene preguntas para resolutivo
+    public function TRAM_SP_OBTENER_PREGUNTAS_RESOLUTIVO()
+    {
+        return DB::select(
+            '
+            SELECT 
+            tff.FORM_NID AS FORMID,
+            tff.FORM_CNOMBRE,
+            tff.FORM_CDESCRIPCION,
+            tfp.FORM_NID AS PREID,
+            tfp.FORM_NSECCIONID,
+            tfp.FORM_CPREGUNTA,
+            tfp.FORM_BRESOLUTIVO 
+            FROM tram_form_formulario tff
+            INNER JOIN tram_form_pregunta tfp ON tff.FORM_NID = tfp.FORM_NFORMULARIOID
+            WHERE tff.FORM_BACTIVO = 1 
+            AND tfp.FORM_BRESOLUTIVO = 1
+            '
+        );
+    }
+
     //Obtiene detalle de trámite con configuración
     public function TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig)
     {
@@ -182,13 +203,21 @@ class Cls_Gestor extends Model
                 array($TRAM_NIDTRAMITE_CONFIG)
             );
 
+            foreach ($response['resolutivos'] as $key => $resolutivo) {
+                $response['resolutivos'][$key]->MAPEO = DB::select(
+                    'SELECT trm.*, tfp.FORM_CPREGUNTA FROM tram_mst_resolutivo_mapeo trm
+                    INNER JOIN tram_form_pregunta tfp ON trm.TRAM_NIDPRGUNTA = tfp.FORM_NID
+                    where trm.TRAM_RESODOCU_NID = ?',
+                    array($resolutivo->RESO_NID)
+                );
+            }
+
             $response['conceptos_pago'] = DB::select(
                 'SELECT * FROM tram_mst_concepto_tramite where CONC_NIDTRAMITE = ?',
                 array($TRAM_NIDTRAMITE_CONFIG)
             );
 
             return $response;
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -229,7 +258,8 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_AGREGAR_SECCION(){
+    public function TRAM_SP_AGREGAR_SECCION()
+    {
 
         return DB::select(
             'call TRAM_SP_AGREGAR_SECCION_CONFIGURACION(?,?,?,?,?,?,?,?)',
@@ -289,15 +319,29 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_AGREGAR_RESOLUTIVO($RESO_NIDTRAMITE, $RESO_NIDRESOLUTIVO, $RESO_CNOMBRE, $TRAM_NIDSECCION)
+    public function TRAM_SP_AGREGAR_RESOLUTIVO($RESO_NIDTRAMITE, $RESO_NIDRESOLUTIVO, $RESO_CNOMBRE, $TRAM_NIDSECCION, $RESO_CNAMEFILE)
     {
         return DB::select(
-            'call TRAM_SP_AGREGAR_RESOLUTIVO(?,?,?,?)',
+            'call TRAM_SP_AGREGAR_RESOLUTIVO(?,?,?,?,?)',
             array(
                 $RESO_NIDTRAMITE,
                 $RESO_NIDRESOLUTIVO,
                 $RESO_CNOMBRE,
-                $TRAM_NIDSECCION
+                $TRAM_NIDSECCION,
+                $RESO_CNAMEFILE
+            )
+        );
+    }
+
+    public function TRAM_SP_AGREGAR_RESOLUTIVO_MAPEO($TRAM_RESODOCU_NID, $TRAM_NIDFORMULARIO, $TRAM_NIDPRGUNTA, $TRAM_CNOMBRECAMPO)
+    {
+        return DB::select(
+            'call TRAM_SP_AGREGAR_RESOLUTIVO_MAPEO(?,?,?,?)',
+            array(
+                $TRAM_RESODOCU_NID,
+                $TRAM_NIDFORMULARIO,
+                $TRAM_NIDPRGUNTA,
+                $TRAM_CNOMBRECAMPO,
             )
         );
     }
@@ -320,7 +364,8 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_ELIMINAR_SECCION($TRAM_NIDTRAMITE){
+    public function TRAM_SP_ELIMINAR_SECCION($TRAM_NIDTRAMITE)
+    {
 
         return DB::select(
             'DELETE FROM tram_mdv_seccion_tramite WHERE CONF_NIDTRAMITE = ?',
@@ -328,7 +373,8 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_ELIMINAR_DOCUMENTO($TRAM_NIDTRAMITE){
+    public function TRAM_SP_ELIMINAR_DOCUMENTO($TRAM_NIDTRAMITE)
+    {
 
         return DB::select(
             'DELETE FROM tram_mdv_documento_tramite WHERE TRAD_NIDTRAMITE = ?',
@@ -336,7 +382,8 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_ELIMINAR_EDIFICIO($EDIF_NIDTRAMITE){
+    public function TRAM_SP_ELIMINAR_EDIFICIO($EDIF_NIDTRAMITE)
+    {
 
         return DB::select(
             'DELETE FROM tram_mst_edificio WHERE EDIF_NIDTRAMITE = ?',
@@ -344,7 +391,8 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_ELIMINAR_RESOLUTIVO($TRAM_NIDTRAMITE){
+    public function TRAM_SP_ELIMINAR_RESOLUTIVO($TRAM_NIDTRAMITE)
+    {
 
         return DB::select(
             'DELETE FROM tram_mst_resolutivo WHERE RESO_NIDTRAMITE = ?',
@@ -352,7 +400,8 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_ELIMINAR_CONCEPTO($TRAM_NIDTRAMITE){
+    public function TRAM_SP_ELIMINAR_CONCEPTO($TRAM_NIDTRAMITE)
+    {
 
         return DB::select(
             'DELETE FROM tram_mst_concepto_tramite WHERE CONC_NIDTRAMITE = ?',
@@ -420,7 +469,6 @@ class Cls_Gestor extends Model
                 "codigo" => 200,
                 "data" => $result
             ];
-
         } catch (\Throwable $th) {
             $response = [
                 "estatus" => "error",
@@ -434,9 +482,9 @@ class Cls_Gestor extends Model
     //Validar si un usuario puede tener acceso a la configuracion de un tramite segun su TRAM_NIDUNIDAD
     static function TRAM_SP_VALIDAR_UNIDAD_USUARIO_TRAMITE($TRAM_NIDTRAMITE, $TRAM_NIDUSUARIO)
     {
-        $response=[
-            "acceso"=> 0,
-            "pertenece"=> 0,
+        $response = [
+            "acceso" => 0,
+            "pertenece" => 0,
         ];
 
         try {
@@ -460,7 +508,6 @@ class Cls_Gestor extends Model
             $stmt->closeCursor();
 
             return $response;
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -477,7 +524,6 @@ class Cls_Gestor extends Model
                     $TRAM_NIDUSUARIO
                 )
             );
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -494,7 +540,6 @@ class Cls_Gestor extends Model
                     $TRAM_NIDTRAMITEACCEDE
                 )
             );
-
         } catch (\Throwable $th) {
             //throw $th;
         }

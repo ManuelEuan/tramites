@@ -22,15 +22,18 @@ use Carbon\Carbon;
 use PDF;
 use Illuminate\Support\Str;
 
+use PhpOffice\PhpWord\Settings;
+
 class TramitesController extends Controller
 {
-    public function __construct(){
-
+    public function __construct()
+    {
     }
 
     protected $host = 'https://remtysmerida.azurewebsites.net';
 
-    public function listado(){
+    public function listado()
+    {
 
         /*$url =   $this->host . '/api/vw_accede_tramite';
         //$dataForPost = array('UN_PARAMETRO' => UN_VALUE);
@@ -50,7 +53,8 @@ class TramitesController extends Controller
         return view('TRAMITES_CEMR.listado', compact('tramites'));
     }
 
-    public function configurar_tramite(){
+    public function configurar_tramite()
+    {
         return view('TRAMITES_CEMR.index');
     }
 
@@ -126,7 +130,6 @@ class TramitesController extends Controller
                 'recordsFiltered' => $searchValue === null ? $totalRegistros : count($tramites),
                 'data' =>  $tramites
             ];
-
         } catch (\Throwable $th) {
             $response = [
                 'data' => [],
@@ -179,10 +182,75 @@ class TramitesController extends Controller
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
     }
 
+    public function generatePrevioResolutivo($resolutivoId, $tramiteId)
+    {
+
+        $resolutivo = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO($resolutivoId)[0];
+
+        $mapeoCampos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO_MAPEO($resolutivoId, $tramiteId);
+
+        //dd($mapeoCampos);
+        /* Set the PDF Engine Renderer Path */
+        $domPdfPath = base_path('vendor/dompdf/dompdf');
+
+        Settings::setPdfRendererPath($domPdfPath);
+        Settings::setPdfRendererName('DomPDF');
+
+        $rutaBase = public_path() . '/docts/resolutivos/';
+        $rutaResolutivo =   $rutaBase . $resolutivo->RESO_CNAMEFILE;
+        /*@ Reading doc file */
+        $template = new \PhpOffice\PhpWord\TemplateProcessor($rutaResolutivo);
+
+        foreach ($mapeoCampos as $campo) {
+
+            $template->setValue($campo->TRAM_CNOMBRECAMPO, $campo->USRE_CRESPUESTA);
+        }
+
+        /*@ Replacing variables in doc file */
+        /*  $template->setValue('date', date('d-m-Y'));
+        $template->setValue('title', 'Mr.');
+        $template->setValue('firstname', 'Josue');
+        $template->setValue('lastname', 'Lopez');
+ */
+        /*@ Save Temporary Word File With New Name */
+        $saveDocPath = $rutaBase . 'new-result.docx';
+        $template->saveAs($saveDocPath);
+
+        // Load temporarily create word file
+        $Content = \PhpOffice\PhpWord\IOFactory::load($saveDocPath);
+
+        //Save it into PDF
+        $savePdfPath = $rutaBase . 'new-result.pdf';
+
+        /*@ If already PDF exists then delete it */
+        if (file_exists($savePdfPath)) {
+            unlink($savePdfPath);
+        }
+
+        //Save it into PDF
+        $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
+        $PDFWriter->save($savePdfPath);
+        //echo 'File has been successfully converted ' . $savePdfPath;
+
+        /*@ Remove temporarily created word file */
+        if (file_exists($saveDocPath)) {
+            unlink($saveDocPath);
+        }
+        //return response()->file($savePdfPath);
+
+        //dd($savePdfPath);
+
+        return redirect('/docts/resolutivos/new-result.pdf');
+
+        //return response()->file($savePdfPath, ['Content-Type' => 'application/pdf']);
+    }
+
+
     //Obtener el nombre del modulo para asistir a ventanilla
-    private function obtener_edificio_ventanilla($USTR_NIDUSUARIOTRAMITE, $USTR_NIDTRAMITE_ACCEDE){
+    private function obtener_edificio_ventanilla($USTR_NIDUSUARIOTRAMITE, $USTR_NIDTRAMITE_ACCEDE)
+    {
         //Obtenemos el valor de ID del edificio
-        $consulta = Cls_Usuario_Tramite::select('USTR_CMODULO')->where('USTR_NIDUSUARIOTRAMITE',$USTR_NIDUSUARIOTRAMITE)->take(1)->get()->first();
+        $consulta = Cls_Usuario_Tramite::select('USTR_CMODULO')->where('USTR_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->take(1)->get()->first();
         $USTR_CMODULO = $consulta->USTR_CMODULO;
         $USTR_CMODULO_DATA = [
             'NAME' => "Pendiente",
@@ -206,25 +274,25 @@ class TramitesController extends Controller
         }
 
 
-        if($USTR_CMODULO != 0){
+        if ($USTR_CMODULO != 0) {
             $lstOficinas = [];
-            if($objTramite != null){
+            if ($objTramite != null) {
                 $horarios = "";
-                foreach($objTramite['horarios'] as $objHorario){
-                    $horarios .= $objHorario ." <br/>";
+                foreach ($objTramite['horarios'] as $objHorario) {
+                    $horarios .= $objHorario . " <br/>";
                 }
                 $telefono = "";
-                foreach($objTramite['telefonos'] as $objTelefono){
-                    $telefono .= $objTelefono ." <br/>";
+                foreach ($objTramite['telefonos'] as $objTelefono) {
+                    $telefono .= $objTelefono . " <br/>";
                 }
                 $funcionarios = "";
-                foreach($objTramite['funcionarios'] as $objFuncionarios){
-                    $funcionarios .= $objFuncionarios['nombre'] ."<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
+                foreach ($objTramite['funcionarios'] as $objFuncionarios) {
+                    $funcionarios .= $objFuncionarios['nombre'] . "<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
                 }
                 $contEdi = 1;
-                foreach($objTramite['listaDetallesEdificio'] as $objEdificio){
-                    if($contEdi == $USTR_CMODULO){
-                        $USTR_CMODULO_DATA['NAME'] = $objEdificio['nombre'].". \n(".$objEdificio['direccion'] . " - " .$objEdificio['latitud'];
+                foreach ($objTramite['listaDetallesEdificio'] as $objEdificio) {
+                    if ($contEdi == $USTR_CMODULO) {
+                        $USTR_CMODULO_DATA['NAME'] = $objEdificio['nombre'] . ". \n(" . $objEdificio['direccion'] . " - " . $objEdificio['latitud'];
                         $USTR_CMODULO_DATA['LAT'] = $objEdificio['latitud'];
                         $USTR_CMODULO_DATA['LON'] = $objEdificio['longitud'];
                     }
@@ -360,7 +428,6 @@ class TramitesController extends Controller
                 "mensaje" => "¡Éxito! acción realizada con éxito.",
                 "codigo" => 200
             ];
-
         } catch (\Throwable $th) {
             $response = [
                 "estatus" => "error",
@@ -391,11 +458,11 @@ class TramitesController extends Controller
             }
 
             //Cambiar estatus y observación de documentos
-            if(isset($request->CONF_DOCUMENTOS)){
+            if (isset($request->CONF_DOCUMENTOS)) {
                 if (count($request->CONF_DOCUMENTOS)) {
 
                     foreach ($request->CONF_DOCUMENTOS as $documento) {
-    
+
                         Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
                     }
                 }
@@ -412,7 +479,6 @@ class TramitesController extends Controller
                 "mensaje" => "Se ha notificado al ciudadano los campos y documentos a corregir",
                 "ruta" => $rutaNew
             ];
-
         } catch (\Throwable $e) {
             $response = [
                 "estatus" => "error",
@@ -439,7 +505,6 @@ class TramitesController extends Controller
                 "mensaje" => "¡Éxito! acción realizada con éxito.",
                 "codigo" => 200
             ];
-
         } catch (\Throwable $th) {
             $response = [
                 "estatus" => "error",
@@ -540,7 +605,6 @@ class TramitesController extends Controller
                 "codigo" => 200,
                 "mensaje" => "Se ha notificado al ciudadano de la reprogramación de la cita",
             ];
-
         } catch (\Throwable $th) {
             $response = [
                 "estatus" => "error",
@@ -677,7 +741,6 @@ class TramitesController extends Controller
                 "mensaje" => "¡Éxito! acción realizada con éxito.",
                 "codigo" => 200,
             ];
-
         } catch (\Throwable $th) {
             $response = [
                 "estatus" => "error",
@@ -740,17 +803,17 @@ class TramitesController extends Controller
             return response()->json([
                 "Mensaje" => "Correo enviando con exito"
             ]);
-
         } catch (\Throwable $th) {
             return response()->json([
                 "error" => "error: " . $th->getMessage(),
-                "id"=> $NIDUSUARIOTRAMITE
+                "id" => $NIDUSUARIOTRAMITE
             ]);
         }
     }
 
     //Guardamos conceptos por tramite y seccion
-    public function guardar_conceptos(Request $request){
+    public function guardar_conceptos(Request $request)
+    {
         $resp_selected = array();
         $resp_cantidad = array();
 
@@ -758,12 +821,10 @@ class TramitesController extends Controller
             $a = substr($key, 0, 7);
             $b = substr($key, 0, 7);
 
-            if($a=='respc1_')
-            {
+            if ($a == 'respc1_') {
                 $resp_selected[$key] = $value;
             }
-            if($b=='respc2_')
-            {
+            if ($b == 'respc2_') {
                 $resp_cantidad[$key] = $value;
             }
         }
@@ -775,16 +836,16 @@ class TramitesController extends Controller
                 'USCON_NCANTIDAD' => null,
             ]);
 
-        foreach($resp_selected as $key => $value){
-            foreach($resp_cantidad as $key2 => $cantidad){
+        foreach ($resp_selected as $key => $value) {
+            foreach ($resp_cantidad as $key2 => $cantidad) {
                 $id = explode("_", $key2);
                 //Validar USCON_NIDUSUARIOCONCEPTO
-                if($value == $id[1]){
+                if ($value == $id[1]) {
                     Cls_Usuario_Concepto::where('USCON_NIDUSUARIOCONCEPTO', $value)
-                    ->update([
-                        'USCON_NACTIVO' => 1,
-                        'USCON_NCANTIDAD' => $cantidad,
-                    ]);
+                        ->update([
+                            'USCON_NACTIVO' => 1,
+                            'USCON_NCANTIDAD' => $cantidad,
+                        ]);
                 }
             }
         }
@@ -933,7 +994,7 @@ class TramitesController extends Controller
             foreach ($listResolutivos as $key => $value) {
                 if ($value->USRE_CRUTADOC != null && $value->USRE_CRUTADOC != "") {
                     if (file_exists(public_path($value->USRE_CRUTADOC))) {
-                        $fileNameDocumento = "R-" .$value->USRE_NIDUSUARIO_RESOLUTIVO . '.' . $value->USRE_CEXTENSION;
+                        $fileNameDocumento = "R-" . $value->USRE_NIDUSUARIO_RESOLUTIVO . '.' . $value->USRE_CEXTENSION;
                         $zip->addFile(public_path($value->USRE_CRUTADOC), $fileNameDocumento);
                     }
                 }
@@ -951,5 +1012,4 @@ class TramitesController extends Controller
         //return response()->download(public_path($fileName))->deleteFileAfterSend(true);
         return response()->json($response);
     }
-
 }

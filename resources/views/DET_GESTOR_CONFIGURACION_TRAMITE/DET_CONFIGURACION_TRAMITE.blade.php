@@ -1549,6 +1549,7 @@
 
     //Mostrar vista de resolutivo
     function TRAM_FN_VIEWRESOLUTIVO(index) {
+        alert("entre");
 
         _index = index;
         resolutivos = [];

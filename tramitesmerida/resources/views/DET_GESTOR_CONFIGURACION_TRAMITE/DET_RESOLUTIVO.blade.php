@@ -61,8 +61,8 @@
         });
 
         $('#cmbResolutivo').on('change', function() {
-            var selected = $('#cmbResolutivo').val();
-            TRAM_FN_AGREGAR_RESOLUTIVO(selected);
+            //var selected = $('#cmbResolutivo').val();
+            //TRAM_FN_AGREGAR_RESOLUTIVO(selected);
         });
 
         if (resolutivos.length > 0) {

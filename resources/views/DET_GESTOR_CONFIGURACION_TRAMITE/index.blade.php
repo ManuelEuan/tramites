@@ -82,25 +82,25 @@
             <div class="text-right botones">
                 <a href="{{route('gestor_index')}}" class="btn btn-danger border" style="color: #fff; font-weight: 900;">Cancelar</a>
                 @if($tramite['VALIDO'])
-                    @switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE)
-                        @case("ADM")
-                            <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
-                            <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
-                        @break
-                        @case("ENLOF")
-                            <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
-                            <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
-                        @break
-                        @case("ADMCT")
-                            <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
-                            @if($tramite['TRAM_NENLACEOFICIAL'] == null || $tramite['TRAM_NENLACEOFICIAL'] ==0 )
-                                <button onclick="TRAM_FN_ENVIAR_ENLACE()" class="btn btnAzul border">Enviar a Enlace Oficial</button>
-                            @else
-                                <button disabled class="btn btnAzul border">Enviar a Enlace Oficial</button>
-                            @endif
-                        @break
-                        @default
-                    @endswitch
+                @switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE)
+                @case("ADM")
+                <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
+                <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
+                @break
+                @case("ENLOF")
+                <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
+                <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
+                @break
+                @case("ADMCT")
+                <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
+                @if($tramite['TRAM_NENLACEOFICIAL'] == null || $tramite['TRAM_NENLACEOFICIAL'] ==0 )
+                <button onclick="TRAM_FN_ENVIAR_ENLACE()" class="btn btnAzul border">Enviar a Enlace Oficial</button>
+                @else
+                <button disabled class="btn btnAzul border">Enviar a Enlace Oficial</button>
+                @endif
+                @break
+                @default
+                @endswitch
                 @endif
             </div>
         </div>
@@ -142,6 +142,48 @@
             </div>
             <div class="modal-footer">
                 <button onclick="TRAM_FN_AGREGARSECCIONLISTA()" type="button" class="btn btnAzul">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalAddCampoResolutivo" tabindex="-1" role="dialog" aria-labelledby="modalAddCampoResolutivoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAddCampoResolutivoLabel">Agregar Campo de Resolutivo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group" style="width: 100%; margin: 12px;">
+                        <label for="cmbFormulario">Seleccione el Formulario</label>
+                        <select class="form-control" id="cmbFormulario" onchange="TRAM_FN_CAMBIOPREGUNTA()">
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group" style="width: 100%; margin: 12px;">
+                        <label for="cmbPregunta">Seleccione la pregunta</label>
+                        <select class="form-control" id="cmbPregunta">
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="form-group" style="width: 100%; margin: 12px;">
+                        <label for="txtCampoPlabtilla">Escriba el campo de la platitlla word</label>
+                        <input type="text" class="form-control" id="txtCampoPlabtilla" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="TRAM_FN_AGREARCAMPORESOLUTIVO()" type="button" class="btn btnAzul">Agregar</button>
             </div>
         </div>
     </div>
@@ -484,6 +526,7 @@
     var list_conceptos_tramite = [];
     var list_conceptos_temporal = [];
     var list_resolutivos_tramite = [];
+    var list_preguntas_resolutivos = [];
 
     //Variables de configuracion
     var list_sections = [];
@@ -531,6 +574,17 @@
         CONF_LIST_PAGO: [],
         CONF_LIST_RESOLUTIVO: []
     };
+
+    //resolutivo electronico
+    var objResolutivoEletronico = {
+        list_mapeo_resolutivo: [],
+        nameFile: '',
+        fileBase64: '',
+        nameResolutivo: ''
+
+    }
+    //var list_mapeo_resolutivo = [];
+
 
     $(document).ready(function() {
 
@@ -1061,6 +1115,11 @@
             list_resolutivos_tramite = data;
         });
 
+        $.get('/gestores/consultar_preguntas_formulario', function(data) {
+            console.log("preguntas", data);
+            list_preguntas_resolutivos = data;
+        });
+
         //Nuevo
         TRAM_AJX_OBTENER_TRAMITE();
         TRAM_FN_LLENARSELECTSECTION();
@@ -1150,6 +1209,153 @@
 
     function TRAM_FN_MOSTRARMODALSECCION() {
         $('#modalAddSection').modal('show');
+    }
+
+    function TRAM_FN_MOSTRARMODALADDCAMPORESOLUTIVO() {
+
+        var opcionesCmbFormulario = '';
+        list_preguntas_resolutivos.forEach(function(element) {
+            opcionesCmbFormulario = opcionesCmbFormulario + '<option value="' + element.FORMID + '">' + element.FORM_CNOMBRE + '</option>';
+            console.log("pregunta", element);
+        });
+
+        $("#cmbFormulario").html(opcionesCmbFormulario);
+
+        opcionesCmbFormulario = '';
+        if (list_preguntas_resolutivos.length > 0) {
+
+            list_preguntas_resolutivos[0].preguntas.forEach(function(element) {
+                opcionesCmbFormulario = opcionesCmbFormulario + '<option value="' + element.PREID + '">' + element.FORM_CPREGUNTA + '</option>';
+                //console.log("pregunta", element);
+            });
+
+            $("#cmbPregunta").html(opcionesCmbFormulario);
+
+        }
+
+        $("#txtCampoPlabtilla").val('');
+
+
+        $('#modalAddCampoResolutivo').modal('show');
+    }
+
+    function TRAM_FN_CAMBIOPREGUNTA() {
+
+        var formulario = $("#cmbFormulario").val();
+
+        var opcionesCmbFormulario = '';
+
+        var resolutivo = list_preguntas_resolutivos.find(element => element.FORMID == formulario);
+
+        if (resolutivo != undefined) {
+            resolutivo.preguntas.forEach(function(element) {
+                opcionesCmbFormulario = opcionesCmbFormulario + '<option value="' + element.PREID + '">' + element.FORM_CPREGUNTA + '</option>';
+            });
+
+            $("#cmbPregunta").html(opcionesCmbFormulario);
+        }
+
+
+    }
+
+    function TRAM_FN_AGREARCAMPORESOLUTIVO() {
+
+        var campo = {
+            idFormulario: undefined,
+            formulario: undefined,
+            idPregunta: undefined,
+            pregunta: undefined,
+            campo: undefined,
+        }
+
+        campo.idFormulario = $("#cmbFormulario").val();
+        campo.formulario = $("#cmbFormulario option:selected").text();
+        campo.idPregunta = $("#cmbPregunta").val();
+        campo.pregunta = $("#cmbPregunta option:selected").text();
+        campo.campo = $("#txtCampoPlabtilla").val();
+
+        objResolutivoEletronico.list_mapeo_resolutivo.push(campo);
+
+        TRAM_FN_RENDERCAMPOSRESOLUTIVO();
+
+
+
+    }
+
+    function TRAM_FN_ChangeFileResolutivoElectronico() {
+
+        const fileInput = document.querySelector('#fileResolutivo');
+
+        // Listen for the change event so we can capture the file
+        fileInput.addEventListener('change', (e) => {
+            // Get a reference to the file
+            const file = e.target.files[0];
+
+            // Encode the file using the FileReader API
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                // Use a regex to remove data url part
+                const base64String = reader.result
+                    .replace('data:', '')
+                    .replace(/^.+,/, '');
+
+                objResolutivoEletronico.fileBase64 = base64String;
+                objResolutivoEletronico.nameFile = e.target.files[0].name;
+
+                $("#lbFileNameResolutivo").html("Nombre archivo: " + objResolutivoEletronico.nameFile);
+
+                console.log("obj file", objResolutivoEletronico);
+                // Logs wL2dvYWwgbW9yZ...
+            };
+            reader.readAsDataURL(file);
+        });
+
+
+    }
+
+    function TRAM_FN_CAMBIORESOLUTIVO() {
+
+        var resulitivoSelected = $("#cmbFormulario").val();
+
+        objResolutivoEletronico.nameResolutivo = resulitivoSelected;
+
+    }
+
+    function TRAM_FN_RENDERCAMPOSRESOLUTIVO() {
+
+        var htmlCampos = '';
+        objResolutivoEletronico.list_mapeo_resolutivo.forEach(function(element) {
+            htmlCampos = htmlCampos + `
+            <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="respuesta_414_1106">Campo Plantilla</label>
+                    <input type="text" minlength="2" maxlength="100" class="form-control" name="update_respuesta_414_1106" id="respuesta_414_1106" value="` + element.campo + `"  required="" readonly>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="encabezado_1106">Campo Formulario</label>
+                    <input type="text" minlength="2" maxlength="100" class="form-control" name="update_respuesta_414_1106" id="respuesta_414_1106" value="` + element.pregunta + `" placeholder="" required="" readonly>
+
+                </div>
+            </div>
+            <div class="col-md-0" id="contenedorRespuestaEspecial_update_414_1106"></div>
+            <span style="margin-top:2%;">
+                <button type="button" title="Eliminar" class="btn btn-link" onclick="">
+                    <i class="far fa-trash-alt" style="color: black"></i>
+                </button>
+            </span>
+        </div>
+            `;
+        });
+
+        $("#contenerdorCamposPlantillaResolutivo").html(htmlCampos);
+
+        $('#modalAddCampoResolutivo').modal('hide');
+
+
     }
 
     //Agregar seccion a lista de secciones
@@ -1689,6 +1895,7 @@
             success: function(data) {
 
                 $('#detalle_seccion').html(data);
+                TRAM_FN_ChangeFileResolutivoElectronico();
             },
             error: function(data) {
                 // Swal.fire({
@@ -1760,17 +1967,17 @@
         $('#list_edificios').html('');
 
         var listDefault = @json($edificios);
-        
+
         $.each(values, function(key, value) {
             var item
-            for(var a = 0; a < listDefault.length; a++){
+            for (var a = 0; a < listDefault.length; a++) {
                 //item = listDefault[a].find(x => x.id === value);
-                if(listDefault[a].id == value){
+                if (listDefault[a].id == value) {
                     item = listDefault[a];
                     break;
                 }
             }
-            
+
             var itemTemEdif = {
                 "EDIF_NIDEDIFICIO": item.id,
                 "EDIF_NIDTRAMITE": 0,
@@ -2206,8 +2413,7 @@
                         formulario: formularioSelect,
                         documentos: documentos
                     };
-                } 
-                else {
+                } else {
                     return {
                         title: '¡Documentos no seleccionados!',
                         mensaje: "Seleccione documentos necesarios para realizar el trámite",
@@ -2595,7 +2801,8 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: []
+                                CONF_LIST_RESOLUTIVO: [],
+                                CONF_DATA_RESOLUTIVO: null
                             };
 
                             section.CONF_LIST_FORMULARIO.push({
@@ -2636,7 +2843,8 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: []
+                                CONF_LIST_RESOLUTIVO: [],
+                                CONF_DATA_RESOLUTIVO: null
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }
@@ -2667,7 +2875,8 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: []
+                                CONF_LIST_RESOLUTIVO: [],
+                                CONF_DATA_RESOLUTIVO: null
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }
@@ -2709,7 +2918,8 @@
                                     CONF_LIST_DOCUMENTO: [],
                                     CONF_LIST_EDIFICIO: x.list_edificios,
                                     CONF_LIST_PAGO: [],
-                                    CONF_LIST_RESOLUTIVO: []
+                                    CONF_LIST_RESOLUTIVO: [],
+                                    CONF_DATA_RESOLUTIVO: null
                                 };
                                 tramite.TRAM_LIST_SECCION.push(section);
                             }
@@ -2741,7 +2951,8 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: x.list_pago,
-                                CONF_LIST_RESOLUTIVO: []
+                                CONF_LIST_RESOLUTIVO: [],
+                                CONF_DATA_RESOLUTIVO: null
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }
@@ -2761,12 +2972,18 @@
                             CONF_LIST_DOCUMENTO: [],
                             CONF_LIST_EDIFICIO: [],
                             CONF_LIST_PAGO: [],
-                            CONF_LIST_RESOLUTIVO: []
+                            CONF_LIST_RESOLUTIVO: [],
+                            CONF_DATA_RESOLUTIVO: null
                         };
                         tramite.TRAM_LIST_SECCION.push(section);
                         break;
                     case 7:
-                        if (!(x.list_resolutivo.length > 0)) {
+
+
+                        var validacionResolutivo = true;
+
+
+                        if (validacionResolutivo == false) {
                             TRAM_FN_VIEWRESOLUTIVO(index);
                             TRAM_FN_SELECCIONARSECCION(index);
                             Swal.fire({
@@ -2791,10 +3008,53 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: x.list_resolutivo
+                                CONF_LIST_RESOLUTIVO: x.list_resolutivo,
+                                CONF_DATA_RESOLUTIVO: {
+                                    RESO_NID: 0,
+                                    RESO_NIDTRAMITE: 0,
+                                    RESO_NIDRESOLUTIVO: 0,
+                                    RESO_CNOMBRE: $("#cmbResolutivo").val(),
+                                    RESO_NIDSECCION: 0,
+                                    RESO_NOMBREFILE: objResolutivoEletronico.nameFile,
+                                    RESO_FILEBASE64: objResolutivoEletronico.fileBase64,
+                                    MAPEO: objResolutivoEletronico.list_mapeo_resolutivo,
+
+                                }
+
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }
+
+                        /* 
+                                                if (!(x.list_resolutivo.length > 0)) {
+                                                    TRAM_FN_VIEWRESOLUTIVO(index);
+                                                    TRAM_FN_SELECCIONARSECCION(index);
+                                                    Swal.fire({
+                                                        icon: 'warning',
+                                                        title: x.name,
+                                                        text: "Es necesario seleccionar el resolutivo",
+                                                        footer: ''
+                                                    });
+                                                    cancel_forEach = true;
+                                                } else {
+                                                    var section = {
+                                                        CONF_NID: 0,
+                                                        CONF_NIDTRAMITE: 0,
+                                                        CONF_NSECCION: 'Resolutivo electrónico',
+                                                        CONF_CNOMBRESECCION: 'Resolutivo electrónico',
+                                                        CONF_ESTATUSSECCION: true,
+                                                        CONF_NDIASHABILES: null,
+                                                        CONF_CDESCRIPCIONCITA: null,
+                                                        CONF_CDESCRIPCIONVENTANILLA: null,
+                                                        CONF_NORDEN: index + 1,
+                                                        CONF_LIST_FORMULARIO: [],
+                                                        CONF_LIST_DOCUMENTO: [],
+                                                        CONF_LIST_EDIFICIO: [],
+                                                        CONF_LIST_PAGO: [],
+                                                        CONF_LIST_RESOLUTIVO: x.list_resolutivo
+                                                    };
+                                                    tramite.TRAM_LIST_SECCION.push(section);
+                                                } */
                         break;
                     default:
                         break;
@@ -3109,7 +3369,10 @@
                         tramite.TRAM_LIST_SECCION.push(section);
                         break;
                     case 7:
-                        if (!(x.list_resolutivo.length > 0)) {
+                        var validacionResolutivo = true;
+
+
+                        if (validacionResolutivo == false) {
                             TRAM_FN_VIEWRESOLUTIVO(index);
                             TRAM_FN_SELECCIONARSECCION(index);
                             Swal.fire({
@@ -3134,7 +3397,18 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: x.list_resolutivo
+                                CONF_LIST_RESOLUTIVO: x.list_resolutivo,
+                                CONF_DATA_RESOLUTIVO: {
+                                    RESO_NID: 0,
+                                    RESO_NIDTRAMITE: 0,
+                                    RESO_NIDRESOLUTIVO: 0,
+                                    RESO_CNOMBRE: $("#cmbResolutivo").val(),
+                                    RESO_NIDSECCION: 0,
+                                    RESO_NOMBREFILE: objResolutivoEletronico.nameFile,
+                                    RESO_FILEBASE64: objResolutivoEletronico.fileBase64,
+                                    MAPEO: objResolutivoEletronico.list_mapeo_resolutivo,
+
+                                }
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }
@@ -3452,7 +3726,10 @@
                         tramite.TRAM_LIST_SECCION.push(section);
                         break;
                     case 7:
-                        if (!(x.list_resolutivo.length > 0)) {
+                        var validacionResolutivo = true;
+
+
+                        if (validacionResolutivo == false) {
                             TRAM_FN_VIEWRESOLUTIVO(index);
                             TRAM_FN_SELECCIONARSECCION(index);
                             Swal.fire({
@@ -3477,7 +3754,18 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: x.list_resolutivo
+                                CONF_LIST_RESOLUTIVO: x.list_resolutivo,
+                                CONF_DATA_RESOLUTIVO: {
+                                    RESO_NID: 0,
+                                    RESO_NIDTRAMITE: 0,
+                                    RESO_NIDRESOLUTIVO: 0,
+                                    RESO_CNOMBRE: $("#cmbResolutivo").val(),
+                                    RESO_NIDSECCION: 0,
+                                    RESO_NOMBREFILE: objResolutivoEletronico.nameFile,
+                                    RESO_FILEBASE64: objResolutivoEletronico.fileBase64,
+                                    MAPEO: objResolutivoEletronico.list_mapeo_resolutivo,
+
+                                }
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }

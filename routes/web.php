@@ -29,9 +29,9 @@ Route::post('/registrar/agregar', array('uses' => 'RegistroController@agregar'))
 Route::get('/registrar/validar_rfc/{StrRfc}', array('uses' => 'RegistroController@validar_rfc'));
 Route::get('/registrar/validar_curp/{StrCurp}', array('uses' => 'RegistroController@validar_curp'));
 Route::get('/registrar/validar_correo/{StrCorreo}', array('uses' => 'RegistroController@validar_correo'));
-Route::get('/registrar/localidades/{Strlocalidad}',array('uses' => 'RegistroController@localidades'));
-Route::get('/registrar/estados',array('uses' => 'RegistroController@estados'));
-Route::get('/registrar/municipios',array('uses' => 'RegistroController@municipios'));
+Route::get('/registrar/localidades/{Strlocalidad}', array('uses' => 'RegistroController@localidades'));
+Route::get('/registrar/estados', array('uses' => 'RegistroController@estados'));
+Route::get('/registrar/municipios', array('uses' => 'RegistroController@municipios'));
 
 
 Route::get('/perfil', array('uses' => 'PerfilController@index'));
@@ -105,6 +105,7 @@ Route::group(['prefix' => 'tramite_servicio_cemr'], function () {
     Route::post('/find', 'TramitesController@find');
     Route::get('/detalle/{id}', 'TramitesController@detalle');
     Route::get('/seguimiento/{id}', 'TramitesController@seguimiento')->name('seguimiento_tramite_servidor');
+    Route::get('/generate_previo_resolutivo/{resolutivoId}/{tramiteId}', 'TramitesController@generatePrevioResolutivo')->name('generate_previo_resolutivo');
     Route::get('/obtener_tramite/{id}', 'TramitesController@obtener_tramite_seguimiento');
     Route::post('/seccion_formulario_incompleta', 'TramitesController@seccion_formulario_incompleta');
     Route::post('/seccion_formulario_aprobado', 'TramitesController@aprobar_seccion_formulario');
@@ -182,7 +183,7 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
     Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@consultar_tramite'))->name("gestor_consultar_tramite");
 
-    Route::group(['prefix' => 'configuracion'], function (){
+    Route::group(['prefix' => 'configuracion'], function () {
         Route::get('/seccion_formulario', array('uses' => 'GestorController@view_formulario'))->name("seccion_formulario");
         Route::get('/seccion_revision', array('uses' => 'GestorController@view_revision'))->name("seccion_revision");
         Route::get('/seccion_cita', array('uses' => 'GestorController@view_cita'))->name("seccion_cita");
@@ -191,7 +192,7 @@ Route::group(['prefix' => 'gestores'], function () {
         Route::get('/seccion_analisis_interno', array('uses' => 'GestorController@view_analisis_modulo_interno'))->name("seccion_analisis_interno");
         Route::get('/seccion_resolutivo', array('uses' => 'GestorController@view_resolutivo'))->name("seccion_resolutivo");
     });
-    
+
     Route::get('/consultar_formulario', array('uses' => 'GestorController@consultar_formulario'))->name("gestor_consultar_formulario");
     Route::get('/consultar_documento_tramite/{IntTramite}', array('uses' => 'GestorController@consultar_documento_tramite'))->name("gestor_consultar_documento_tramite");
     Route::post('/crear', array('uses' => 'GestorController@save'))->name('gestor_crear_configuracion');
@@ -201,6 +202,7 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/consultar_filtro', array('uses' => 'GestorController@obtener_filtro'))->name("consultar_filtro_gestores");
     Route::get('/set_json_value_tramite', array('uses' => 'GestorController@set_json_value_tramite'))->name("set_json_value_tramite");
     Route::get('/consultar_resolutivo', array('uses' => 'GestorController@consultar_resolutivo'))->name("consultar_resolutivo");
+    Route::get('/consultar_preguntas_formulario', array('uses' => 'GestorController@consultar_preguntas_formulario'))->name("consultar_preguntas_formulario");
     Route::get('/unidad_administrativa/{id}', array('uses' => 'GestorController@unidad_administrativa'))->name("consultar_unidad_administrativa");
     Route::get('/formulario', array('uses' => 'GestorController@formulario'))->name("formulario_gestor");
 });
@@ -215,10 +217,10 @@ Route::group(['prefix' => 'servidorespublicos'], function () {
     Route::get('/detalle/{id}', array('uses' => 'ServidorPublicoController@detalle'));
     Route::get('/validar_correo/{StrCorreo}', array('uses' => 'ServidorPublicoController@validar_correo'));
     //Rutas Funcionarios
-    Route::get('/getDep',array('uses' => 'ServidorPublicoController@getDep'));
-    Route::get('/getUnity',array('uses' => 'ServidorPublicoController@getUnity'));
-    Route::get('/getTramites',array('uses' => 'ServidorPublicoController@getTramites'));
-    Route::get('/getEdificios',array('uses' => 'ServidorPublicoController@getEdificios'));
+    Route::get('/getDep', array('uses' => 'ServidorPublicoController@getDep'));
+    Route::get('/getUnity', array('uses' => 'ServidorPublicoController@getUnity'));
+    Route::get('/getTramites', array('uses' => 'ServidorPublicoController@getTramites'));
+    Route::get('/getEdificios', array('uses' => 'ServidorPublicoController@getEdificios'));
 });
 
 Route::get('/edificios', array('uses' => 'DatosDurosController@edificios'));

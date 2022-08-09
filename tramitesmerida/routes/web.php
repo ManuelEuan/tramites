@@ -22,13 +22,15 @@ Route::get('/recuperar_cuenta/{StrToken}', array('uses' => 'LoginController@recu
 Route::get('/recuperar/{StrToken}', array('uses' => 'LoginController@recuperar'));
 Route::post('/cambiar_contrasena', array('uses' => 'LoginController@cambiar_contrasena'));
 
+
+
 Route::get('/registrar', function () {
     return view('MST_REGISTRO.index');
 });
 Route::post('/registrar/agregar', array('uses' => 'RegistroController@agregar'));
 Route::get('/registrar/validar_rfc/{StrRfc}', array('uses' => 'RegistroController@validar_rfc'));
 Route::get('/registrar/validar_correo/{StrCorreo}', array('uses' => 'RegistroController@validar_correo'));
-Route::get('/registrar/localidades/{Strlocalidad}',array('uses' => 'RegistroController@localidades'));
+Route::get('/registrar/localidades/{Strlocalidad}', array('uses' => 'RegistroController@localidades'));
 
 
 

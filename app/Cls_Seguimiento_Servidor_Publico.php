@@ -54,7 +54,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
             $response['total'] = $stmt->fetchAll(\PDO::FETCH_OBJ);
 
             return $response;
-
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
@@ -85,7 +84,7 @@ class Cls_Seguimiento_Servidor_Publico extends Model
 
             //Segundo resultado: Secciones del trámite
             $stmt->nextRowset();
-            $response['secciones']= $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $response['secciones'] = $stmt->fetchAll(\PDO::FETCH_OBJ);
 
             //Tercer resultado: Formulario del trámite
             $stmt->nextRowset();
@@ -109,9 +108,9 @@ class Cls_Seguimiento_Servidor_Publico extends Model
 
             $stmt->closeCursor();
 
-            foreach($formularios as $form){
+            foreach ($formularios as $form) {
                 $form->secciones = [];
-                foreach($secciones as $sec){
+                foreach ($secciones as $sec) {
                     $sec->preguntas = DB::select(
                         'SELECT a.FORM_NID, a.FORM_NFORMULARIOID, a.FORM_NSECCIONID, a.FORM_CPREGUNTA, b.FORM_CTIPORESPUESTA FROM tram_form_pregunta as a
                         JOIN tram_form_pregunta_respuestas as b on a.FORM_NID = b.FORM_NPREGUNTAID
@@ -119,14 +118,16 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                         GROUP BY a.FORM_NID, a.FORM_NFORMULARIOID, a.FORM_NSECCIONID, a.FORM_CPREGUNTA, b.FORM_CTIPORESPUESTA',
                         array($form->FORM_NIDFORMULARIO, $sec->FORM_NID)
                     );
-                    foreach($sec->preguntas as $preg){
-                        $preg->respuestas = DB::select('SELECT a.FORM_NID, a.FORM_NPREGUNTAID, a.FORM_CTIPORESPUESTA, a.FORM_CVALOR, a.FORM_BBLOQUEAR, b.FORM_CTIPORESPUESTA as FORM_CTIPORESPUESTAESPECIAL
+                    foreach ($sec->preguntas as $preg) {
+                        $preg->respuestas = DB::select(
+                            'SELECT a.FORM_NID, a.FORM_NPREGUNTAID, a.FORM_CTIPORESPUESTA, a.FORM_CVALOR, a.FORM_BBLOQUEAR, b.FORM_CTIPORESPUESTA as FORM_CTIPORESPUESTAESPECIAL
                         FROM tram_form_pregunta_respuestas as a
                         LEFT JOIN tram_form_pregunta_respuestas_especial as b on b.FORM_NPREGUNTARESPUESTAID = a.FORM_NID
                         WHERE a.FORM_NPREGUNTAID = ?
-                        GROUP BY a.FORM_NID, a.FORM_NPREGUNTAID, a.FORM_CTIPORESPUESTA, a.FORM_CVALOR, a.FORM_BBLOQUEAR, b.FORM_CTIPORESPUESTA', array($preg->FORM_NID)
+                        GROUP BY a.FORM_NID, a.FORM_NPREGUNTAID, a.FORM_CTIPORESPUESTA, a.FORM_CVALOR, a.FORM_BBLOQUEAR, b.FORM_CTIPORESPUESTA',
+                            array($preg->FORM_NID)
                         );
-                        foreach($preg->respuestas as $resp){
+                        foreach ($preg->respuestas as $resp) {
                             $resp->respuestas_especial =  DB::select('SELECT * FROM tram_form_pregunta_respuestas_especial where FORM_NPREGUNTARESPUESTAID = ?', [$resp->FORM_NID]);
                         }
                     }
@@ -138,14 +139,11 @@ class Cls_Seguimiento_Servidor_Publico extends Model
             $response['formularios'] = $formularios;
 
             return $response;
-
         } catch (\Throwable $th) {
 
-            dd( [
+            dd([
                 "error" => $th
             ]);
-
-
         }
     }
 
@@ -251,7 +249,49 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         }
     }
 
-    public function TRAM_GUARDAR_SECCION_FORMULARIO($USTR_NIDUSUARIOTRAMITE, $USTR_NESTATUS, Array $Preguntas)
+    static function TRAM_OBTENER_RESOLUTIVO($NIDRESOLUTIVO)
+    {
+        try {
+            return DB::select(
+                'SELECT * FROM tram_mst_resolutivo WHERE RESO_NID = ?',
+                array($NIDRESOLUTIVO)
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+
+    static function TRAM_OBTENER_RESOLUTIVO_MAPEO($NIDRESOLUTIVO, $NIDUSUARIOTRAMITE)
+    {
+        try {
+            return DB::select(
+                '
+                SELECT 
+                tr.RESO_NID,
+                tut.USTR_NIDUSUARIOTRAMITE,
+                tr.RESO_NIDRESOLUTIVO,
+                tr.RESO_CNOMBRE,
+                tfp.FORM_NSECCIONID,
+                tfp.FORM_CPREGUNTA,
+                tur.USRE_CRESPUESTA,
+                trm.TRAM_CNOMBRECAMPO
+                FROM tram_mdv_usuariorespuestas tur
+                INNER JOIN tram_form_pregunta tfp ON tfp.FORM_NID = tur.USRE_NIDPREGUNTA
+                INNER JOIN tram_mst_resolutivo_mapeo trm ON tur.USRE_NIDPREGUNTA = trm.TRAM_NIDPRGUNTA
+                INNER JOIN tram_mdv_usuariotramite tut ON tut.USTR_NIDUSUARIOTRAMITE = tur.USRE_NIDUSUARIOTRAMITE
+                INNER JOIN tram_mst_resolutivo tr ON tr.RESO_NID = trm.TRAM_RESODOCU_NID
+                WHERE tr.RESO_NID = ? AND tut.USTR_NIDUSUARIOTRAMITE = ?',
+                array($NIDRESOLUTIVO, $NIDUSUARIOTRAMITE)
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+
+
+    public function TRAM_GUARDAR_SECCION_FORMULARIO($USTR_NIDUSUARIOTRAMITE, $USTR_NESTATUS, array $Preguntas)
     {
         try {
 
@@ -313,7 +353,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                     array($CONF_NIDUSUARIOTRAMITE)
                 );
             }
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -427,7 +466,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
 
             //Validamos estatus final de trámite segun las secciones
             Cls_Seguimiento_Servidor_Publico::validar_seccion_tramite($CONF_NIDUSUARIOTRAMITE);
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -449,7 +487,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                 'UPDATE tram_aux_seccion_seguimiento_tramite SET SSEGTRA_NIDESTATUS = 3 WHERE SSEGTRA_NIDSECCION_SEGUIMIENTO = ? AND SSEGTRA_NIDUSUARIOTRAMITE = ?',
                 array($SSEGTRA_NIDSECCION_SEGUIMIENTO, $CONF_NIDUSUARIOTRAMITE)
             );
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -476,7 +513,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
 
             //Validamos estatus final de trámite segun las secciones
             Cls_Seguimiento_Servidor_Publico::validar_seccion_tramite($CONF_NIDUSUARIOTRAMITE);
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -498,7 +534,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                 'UPDATE tram_aux_seccion_seguimiento_tramite SET SSEGTRA_NIDESTATUS = 3 WHERE SSEGTRA_NIDSECCION_SEGUIMIENTO = ? AND SSEGTRA_NIDUSUARIOTRAMITE = ?',
                 array($SSEGTRA_NIDSECCION_SEGUIMIENTO, $CONF_NIDUSUARIOTRAMITE)
             );
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -524,7 +559,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
 
             //Validamos estatus final de trámite segun las secciones
             Cls_Seguimiento_Servidor_Publico::validar_seccion_tramite($CONF_NIDUSUARIOTRAMITE);
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -550,7 +584,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
 
             //Validamos estatus final de trámite segun las secciones
             Cls_Seguimiento_Servidor_Publico::validar_seccion_tramite($CONF_NIDUSUARIOTRAMITE);
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -576,7 +609,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
 
             //Validamos estatus final de trámite segun las secciones
             Cls_Seguimiento_Servidor_Publico::validar_seccion_tramite($CONF_NIDUSUARIOTRAMITE);
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -648,7 +680,6 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                 'UPDATE tram_mdv_usuariotramite SET USTR_NESTATUS = 9 WHERE USTR_NIDUSUARIOTRAMITE = ?',
                 array($CONF_NIDUSUARIOTRAMITE)
             );
-
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -687,12 +718,11 @@ class Cls_Seguimiento_Servidor_Publico extends Model
             $exec = $stmt->execute();
 
             //Primer resultado
-            $tramite= $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $tramite = $stmt->fetchAll(\PDO::FETCH_OBJ);
 
             $stmt->closeCursor();
 
             return $tramite;
-
         } catch (\Throwable $th) {
             return [];
         }
@@ -713,10 +743,8 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                     array($NIDUSUARIOTRAMITE)
                 );
             }
-
         } catch (\Throwable $th) {
             //throw $th;
         }
     }
-
 }
