@@ -380,6 +380,29 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         }
     }
 
+    static function ActualizarDocsUsuario($docId, $vigencia){
+        $affected = DB::table('tram_mst_documentosbase')
+              ->where('id', $docId)
+              ->update(['VIGENCIA_FIN' => $vigencia]);
+        return $affected;
+    }
+
+    static function getVigencia($idDoc){
+        $sql = DB::table('tram_mst_documentosbase')
+                ->select('VIGENCIA_FIN as vigencia')
+                ->where('id', $idDoc)
+                ->first();
+        return $sql;
+    }
+
+    static function getIdDocExp($idDoc){
+        $sql = DB::table('tram_mdv_usuariordocumento')
+                ->select('idDocExpediente as id')
+                ->where('USDO_NIDTRAMITEDOCUMENTO', $idDoc)
+                ->first();
+        return $sql;
+    }
+
     /********* Formulario ******** */
 
     //Aprobar sección de formulario

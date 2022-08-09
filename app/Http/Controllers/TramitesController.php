@@ -400,6 +400,9 @@ class TramitesController extends Controller
                     $doc->TRAD_CEXTENSION = $_doc['USDO_CEXTENSION'];
                     $doc->TRAD_CRUTADOC = $_doc['USDO_CRUTADOC'];
                     $doc->TRAD_NPESO = $_doc['USDO_NPESO'];
+                    $doc->idDocExpediente = $_doc['idDocExpediente'];
+                    $consulartVigencia = Cls_Seguimiento_Servidor_Publico::getVigencia($doc->idDocExpediente);
+                    $doc->vigencia = $consulartVigencia->vigencia ?? "";
                     break;
                 }
             }
@@ -464,6 +467,9 @@ class TramitesController extends Controller
                     foreach ($request->CONF_DOCUMENTOS as $documento) {
 
                         Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
+                        //Aqui se agrega la vigencia
+                        $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
+                        Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
                     }
                 }
             }
@@ -499,6 +505,14 @@ class TramitesController extends Controller
 
             Cls_Seguimiento_Servidor_Publico::TRAM_ACEPTAR_SECCION_REVISION_DOCUMENTOS($request->CONF_NIDUSUARIOTRAMITE, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO);
             $this->enviar_correo_aprobacion($request->CONF_NIDUSUARIOTRAMITE);
+            if (count($request->CONF_DOCUMENTOS)) {
+
+                foreach ($request->CONF_DOCUMENTOS as $documento) {
+                    //Aqui se hace la busqueda.
+                    $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
+                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
+                }
+            }
 
             $response = [
                 "estatus" => "success",
@@ -539,6 +553,9 @@ class TramitesController extends Controller
                 foreach ($request->CONF_DOCUMENTOS as $documento) {
 
                     Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
+                    //Aqui se hace la busqueda.
+                    $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
+                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
                 }
             }
 
