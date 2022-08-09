@@ -873,8 +873,8 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="resolutivo_${pregunda_id}">Tipo respuesta</label>
-                                    <select name="resolutivo_${pregunda_id}" id="resolutivo_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                    <label for="resolutivo_${pregunda_id}">¿Es resolutivo?</label>
+                                    <select name="resolutivo_${pregunda_id}" id="resolutivo" class="form-control" onchange="cambiaTipoRespuesta(this);">
                                         <option value= '1' selected>SI</option>
                                         <option value= '0'>NO</option>
                                     </select>
@@ -920,7 +920,7 @@
                                 </div>
                                 
                                 <div class=" col-md-3 mb-3">
-                                    <label for="update_resolutivo_${element.FORM_NID}">Pregunta</label>
+                                    <label for="update_resolutivo_${element.FORM_NID}">¿Es resolutivo?</label>
                                     <select name="update_resolutivo_${element.FORM_NID}" id="update_resolutivo_${element.FORM_NID}" class="form-control" onchange="cambiaTipoRespuesta(this);">
                                         <option value= '1'     ${resol   == 1 ? 'selected': ''}>SI</option>
                                         <option value= '0'       ${resol   == 0 ? 'selected': ''}>NO</option>
@@ -1119,6 +1119,13 @@
                             <option value= 'especial'>Especial</option>
                         </select>
                     </div>
+                    <div class="col-md-3 mb-3">
+                                    <label for="resolutivo_${pregunda_id}">¿Es resolutivo?</label>
+                                    <select name="resolutivo_${pregunda_id}" id="resolutivo" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                        <option value= '1' selected>SI</option>
+                                        <option value= '0'>NO</option>
+                                    </select>
+                                </div>
 
                     <span style="margin-top: 1%;">
                         <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${pregunda_id}')">
@@ -1521,9 +1528,9 @@
                         });
                     }
                 }
-
+                $reslu = $('#resolutivo').val();
                 let preguntas = JSON.stringify(completo);
-                let data    = {"formulario_id": formulario_id, "seccion_id": seccion_id, "preguntas": preguntas, "eliminados":  JSON.stringify(eliminados) };
+                let data    = {"formulario_id": formulario_id, "seccion_id": seccion_id, "preguntas": preguntas, "eliminados":  JSON.stringify(eliminados), "resolutivo":$reslu };
 
                 request = $.ajax({
                     type: 'POST',
