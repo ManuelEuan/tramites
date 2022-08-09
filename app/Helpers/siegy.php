@@ -13,10 +13,16 @@ if(! function_exists('siegy_path')) {
         $url    = implode("/", $string)."/public";
         $final  = $url.($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
 
-        if(!File::isDirectory($path)) {
-            if(!File::makeDirectory($url, $mode = 0777, true, true))
-                $response = false;
+        try{
+            if(!File::isDirectory($path)) {
+                if(!File::makeDirectory($url, $mode = 0777, true, true))
+                    $response = false;
+            }
         }
+        catch(Exception $ex){
+            throw $ex;
+        }
+        
         return $final;
     }
 }
