@@ -36,7 +36,8 @@
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/simple-cache": "^1.0",
-        "pusher/pusher-php-server": "~3.0"
+        "pusher/pusher-php-server": "~3.0",
+        "simplesoftwareio/simple-qrcode": "~4"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
@@ -63,6 +64,9 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files": [
+            "app/Helpers/Siegy.php"
         ]
     },
     "autoload-dev": {

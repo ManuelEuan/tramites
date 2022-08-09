@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Cls_Bitacora;
 use App\Cls_Usuario_Tramite;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class TramiteServicioController extends Controller
      * Construct Gestor
      */
     public function __construct() {
-        $this->middleware('auth');
+        /* $this->middleware('auth'); */
         $this->tramiteService   = new TramiteService();
         $this->gestorService    = new GestorService();
     }
@@ -1419,15 +1420,15 @@ class TramiteServicioController extends Controller
         $IntSize = $File->getSize();
         $StrExtension = $File->getClientOriginalExtension();
         $StrName = rand() . '.' . $StrExtension;
-        $File->move(public_path('files/documentos/'), $StrName);
 
+        $File->move(siegy_path('files/documentos/'), $StrName);
         return response()->json([
             'message'   => 'correctamente',
-            'path' => 'files/documentos/' . $StrName,
+            'path'      => 'files/documentos/' . $StrName,
             'extension' => $StrExtension,
-            'size' => $IntSize,
-            'typename' => $DocType,
-            'status'  => 'success'
+            'size'      => $IntSize,
+            'typename'  => $DocType,
+            'status'    => 'success'
         ]);
     }
 
