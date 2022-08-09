@@ -199,6 +199,7 @@ class TramitesController extends Controller
         $rutaBase = siegy_path('docts/resolutivos/');
         //dd($rutaBase);
         $rutaResolutivo =   $rutaBase . $resolutivo->RESO_CNAMEFILE;
+        $nameFile = explode(".", $resolutivo->RESO_CNAMEFILE);
         /*@ Reading doc file */
         $template = new \PhpOffice\PhpWord\TemplateProcessor($rutaResolutivo);
 
@@ -214,14 +215,14 @@ class TramitesController extends Controller
         $template->setValue('lastname', 'Lopez');
  */
         /*@ Save Temporary Word File With New Name */
-        $saveDocPath = $rutaBase . 'new-result.docx';
+        $saveDocPath = $rutaBase . 'new-result' . $nameFile[0] . '.docx';
         $template->saveAs($saveDocPath);
 
         // Load temporarily create word file
         $Content = \PhpOffice\PhpWord\IOFactory::load($saveDocPath);
 
         //Save it into PDF
-        $savePdfPath = $rutaBase . 'new-result.pdf';
+        $savePdfPath = $rutaBase . 'new-result' . $nameFile[0] . '.pdf';
 
         /*@ If already PDF exists then delete it */
         if (file_exists($savePdfPath)) {
@@ -241,7 +242,7 @@ class TramitesController extends Controller
 
         //dd($savePdfPath);
 
-        return redirect('/docts/resolutivos/new-result.pdf');
+        return redirect('/docts/resolutivos/new-result' . $nameFile[0] . '.pdf');
 
         //return response()->file($savePdfPath, ['Content-Type' => 'application/pdf']);
     }
