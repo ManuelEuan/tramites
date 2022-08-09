@@ -62,6 +62,9 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files": [
+            "app/Helpers/siegy.php"
         ]
     },
     "autoload-dev": {
