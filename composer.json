@@ -65,7 +65,7 @@
             "database/factories"
         ],
         "files": [
-            "app/Helpers/siegy.php"
+            "app/Helpers/Siegy.php"
         ]
     },
     "autoload-dev": {
