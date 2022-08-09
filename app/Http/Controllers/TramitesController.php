@@ -196,7 +196,8 @@ class TramitesController extends Controller
         Settings::setPdfRendererPath($domPdfPath);
         Settings::setPdfRendererName('DomPDF');
 
-        $rutaBase = public_path() . '/docts/resolutivos/';
+        $rutaBase = siegy_path('/docts/resolutivos/');
+        //dd($rutaBase);
         $rutaResolutivo =   $rutaBase . $resolutivo->RESO_CNAMEFILE;
         /*@ Reading doc file */
         $template = new \PhpOffice\PhpWord\TemplateProcessor($rutaResolutivo);
