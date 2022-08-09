@@ -22,7 +22,7 @@ if(! function_exists('siegy_path')) {
         catch(Exception $ex){
             throw $ex;
         }
-        
+
         return $final;
     }
 }

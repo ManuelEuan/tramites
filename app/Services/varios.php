@@ -20,7 +20,7 @@ class Varios {
             }
 
             $path = public_path('codigosQR/'.time().'.svg');
-            \QrCode::generate('Welcome to Makitweb', $path );
+            \QrCode::generate($data, $path );
             return $path;
         } catch (Exception $ex) {
             throw $ex;
