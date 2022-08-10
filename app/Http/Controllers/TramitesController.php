@@ -10,6 +10,7 @@ use App\Cls_Usuario_Tramite;
 use App\Cls_Usuario_Respuesta;
 use App\Cls_Usuario_Documento;
 use App\Cls_Usuario_Concepto;
+use App\Services\VariosService;
 use  Illuminate\Pagination\LengthAwarePaginator;
 use  Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
@@ -26,8 +27,12 @@ use PhpOffice\PhpWord\Settings;
 
 class TramitesController extends Controller
 {
+    protected $variosService;
+
+
     public function __construct()
     {
+        $this->variosService    = new VariosService();
     }
 
     protected $host = 'https://remtysmerida.azurewebsites.net';
@@ -178,7 +183,7 @@ class TramitesController extends Controller
 
         $resolutivos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
 
-
+        //dd($resolutivos);
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
     }
 
@@ -197,6 +202,7 @@ class TramitesController extends Controller
         Settings::setPdfRendererName('DomPDF');
 
         $rutaBase = siegy_path('docts/resolutivos/');
+        //$rutaBase = public_path() . '/docts/resolutivos/';
         //dd($rutaBase);
         $rutaResolutivo =   $rutaBase . $resolutivo->RESO_CNAMEFILE;
         $nameFile = explode(".", $resolutivo->RESO_CNAMEFILE);
@@ -208,6 +214,8 @@ class TramitesController extends Controller
             $template->setValue($campo->TRAM_CNOMBRECAMPO, $campo->USRE_CRESPUESTA);
         }
 
+        $pathQR = $this->variosService->generaQR(url('/') . '/docts/resolutivos/new-result' . $nameFile[0] . '.pdf');
+        $template->setImageValue('qrcode', array('path' =>  $pathQR, 'width' => 100, 'height' => 100, 'ratio' => true));
         /*@ Replacing variables in doc file */
         /*  $template->setValue('date', date('d-m-Y'));
         $template->setValue('title', 'Mr.');
@@ -229,6 +237,9 @@ class TramitesController extends Controller
             unlink($savePdfPath);
         }
 
+
+
+        //dd($pathQR);
         //Save it into PDF
         $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
         $PDFWriter->save($savePdfPath);

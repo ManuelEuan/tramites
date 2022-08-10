@@ -1487,14 +1487,14 @@
                         if (value.existe > 0 && rutaDocumento != "") {
                             itemDocumento += '<span style="padding-right: 15px;font-size: 20px;"><i title="Ver documento" style="cursor:pointer;" onclick="TRAM_FN_VER_DOCUMENTO(' + value.TRAD_NIDTRAMITEDOCUMENTO + ')" class="fas fa-eye"></i></span>' +
                                 "<a href='{{ asset('') }}" + rutaDocumento + "' style='padding-right: 15px;font-size: 20px;' download='" + documento_add.nombre + "'><i title='Descargar documento' class='fas fa-download'></i></a> ";
-                            itemDocumento += '<label class="divV"><input class="vigencia" id="vig'+value.TRAD_NIDTRAMITEDOCUMENTO+'" onchange="vigencia('+ value.TRAD_NIDTRAMITEDOCUMENTO +', this);" type="checkbox" name="vigencia">¿Vigencia?</label>';
-                            
+                            itemDocumento += '<label class="divV"><input class="vigencia" id="vig' + value.TRAD_NIDTRAMITEDOCUMENTO + '" onchange="vigencia(' + value.TRAD_NIDTRAMITEDOCUMENTO + ', this);" type="checkbox" name="vigencia">¿Vigencia?</label>';
+
                         }
                         itemDocumento += '</div>'; //col-2
                         itemDocumento += '</div>' + //row
                             '</div>'; //col-md-5
-                        itemDocumento += '<div class="col-2" id="divVigencia'+ value.TRAD_NIDTRAMITEDOCUMENTO +'"></div>';
-                        
+                        itemDocumento += '<div class="col-2" id="divVigencia' + value.TRAD_NIDTRAMITEDOCUMENTO + '"></div>';
+
                         itemDocumento += '<div class="col-md-3 validatePregunta" style="display: block;">' +
                             '<div class="form-check form-check-inline">' +
                             '<input ' + checkAceptado + ' onchange="TRAM_FN_ACEPTAR_DOCUMENTO(' + value.TRAD_NIDTRAMITEDOCUMENTO + ');" class="form-check-input" type="radio" name="radio_documento_' + value.TRAD_NIDTRAMITEDOCUMENTO + '" id="radio_aceptar_d_' + value.TRAD_NIDTRAMITEDOCUMENTO + '" value="2">' +
@@ -1510,7 +1510,7 @@
                             '</div>';
 
                         itemDocumento += ' </div>'; //row
-                        
+
                     });
 
                     itemDocumento += '</div>'; //card-body
@@ -1605,12 +1605,12 @@
         }, 1000);
     });
 
-    function vigencia(id, event){
-        
-        if(event.checked){
-            $("#divVigencia"+id).html('<input type="date" id="vigencia'+id+'" name="fechaV" value="2022-08-08" >');
+    function vigencia(id, event) {
+
+        if (event.checked) {
+            $("#divVigencia" + id).html('<input type="date" id="vigencia' + id + '" name="fechaV" value="2022-08-08" >');
             var fecha = '';
-            $('#vigencia'+id).change(function() {
+            $('#vigencia' + id).change(function() {
                 var date = $(this).val();
                 fecha = date;
                 console.log(fecha, 'change')
@@ -1618,11 +1618,11 @@
                 //var vigencia = $("#vigencia"+id).val();
                 documento.vigencia = fecha;
             });
-            
-        }else{
-            $("#divVigencia"+id).html("");
+
+        } else {
+            $("#divVigencia" + id).html("");
         }
-       
+
     }
 
     function TRAM_FN_VER_DOCUMENTO(id) {

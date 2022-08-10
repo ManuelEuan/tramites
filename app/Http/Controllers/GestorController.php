@@ -575,6 +575,7 @@ class GestorController extends Controller
             //Storage::disk('public')->put($fileName, base64_decode($TRAM_LIST_RESOLUTIVO['RESO_FILEBASE64']));
 
             $ifp = fopen(siegy_path('docts/resolutivos/') . $fileName, 'wb');
+            //$ifp = fopen(public_path() . '/docts/resolutivos/' . $fileName, 'wb');
 
 
             fwrite($ifp, base64_decode($TRAM_LIST_RESOLUTIVO['RESO_FILEBASE64']));

@@ -285,7 +285,7 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                 INNER JOIN tram_mst_tramite tt ON tut.USTR_NIDTRAMITE = tt.TRAM_NIDTRAMITE
                 INNER JOIN tram_mst_resolutivo tr ON tr.RESO_NIDTRAMITE = tt.TRAM_NIDTRAMITE
                 INNER JOIN tram_mst_resolutivo_mapeo trm ON tr.RESO_NID = trm.TRAM_RESODOCU_NID  AND tur.USRE_NIDPREGUNTA = trm.TRAM_NIDPRGUNTA
-                WHERE tr.RESO_NID = ? AND tut.USTR_NIDUSUARIOTRAMITE = ?',
+                WHERE tr.RESO_NID = ? AND  tur.USRE_NIDUSUARIOTRAMITE  = ?',
                 array($NIDRESOLUTIVO, $NIDUSUARIOTRAMITE)
             );
         } catch (\Throwable $th) {

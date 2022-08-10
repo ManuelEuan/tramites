@@ -826,6 +826,16 @@
                                             </div>
                                         </div>
                                     @endif
+                                    @if (count($confsec->resolutivos) > 0)
+                                        <div class="row col-md-12" style="color: black;">
+                                            <div class="col-md-2">
+                                                <h6 style="font-weight:bold;">Resolutivo Diguital: </h6>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $reso->RESO_NID, 'tramiteId' => $tramite['idusuariotramite']])}}">Vista Previa</a>
+                                            </div>
+                                        </div>
+                                    @endif
                                     <hr />
                                 @endforeach
                                 @if (count($confsec->resolutivos) > 0)

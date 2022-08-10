@@ -37,14 +37,15 @@ class TramiteServicioController extends Controller
     protected $seccion_active = 0;
     protected $host = "https://remtysmerida.azurewebsites.net";
     protected $host_pagos = "https://ipagostest.chihuahua.gob.mx/WSPagosDiversos/consultas/consultas1/obtieneEstatus";
-    
+
     protected $tramiteService;
     protected $gestorService;
     protected $variosService;
     /**
      * Construct Gestor
      */
-    public function __construct() {
+    public function __construct()
+    {
         /* $this->middleware('auth'); */
         $this->tramiteService   = new TramiteService();
         $this->gestorService    = new GestorService();
@@ -144,7 +145,8 @@ class TramiteServicioController extends Controller
         return response()->json($data_tramite);
     }
 
-    public function getTramites(Request $request){
+    public function getTramites(Request $request)
+    {
         /*$estatus = 2; //No seleccionado ningun estatus
         $url =   $this->host . '/api/Tramite/Filter';
 
@@ -166,17 +168,17 @@ class TramiteServicioController extends Controller
         foreach ($resultTram as $i) {
             $html .= '<div class="card text-left" style="margin-bottom: 2rem;">
                 <div class="card-header text-primary titleCard">
-                    '.$i->TRAM_CNOMBRE. ' <span class="badge badge-warning">'.$i->TRAM_CNOMBRE.'</span>
+                    ' . $i->TRAM_CNOMBRE . ' <span class="badge badge-warning">' . $i->TRAM_CNOMBRE . '</span>
                 </div>
                 <div class="card-body">
                     <h6 class="card-text" style="color: #212529;">
-                        '.$i->TRAM_CDESCRIPCION.'
+                        ' . $i->TRAM_CDESCRIPCION . '
                     </h6>
                 </div>
                 <div class="card-footer text-muted" style="background-color: transparent; border-top: none; border-bottom: none;">
-                    <span class="text-left" style="margin-right: 30px;">Creado: '.date("d/m/Y", strtotime($i->created_at)).'</span>
-                    <span class="text-left">Ultima Modificación: '.date("d/m/Y", strtotime($i->created_at)).'</span>
-                    <a href="'.route('detalle_tramite', ['id' => $i->TRAM_NIDTRAMITE]).'" class="btn btn-primary" style="float: right;">Ver trámite</a>
+                    <span class="text-left" style="margin-right: 30px;">Creado: ' . date("d/m/Y", strtotime($i->created_at)) . '</span>
+                    <span class="text-left">Ultima Modificación: ' . date("d/m/Y", strtotime($i->created_at)) . '</span>
+                    <a href="' . route('detalle_tramite', ['id' => $i->TRAM_NIDTRAMITE]) . '" class="btn btn-primary" style="float: right;">Ver trámite</a>
                 </div>
             </div>';
         }
@@ -240,7 +242,8 @@ class TramiteServicioController extends Controller
         return response()->json($tramite);
     }
 
-    public function obtener_detalle_tramite($id) {
+    public function obtener_detalle_tramite($id)
+    {
         $tramites       = new Cls_Tramite_Servicio();
         $detalle        = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE($id);
         $objTramite     = $this->tramiteService->getTramite($detalle->TRAM_NIDTRAMITE_ACCEDE);
@@ -258,8 +261,8 @@ class TramiteServicioController extends Controller
         $tramite['costo']       = $datosGenerales['costo'];
         $tramite['requerimientos']      = $datosGenerales['requerimientos'];
         $tramite['informacion_general'] = $datosGenerales['informacion_general'];
-        $tramite['fundamento_legal']    = array([ "titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento ]);
-   
+        $tramite['fundamento_legal']    = array(["titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento]);
+
         $tramite['estatus'] = 1;
         /* $tramite['estatus'] = $detalle->TRAM_NESTATUS_PROCESO == null ? 1 : $detalle->TRAM_NESTATUS_PROCESO;
         if ($detalle->TRAM_NESTATUS_PROCESO == null) {
@@ -271,10 +274,11 @@ class TramiteServicioController extends Controller
         return view('MST_TRAMITE_SERVICIO.DET_TRAMITE', compact('tramite'));
     }
 
-    public function iniciar_tramite_servicio($id) {
+    public function iniciar_tramite_servicio($id)
+    {
         $tramites   = new Cls_Tramite_Servicio();
         $detalle    = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE($id);
-        $folio      = strtoupper(substr($detalle->TRAM_CCENTRO, 0, 3)).substr(date("Y"), -2);
+        $folio      = strtoupper(substr($detalle->TRAM_CCENTRO, 0, 3)) . substr(date("Y"), -2);
         $gestoresFisicos    = $this->gestorService->getGestores('FISICA');
         $gestoresMorales    = $this->gestorService->getGestores('MORAL');
         $totalGestores      = sizeof($gestoresFisicos) + sizeof($gestoresMorales);
@@ -299,10 +303,10 @@ class TramiteServicioController extends Controller
 
         //Documentos en General Para el Repositorio
         $repositorio = Cls_Usuario_Documento::where('USDO_NIDUSUARIOBASE', Auth::user()->USUA_NIDUSUARIO)
-                            ->select('USDO_CDOCNOMBRE', 'USDO_CEXTENSION', 'USDO_CRUTADOC', 'USDO_NPESO', 'created_at')
-                            ->distinct()
-                            ->orderBy('created_at', 'desc')
-                            ->get()->toArray();
+            ->select('USDO_CDOCNOMBRE', 'USDO_CEXTENSION', 'USDO_CRUTADOC', 'USDO_NPESO', 'created_at')
+            ->distinct()
+            ->orderBy('created_at', 'desc')
+            ->get()->toArray();
 
         $tramite['repositorio'] = [];
         foreach ($repositorio as $_doc) {
@@ -517,6 +521,8 @@ class TramiteServicioController extends Controller
             }
         }
 
+        //dd($tramite);
+
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio', compact('tramite'));
     }
 
@@ -658,22 +664,24 @@ class TramiteServicioController extends Controller
         return Response()->json($collection);
     }
 
-    public function obtener_municipio($id) {
+    public function obtener_municipio($id)
+    {
         $objTramite = $this->tramiteService->getTramite($id);
         $direccion  = $this->tramiteService->getEstadoandMunicipio($objTramite->dependenciaId);
         $municipios = array();
 
-        if(!is_null($direccion))
-            $municipios =[ "id" => $direccion->municipioId, "nombre" => $direccion->municipio ];
+        if (!is_null($direccion))
+            $municipios = ["id" => $direccion->municipioId, "nombre" => $direccion->municipio];
 
         return Response()->json($municipios);
     }
 
-    public function obtener_modulo($id, $idaccede) {
+    public function obtener_modulo($id, $idaccede)
+    {
         $objTramite     = $this->tramiteService->getTramite($id);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
         $datosGenerales = $this->tramiteService->valoresDefaulTramite($arrayDetalle, $objTramite);
-        
+
         return Response()->json($datosGenerales['oficinas']);
     }
 
@@ -1415,11 +1423,12 @@ class TramiteServicioController extends Controller
         return Response()->json($response);
     }
 
-    public function subir_documento(Request $request) {
+    public function subir_documento(Request $request)
+    {
         $path       = 'files/documentos/';
         $archivo    = $request->file('file');
         $response   = $this->variosService->subeArchivo($archivo, $path);
-        $response   = array_merge($response, [ "typename" => $request->doctype]);
+        $response   = array_merge($response, ["typename" => $request->doctype]);
 
         return response()->json($response);
     }
