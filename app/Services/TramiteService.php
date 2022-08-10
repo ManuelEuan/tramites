@@ -19,7 +19,7 @@ class TramiteService
                     ->join('administrativeunits as a', 'p.IdAdministrativeUnit', '=', 'a.Id')
                     ->join('dependencies as d', 'a.IdDependency', '=', 'd.Id')
                     ->select('p.id','p.iId as remtisId','p.CitizenDescription', 'p.name', 'd.name as nameDependencia', 'd.Description as descripcionDependencia', 'p.CreatedDate')
-                    ->where('p.HasProcedureOnline', true);
+                    ->where('p.ProcedureState', 4);
 
         if(!is_null($data->palabraClave))
             $query->where('p.name', 'like','%'.$data->palabraClave.'%');
