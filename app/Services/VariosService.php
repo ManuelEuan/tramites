@@ -20,8 +20,8 @@ class VariosService {
                     $response = false;
             }
 
-            $path = public_path('codigosQR/'.time().'.svg');
-            \QrCode::generate($data, $path );
+            $path = public_path('codigosQR/'.time().'.jpg');
+            \QrCode::format('png')->generate($data, $path );
             return $path;
         } catch (Exception $ex) {
             throw $ex;
