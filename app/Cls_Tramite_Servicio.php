@@ -82,7 +82,6 @@ class Cls_Tramite_Servicio extends Model
 
     public function TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($TRAM_NIDTRAMITE_CONFIG, $USTR_NIDUSUARIOTRAMITE = 0)
     {
-
         $response = [
             'tramite' => null,
             'secciones' => [],
@@ -101,13 +100,12 @@ class Cls_Tramite_Servicio extends Model
                 );
             }else {
                 $response['secciones'] = DB::select(
-                    'SELECT a.SSEGTRA_NIDSECCION_SEGUIMIENTO, a.SSEGTRA_NIDSECCION_SEGUIMIENTO as CONF_NIDCONFIGURACION, a.SSEGTRA_NIDESTATUS as CONF_NESTATUS_SEGUIMIENTO,
- 		    a.SSEGTRA_CNOMBRE_SECCION as CONF_NSECCION, a.SSEGTRA_PAGADO 
+                    'SELECT a.SSEGTRA_NIDSECCION_SEGUIMIENTO, a.SSEGTRA_NIDSECCION_SEGUIMIENTO as CONF_NIDCONFIGURACION, a.SSEGTRA_NIDESTATUS as CONF_NESTATUS_SEGUIMIENTO, a.SSEGTRA_CNOMBRE_SECCION as CONF_NSECCION, a.SSEGTRA_PAGADO 
                     FROM tram_aux_seccion_seguimiento_tramite as a
                     WHERE a.SSEGTRA_NIDUSUARIOTRAMITE = ?',
                     array($USTR_NIDUSUARIOTRAMITE)
                 );
-                
+
                 //Detalle secciones
                 if(count($response['secciones']) > 0){
                     foreach($response['secciones'] as $det){
@@ -257,7 +255,7 @@ class Cls_Tramite_Servicio extends Model
                 'SELECT * FROM tram_mdv_usuario_resolutivo where USRE_NIDUSUARIOTRAMITE = ?',
                 array($USTR_NIDUSUARIOTRAMITE)
             );
-
+            
             $response['notificaciones'] = DB::select(
                 'SELECT * FROM tram_his_notificacion_tramite where HNOTI_NIDUSUARIOTRAMITE = ?',
                 array($USTR_NIDUSUARIOTRAMITE)

@@ -46,7 +46,7 @@ class TramiteServicioController extends Controller
      */
     public function __construct()
     {
-        /* $this->middleware('auth'); */
+        $this->middleware('auth');
         $this->tramiteService   = new TramiteService();
         $this->gestorService    = new GestorService();
         $this->variosService    = new VariosService();
@@ -328,12 +328,10 @@ class TramiteServicioController extends Controller
 
             $objUsuario = Auth::user();
 
-            $tramites = new Cls_Tramite_Servicio();
-            $detalle = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE_SEGUIMIENTO($id);
-            $configaracion = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($detalle->TRAM_NIDTRAMITE, $detalle->USTR_NIDUSUARIOTRAMITE);
-
+            $tramites       = new Cls_Tramite_Servicio();
+            $detalle        = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE_SEGUIMIENTO($id);
+            $configaracion  = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($detalle->TRAM_NIDTRAMITE, $detalle->USTR_NIDUSUARIOTRAMITE);
             $resolutivosConfig = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($detalle->TRAM_NIDTRAMITE);
-
 
             //Verificar seccion seguiente, para activar
             foreach ($configaracion['secciones'] as $item) {

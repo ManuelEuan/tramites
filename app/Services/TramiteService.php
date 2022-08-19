@@ -27,7 +27,7 @@ class TramiteService
             $query->where('d.id', $data->dependencia);
         if(!is_null($data->IntCantidadRegistros))
             $IntCantidadRegistros = $data->IntCantidadRegistros;
-    
+
         $tramites = $query->paginate($IntCantidadRegistros);
         foreach ($tramites as $tramite) {
             $tramite->TRAM_NIDTRAMITE           = $tramite->remtisId;
@@ -38,7 +38,7 @@ class TramiteService
             $tramite->UNAD_CNOMBRE              = $tramite->nameDependencia;
             $tramite->TRAM_DFECHACREACION       = $tramite->CreatedDate;
             $tramite->TRAM_DFECHAACTUALIZACION  = $tramite->CreatedDate;
-        
+
             $tramite->TRAM_NIMPLEMENTADO = 1;
 
             $segundo = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE_ACCEDE',  $tramite->remtisId)->first();
@@ -74,7 +74,7 @@ class TramiteService
                     ->join('daysrange as v','p.idVigencyRange', '=', 'v.id')
                     ->select('p.*', 'p.iId as remtisId','d.name as nameDependencia', 'p.CitizenDescription' ,'d.iId as dependenciaId' ,'i.Name as nameInstrumento', 'v.Name as tipoVigencia')
                     ->where('p.iId', $tramiteID)->first();
-        return $query;        
+        return $query;
     }
 
     /**
@@ -96,7 +96,7 @@ class TramiteService
                             ->join('sepomex as s','a.SepomexId', "=" ,'s.Id')
                             ->select('a.*', 's.PostalCode', 's.Colony', 's.Municipality', 's.State')
                             ->where(['po.IdProcedure' => $tramiteID, 'a.isDeleted' => false])->get();
-                            
+
         $horarios   =   DB::connection('mysql2')->table('procedureoffices as po')
                             ->join('administrativeunitbuildings as a', 'po.IdAdministrativeUnitBuilding', '=', 'a.Id' )
                             ->leftjoin('administrativeunitbuildingdays as ad', 'ad.IdAdministrativeUnitBuildingId', "=" ,'a.Id')
@@ -106,7 +106,7 @@ class TramiteService
 
         $funcionarios   = DB::connection('mysql2')->table('procedurecontacts as pc')
                                 ->where(['IdProcedure' => $tramiteID, 'IsDeleted' => false])->get();
-        
+
         $lugaresPago    = DB::connection('mysql2')->table('procedurechanges as pc')
                                 ->where(['IdProcedure' => $tramiteID, 'IsDeleted' => false])
                                 ->where(function ($query) {
@@ -140,12 +140,6 @@ class TramiteService
             array_push($arrayDocumentos, $array);
         }
 
-        ################ Horarios ################
-        $horarios = "";
-        foreach($arrayDetalle['horario'] as $horario){
-            $horarios.= $horario->diaNombre.": ".date("h:i a", strtotime($horario->OpeningHour))." - ".date("h:i a", strtotime($horario->ClosingHour))." <br/>";
-        }
-
         ################ Funcionarios ################
         $funcionarios = "";
         foreach($arrayDetalle['funcionarios']as $funcionario){
@@ -153,6 +147,13 @@ class TramiteService
         }
 
         foreach($arrayDetalle['oficinas'] as $oficina){
+            ################ Horarios ################
+            $horarios = "";
+            foreach($arrayDetalle['horario'] as $horario){
+                if($horario->Id == $oficina->Id)
+                    $horarios.= $horario->diaNombre.": ".date("h:i a", strtotime($horario->OpeningHour))." - ".date("h:i a", strtotime($horario->ClosingHour))." <br/>";
+            }
+
             $array = array(
                 "id"            => $oficina->Id,
                 "nombre"        => $oficina->Name,
@@ -196,7 +197,7 @@ class TramiteService
                 "documentos"    => []
             ]
         ];
-       
+
         $tramite['requerimientos'] = [
             [
                 "titulo"        => "Casos en que se debe realizar el trámite:",
