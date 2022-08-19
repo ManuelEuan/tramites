@@ -205,6 +205,8 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/consultar_preguntas_formulario', array('uses' => 'GestorController@consultar_preguntas_formulario'))->name("consultar_preguntas_formulario");
     Route::get('/unidad_administrativa/{id}', array('uses' => 'GestorController@unidad_administrativa'))->name("consultar_unidad_administrativa");
     Route::get('/formulario', array('uses' => 'GestorController@formulario'))->name("formulario_gestor");
+
+    Route::get('/detalleTramite/{id}', 'GestorController@detalleTramite');
 });
 
 Route::group(['prefix' => 'servidorespublicos'], function () {
@@ -234,3 +236,12 @@ Route::get('/decrypt/{text}', array('uses' => 'DatosDurosController@decrypt'));
 
 Route::get('/reportes', 'GenerarReportes@index')->middleware("permiso");
 Route::get('/generar', 'GenerarReportes@gentreporte');
+
+
+
+/**
+ * Rutas Manuel Euan
+ */
+Route::group(['prefix' => 'citas'], function () {
+    Route::get('/calendario', 'CitasController@calendario');
+});

@@ -34,7 +34,7 @@ class GestorController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        /* $this->middleware('auth'); */
         $this->tramiteService = new TramiteService();
     }
 
@@ -42,8 +42,7 @@ class GestorController extends Controller
      * Retorna la vista inicial del modulo de gestores
      * @return View
      */
-    public function index()
-    {
+    public function index() {
         $data       = ['usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => 2];
         $request    = new Request($data);
         $tramite    = $this->tramiteService->busqueda($request);
@@ -57,8 +56,7 @@ class GestorController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function consultar(Request $request)
-    {
+    public function consultar(Request $request) {
         $tramite        =  $this->tramiteService->busqueda($request);
         $data_tramite   = $tramite['data'];
 
@@ -70,8 +68,7 @@ class GestorController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function obtener_filtro(Request $request)
-    {
+    public function obtener_filtro(Request $request) {
         $filtros = $this->tramiteService->filtros($request);
         $response = [
             "clasificacion" =>  [],
@@ -81,6 +78,18 @@ class GestorController extends Controller
         ];
 
         return Response()->json($response);
+    }
+
+    /**
+     * Retorna el detalle del tramite
+     * @param int $tramiteID
+     * @return Response
+     */
+    public function detalleTramite($tramiteID) {
+        $objTramite     = $this->tramiteService->getTramite($tramiteID);
+        $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
+
+        return response()->json(["data" => $arrayDetalle]);
     }
 
     /**

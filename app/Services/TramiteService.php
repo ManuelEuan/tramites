@@ -101,7 +101,7 @@ class TramiteService
                             ->join('administrativeunitbuildings as a', 'po.IdAdministrativeUnitBuilding', '=', 'a.Id' )
                             ->leftjoin('administrativeunitbuildingdays as ad', 'ad.IdAdministrativeUnitBuildingId', "=" ,'a.Id')
                             ->join('days as d', 'ad.DayId', 'd.Id')
-                            ->select('a.*', 'd.Name as diaNombre')
+                            ->select('a.*', 'd.Name as diaNombre','d.Id as diaId')
                             ->where(['po.IdProcedure' => $tramiteID, 'a.isDeleted' => false])->get();
 
         $funcionarios   = DB::connection('mysql2')->table('procedurecontacts as pc')

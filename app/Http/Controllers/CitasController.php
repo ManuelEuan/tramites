@@ -90,4 +90,12 @@ class CitasController extends Controller
 
         return Response()->json($listCitas);
     }
+
+    /**
+     * Retorna el calendario de las citas
+     */
+    public function calendario() {
+        $data = [];
+        return view('CITAS.calendario', compact('data'));
+    }
 }
