@@ -1868,8 +1868,8 @@
                             lon = parseFloat("{{ $tramite['ventanilla_sin_cita_lon'] }}");
                         }
 
-                        var latitud = lat != 0 ? lat : 28.640157192843148;
-                        var longitud = lon != 0 ? lon : -106.07436882706008;
+                        var latitud = lat != 0 ? lat : 20.5936069;
+                        var longitud = lon != 0 ? lon : -100.3902893;
                         var map = new google.maps.Map(document.getElementById('mapaEdificios'), {
                             center: {
                                 lat: latitud,
