@@ -135,8 +135,7 @@
                 <div class="row">
                     <div class="form-group" style="width: 100%; margin: 12px;">
                         <label for="cmbSection">Seleccione la sección a agregar</label>
-                        <select class="form-control" id="cmbSection">
-                        </select>
+                        <select class="form-control" id="cmbSection"></select>
                     </div>
                 </div>
             </div>
@@ -518,7 +517,8 @@
         name: "Resolutivo electrónico",
         icon: "far fa-copy",
         view: "TRAM_FN_VIEWRESOLUTIVO();"
-    }];
+    },
+    ];
 
     /**** Variables Globales *****/
     var list_default_documentos = [];
@@ -1087,8 +1087,6 @@
                         // if (response.conceptos_pago.length > 0) {
                         //     list_conceptos_temporal = response.conceptos_pago;
                         // }
-                        console.log('tramite config');
-                        console.log(response);
 
                         tramite_ = response;
                         id_formulario = tramite_.formularios[0].FORM_NIDFORMULARIO;
@@ -1116,7 +1114,6 @@
         });
 
         $.get('/gestores/consultar_preguntas_formulario', function(data) {
-            console.log("preguntas", data);
             list_preguntas_resolutivos = data;
         });
 
@@ -1216,7 +1213,6 @@
         var opcionesCmbFormulario = '';
         list_preguntas_resolutivos.forEach(function(element) {
             opcionesCmbFormulario = opcionesCmbFormulario + '<option value="' + element.FORMID + '">' + element.FORM_CNOMBRE + '</option>';
-            console.log("pregunta", element);
         });
 
         $("#cmbFormulario").html(opcionesCmbFormulario);
@@ -1226,7 +1222,6 @@
 
             list_preguntas_resolutivos[0].preguntas.forEach(function(element) {
                 opcionesCmbFormulario = opcionesCmbFormulario + '<option value="' + element.PREID + '">' + element.FORM_CPREGUNTA + '</option>';
-                //console.log("pregunta", element);
             });
 
             $("#cmbPregunta").html(opcionesCmbFormulario);
@@ -1303,9 +1298,6 @@
                 objResolutivoEletronico.nameFile = e.target.files[0].name;
 
                 $("#lbFileNameResolutivo").html("Nombre archivo: " + objResolutivoEletronico.nameFile);
-
-                console.log("obj file", objResolutivoEletronico);
-                // Logs wL2dvYWwgbW9yZ...
             };
             reader.readAsDataURL(file);
         });
@@ -1365,7 +1357,6 @@
         var item = list_sections.find(x => x.id === parseInt(itemValSeleccionado));
 
         if (true) {
-
             var sectionNew = sections_default.find(x => x.value === parseInt(itemValSeleccionado));
             list_sections.push({
                 id: sectionNew.value,
@@ -1727,8 +1718,6 @@
             url: "/gestores/configuracion/seccion_cita",
             type: "GET",
             success: function(data) {
-
-                console.log("Crear cita solo si no hay");
                 var idtramite = "{{request()->route('tramiteID')}}";
                 solicitudTramiteCita(idtramite);
 

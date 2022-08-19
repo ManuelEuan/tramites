@@ -14,17 +14,7 @@
     <link rel="stylesheet" href="{{ asset('assets/template/plugins/Fullcalendar/main.min.css') }}" />
 
     <link rel="stylesheet" href="{{ asset('assets/template/plugins/bootstrap-select/css/bootstrap-select.min.css') }}" />
-    <!-- Latest compiled and minified CSS -->
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css"> -->
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-
-    {{-- No los tiene el template
-        <link rel="stylesheet" href="{{ asset('assets/template/plugins/Datepicker/css/bootstrap-datetimepicker.min.css ') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/template/plugins/Datepicker/css/bootstrap-datetimepicker-standalone.css ') }}" />
-    <link rel="stylesheet" href="plugins/mdb/css/mdb.min.css">
-    --}}
-
     <link href="{{ asset('assets/template/plugins/DataTables/datatables.min.css') }}" rel="stylesheet">
 
     <link href="{{ asset('assets/template/css/formvalidation.css') }}" rel="stylesheet">
@@ -32,6 +22,9 @@
     <link href="{{ asset('assets/template/css/fonts.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/fonts/fontawesome-5.0.6/css/fontawesome-all.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/main.js"></script>
 
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCt4ojZ4Cm-gaHsBxN9fL7Urw9XbowMs9o&libraries=places,drawing" async defer></script>
