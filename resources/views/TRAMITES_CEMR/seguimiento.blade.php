@@ -2073,7 +2073,7 @@
                     });
                     return;
                 }
-                console.log(seccion_formulario)
+
                 $.ajax({
                     data: seccion_formulario,
                     dataType: 'json',
