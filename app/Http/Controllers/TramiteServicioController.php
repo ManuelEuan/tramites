@@ -35,7 +35,7 @@ class TramiteServicioController extends Controller
 
     protected $atencion = 0;
     protected $seccion_active = 0;
-    protected $host = "https://remtysmerida.azurewebsites.net";
+    protected $host = "http://tramitesqueretaro.eastus.cloudapp.azure.com";
     protected $host_pagos = "https://ipagostest.chihuahua.gob.mx/WSPagosDiversos/consultas/consultas1/obtieneEstatus";
 
     protected $tramiteService;

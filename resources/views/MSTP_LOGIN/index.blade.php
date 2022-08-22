@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>MÉRIDA</title>
+    <title>Queretaro</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
      <!-- Font Awesome -->
     <link href="{{ asset('assets/template/img/logoGray.svg') }}" rel="shortcut icon">
@@ -65,7 +65,7 @@
                         <form action="{{url('/login')}}" method="POST" id="frmLogin">
                             {{ csrf_field() }}
                             <p class="h4 medium text-center pt-4 pb-2">
-                                <img src="assets/template/img/logoGray.svg" height="80px" /><br>
+                                <img src="assets/template/img/login.png" height="80px" /><br>
                                 <span class="pt-3">Trámites en Línea</span>
                             </p>
                             

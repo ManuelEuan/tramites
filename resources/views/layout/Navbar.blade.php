@@ -1,7 +1,7 @@
 <nav id="sidebar">
     <div class="sidebar-header">
         <a class="navbar-brand" href="/">
-            <img src="{{ asset('assets/template/img/logo_index.svg') }}" width="40" height="40" class="align-top" alt="">
+            <img src="{{ asset('assets/template/img/menu.png') }}" width="40" height="40" class="align-top" alt="">
         </a>
     </div>
     <ul id="dropMenu" class="list-unstyled components">

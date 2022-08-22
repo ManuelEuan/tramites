@@ -35,7 +35,7 @@ class TramitesController extends Controller
         $this->variosService    = new VariosService();
     }
 
-    protected $host = 'https://remtysmerida.azurewebsites.net';
+    protected $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
 
     public function listado()
     {
@@ -201,8 +201,7 @@ class TramitesController extends Controller
         Settings::setPdfRendererPath($domPdfPath);
         Settings::setPdfRendererName('DomPDF');
 
-        $rutaBase = siegy_path('docts/resolutivos/');
-        //$rutaBase = public_path() . '/docts/resolutivos/';
+        $rutaBase = public_path() . '/docts/resolutivos/';
         //dd($rutaBase);
         $rutaResolutivo =   $rutaBase . $resolutivo->RESO_CNAMEFILE;
         $nameFile = explode(".", $resolutivo->RESO_CNAMEFILE);
@@ -468,8 +467,12 @@ class TramitesController extends Controller
             if (count($request->CONF_PREGUNTAS)) {
 
                 foreach ($request->CONF_PREGUNTAS as $pregunta) {
-
-                    Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_PREGUNTA($request->CONF_NIDUSUARIOTRAMITE, $pregunta['pregunta_id'], $pregunta['estatus'], $pregunta['observaciones']);
+                    $observaciones = '';
+                    if(isset($pregunta['observaciones'])){
+                        
+                        $observaciones = $pregunta['observaciones'];
+                    }
+                    Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_PREGUNTA($request->CONF_NIDUSUARIOTRAMITE, $pregunta['pregunta_id'], $pregunta['estatus'], $observaciones);
                 }
             }
 
@@ -482,7 +485,10 @@ class TramitesController extends Controller
                         Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
                         //Aqui se agrega la vigencia
                         $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
-                        Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
+                        if(isset($idDocExp->id)){
+                            Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
+                        }
+                        
                     }
                 }
             }
@@ -523,7 +529,10 @@ class TramitesController extends Controller
                 foreach ($request->CONF_DOCUMENTOS as $documento) {
                     //Aqui se hace la busqueda.
                     $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
-                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
+                    if(isset($idDocExp->id)){
+                        Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
+                    }
+                    
                 }
             }
 
@@ -568,7 +577,10 @@ class TramitesController extends Controller
                     Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
                     //Aqui se hace la busqueda.
                     $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
-                    Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
+                    if(isset($idDocExp->id)){
+                        Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
+                    }
+                    
                 }
             }
 
