@@ -478,7 +478,8 @@
 </style>
 <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
 <script>
-    var tramite_ = null;
+    var tramite_    = null;
+    var getModulos  = true;
     var nombre_tramite = "{{$tramite['ACCE_NOMBRE_TRAMITE']}}";
     var section_formulario_default = {
         value: 1,
