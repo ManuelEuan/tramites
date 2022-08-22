@@ -35,7 +35,7 @@ class TramitesController extends Controller
         $this->variosService    = new VariosService();
     }
 
-    protected $host = 'https://remtysmerida.azurewebsites.net';
+    protected $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
 
     public function listado()
     {
@@ -201,8 +201,7 @@ class TramitesController extends Controller
         Settings::setPdfRendererPath($domPdfPath);
         Settings::setPdfRendererName('DomPDF');
 
-        $rutaBase = siegy_path('docts/resolutivos/');
-        //$rutaBase = public_path() . '/docts/resolutivos/';
+        $rutaBase = public_path() . '/docts/resolutivos/';
         //dd($rutaBase);
         $rutaResolutivo =   $rutaBase . $resolutivo->RESO_CNAMEFILE;
         $nameFile = explode(".", $resolutivo->RESO_CNAMEFILE);

@@ -22,7 +22,7 @@ class GestorController extends Controller
     /**
      * @var String
      */
-    private $host = 'https://remtysmerida.azurewebsites.net';
+    private $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
 
     /**
      * @var TramiteService
@@ -502,7 +502,7 @@ class GestorController extends Controller
             }
         } catch (\Throwable $e) {
             $response = [
-                "estatus" => "error",
+                "estatus" => "errors",
                 "codigo" => 400,
                 "mensaje" => "Ocurrió una excepción al agregar secciones, favor de contactar al administrador del sistema " . $e->getMessage()
             ];
@@ -583,8 +583,7 @@ class GestorController extends Controller
 
             //Storage::disk('public')->put($fileName, base64_decode($TRAM_LIST_RESOLUTIVO['RESO_FILEBASE64']));
 
-            $ifp = fopen(siegy_path('docts/resolutivos/') . $fileName, 'wb');
-            //$ifp = fopen(public_path() . '/docts/resolutivos/' . $fileName, 'wb');
+            $ifp = fopen(public_path() . '/docts/resolutivos/' . $fileName, 'wb');
 
 
             fwrite($ifp, base64_decode($TRAM_LIST_RESOLUTIVO['RESO_FILEBASE64']));

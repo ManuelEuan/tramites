@@ -37,7 +37,7 @@ class VariosService {
         $extencion  = $archivo->getClientOriginalExtension();
         $tamaño     = $archivo->getSize();
         $nombre     = rand().'.'.$extencion;
-        $archivo->move(siegy_path($path), $nombre);
+        $archivo->move(public_path($path), $nombre);
 
         return [
             'message'   => 'correctamente',
