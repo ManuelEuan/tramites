@@ -27,7 +27,96 @@
 <div class="parrafo">
     <div class="col-md-12">
         <div class="accordion" id="accordionExample">
-            <div id="htmHorario"></div>
+            <div class="card">
+                <div class="card-header" id="heading">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse" aria-expanded="true" aria-controls="collapse">
+                            Modulo
+                        </button>
+                    </h2>
+                </div>
+      
+                <div id="collapse" class="collapse show" aria-labelledby="heading" data-parent="#accordionExample">
+                    <div class="container formHorario">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row ">
+                                    <div class="form-group  col-md-3">
+                                        <label for="diaSemana">Días</label>
+                                        <select class="custom-select" id="diaSemana">
+                                            <option value="0">Seleccionar</option>
+                                            <option value="Lunes">Lunes</option>
+                                            <option value="Martes">Martes</option>
+                                            <option value="Miercoles">Miercoles</option>
+                                            <option value="Jueves">Jueves</option>
+                                            <option value="Viernes">Viernes</option>
+                                            <option value="Sabado">Sabado</option>
+                                            <option value="Domingo">Domingo</option>
+                                        </select>
+                                    </div>
+        
+                                    <div class="form-group col-md-2">
+                                        <label for="horaInicial">Hora inicial</label>
+                                        <input type="time" class="form-control" id="horaInicial" placeholder="Hora inicial" required>
+                                    </div>
+        
+                                    <div class="form-group col-md-2">
+                                        <label for="horaFinal">Hora final</label>
+                                        <input type="time" class="form-control" id="horaFinal" placeholder="Hora final" required>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="capacidad">Capacidad</label>
+                                        <input type="number" min="0" class="form-control" id="capacidad" placeholder="Personas" required>
+                                    </div>
+                                    <div class="col-md-2 btnAddDia">
+                                        <button type="button" class="btn btn-info btn-circle btn-xl" onclick="agregarDia()" title="Agregar">
+                                            <i class="fa fa-add"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-sm-7">
+                                        <div class="card cardDias">
+                                            <div class="card-header"><label class="tituloHorario"> Horario de atención </label></div>
+                                            <div class="card-body" id="detalleHorario"> 
+                                                <ul>
+                                                    <li>
+                                                        <div class="row lineaDia" >
+                                                            <div class="col-md-4">
+                                                                <div class="form-check form-check-inline">
+                                                                    <label class="form-check-label" for=""> Lunes </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">9:00 am </div>
+                                                            <div class="col-md-3">5:30 pm </div>
+                                                            <div class="col-md-2"><i class="fa fa-trash"></i></div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-sm-5" >
+                                        <div class="form-group col-md-6" style="margin-top: 10%;">
+                                            <label for="tiempoAtencion">Tiempo de atención</label>
+                                            <input type="number" min="1" class="form-control" placeholder="Minutos"  id="tiempoAtencion" required>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label for="ventanillas">Ventanillas</label>
+                                            <input type="number" min="10" class="form-control" placeholder="Ventanillas" id="ventanillas" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
+
+            {{-- <div id="htmHorario"></div> --}}
         </div> 
     </div>
 </div>
@@ -86,33 +175,7 @@
                         </div>
               
                         <div id="collapse${oficina.iId}" class="collapse ${show}" aria-labelledby="heading${oficina.iId}" data-parent="#accordionExample">
-                            <div class="row cardHorario">
-                                <div class="col-sm-6">
-                                    <div class="card cardDias">
-                                        <div class="card-header"><label class="tituloHorario"> Horario de atención </label></div>
-                                        <div class="card-body"> `;
-                                            horarios.forEach(horario => {
-                                                if(horario.Id == oficina.Id){
-                                                    let entrada = formatAMPM(horario.OpeningHour);
-                                                    let salida  = formatAMPM(horario.ClosingHour);
-    
-                                                    html += `
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="checkbox" name="chDia${horario.diaId}"  id="chDia${horario.diaId}" value="${horario.diaId}">
-                                                                    <label class="form-check-label" for="chDia${horario.diaId}"> ${ horario.diaNombre } </label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4"> ${ entrada } </div>
-                                                            <div class="col-md-4"> ${ salida } </div>
-                                                        </div>`;
-                                                }
-                                            });
-                                        html += `</div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>`;
                     show = '';
@@ -126,6 +189,35 @@
             }
         });
     /* } */
+
+    function agregarDia(){
+        let dia         = $("#diaSemana").val();
+        let inicio      = $("#horaInicial").val();
+        let final       = $("#horaFinal").val();
+        let capacidad   = $("#capacidad").val();
+
+        dia         == 0 || "" ? $("#diaSemana").addClass("is-invalid") : $("#diaSemana").removeClass("is-invalid");
+        inicio      == 0 || "" ? $("#horaInicial").addClass("is-invalid") : $("#horaInicial").removeClass("is-invalid");
+        final       == 0 || "" ? $("#horaFinal").addClass("is-invalid") : $("#horaFinal").removeClass("is-invalid");
+        capacidad   == 0 || "" ? $("#capacidad").addClass("is-invalid") : $("#capacidad").removeClass("is-invalid");
+
+        if(dia == 0 || inicio == 0 || final == 0 || capacidad == 0 ){
+            return;
+        }
+        else{
+
+            let actual = $("#cardDias").html();
+
+            console.log(actual);
+        }
+
+        /* if(dia == 0)
+            $("#diaSemana").addClass("is-invalid");
+        else 
+            $("#diaSemana").removeClass("is-invalid"); */
+        console.log(dia, inicio,final,capacidad)
+    }
+
 
     function formatAMPM(hora) {
         let array = hora.split(':');
@@ -141,12 +233,39 @@
 </script>
 
 <style>
-    .cardHorario{
-        margin-top: 4%
+    .formHorario{
+        margin: 4%;
     }
 
+    .btn-circle.btn-xl {
+        width: 40px;
+        height: 40px;
+        padding: 7px 10px;
+        border-radius: 35px;
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .btn-circle {
+        width: 30px;
+        height: 30px;
+        padding: 6px 0px;
+        border-radius: 15px;
+        text-align: center;
+        font-size: 12px;
+        line-height: 1.42857;
+    }
+
+    .card-header{
+        text-align: center !important;
+    }
     .cardDias{
-        margin-left: 10%;
-        margin-bottom: 10%;
+        margin-top: 4%;
+    }
+    .btnAddDia{
+        margin-top: 1.5%;
+    }
+    .lineaDia{
+        margin-bottom: 20px;
     }
 </style>

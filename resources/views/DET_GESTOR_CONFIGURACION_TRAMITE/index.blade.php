@@ -479,7 +479,6 @@
 <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
 <script>
     var tramite_    = null;
-    var getModulos  = true;
     var nombre_tramite = "{{$tramite['ACCE_NOMBRE_TRAMITE']}}";
     var section_formulario_default = {
         value: 1,
@@ -488,37 +487,38 @@
         view: "TRAM_FN_VIEWFORMULARIO();"
     };
 
-    var sections_default = [{
-        value: 2,
-        name: "Revisión de documentación",
-        icon: "far fa-folder-open",
-        view: "TRAM_FN_VIEWREVISION();"
-    }, {
-        value: 3,
-        name: "Citas en línea",
-        icon: "far fa-calendar-alt",
-        view: "TRAM_FN_VIEWCITA();"
-    }, {
-        value: 4,
-        name: "Ventanilla sin cita",
-        icon: "fas fa-male",
-        view: "TRAM_FN_VIEWVENTANILLA();"
-    }, {
-        value: 5,
-        name: "Pago en línea",
-        icon: "far fa-credit-card",
-        view: "TRAM_FN_VIEWPAGO();"
-    }, {
-        value: 6,
-        name: "Módulo de análisis interno del área",
-        icon: "fas fa-cogs",
-        view: "TRAM_FN_VIEWANALISISINTERNO();"
-    }, {
-        value: 7,
-        name: "Resolutivo electrónico",
-        icon: "far fa-copy",
-        view: "TRAM_FN_VIEWRESOLUTIVO();"
-    },
+    var sections_default = [
+        {
+            value: 2,
+            name: "Revisión de documentación",
+            icon: "far fa-folder-open",
+            view: "TRAM_FN_VIEWREVISION();"
+        }, {
+            value: 3,
+            name: "Citas en línea",
+            icon: "far fa-calendar-alt",
+            view: "TRAM_FN_VIEWCITA();"
+        }, {
+            value: 4,
+            name: "Ventanilla sin cita",
+            icon: "fas fa-male",
+            view: "TRAM_FN_VIEWVENTANILLA();"
+        }, {
+            value: 5,
+            name: "Pago en línea",
+            icon: "far fa-credit-card",
+            view: "TRAM_FN_VIEWPAGO();"
+        }, {
+            value: 6,
+            name: "Módulo de análisis interno del área",
+            icon: "fas fa-cogs",
+            view: "TRAM_FN_VIEWANALISISINTERNO();"
+        }, {
+            value: 7,
+            name: "Resolutivo electrónico",
+            icon: "far fa-copy",
+            view: "TRAM_FN_VIEWRESOLUTIVO();"
+        },
     ];
 
     /**** Variables Globales *****/
@@ -584,9 +584,10 @@
         nameResolutivo: ''
 
     }
-    //var list_mapeo_resolutivo = [];
 
-
+    /******************* Variables para el calendario de citas *******************/
+    var getModulos  = true
+    
     $(document).ready(function() {
 
         var idtramite = "{{request()->route('tramiteID')}}";
