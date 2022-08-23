@@ -478,8 +478,8 @@
 </style>
 <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
 <script>
-    var tramite_    = null;
-    var getModulos  = true;
+    var tramite_ = null;
+    var getModulos = true;
     var nombre_tramite = "{{$tramite['ACCE_NOMBRE_TRAMITE']}}";
     var section_formulario_default = {
         value: 1,
@@ -518,8 +518,7 @@
         name: "Resolutivo electrónico",
         icon: "far fa-copy",
         view: "TRAM_FN_VIEWRESOLUTIVO();"
-    },
-    ];
+    }, ];
 
     /**** Variables Globales *****/
     var list_default_documentos = [];
@@ -1317,37 +1316,46 @@
     function TRAM_FN_RENDERCAMPOSRESOLUTIVO() {
 
         var htmlCampos = '';
-        objResolutivoEletronico.list_mapeo_resolutivo.forEach(function(element) {
+        objResolutivoEletronico.list_mapeo_resolutivo.forEach(function(element, index, array) {
             htmlCampos = htmlCampos + `
-            <div class="row">
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="respuesta_414_1106">Campo Plantilla</label>
-                    <input type="text" minlength="2" maxlength="100" class="form-control" name="update_respuesta_414_1106" id="respuesta_414_1106" value="` + element.campo + `"  required="" readonly>
+        <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="respuesta_414_1106">Campo Plantilla</label>
+                <input type="text" minlength="2" maxlength="100" class="form-control" name="update_respuesta_414_1106" id="respuesta_414_1106" value="` + element.campo + `"  required="" readonly>
 
-                </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="encabezado_1106">Campo Formulario</label>
-                    <input type="text" minlength="2" maxlength="100" class="form-control" name="update_respuesta_414_1106" id="respuesta_414_1106" value="` + element.pregunta + `" placeholder="" required="" readonly>
-
-                </div>
-            </div>
-            <div class="col-md-0" id="contenedorRespuestaEspecial_update_414_1106"></div>
-            <span style="margin-top:2%;">
-                <button type="button" title="Eliminar" class="btn btn-link" onclick="">
-                    <i class="far fa-trash-alt" style="color: black"></i>
-                </button>
-            </span>
         </div>
-            `;
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="encabezado_1106">Campo Formulario</label>
+                <input type="text" minlength="2" maxlength="100" class="form-control" name="update_respuesta_414_1106" id="respuesta_414_1106" value="` + element.pregunta + `" placeholder="" required="" readonly>
+
+            </div>
+        </div>
+        <div class="col-md-0" id="contenedorRespuestaEspecial_update_414_1106"></div>
+        <span style="margin-top:2%;">
+            <button type="button" title="Eliminar" class="btn btn-link" onclick="TRAM_FN_DELETECAMPOMAPEO(` + index + `)">
+                <i class="far fa-trash-alt" style="color: black"></i>
+            </button>
+        </span>
+    </div>
+        `;
         });
 
         $("#contenerdorCamposPlantillaResolutivo").html(htmlCampos);
 
         $('#modalAddCampoResolutivo').modal('hide');
 
+
+    }
+
+    function TRAM_FN_DELETECAMPOMAPEO(index) {
+
+        //alert("delete " + index);
+        //console.log("delete", index);
+        objResolutivoEletronico.list_mapeo_resolutivo.splice(index, 1);
+        TRAM_FN_RENDERCAMPOSRESOLUTIVO();
 
     }
 
