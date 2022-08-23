@@ -27,7 +27,7 @@
 <div class="parrafo">
     <div class="col-md-12">
         <div class="accordion" id="accordionExample">
-            <div class="card">
+            {{-- <div class="card">
                 <div class="card-header" id="heading">
                     <h2 class="mb-0">
                         <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse" aria-expanded="true" aria-controls="collapse">
@@ -79,9 +79,9 @@
                                     <div class="col-sm-7">
                                         <div class="card cardDias">
                                             <div class="card-header"><label class="tituloHorario"> Horario de atención </label></div>
-                                            <div class="card-body" id="detalleHorario"> 
-                                                <ul>
-                                                    <li>
+                                            <div class="card-body"> 
+                                                <ul id="detalleHorario" >
+                                                    <li id="lunes-1">
                                                         <div class="row lineaDia" >
                                                             <div class="col-md-4">
                                                                 <div class="form-check form-check-inline">
@@ -114,9 +114,9 @@
                         </div>
                       </div>
                 </div>
-            </div>
+            </div> --}}
 
-            {{-- <div id="htmHorario"></div> --}}
+            <div id="htmHorario"></div>
         </div> 
     </div>
 </div>
@@ -175,7 +175,70 @@
                         </div>
               
                         <div id="collapse${oficina.iId}" class="collapse ${show}" aria-labelledby="heading${oficina.iId}" data-parent="#accordionExample">
-                            
+                            <div class="container formHorario">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row ">
+                                            <div class="form-group  col-md-3">
+                                                <label for="diaSemana">Días</label>
+                                                <select class="custom-select" id="diaSemana">
+                                                    <option value="0">Seleccionar</option>
+                                                    <option value="Lunes">Lunes</option>
+                                                    <option value="Martes">Martes</option>
+                                                    <option value="Miercoles">Miercoles</option>
+                                                    <option value="Jueves">Jueves</option>
+                                                    <option value="Viernes">Viernes</option>
+                                                    <option value="Sabado">Sabado</option>
+                                                    <option value="Domingo">Domingo</option>
+                                                </select>
+                                            </div>
+                
+                                            <div class="form-group col-md-2">
+                                                <label for="horaInicial">Hora inicial</label>
+                                                <input type="time" class="form-control" id="horaInicial" placeholder="Hora inicial" required>
+                                            </div>
+                
+                                            <div class="form-group col-md-2">
+                                                <label for="horaFinal">Hora final</label>
+                                                <input type="time" class="form-control" id="horaFinal" placeholder="Hora final" required>
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label for="capacidad">Capacidad</label>
+                                                <input type="number" min="0" class="form-control" id="capacidad" placeholder="Personas" required>
+                                            </div>
+                                            <div class="col-md-2 btnAddDia">
+                                                <button type="button" class="btn btn-info btn-circle btn-xl" onclick="agregarDia(${oficina.iId})" title="Agregar">
+                                                    <i class="fa fa-add"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-sm-7">
+                                                <div class="card cardDias">
+                                                    <div class="card-header"><label class="tituloHorario"> Horario de atención </label></div>
+                                                    <div class="card-body" id="detalle${oficina.iId}"> 
+                                                        <ul id="detalleHorario${oficina.iId}" style="list-style: none;"></ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-5" >
+                                                <div class="form-group col-md-6" style="margin-top: 10%;">
+                                                    <label for="tiempoAtencion">Tiempo de atención</label>
+                                                    <input type="number" min="1" class="form-control" placeholder="Minutos"  id="tiempoAtencion" required>
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label for="ventanillas">Ventanillas</label>
+                                                    <input type="number" min="10" class="form-control" placeholder="Ventanillas" id="ventanillas" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </div>`;
                     show = '';
@@ -190,11 +253,13 @@
         });
     /* } */
 
-    function agregarDia(){
+    function agregarDia(moduloId){
         let dia         = $("#diaSemana").val();
         let inicio      = $("#horaInicial").val();
         let final       = $("#horaFinal").val();
         let capacidad   = $("#capacidad").val();
+        let semana      = ["Lunes", "Martes","Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+        let temporal    = [];
 
         dia         == 0 || "" ? $("#diaSemana").addClass("is-invalid") : $("#diaSemana").removeClass("is-invalid");
         inicio      == 0 || "" ? $("#horaInicial").addClass("is-invalid") : $("#horaInicial").removeClass("is-invalid");
@@ -205,19 +270,49 @@
             return;
         }
         else{
+            $("#detalleHorario" + moduloId).remove();
+            inicio  =  formatAMPM(inicio);
+            final   =  formatAMPM(final);
+            let obj = { dia: dia, inicio: inicio ,final: final, capacidad:capacidad, modulo:moduloId };
 
-            let actual = $("#cardDias").html();
+            let contador    = 0;
+            let ordenDias   = [];
+            objDetalle.push(obj);
+                
+            for (var i = 0; i < semana.length; i++) {
+                for (var j = 0; j < objDetalle.length; j++) {
+                    if (semana[i] === objDetalle[j].dia) {
+                        ordenDias.push(objDetalle[j]);
+                    }
+                }
+            }
 
-            console.log(actual);
+            objDetalle = ordenDias;
+            let diasHtml = `<ul id="detalleHorario${moduloId}" style="list-style: none;">`;
+            ordenDias.forEach(element => {
+                diasHtml += `<li id="dia${contador}">
+                                <div class="row lineaDia" >
+                                    <div class="col-md-3">
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label" for=""> ${element.dia} </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">${element.inicio} </div>
+                                    <div class="col-md-3">${element.final} </div>
+                                    <div class="col-md-2">${element.capacidad} </div>
+                                    <div class="col-md-1"><i onclick='eliminaDetalle(${contador}, ${moduloId})' class="fa fa-trash"></i></div>
+                                </div>
+                            </li>`;
+                contador++;
+            });
+            diasHtml += `</ul>`
+            $("#detalle" + moduloId).append(diasHtml);  
         }
-
-        /* if(dia == 0)
-            $("#diaSemana").addClass("is-invalid");
-        else 
-            $("#diaSemana").removeClass("is-invalid"); */
-        console.log(dia, inicio,final,capacidad)
     }
 
+    function eliminaDetalle(id, moduloId){
+        console.log(id);
+    }
 
     function formatAMPM(hora) {
         let array = hora.split(':');

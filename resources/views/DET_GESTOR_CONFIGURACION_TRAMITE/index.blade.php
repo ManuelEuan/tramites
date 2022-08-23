@@ -587,7 +587,13 @@
 
     /******************* Variables para el calendario de citas *******************/
     var getModulos  = true
-    
+    var objDetalle  = [];
+
+
+
+
+
+
     $(document).ready(function() {
 
         var idtramite = "{{request()->route('tramiteID')}}";
