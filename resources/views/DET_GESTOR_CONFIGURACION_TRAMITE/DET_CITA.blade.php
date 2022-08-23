@@ -243,7 +243,7 @@
                                     <div class="col-sm-5" >
                                         <div class="form-group col-md-6" style="margin-top: 10%;">
                                             <label for="tiempoAtencion">Tiempo de atención</label>
-                                            <input type="number" min="1" class="form-control" placeholder="Minutos"  id="tiempoAtencion${oficina.iId}" required>
+                                            <input type="number" min="1" class="form-control" placeholder="Minutos"  id="tiempo${oficina.iId}" required>
                                         </div>
 
                                         <div class="form-group col-md-6">
@@ -277,6 +277,8 @@
         let inicioSF    = modulo != null ? modulo.inicioSF    : $("#horaInicial"+moduloId).val();
         let finalSF     = modulo != null ? modulo.finalSF     : $("#horaFinal"+moduloId).val();
         let capacidad   = modulo != null ? modulo.capacidad   : $("#capacidad"+moduloId).val();
+        let tiempo      = modulo != null ? modulo.tiempo      : $("#tiempo"+moduloId).val();
+        let ventanillas = modulo != null ? modulo.ventanillas : $("#ventanillas"+moduloId).val();
         let semana      = ["Lunes", "Martes","Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         let temporal    = [];
 
@@ -284,15 +286,18 @@
         inicio      == 0 || "" ? $("#horaInicial"+moduloId).addClass("is-invalid") : $("#horaInicial"+moduloId).removeClass("is-invalid");
         final       == 0 || "" ? $("#horaFinal"+moduloId).addClass("is-invalid") : $("#horaFinal"+moduloId).removeClass("is-invalid");
         capacidad   == 0 || "" ? $("#capacidad"+moduloId).addClass("is-invalid") : $("#capacidad"+moduloId).removeClass("is-invalid");
+        capacidad   == 0 || "" ? $("#capacidad"+moduloId).addClass("is-invalid") : $("#capacidad"+moduloId).removeClass("is-invalid");
+        tiempo      == 0 || "" ? $("#tiempo"+moduloId).addClass("is-invalid")    : $("#tiempo"+moduloId).removeClass("is-invalid");
+        ventanillas == 0 || "" ? $("#ventanillas"+moduloId).addClass("is-invalid") : $("#ventanillas"+moduloId).removeClass("is-invalid");
 
-        if(dia == 0 || inicio == 0 || final == 0 || capacidad == 0 ){
+        if(dia == 0 || inicio == 0 || final == 0 || capacidad == 0 || tiempo == 0|| ventanillas == 0){
             return;
         }
         else{
             $("#detalleHorario" + moduloId).remove();
             inicio  =  formatAMPM(inicioSF);
             final   =  formatAMPM(finalSF);
-            let obj = { dia: dia, inicio: inicio ,final: final, capacidad:capacidad, moduloId:moduloId, inicioSF: inicioSF,finalSF: finalSF };
+            let obj = { dia: dia, inicio: inicio ,final: final, capacidad:capacidad, moduloId:moduloId, inicioSF: inicioSF,finalSF: finalSF, tiempo:tiempo, ventanillas:ventanillas };
 
             let contador    = 0;
             let ordenDias   = [];
@@ -321,19 +326,32 @@
                                         <div class="col-md-3">${element.inicio} </div>
                                         <div class="col-md-3">${element.final} </div>
                                         <div class="col-md-2">${element.capacidad} </div>
-                                        <div class="col-md-1"><i onclick='eliminaDetalle(${contador}, ${moduloId})' class="fa fa-trash"></i></div>
+                                        <div class="col-md-1"><i onclick='eliminaDetalle(${contador},${moduloId}, "${element.dia}","${element.inicio}","${element.final}", ${element.capacidad})' class="fa fa-trash"></i></div>
                                     </div>
                                 </li>`;
                     contador++;
+                    $("#ventanillas"+moduloId).val(element.ventanillas);
+                    $("#tiempo"+moduloId).val(element.tiempo);
                 }
             });
-            diasHtml += `</ul>`
+            diasHtml += `</ul>`;
             $("#detalle" + moduloId).append(diasHtml);  
         }
     }
 
-    function eliminaDetalle(id, moduloId){
-        console.log(id);
+    function eliminaDetalle(id, moduloId, dia, inicio, final,capacidad ){
+        let temporal = objDetalle;
+        objDetalle   = [];
+        
+        temporal.forEach(element => {
+            console.log(element);
+            if(element.moduloId == moduloId && element.dia == dia && element.inicio == inicio && element.final == final ){
+                console.log("elimino", element.dia);
+            }
+            else
+                objDetalle.push(element);
+        });
+        llenaDetalle();
     }
 
     function formatAMPM(hora) {
