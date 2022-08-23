@@ -585,15 +585,6 @@
 
     }
 
-    /******************* Variables para el calendario de citas *******************/
-    var getModulos  = true
-    var objDetalle  = [];
-
-
-
-
-
-
     $(document).ready(function() {
 
         var idtramite = "{{request()->route('tramiteID')}}";
@@ -1930,10 +1921,7 @@
         }
     }
 
-    var tramite = {
-        edificios: [],
-        resolutivos: []
-    };
+    var tramite = { edificios: [], resolutivos: []};
 
     //Funcion agregar conceptos de pago
     function TRAM_FN_AGREGA_CONCEPTO_PAGO(values) {
@@ -3630,7 +3618,8 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: []
+                                CONF_LIST_RESOLUTIVO: [],
+                                CONF_ARRAY_DETALLE_CITA: objDetalle
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }
@@ -3806,8 +3795,9 @@
 
         tramite.TRAM_NDIASHABILESRESOLUCION = txtPlazo_diasResolucion;
         tramite.TRAM_NDIASHABILESNOTIFICACION = txtPlazo_diasNotificacion;
+        console.log(tramite);
 
-        $('#loading_save').show();
+        /* $('#loading_save').show();
         $.ajax({
             data: tramite,
             dataType: 'json',
@@ -3838,7 +3828,15 @@
                     footer: ''
                 });
             }
-        });
+        }); */
     }
+
+
+    /******************* Variables para el calendario de citas *******************/
+    var getModulos  = true
+    var allModulos  = [];
+    var objDetalle  = [];
+
+
 </script>
 @endsection
