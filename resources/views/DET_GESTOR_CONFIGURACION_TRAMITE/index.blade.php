@@ -3618,7 +3618,8 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: []
+                                CONF_LIST_RESOLUTIVO: [],
+                                CONF_ARRAY_DETALLE_CITA: objDetalle
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }
@@ -3794,8 +3795,9 @@
 
         tramite.TRAM_NDIASHABILESRESOLUCION = txtPlazo_diasResolucion;
         tramite.TRAM_NDIASHABILESNOTIFICACION = txtPlazo_diasNotificacion;
+        console.log(tramite);
 
-        $('#loading_save').show();
+        /* $('#loading_save').show();
         $.ajax({
             data: tramite,
             dataType: 'json',
@@ -3826,7 +3828,7 @@
                     footer: ''
                 });
             }
-        });
+        }); */
     }
 
 
