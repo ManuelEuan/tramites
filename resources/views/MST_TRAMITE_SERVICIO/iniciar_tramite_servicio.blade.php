@@ -139,20 +139,10 @@
         <div class="col-md-12">
             <label style="font-weight: bold; font-size:20px;">Indique el módulo en el cuál prefiere que se lleve a cabo el trámite</label>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-12" style=" padding-top: 20px; ">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
-                        <!-- <div class="col-md-4"> -->
-                        <div class="form-group row col-md-12">
-                            <label class="col-sm-2 col-form-label" for="cmbMunicipio">Municipio</label>
-                            <div class="col-sm-10">
-                                <select class="combobox form-control" name="cmbMunicipio" id="cmbMunicipio">
-                                    <option></option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- </div> -->
                         <!-- <div class="col-md-4"> -->
                         <div class="form-group row col-md-12">
                             <label class="col-sm-2 col-form-label" for="cmbModulo">Módulo</label>
@@ -899,6 +889,9 @@
             }
         });
 
+        //$('#cmbModulo').prop('disabled', false);
+        TRAM_AJX_CONSULTARMODULO(0, id_accede);
+
         $(".chckdfiles").change();
         $("#btnEnviar").hide();
 
@@ -938,12 +931,12 @@
 
         $("#cmbMunicipio").change(function() {
             var id_municipio = $(this).val();
-            if (id_municipio != "") {
+            /*if (id_municipio != "") {
                 $('#cmbModulo').prop('disabled', false);
                 TRAM_AJX_CONSULTARMODULO(id_municipio, id_accede);
             } else {
                 $('#cmbModulo').prop('disabled', 'disabled');
-            }
+            }*/
         });
 
         //obtener detalle
@@ -1015,7 +1008,7 @@
 
 
         function TRAM_FN_DESACTIVARMODULO() {
-            $('#cmbModulo').prop('disabled', 'disabled');
+            //$('#cmbModulo').prop('disabled', 'disabled');
         }
 
         function TRAM_FN_CALCULARPORCENTAJE(percentage) {

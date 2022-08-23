@@ -82,7 +82,6 @@ function existeCita(idusuario, tramitelocal, tramiteaccede){
             }else{
                 $("#concitareservada").hide();
                 $("#sincitareservada").show();
-                
                 obtenerEdificios(tramiteaccede);
                 //citasDisponibles(idtramite, idedificio, idusuario, nombre, apellidop, apellidom, correo, celular, tramitelocal);
             }
@@ -287,6 +286,21 @@ function obtenerEdificios(idtramite, esCita = true){
         $("#sincita_edificios").empty();
         $("#sincita_edificios").append($("<option />").val(0).text("--Seleccione un edificio--"));
     }
+    /*$.ajax({
+        url: "/tramite_servicio/obtener_modulo/" + 0 + "/" + idtramite,
+        type: "GET",
+        success: function(data) {
+            console.log(data)
+        },
+        error: function(data) {
+            Swal.fire({
+                icon: data.status,
+                title: '',
+                text: data.message,
+                footer: ''
+            });
+        }
+    });*/
 
     $.ajax({
         url: URL_BASE + 'tramite_edificios/'+idtramite,
