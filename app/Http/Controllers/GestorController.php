@@ -70,8 +70,7 @@ class GestorController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function obtener_filtro(Request $request)
-    {
+    public function obtener_filtro(Request $request) {
         $filtros = $this->tramiteService->filtros($request);
         $response = [
             "clasificacion" =>  [],
@@ -84,13 +83,24 @@ class GestorController extends Controller
     }
 
     /**
+     * Retorna el detalle del tramite
+     * @param int $tramiteID
+     * @return Response
+     */
+    public function detalleTramite($tramiteID) {
+        $objTramite     = $this->tramiteService->getTramite($tramiteID);
+        $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
+
+        return response()->json(["data" => $arrayDetalle]);
+    }
+
+    /**
      * Retorna la vista de la descripcion del tramite
      * @param int $tramiteID
      * @param int $tramiteIDConfig
      * @return View
      */
-    public function consultar_tramite($tramiteID, $tramiteIDConfig)
-    {
+    public function consultar_tramite($tramiteID, $tramiteIDConfig) {
         $objTramite             = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle           = $this->tramiteService->getDetalle($objTramite->Id);
 
