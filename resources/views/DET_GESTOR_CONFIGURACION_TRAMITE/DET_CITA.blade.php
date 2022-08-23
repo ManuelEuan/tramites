@@ -152,133 +152,158 @@
 
     /***************** Manuel Euan /*****************/
     var tramiteId =  $("#tramiteID").val();
-    /* if(getModulos){ */
+    if(getModulos){
         $.ajax({
             dataType: 'json',
             url: "/gestores/detalleTramite/" + tramiteId + "",
             type: "GET",
             success: function(response) {
-                let oficinas    = response.data.oficinas;
-                let horarios    = response.data.horario;
-                let show        = 'show';
-                let html        = '';
-               
-                oficinas.forEach(oficina => {
-                    html += `
-                    <div class="card">
-                        <div class="card-header" id="heading${oficina.iId}">
-                            <h2 class="mb-0">
-                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse${oficina.iId}" aria-expanded="true" aria-controls="collapse${oficina.iId}">
-                                    ${oficina.Name}
-                                </button>
-                            </h2>
-                        </div>
-              
-                        <div id="collapse${oficina.iId}" class="collapse ${show}" aria-labelledby="heading${oficina.iId}" data-parent="#accordionExample">
-                            <div class="container formHorario">
+                allModulos  = response.data;
+                let html    = createAcordeon(allModulos);
+                $("#htmHorario").html(html);
+                getModulos = false;
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+    }
+    else{
+        let html    = createAcordeon(allModulos);
+        $("#htmHorario").html(html);
+        llenaDetalle();
+    }
+
+    function createAcordeon(modulos){
+        let oficinas    = modulos.oficinas
+        let horarios    = modulos.horario;
+        let show        = 'show';
+        let html        = '';
+
+        oficinas.forEach(oficina => {
+            html += `
+            <div class="card">
+                <div class="card-header" id="heading${oficina.iId}">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse${oficina.iId}" aria-expanded="true" aria-controls="collapse${oficina.iId}">
+                            ${oficina.Name}
+                        </button>
+                    </h2>
+                </div>
+        
+                <div id="collapse${oficina.iId}" class="collapse ${show}" aria-labelledby="heading${oficina.iId}" data-parent="#accordionExample">
+                    <div class="container formHorario">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row ">
+                                    <div class="form-group  col-md-3">
+                                        <label for="diaSemana">Días</label>
+                                        <select class="custom-select" id="diaSemana${oficina.iId}">
+                                            <option value="0">Seleccionar</option>
+                                            <option value="Lunes">Lunes</option>
+                                            <option value="Martes">Martes</option>
+                                            <option value="Miercoles">Miercoles</option>
+                                            <option value="Jueves">Jueves</option>
+                                            <option value="Viernes">Viernes</option>
+                                            <option value="Sabado">Sabado</option>
+                                            <option value="Domingo">Domingo</option>
+                                        </select>
+                                    </div>
+        
+                                    <div class="form-group col-md-2">
+                                        <label for="horaInicial">Hora inicial</label>
+                                        <input type="time" class="form-control" id="horaInicial${oficina.iId}" placeholder="Hora inicial" required>
+                                    </div>
+        
+                                    <div class="form-group col-md-2">
+                                        <label for="horaFinal">Hora final</label>
+                                        <input type="time" class="form-control" id="horaFinal${oficina.iId}" placeholder="Hora final" required>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="capacidad">Capacidad</label>
+                                        <input type="number" min="0" class="form-control" id="capacidad${oficina.iId}" placeholder="Personas" required>
+                                    </div>
+                                    <div class="col-md-2 btnAddDia">
+                                        <button type="button" class="btn btn-info btn-circle btn-xl" onclick="agregarDia(${oficina.iId})" title="Agregar">
+                                            <i class="fa fa-add"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="row ">
-                                            <div class="form-group  col-md-3">
-                                                <label for="diaSemana">Días</label>
-                                                <select class="custom-select" id="diaSemana">
-                                                    <option value="0">Seleccionar</option>
-                                                    <option value="Lunes">Lunes</option>
-                                                    <option value="Martes">Martes</option>
-                                                    <option value="Miercoles">Miercoles</option>
-                                                    <option value="Jueves">Jueves</option>
-                                                    <option value="Viernes">Viernes</option>
-                                                    <option value="Sabado">Sabado</option>
-                                                    <option value="Domingo">Domingo</option>
-                                                </select>
-                                            </div>
-                
-                                            <div class="form-group col-md-2">
-                                                <label for="horaInicial">Hora inicial</label>
-                                                <input type="time" class="form-control" id="horaInicial" placeholder="Hora inicial" required>
-                                            </div>
-                
-                                            <div class="form-group col-md-2">
-                                                <label for="horaFinal">Hora final</label>
-                                                <input type="time" class="form-control" id="horaFinal" placeholder="Hora final" required>
-                                            </div>
-                                            <div class="form-group col-md-2">
-                                                <label for="capacidad">Capacidad</label>
-                                                <input type="number" min="0" class="form-control" id="capacidad" placeholder="Personas" required>
-                                            </div>
-                                            <div class="col-md-2 btnAddDia">
-                                                <button type="button" class="btn btn-info btn-circle btn-xl" onclick="agregarDia(${oficina.iId})" title="Agregar">
-                                                    <i class="fa fa-add"></i>
-                                                </button>
+                                    <div class="col-sm-7">
+                                        <div class="card cardDias">
+                                            <div class="card-header"><label class="tituloHorario"> Horario de atención </label></div>
+                                            <div class="card-body" id="detalle${oficina.iId}"> 
+                                                <ul id="detalleHorario${oficina.iId}" style="list-style: none;"></ul>
                                             </div>
                                         </div>
-                                        
-                                        <div class="row">
-                                            <div class="col-sm-7">
-                                                <div class="card cardDias">
-                                                    <div class="card-header"><label class="tituloHorario"> Horario de atención </label></div>
-                                                    <div class="card-body" id="detalle${oficina.iId}"> 
-                                                        <ul id="detalleHorario${oficina.iId}" style="list-style: none;"></ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="col-sm-5" >
-                                                <div class="form-group col-md-6" style="margin-top: 10%;">
-                                                    <label for="tiempoAtencion">Tiempo de atención</label>
-                                                    <input type="number" min="1" class="form-control" placeholder="Minutos"  id="tiempoAtencion" required>
-                                                </div>
+                                    </div>
+                                    
+                                    <div class="col-sm-5" >
+                                        <div class="form-group col-md-6" style="margin-top: 10%;">
+                                            <label for="tiempoAtencion">Tiempo de atención</label>
+                                            <input type="number" min="1" class="form-control" placeholder="Minutos"  id="tiempo${oficina.iId}" required>
+                                        </div>
 
-                                                <div class="form-group col-md-6">
-                                                    <label for="ventanillas">Ventanillas</label>
-                                                    <input type="number" min="10" class="form-control" placeholder="Ventanillas" id="ventanillas" required>
-                                                </div>
-                                            </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="ventanillas">Ventanillas</label>
+                                            <input type="number" min="10" class="form-control" placeholder="Ventanillas" id="ventanillas${oficina.iId}" required>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        </div>
-                    </div>`;
-                    show = '';
-                });
-
-                $("#htmHorario").html(html);
-                getModulos = false;
-            },
-            error: function(data) {
-                console.log(data)
-            }
+                    </div>
+                </div>
+                </div>
+            </div>`;
+            show = '';
         });
-    /* } */
 
-    function agregarDia(moduloId){
-        let dia         = $("#diaSemana").val();
-        let inicio      = $("#horaInicial").val();
-        let final       = $("#horaFinal").val();
-        let capacidad   = $("#capacidad").val();
+        return html;
+    }
+
+    function llenaDetalle(){
+        objDetalle.forEach(element => {
+            agregarDia(element.moduloId, element);
+        });
+    }
+
+    function agregarDia(moduloId, modulo = null){
+        let dia         = modulo != null ? modulo.dia         : $("#diaSemana"+moduloId).val();
+        let inicio      = modulo != null ? modulo.inicio      : $("#horaInicial"+moduloId).val();
+        let final       = modulo != null ? modulo.final       : $("#horaFinal"+moduloId).val();
+        let inicioSF    = modulo != null ? modulo.inicioSF    : $("#horaInicial"+moduloId).val();
+        let finalSF     = modulo != null ? modulo.finalSF     : $("#horaFinal"+moduloId).val();
+        let capacidad   = modulo != null ? modulo.capacidad   : $("#capacidad"+moduloId).val();
+        let tiempo      = modulo != null ? modulo.tiempo      : $("#tiempo"+moduloId).val();
+        let ventanillas = modulo != null ? modulo.ventanillas : $("#ventanillas"+moduloId).val();
         let semana      = ["Lunes", "Martes","Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         let temporal    = [];
 
-        dia         == 0 || "" ? $("#diaSemana").addClass("is-invalid") : $("#diaSemana").removeClass("is-invalid");
-        inicio      == 0 || "" ? $("#horaInicial").addClass("is-invalid") : $("#horaInicial").removeClass("is-invalid");
-        final       == 0 || "" ? $("#horaFinal").addClass("is-invalid") : $("#horaFinal").removeClass("is-invalid");
-        capacidad   == 0 || "" ? $("#capacidad").addClass("is-invalid") : $("#capacidad").removeClass("is-invalid");
+        dia         == 0 || "" ? $("#diaSemana"+moduloId).addClass("is-invalid") : $("#diaSemana"+moduloId).removeClass("is-invalid");
+        inicio      == 0 || "" ? $("#horaInicial"+moduloId).addClass("is-invalid") : $("#horaInicial"+moduloId).removeClass("is-invalid");
+        final       == 0 || "" ? $("#horaFinal"+moduloId).addClass("is-invalid") : $("#horaFinal"+moduloId).removeClass("is-invalid");
+        capacidad   == 0 || "" ? $("#capacidad"+moduloId).addClass("is-invalid") : $("#capacidad"+moduloId).removeClass("is-invalid");
+        capacidad   == 0 || "" ? $("#capacidad"+moduloId).addClass("is-invalid") : $("#capacidad"+moduloId).removeClass("is-invalid");
+        tiempo      == 0 || "" ? $("#tiempo"+moduloId).addClass("is-invalid")    : $("#tiempo"+moduloId).removeClass("is-invalid");
+        ventanillas == 0 || "" ? $("#ventanillas"+moduloId).addClass("is-invalid") : $("#ventanillas"+moduloId).removeClass("is-invalid");
 
-        if(dia == 0 || inicio == 0 || final == 0 || capacidad == 0 ){
+        if(dia == 0 || inicio == 0 || final == 0 || capacidad == 0 || tiempo == 0|| ventanillas == 0){
             return;
         }
         else{
             $("#detalleHorario" + moduloId).remove();
-            inicio  =  formatAMPM(inicio);
-            final   =  formatAMPM(final);
-            let obj = { dia: dia, inicio: inicio ,final: final, capacidad:capacidad, modulo:moduloId };
+            inicio  =  formatAMPM(inicioSF);
+            final   =  formatAMPM(finalSF);
+            let obj = { dia: dia, inicio: inicio ,final: final, capacidad:capacidad, moduloId:moduloId, inicioSF: inicioSF,finalSF: finalSF, tiempo:tiempo, ventanillas:ventanillas };
 
             let contador    = 0;
             let ordenDias   = [];
-            objDetalle.push(obj);
-                
+            if( modulo == null){
+                objDetalle.push(obj);
+            }
             for (var i = 0; i < semana.length; i++) {
                 for (var j = 0; j < objDetalle.length; j++) {
                     if (semana[i] === objDetalle[j].dia) {
@@ -290,28 +315,43 @@
             objDetalle = ordenDias;
             let diasHtml = `<ul id="detalleHorario${moduloId}" style="list-style: none;">`;
             ordenDias.forEach(element => {
-                diasHtml += `<li id="dia${contador}">
-                                <div class="row lineaDia" >
-                                    <div class="col-md-3">
-                                        <div class="form-check form-check-inline">
-                                            <label class="form-check-label" for=""> ${element.dia} </label>
+                if(element.moduloId == moduloId ){
+                    diasHtml += `<li id="dia${contador}">
+                                    <div class="row lineaDia" >
+                                        <div class="col-md-3">
+                                            <div class="form-check form-check-inline">
+                                                <label class="form-check-label" for=""> ${element.dia} </label>
+                                            </div>
                                         </div>
+                                        <div class="col-md-3">${element.inicio} </div>
+                                        <div class="col-md-3">${element.final} </div>
+                                        <div class="col-md-2">${element.capacidad} </div>
+                                        <div class="col-md-1"><i onclick='eliminaDetalle(${contador},${moduloId}, "${element.dia}","${element.inicio}","${element.final}", ${element.capacidad})' class="fa fa-trash"></i></div>
                                     </div>
-                                    <div class="col-md-3">${element.inicio} </div>
-                                    <div class="col-md-3">${element.final} </div>
-                                    <div class="col-md-2">${element.capacidad} </div>
-                                    <div class="col-md-1"><i onclick='eliminaDetalle(${contador}, ${moduloId})' class="fa fa-trash"></i></div>
-                                </div>
-                            </li>`;
-                contador++;
+                                </li>`;
+                    contador++;
+                    $("#ventanillas"+moduloId).val(element.ventanillas);
+                    $("#tiempo"+moduloId).val(element.tiempo);
+                }
             });
-            diasHtml += `</ul>`
+            diasHtml += `</ul>`;
             $("#detalle" + moduloId).append(diasHtml);  
         }
     }
 
-    function eliminaDetalle(id, moduloId){
-        console.log(id);
+    function eliminaDetalle(id, moduloId, dia, inicio, final,capacidad ){
+        let temporal = objDetalle;
+        objDetalle   = [];
+        
+        temporal.forEach(element => {
+            console.log(element);
+            if(element.moduloId == moduloId && element.dia == dia && element.inicio == inicio && element.final == final ){
+                console.log("elimino", element.dia);
+            }
+            else
+                objDetalle.push(element);
+        });
+        llenaDetalle();
     }
 
     function formatAMPM(hora) {

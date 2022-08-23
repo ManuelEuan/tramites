@@ -5,24 +5,25 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Cls_Gestor;
 use App\Cls_Resolutivo;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Cls_Tramite_Servicio;
 use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use  Illuminate\Pagination\Paginator;
 use App\Http\Controllers\FormularioController;
 use  Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Arr;
 
 class GestorController extends Controller
 {
     /**
      * @var String
      */
-    private $host = 'https://remtysmerida.azurewebsites.net';
+    private $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
 
     /**
      * @var TramiteService
@@ -34,7 +35,7 @@ class GestorController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        /* $this->middleware('auth'); */
         $this->tramiteService = new TramiteService();
     }
 
@@ -345,6 +346,7 @@ class GestorController extends Controller
     public function save(Request $request)
     {
         try {
+            DB::beginTransaction();
             $tramite = $this->TRAM_SP_AGREGAR_TRAMITE($request);
             if ($tramite->TRAM_CTIPO == "Creación" || $tramite->TRAM_CTIPO == "Actualización") {
 
@@ -359,6 +361,7 @@ class GestorController extends Controller
                         $result     = $gestor_im->TRAM_SP_CAMBIAR_ESTATUS_TRAMITE($tramite->TRAM_NIDTRAMITE_CONFIG, 1);
                     }
 
+                    DB::commit();
                     return response()->json([
                         "estatus" => "success",
                         "codigo" => 200,
@@ -367,8 +370,10 @@ class GestorController extends Controller
                         "result" => $result,
                     ]);
                 } else {
+                    DB::commit();
                     return response()->json($resultSecciones);
                 }
+
             } else {
 
                 return response()->json([
@@ -378,6 +383,7 @@ class GestorController extends Controller
                 ]);
             }
         } catch (\Throwable $e) {
+            DB::rollBack();
             $response = [
                 "estatus" => "error",
                 "codigo" => 400,
@@ -440,8 +446,7 @@ class GestorController extends Controller
 
     private function TRAM_SP_AGREGAR_SECCIONES(array $listSecciones, $TramiteID)
     {
-        $response = [];
-        //dd($listSecciones);
+        $response   = [];
         try {
             if (count($listSecciones) > 0) {
                 $seccionesEliminadas = new Cls_Gestor();
@@ -487,18 +492,24 @@ class GestorController extends Controller
                         $TRAM_LIST_CONCEPTO = $seccion['CONF_LIST_PAGO'];
                         $this->TRAM_AGREGAR_CONCEPTO_PAGO_TRAMITE($TRAM_LIST_CONCEPTO, $TramiteID, $Seccion_id);
                     }
+
+                    //Valido si tiene la seccion cita y si cuenta con su detalle
+                    if ($seccion['CONF_NSECCION'] === "Citas en línea") {
+                        $citas = isset($seccion['CONF_ARRAY_DETALLE_CITA']) ? $seccion['CONF_ARRAY_DETALLE_CITA'] : [];
+                        $this->tramiteService->createCitas($TramiteID, $citas);
+                    }
                 }
 
                 $response = [
-                    "estatus" => "success",
-                    "codigo" => 200,
-                    "mensaje" => "Secciones agregadas correctamente",
+                    "estatus"   => "success",
+                    "codigo"    => 200,
+                    "mensaje"   => "Secciones agregadas correctamente",
                 ];
             } else {
                 $response = [
-                    "estatus" => "error",
-                    "codigo" => 400,
-                    "mensaje" => "No se agregaron secciones a configurar",
+                    "estatus"   => "error",
+                    "codigo"    => 400,
+                    "mensaje"   => "No se agregaron secciones a configurar",
                 ];
             }
         } catch (\Throwable $e) {

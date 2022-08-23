@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Cls_DiasCitaTramite;
 
 class TramiteService
 {
@@ -316,5 +318,34 @@ class TramiteService
                         ->select('s.Id as estadoId', 's.Name as estado', 'm.Id as municipioId', 'm.Name as municipio')
                         ->where('d.iId',$dependenciaID)->first();
         return $datos;
+    }
+
+    /**
+     * Genera los diías permitidos para las citas del tramite
+     * @param int $traimiteId
+     * @param array $data
+     * @return array
+     */
+    public function createCitas(int $traimiteId, array $data){
+        $response = ["status" => 200, "items" => []];
+        foreach ($data as $key => $value) {
+            try {
+                $item = new Cls_DiasCitaTramite();
+                $item->tramiteId        = $traimiteId;
+                $item->moduloId         = $value['moduloId'];
+                $item->dia              = $value['dia'];
+                $item->horarioInicial   = $value['inicioSF'];
+                $item->horarioFinal     = $value['finalSF'];
+                $item->ventanillas      = $value['ventanillas'];
+                $item->capacidad        = $value['capacidad'];
+                $item->tiempoAtencion   = $value['tiempo'];
+                $item->save();
+                array_push($response['items'],$item);
+            } catch (Exception $ex) {dd($ex);
+                throw $ex;
+            }
+        }
+
+        return $response;
     }
 }
