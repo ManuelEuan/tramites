@@ -585,15 +585,6 @@
 
     }
 
-    /******************* Variables para el calendario de citas *******************/
-    var getModulos  = true
-    var objDetalle  = [];
-
-
-
-
-
-
     $(document).ready(function() {
 
         var idtramite = "{{request()->route('tramiteID')}}";
@@ -1930,10 +1921,7 @@
         }
     }
 
-    var tramite = {
-        edificios: [],
-        resolutivos: []
-    };
+    var tramite = { edificios: [], resolutivos: []};
 
     //Funcion agregar conceptos de pago
     function TRAM_FN_AGREGA_CONCEPTO_PAGO(values) {
@@ -3840,5 +3828,13 @@
             }
         });
     }
+
+
+    /******************* Variables para el calendario de citas *******************/
+    var getModulos  = true
+    var allModulos  = [];
+    var objDetalle  = [];
+
+
 </script>
 @endsection
