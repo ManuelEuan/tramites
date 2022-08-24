@@ -3807,7 +3807,7 @@
             success: function(response) {
 
                 if (response.codigo === 200) {
-                    /* window.location.replace(response.ruta) */
+                     window.location.replace(response.ruta)
                 } else {
                     $('#loading_save').hide();
                     Swal.fire({
