@@ -71,7 +71,8 @@ class GestorController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function obtener_filtro(Request $request) {
+    public function obtener_filtro(Request $request)
+    {
         $filtros = $this->tramiteService->filtros($request);
         $response = [
             "clasificacion" =>  [],
@@ -88,7 +89,8 @@ class GestorController extends Controller
      * @param int $tramiteID
      * @return Response
      */
-    public function detalleTramite($tramiteID) {
+    public function detalleTramite($tramiteID)
+    {
         $objTramite     = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
 
@@ -101,7 +103,8 @@ class GestorController extends Controller
      * @param int $tramiteIDConfig
      * @return View
      */
-    public function consultar_tramite($tramiteID, $tramiteIDConfig) {
+    public function consultar_tramite($tramiteID, $tramiteIDConfig)
+    {
         $objTramite             = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle           = $this->tramiteService->getDetalle($objTramite->Id);
 
@@ -373,7 +376,6 @@ class GestorController extends Controller
                     DB::commit();
                     return response()->json($resultSecciones);
                 }
-
             } else {
 
                 return response()->json([
@@ -589,7 +591,7 @@ class GestorController extends Controller
 
         $fileName = '';
 
-        if (!empty($TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE'])) {
+        if (!empty($TRAM_LIST_RESOLUTIVO['RESO_FILEBASE64'])) {
 
             $fileName = md5(time() . $TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE']) . '.' . 'docx';
 
@@ -603,6 +605,11 @@ class GestorController extends Controller
 
             // clean up the file resource
             fclose($ifp);
+        } else {
+            if (!empty($TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE'])) {
+
+                $fileName = $TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE'];
+            }
         }
 
 
