@@ -162,12 +162,12 @@ class Cls_Gestor extends Model
     public function TRAM_CONSULTAR_CONFIGURACION_TRAMITE($TRAM_NIDTRAMITE_CONFIG)
     {
         $response = [
-            'tramite' => null,
-            'secciones' => [],
-            'formularios' => [],
-            'documentos' => [],
-            'edificios' => [],
-            'resolutivos' => [],
+            'tramite'       => null,
+            'secciones'     => [],
+            'formularios'   => [],
+            'documentos'    => [],
+            'edificios'     => [],
+            'resolutivos'   => [],
             'conceptos_pago' => [],
         ];
 
