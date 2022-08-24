@@ -90,6 +90,8 @@
             objResolutivoEletronico.nameResolutivo = firsResolutuvo.RESO_CNOMBRE;
             $("#cmbResolutivo").val(objResolutivoEletronico.nameResolutivo);
 
+            objResolutivoEletronico.list_mapeo_resolutivo = [];
+
             firsResolutuvo.MAPEO.forEach(function(v, i) {
 
                 var campo = {

@@ -476,6 +476,7 @@
         background: #ffffff;
     }
 </style>
+
 <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
 <script>
     var tramite_    = null;
@@ -1073,7 +1074,7 @@
             var id_tramite_config = "{{request()->route('tramiteIDConfig') }}";
 
             if (id_tramite_config > 0) {
-
+                objDetalle = <?php echo $tramite['TRAM_CITAS'] ?>;
                 $.ajax({
                     dataType: 'json',
                     url: "/gestores/consultar_configuracion_tramite/" + id_tramite_config + "",
@@ -3797,7 +3798,7 @@
         tramite.TRAM_NDIASHABILESNOTIFICACION = txtPlazo_diasNotificacion;
         console.log(tramite);
 
-        /* $('#loading_save').show();
+        $('#loading_save').show();
         $.ajax({
             data: tramite,
             dataType: 'json',
@@ -3806,7 +3807,7 @@
             success: function(response) {
 
                 if (response.codigo === 200) {
-                    window.location.replace(response.ruta)
+                     window.location.replace(response.ruta)
                 } else {
                     $('#loading_save').hide();
                     Swal.fire({
@@ -3828,7 +3829,7 @@
                     footer: ''
                 });
             }
-        }); */
+        });
     }
 
 

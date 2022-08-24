@@ -162,6 +162,9 @@
                 let html    = createAcordeon(allModulos);
                 $("#htmHorario").html(html);
                 getModulos = false;
+                if(objDetalle.length > 0){
+                    llenaDetalle();
+                }
             },
             error: function(data) {
                 console.log(data);
@@ -291,51 +294,84 @@
         ventanillas == 0 || "" ? $("#ventanillas"+moduloId).addClass("is-invalid") : $("#ventanillas"+moduloId).removeClass("is-invalid");
 
         if(dia == 0 || inicio == 0 || final == 0 || capacidad == 0 || tiempo == 0|| ventanillas == 0){
+            Swal.fire({
+                icon: 'error',
+                title: 'Favor de llenar todo los campos requeridos',
+                text: '',
+            });
+
             return;
         }
         else{
-            $("#detalleHorario" + moduloId).remove();
-            inicio  =  formatAMPM(inicioSF);
-            final   =  formatAMPM(finalSF);
-            let obj = { dia: dia, inicio: inicio ,final: final, capacidad:capacidad, moduloId:moduloId, inicioSF: inicioSF,finalSF: finalSF, tiempo:tiempo, ventanillas:ventanillas };
-
-            let contador    = 0;
-            let ordenDias   = [];
-            if( modulo == null){
-                objDetalle.push(obj);
+            if(inicioSF >= finalSF ){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'La hora final debe ser mayor a la hora inicial.',
+                    text: '',
+                });
             }
-            for (var i = 0; i < semana.length; i++) {
-                for (var j = 0; j < objDetalle.length; j++) {
-                    if (semana[i] === objDetalle[j].dia) {
-                        ordenDias.push(objDetalle[j]);
+            else{
+                
+                inicio      =  formatAMPM(inicioSF);
+                final       =  formatAMPM(finalSF);
+                let obj     = { dia: dia, inicio: inicio ,final: final, capacidad:capacidad, moduloId:moduloId, inicioSF: inicioSF,finalSF: finalSF, tiempo:tiempo, ventanillas:ventanillas };
+                let procede = true;
+
+                if(modulo == null){
+                    objDetalle.forEach(element => {
+                        if(element.dia == obj.dia && element.inicioSF == obj.inicioSF && element.finalSF == obj.finalSF && element.moduloId == obj.moduloId ){
+                            procede = false;
+                        }
+                    });
+                }
+                if(!procede){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ya se ha generado un registro con el mismo día y horario.',
+                        text: '',
+                    });
+                    return;
+                }
+
+                let contador    = 0;
+                let ordenDias   = [];
+                if( modulo == null){
+                    objDetalle.push(obj);
+                }
+                for (var i = 0; i < semana.length; i++) {
+                    for (var j = 0; j < objDetalle.length; j++) {
+                        if (semana[i] === objDetalle[j].dia) {
+                            ordenDias.push(objDetalle[j]);
+                        }
                     }
                 }
-            }
 
-            objDetalle = ordenDias;
-            let diasHtml = `<ul id="detalleHorario${moduloId}" style="list-style: none;">`;
-            ordenDias.forEach(element => {
-                if(element.moduloId == moduloId ){
-                    diasHtml += `<li id="dia${contador}">
-                                    <div class="row lineaDia" >
-                                        <div class="col-md-3">
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for=""> ${element.dia} </label>
+                $("#detalleHorario" + moduloId).remove();
+                objDetalle = ordenDias;
+                let diasHtml = `<ul id="detalleHorario${moduloId}" style="list-style: none;">`;
+                ordenDias.forEach(element => {
+                    if(element.moduloId == moduloId ){
+                        diasHtml += `<li id="dia${contador}">
+                                        <div class="row lineaDia" >
+                                            <div class="col-md-3">
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label" for=""> ${element.dia} </label>
+                                                </div>
                                             </div>
+                                            <div class="col-md-3">${element.inicio} </div>
+                                            <div class="col-md-3">${element.final} </div>
+                                            <div class="col-md-2">${element.capacidad} </div>
+                                            <div class="col-md-1"><i onclick='eliminaDetalle(${contador},${moduloId}, "${element.dia}","${element.inicio}","${element.final}", ${element.capacidad})' class="fa fa-trash"></i></div>
                                         </div>
-                                        <div class="col-md-3">${element.inicio} </div>
-                                        <div class="col-md-3">${element.final} </div>
-                                        <div class="col-md-2">${element.capacidad} </div>
-                                        <div class="col-md-1"><i onclick='eliminaDetalle(${contador},${moduloId}, "${element.dia}","${element.inicio}","${element.final}", ${element.capacidad})' class="fa fa-trash"></i></div>
-                                    </div>
-                                </li>`;
-                    contador++;
-                    $("#ventanillas"+moduloId).val(element.ventanillas);
-                    $("#tiempo"+moduloId).val(element.tiempo);
-                }
-            });
-            diasHtml += `</ul>`;
-            $("#detalle" + moduloId).append(diasHtml);  
+                                    </li>`;
+                        contador++;
+                        $("#ventanillas"+moduloId).val(element.ventanillas);
+                        $("#tiempo"+moduloId).val(element.tiempo);
+                    }
+                });
+                diasHtml += `</ul>`;
+                $("#detalle" + moduloId).append(diasHtml);  
+            }
         }
     }
 
@@ -344,7 +380,6 @@
         objDetalle   = [];
         
         temporal.forEach(element => {
-            console.log(element);
             if(element.moduloId == moduloId && element.dia == dia && element.inicio == inicio && element.final == final ){
                 console.log("elimino", element.dia);
             }

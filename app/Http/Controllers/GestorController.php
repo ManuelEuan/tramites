@@ -71,7 +71,8 @@ class GestorController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function obtener_filtro(Request $request) {
+    public function obtener_filtro(Request $request)
+    {
         $filtros = $this->tramiteService->filtros($request);
         $response = [
             "clasificacion" =>  [],
@@ -88,7 +89,8 @@ class GestorController extends Controller
      * @param int $tramiteID
      * @return Response
      */
-    public function detalleTramite($tramiteID) {
+    public function detalleTramite($tramiteID)
+    {
         $objTramite     = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
 
@@ -101,7 +103,8 @@ class GestorController extends Controller
      * @param int $tramiteIDConfig
      * @return View
      */
-    public function consultar_tramite($tramiteID, $tramiteIDConfig) {
+    public function consultar_tramite($tramiteID, $tramiteIDConfig)
+    {
         $objTramite             = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle           = $this->tramiteService->getDetalle($objTramite->Id);
 
@@ -141,15 +144,17 @@ class GestorController extends Controller
         #################### Configuraciones anteriores ####################
         $tramites   = new Cls_Gestor();
         $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
+
         if (count($registro) > 0) {
             $tramite['VALIDO'] = true;
-            $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
-            $tramite['ACCE_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-            $tramite['ACCE_CLAVE_INTERNA'] = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['TRAM_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE;
+            $tramite['ACCE_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['ACCE_CLAVE_INTERNA']  = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
             $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['EDIFICIOS'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['TRAM_NIMPLEMENTADO'] = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
+            $tramite['EDIFICIOS']           = $registro[0]->TRAM_CNOMBRE;
+            $tramite['TRAM_NIMPLEMENTADO']  = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
             $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
+            $tramite['TRAM_CITAS']          = json_encode($this->tramiteService->getCitas($registro[0]->TRAM_NIDTRAMITE));
         } else {
 
             if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
@@ -373,7 +378,6 @@ class GestorController extends Controller
                     DB::commit();
                     return response()->json($resultSecciones);
                 }
-
             } else {
 
                 return response()->json([
@@ -589,7 +593,7 @@ class GestorController extends Controller
 
         $fileName = '';
 
-        if (!empty($TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE'])) {
+        if (!empty($TRAM_LIST_RESOLUTIVO['RESO_FILEBASE64'])) {
 
             $fileName = md5(time() . $TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE']) . '.' . 'docx';
 
@@ -603,6 +607,11 @@ class GestorController extends Controller
 
             // clean up the file resource
             fclose($ifp);
+        } else {
+            if (!empty($TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE'])) {
+
+                $fileName = $TRAM_LIST_RESOLUTIVO['RESO_NOMBREFILE'];
+            }
         }
 
 
