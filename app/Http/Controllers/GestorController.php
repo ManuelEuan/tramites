@@ -144,15 +144,17 @@ class GestorController extends Controller
         #################### Configuraciones anteriores ####################
         $tramites   = new Cls_Gestor();
         $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
+
         if (count($registro) > 0) {
             $tramite['VALIDO'] = true;
-            $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
-            $tramite['ACCE_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-            $tramite['ACCE_CLAVE_INTERNA'] = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['TRAM_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE;
+            $tramite['ACCE_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['ACCE_CLAVE_INTERNA']  = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
             $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['EDIFICIOS'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['TRAM_NIMPLEMENTADO'] = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
+            $tramite['EDIFICIOS']           = $registro[0]->TRAM_CNOMBRE;
+            $tramite['TRAM_NIMPLEMENTADO']  = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
             $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
+            $tramite['TRAM_CITAS']          = json_encode($this->tramiteService->getCitas($registro[0]->TRAM_NIDTRAMITE));
         } else {
 
             if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
