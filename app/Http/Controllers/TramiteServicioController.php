@@ -236,15 +236,11 @@ class TramiteServicioController extends Controller
                 $contEdi++;
             }
         }
-
-        /*$objTramite     = $this->tramiteService->getTramite($idaccede);
-        $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
-        $datosGenerales = $this->tramiteService->valoresDefaulTramite($arrayDetalle, $objTramite);*/
-
         $tramite['oficinas'] = $lstOficinas;
 
         return response()->json($tramite);
     }
+    
 
     public function obtener_detalle_tramite($id)
     {

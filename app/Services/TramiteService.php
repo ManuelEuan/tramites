@@ -73,7 +73,7 @@ class TramiteService
                     ->join('administrativeunits as a', 'p.IdAdministrativeUnit', '=', 'a.Id')
                     ->join('dependencies as d', 'a.IdDependency', '=', 'd.Id')
                     ->join('instruments as i', 'p.IdInstrument', '=', 'i.Id')
-                    ->join('daysrange as v','p.idVigencyRange', '=', 'v.id')
+                    ->leftJoin('daysrange as v','p.idVigencyRange', '=', 'v.id')
                     ->select('p.*', 'p.iId as remtisId','d.name as nameDependencia', 'p.CitizenDescription' ,'d.iId as dependenciaId' ,'i.Name as nameInstrumento', 'v.Name as tipoVigencia')
                     ->where('p.iId', $tramiteID)->first();
         return $query;
