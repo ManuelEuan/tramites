@@ -184,7 +184,7 @@ class TramiteServicioController extends Controller
         }
         return $html;
     }
-
+    //Aqui
     public function tramite_edificios($id)
     {
 
@@ -236,11 +236,11 @@ class TramiteServicioController extends Controller
                 $contEdi++;
             }
         }
-
         $tramite['oficinas'] = $lstOficinas;
 
         return response()->json($tramite);
     }
+    
 
     public function obtener_detalle_tramite($id)
     {
@@ -676,7 +676,7 @@ class TramiteServicioController extends Controller
 
     public function obtener_modulo($id, $idaccede)
     {
-        $objTramite     = $this->tramiteService->getTramite($id);
+        $objTramite     = $this->tramiteService->getTramite($idaccede);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
         $datosGenerales = $this->tramiteService->valoresDefaulTramite($arrayDetalle, $objTramite);
 

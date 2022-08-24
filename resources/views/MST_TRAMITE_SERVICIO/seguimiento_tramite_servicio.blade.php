@@ -1435,7 +1435,8 @@
                 var idtramiteAccede = "{{ $tramite['idtramiteaccede'] }}";
                 var selectedVentanilla = "{{ $tramite['ubicacion_ventanilla_sin_cita'] }}";
                 if(selectedVentanilla != 0){
-                    loadSelectedEdificio(idtramiteAccede, selectedVentanilla);
+                    //loadSelectedEdificio(idtramiteAccede, selectedVentanilla);
+                    loadModulos(idtramiteAccede, selectedVentanilla);
                     cargaMapaEdificios(idtramiteAccede, selectedVentanilla, 'mapaEdificios');
                 }
 
@@ -1444,8 +1445,9 @@
                     var selectedValue = $("#sincita_edificios").children("option:selected").val();
 
                     //if (selectedValue != 0) {
-                        loadSelectedEdificio(idtramiteAccede, selectedValue);
-                        cargaMapaEdificios(idtramiteAccede, selectedValue, 'mapaEdificios');
+                        //loadSelectedEdificio(idtramiteAccede, selectedValue);
+                        loadModulos(idtramiteAccede, selectedVentanilla);
+                        cargarMapaModulos(idtramiteAccede, selectedValue, 'mapaEdificios');
                     //}
                 }
 		
@@ -1500,10 +1502,13 @@
                     var moduloselected = "{{ $tramite['modulo'] }}";
                     localStorage.setItem("IdModuloSelected", moduloselected);
 
+                    console.log("este es el id que se manda: " + idtramiteAccede);
+
                     existeCita(idusuario, id, idtramiteAccede);
 
                     if ($('#sincita_edificios') != undefined) {
-                        obtenerEdificios(idtramiteAccede, false)
+                        //obtenerEdificios(idtramiteAccede, false)
+                        obtenerModulos(idtramiteAccede, false)
                     }
 
                     $.ajaxSetup({

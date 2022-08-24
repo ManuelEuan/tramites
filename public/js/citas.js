@@ -82,8 +82,8 @@ function existeCita(idusuario, tramitelocal, tramiteaccede){
             }else{
                 $("#concitareservada").hide();
                 $("#sincitareservada").show();
-                
-                obtenerEdificios(tramiteaccede);
+                obtenerModulos(tramiteaccede);
+                //obtenerEdificios(tramiteaccede);
                 //citasDisponibles(idtramite, idedificio, idusuario, nombre, apellidop, apellidom, correo, celular, tramitelocal);
             }
         },
@@ -274,7 +274,52 @@ function obtenerCitaReservada(folio, esfuncionario){
     });
 }
 
+function obtenerModulos(idtramite, esCita = true){
+    var idModuloSelected = "";
+
+    if(esCita){
+        $("#cita_edificios").empty();
+        $("#cita_edificios").append($("<option />").val(0).text("--Seleccione un modulo--"));
+        idModuloSelected = localStorage.getItem("IdModuloSelected");
+    }
+    else{
+        $("#sincita_edificios").empty();
+        $("#sincita_edificios").append($("<option />").val(0).text("--Seleccione un modulo--"));
+    }
+    $.ajax({
+        url: "/tramite_servicio/obtener_modulo/" + 0 + "/" + idtramite,
+        type: "GET",
+        success: function(data) {
+            for(var i=0; i <= data.length; i++){
+                if(data[i]?.id != undefined){
+                    if(esCita && idModuloSelected != "" && idModuloSelected == data[i]?.id){
+                        $("#cita_edificios").append($("<option selected=selected />").val(data[i]?.id).text(data[i]?.nombre));
+                        loadCitas();
+                        break;
+                    }
+                    else if(esCita){
+                        $("#cita_edificios").append($("<option />").val(data[i]?.id).text(data[i]?.nombre));
+                    }
+                    else{
+                        $("#sincita_edificios").append($("<option />").val(data[i]?.id).text(data[i]?.nombre));
+                    }
+                }
+                
+            }
+        },
+        error: function(data) {
+            Swal.fire({
+                icon: data.status,
+                title: '',
+                text: data.message,
+                footer: ''
+            });
+        }
+    });
+}
+
 function obtenerEdificios(idtramite, esCita = true){
+    console.log('id del tramite ----------- ' + idtramite)
 
     var idModuloSelected = "";
 
@@ -287,13 +332,11 @@ function obtenerEdificios(idtramite, esCita = true){
         $("#sincita_edificios").empty();
         $("#sincita_edificios").append($("<option />").val(0).text("--Seleccione un edificio--"));
     }
-
-    $.ajax({
+   $.ajax({
         url: URL_BASE + 'tramite_edificios/'+idtramite,
         type: 'get',
         dataType: 'json',
         success: function (data) {
-            console.log(data);
             for(var i=0; data.oficinas.length > i; i++){
                 if(esCita && idModuloSelected != "" && idModuloSelected == data.oficinas[i].id){
                     $("#cita_edificios").append($("<option selected=selected />").val(data.oficinas[i].id).text(data.oficinas[i].nombre));
@@ -327,7 +370,7 @@ function loadSelectedEdificio(idtramite, selectedValue){
             dataType: 'json',
             success: function (data) {
                 for(var i=0; data.oficinas.length > i; i++){
-                    if(selectedValue == data.oficinas[i].id){
+                    if(selectedValue == data[i]?.id){
                         $('#infoEdificioNombre').text(data.oficinas[i].nombre);
                         $('#infoEdificioDireccion').text(data.oficinas[i].direccion);
                         ubicacion_ventanilla_sin_cita = data.oficinas[i];
@@ -340,6 +383,61 @@ function loadSelectedEdificio(idtramite, selectedValue){
             }
         });
     }
+}
+
+function loadModulos(idtramite, selectedValue){
+    $('#infoEdificioNombre').text('----');
+    $('#infoEdificioDireccion').text('----');
+    $("#btnSaveUbication").prop("disabled", true);
+    ubicacion_ventanilla_sin_cita = {};
+    console.log("elegido: " +selectedValue)
+    $.ajax({
+        url: "/tramite_servicio/obtener_modulo/" + 0 + "/" + idtramite,
+        type: 'get',
+        dataType: 'json',
+        success: function (data) {
+            if(data.length > 0){
+                $('#infoEdificioNombre').text(data[0]?.nombre);
+                $('#infoEdificioDireccion').text(data[0]?.direccion);
+                ubicacion_ventanilla_sin_cita = data[0];
+                $("#btnSaveUbication").prop("disabled", false);
+            }
+            /*for(var i=0; i <= data.length; i++){
+                console.log("Dato: " + data[i]?.id)
+                if(selectedValue == data[i]?.id){
+                    
+                    $('#infoEdificioNombre').text(data[i]?.nombre);
+                    $('#infoEdificioDireccion').text(data[i]?.direccion);
+                    ubicacion_ventanilla_sin_cita = data[i];
+                    $("#btnSaveUbication").prop("disabled", false);
+                }
+            }*/
+        },
+        error: function (xhr, error) {
+            console.log(xhr.responseText);
+        }
+    });
+}
+
+function cargarMapaModulos(idtramite, idEdificio, idDiv){
+    $.ajax({
+        url: "/tramite_servicio/obtener_modulo/" + 0 + "/" + idtramite,
+        type: 'get',
+        dataType: 'json',
+        success: function (data) {
+            for(var i=0; i <= data.length; i++){
+                if(data[i]?.latitud > 0){
+                    if(idEdificio == data[i]?.id && data[i]?.latitud > 0){
+                        cargarMapa(parseFloat(data[i]?.latitud), parseFloat(data[i]?.longitud), idDiv);
+                        break;
+                    }
+                }
+            }
+        },
+        error: function (xhr, error) {
+            console.log(xhr.responseText);
+        }
+    });
 }
 
 function cargaMapaEdificios(idtramite, idEdificio, idDiv){
