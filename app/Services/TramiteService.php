@@ -44,7 +44,7 @@ class TramiteService
 
             $tramite->TRAM_NIMPLEMENTADO = 1;
 
-            $segundo = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE_ACCEDE',  $tramite->remtisId)->orderBy('TRAM_NIDTRAMITE', 'desc')->first();
+            $segundo = DB::table('tram_mst_tramite')->where(['TRAM_NIDTRAMITE_ACCEDE' => $tramite->remtisId, 'TRAM_NIMPLEMENTADO' => 1])->first();
             if(!is_null($segundo))
                 $tramite->TRAM_NIDTRAMITE_CONFIG = $segundo->TRAM_NIDTRAMITE;
         }
@@ -322,17 +322,19 @@ class TramiteService
     }
 
     /**
-     * Genera los diías permitidos para las citas del tramite
-     * @param int $traimiteId
+     * Elimina las anteriores y genera los dias permitidos para las citas del tramite
+     * @param int $tramiteId
      * @param array $data
      * @return array
      */
-    public function createCitas(int $traimiteId, array $data){
-        $response = ["status" => 200, "items" => []];
+    public function createCitas(int $tramiteId, array $data){
+        $response   = ["status" => 200, "items" => []];
+        
+        Cls_DiasCitaTramite::where('tramiteId', $tramiteId)->delete();
         foreach ($data as $key => $value) {
             try {
                 $item = new Cls_DiasCitaTramite();
-                $item->tramiteId        = $traimiteId;
+                $item->tramiteId        = $tramiteId;
                 $item->moduloId         = $value['moduloId'];
                 $item->dia              = $value['dia'];
                 $item->horarioInicial   = $value['inicioSF'];

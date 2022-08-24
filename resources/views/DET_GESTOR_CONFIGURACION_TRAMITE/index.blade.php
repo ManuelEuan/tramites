@@ -1070,11 +1070,9 @@
 
         //Funcion ajax para obtener datos de tramite en caso de haber
         function TRAM_AJX_OBTENER_TRAMITE() {
-
             var id_tramite_config = "{{request()->route('tramiteIDConfig') }}";
 
-            if (id_tramite_config > 0) {
-                objDetalle = <?php echo $tramite['TRAM_CITAS'] ?>;
+            if(id_tramite_config > 0){
                 $.ajax({
                     dataType: 'json',
                     url: "/gestores/consultar_configuracion_tramite/" + id_tramite_config + "",
@@ -1092,16 +1090,16 @@
                         id_formulario = tramite_.formularios[0].FORM_NIDFORMULARIO;
                         TRAM_FN_AGREGAR_SECCION(tramite_.secciones);
                         TRAM_AJX_OBTENER_DOCUMENTO_TRAMITE(tramite_.documentos);
-
+                        objDetalle = response['citas'];
                         $('#txtPlazo_diasResolucion').val(tramite_.tramite[0].TRAM_NDIASHABILESRESOLUCION);
                         $('#txtPlazo_diasNotificacion').val(tramite_.tramite[0].TRAM_NDIASHABILESNOTIFICACION);
                     },
                     error: function(data) {
-
+                        console.log(data);
                     }
                 });
-
-            } else {
+            }
+            else{
                 var list_tramites_documentos_temp = [];
                 TRAM_FN_AGREGARFORMULARIO();
                 TRAM_AJX_OBTENER_DOCUMENTO_TRAMITE(list_tramites_documentos_temp);
@@ -2868,7 +2866,8 @@
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
                                 CONF_LIST_RESOLUTIVO: [],
-                                CONF_DATA_RESOLUTIVO: null
+                                CONF_DATA_RESOLUTIVO: null,
+                                CONF_ARRAY_DETALLE_CITA: objDetalle
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }
@@ -3262,7 +3261,8 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: []
+                                CONF_LIST_RESOLUTIVO: [],
+                                CONF_ARRAY_DETALLE_CITA: objDetalle
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                         }
