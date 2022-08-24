@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use stdClass;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,7 +44,7 @@ class TramiteService
 
             $tramite->TRAM_NIMPLEMENTADO = 1;
 
-            $segundo = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE_ACCEDE',  $tramite->remtisId)->first();
+            $segundo = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE_ACCEDE',  $tramite->remtisId)->orderBy('TRAM_NIDTRAMITE', 'desc')->first();
             if(!is_null($segundo))
                 $tramite->TRAM_NIDTRAMITE_CONFIG = $segundo->TRAM_NIDTRAMITE;
         }
@@ -346,6 +347,35 @@ class TramiteService
             }
         }
 
+        return $response;
+    }
+
+    /**
+     * Retorna la colecion de dias para citas del tramite
+     * @param int tramiteId
+     * @return collection
+     */
+    public function getCitas(int $tramiteId){
+        $response   = array();
+        $citas      = Cls_DiasCitaTramite::where('tramiteId', $tramiteId)->get();
+        
+        foreach($citas as $cita){
+            $inicioFF   = date( 'h:i a', strtotime($cita->horarioInicial));
+            $finalFF    = date( 'h:i a', strtotime($cita->horarioFinal));
+
+            $item = new stdClass();
+            $item->dia          = $cita->dia;
+            $item->inicio       = $inicioFF;
+            $item->final        = $finalFF;
+            $item->capacidad    = $cita->capacidad;
+            $item->moduloId     = $cita->moduloId;
+            $item->inicioSF     = $cita->horarioInicial;
+            $item->finalSF      = $cita->horarioFinal;
+            $item->tiempo       = $cita->tiempoAtencion;
+            $item->ventanillas  = $cita->ventanillas;
+            array_push($response,$item);
+        }
+      
         return $response;
     }
 }
