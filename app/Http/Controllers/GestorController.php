@@ -154,7 +154,6 @@ class GestorController extends Controller
             $tramite['EDIFICIOS']           = $registro[0]->TRAM_CNOMBRE;
             $tramite['TRAM_NIMPLEMENTADO']  = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
             $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
-            $tramite['TRAM_CITAS']          = json_encode($this->tramiteService->getCitas($registro[0]->TRAM_NIDTRAMITE));
         } else {
 
             if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
@@ -344,6 +343,7 @@ class GestorController extends Controller
     {
         $gestor = new Cls_Gestor();
         $result = $gestor->TRAM_CONSULTAR_CONFIGURACION_TRAMITE($TRAM_NIDTRAMITE_CONFIG);
+        $result['citas'] = $this->tramiteService->getCitas($TRAM_NIDTRAMITE_CONFIG);
         return response()->json($result);
     }
 

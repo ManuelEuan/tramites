@@ -117,3 +117,7 @@ Route::get('/vw_sici_citas_disponibles_filtro_tram/{idtramite}', array('uses' =>
 
 //Obtiene tramites por filtro
 Route::post('/vw_accede_tramite_filtro', array('uses' => 'VistaAccedeController@vw_accede_tramite_filtro'));
+
+//CITAS Angel Ruiz
+Route::get('/citas/index', array('uses' => 'CitasController@getCitas'));
+Route::get('/citas/{idtramite}/{idedificio}/{anio}/{mes}', array('uses' => 'CitasController@getCitasFiltro'));
