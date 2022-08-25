@@ -168,7 +168,7 @@ class TramiteServicioController extends Controller
         foreach ($resultTram as $i) {
             $html .= '<div class="card text-left" style="margin-bottom: 2rem;">
                 <div class="card-header text-primary titleCard">
-                    ' . $i->TRAM_CNOMBRE . ' <span class="badge badge-warning">' . $i->TRAM_CNOMBRE . '</span>
+                    ' . $i->TRAM_CNOMBRE . ' <span class="badge badge-warning">' . $i->TRAM_CCENTRO . '</span>
                 </div>
                 <div class="card-body">
                     <h6 class="card-text" style="color: #212529;">
