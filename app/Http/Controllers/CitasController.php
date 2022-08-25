@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use  Illuminate\Pagination\LengthAwarePaginator;
 use  Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Http;
+use App\Models\Cls_Citas_Calendario;
 
 class CitasController extends Controller
 {
@@ -95,7 +96,20 @@ class CitasController extends Controller
      * Retorna el calendario de las citas
      */
     public function calendario() {
-        $data = [];
+
+        $data = ['API_URL' => env('APP_URL')."/api"];
         return view('CITAS.calendario', compact('data'));
     }
+
+    //Citas agendadas All()
+    public function getCitas() {
+        return response()->json(Cls_Citas_Calendario::all());
+    }
+    // Obtener las citas disponibles por mes
+    public function getCitasFiltro($idtramite,$idedificio,$anio,$mes) {
+        $values = array((int)$idtramite,(int)$idedificio,$anio,$mes);
+        $result = Cls_Citas_Calendario::getByFiltro($idtramite,$idedificio,$anio,$mes);
+        return response()->json($result);        
+    }
+
 }

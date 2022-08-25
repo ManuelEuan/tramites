@@ -32,4 +32,6 @@ class Cls_Citas extends Model
                 , array($CITA_FOLIO
                 , $CITA_STATUS));
     }
+
+    static function GET_ALL(){}
 }
