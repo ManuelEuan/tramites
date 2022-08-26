@@ -39,11 +39,26 @@
             </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <div id="calendario"></div>
-            </div>
-        </div>
+        <div class="col-lg-12">            
+            <div class="card col-lg-12">
+                <div class="card-body col-lg-12 row">
+                    <div class="col-lg-9">
+                        <div id="calendario"></div>
+                    </div>
+                    <div class="col-lg-3" style="background-color: #f0f0f0; padding-top: 20px;">
+                        <h5 class="text-primary text-center"><i class="fas fa-clock text-info"></i>&nbspHorarios disponibles</h5>
+                        <hr class="text-primary">
+                        <div class="col-lg-12 text-center" style=" width: 100%">
+                            <p id="formRFecha">Fecha: </p>
+                            <div id="horariosContainer" class="col-lg-12" style="height:300px; overflow-y: scroll;">
+                            
+                            </div>
+                            <button id="btnAgendarCita" disabled class="btn btn-primary" style="margin: 15px;">Agendar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>        
     </div>
     <div class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
         <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -60,7 +75,7 @@
             </div>
         </div>
     </div>
-    //Modal de carga
+    <!-- Modal de carga -->
     <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
         <div class="modal-dialog modal-sm" style="display: table; position: relative; margin: 0 auto; top: calc(50% - 24px);">
             <div class="modal-content" style="width: 48px; background-color: transparent; border: none;">
@@ -101,8 +116,7 @@
           events: [],
           datesSet: cargarEventos,
           dateClick: function(info) {
-            // alert('Clicked on: ' + info.dateStr);
-            mostrarAlerta("Aún debe seleccionar los campos del filtro y agendar en la fecha: " + info.dateStr);
+            dateClickEvent(info);
           }
         });
         window.calendar.render();
@@ -241,5 +255,41 @@
             url = "/" + array[3] + "/" + month;
             return url;
         }
+
+        function dateClickEvent(info) { 
+            if (window.resultadoMes.length == 0) {
+                mostrarAlerta("Aún debe seleccionar los campos del filtro y agendar en la fecha: " + info.dateStr);
+                return;
+            }
+            var arrFecha = info.dateStr.split('-');
+            let fechaDFormat = arrFecha[2] + "/" + arrFecha[1] + "/" + arrFecha[0];
+            $("#formRFecha").text("Fecha: " + fechaDFormat);
+            var horarios = [];
+            for(var row in window.resultadoMes){
+                if (info.dateStr == window.resultadoMes[row]['fecha'])
+                    horarios = window.resultadoMes[row]['horario'];
+            }
+            $(".rowFecha").remove();
+            let ventanillas = horarios.ventanillas;
+            var container = document.getElementById("horariosContainer");
+            for(var row in horarios.disponibles){
+                if (horarios.disponibles[row].recervas < ventanillas) {
+                    let element = '<div class="col-lg-12 row rowFecha"><div class="col-lg-9"><p style="margin-top: 6px; margin-bottom: 10px;">' +
+                    horarios.disponibles[row].horario + '</p></div><div class="col-lg-3"><label class="container"><input value="' +
+                    row +'" type="radio" name="radio"><span class="checkmark"></span></label></div></div>';
+                    container.insertAdjacentHTML('beforeend', element);
+                }
+            }
+            $('#btnAgendarCita').removeAttr('disabled');
+        }
+    </script>
+
+    <script>
+        //Funciones para el formulario lateral
+        $('#btnAgendarCita').click(function () {
+            // alert("Hola");
+            alert($('input[name="radio"]:checked', '#horariosContainer').val());
+            console.log($('input[name="radio"]:checked', '#horariosContainer').val());
+        });
     </script>
 @endsection
