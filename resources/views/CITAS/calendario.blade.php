@@ -60,6 +60,16 @@
             </div>
         </div>
     </div>
+    //Modal de carga
+    <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-sm" style="display: table; position: relative; margin: 0 auto; top: calc(50% - 24px);">
+            <div class="modal-content" style="width: 48px; background-color: transparent; border: none;">
+                <div class="spinner-border text-primary" style="width: 10rem; height: 10rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -68,6 +78,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/locales-all.js"></script>
 
     <script>
+        window.resultadoMes = [];
         function cambiarTextoBtnMostartFiltro() {
             var txtTramite = $("#formTramite option:selected").text();
             var txtModulo = $("#formEdificio option:selected").text();
@@ -76,10 +87,9 @@
     </script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        cambiarTextoBtnMostartFiltro();
-        
+        cambiarTextoBtnMostartFiltro();        
         var calendarEl = document.getElementById('calendario');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
+        window.calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'dayGridMonth',
           locale: 'es',
           headerToolbar: {
@@ -89,37 +99,42 @@
             // right: 'dayGridMonth,timeGridWeek'
           },
           events: [],
+          datesSet: cargarEventos,
           dateClick: function(info) {
             // alert('Clicked on: ' + info.dateStr);
             mostrarAlerta("Aún debe seleccionar los campos del filtro y agendar en la fecha: " + info.dateStr);
           }
         });
-        calendar.render();
+        window.calendar.render();
     });     
     </script>
 
-    <script>        
-    $('#formFiltrar').click(function () {
-        var url_api = "<?= $data['API_URL'] ?>";
+    <script>
+    function cargarEventos(payload) {
         var tramite = document.getElementById('formTramite').value;
         var modulo = document.getElementById('formEdificio').value;
-
         if (tramite == 0 || modulo == 0) {
             mostrarAlerta('Debe seleccionar los criterios para la búsqueda.');
             return;
         }
-
-        const d = new Date();
+        $('.modal').modal('show');
+        var url_api = "<?= $data['API_URL'] ?>";
+        var URL_COMP = "";
+        if (payload == null){
+            const d = new Date();
+            URL_COMP = '/' + d.getFullYear() + '/' + (d.getMonth() + 1)
+        } else {
+            URL_COMP = formatURLGet(payload.view.currentStart);
+        }
 
         $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
-
         request = $.ajax({
-            url : '/api/citas/'+ tramite + '/' + modulo + '/' + d.getFullYear() + '/' + (d.getMonth() + 1),
+            url : '/api/citas/'+ tramite + '/' + modulo + URL_COMP,
             type: "GET"
         });
-
-        // Callback handler that will be called on success
-        request.done(function (response, textStatus, jqXHR){                
+        //On success
+        request.done(function (response, textStatus, jqXHR){
+            $('.modal').modal('hide');             
             pintarDisponibilidad(response);
             mostrarAlerta("Se cargaron los horarios disponibles");
             window.resultadoMes = response;
@@ -132,34 +147,35 @@
                 });
             }, 400);
         });
-
-        // Callback handler that will be called on failure
+        //On failure
         request.fail(function (jqXHR, textStatus, errorThrown){
+            $('.modal').modal('hide');
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
                 text: 'se presento el siguiente error: ' + errorThrown
             });
         });
-
+    }        
+    $('#formFiltrar').click(function () {
+        cargarEventos();
     }); 
     </script>
 
     <script>
-        window.resultadoMes = [];
         function mostrarAlerta(txt) {
             $("#toastMsj").text(txt);
             $('.toast').toast({delay: 3000});
             $('.toast').toast('show');
         }
 
-        function pintarDisponibilidad(data) {
+        function pintarDisponibilidad(data, payload) {
             var events = [];
             for(var row in data) {
-                var color = (data[row].horario.porcentajeOcupacion < 40 
+                var color = (data[row].horario.porcentajeOcupacion < 40 // menos de 40 Verde
                     ? '#42E04C' 
-                    : ( 40 <= data[row].horario.porcentajeOcupacion 
-                    && data[row].horario.porcentajeOcupacion < 80 ? '#FAE847' : '#F01919'));
+                    : ( 40 <= data[row].horario.porcentajeOcupacion // 40 - 80 Amarillo
+                    && data[row].horario.porcentajeOcupacion < 80 ? '#FAE847' : '#F01919')); //Mayor a 80 Rojo
                 color = (data[row].horario.length == 0 ? '#F01919' : color)
                 var colores = {
                     start: data[row].fecha,
@@ -170,27 +186,60 @@
                 };
                 events.push(colores);
             }
-            // document.getElementById('calendario')
-            // $('#calendario').fullCalendar({
-            //     events: [events]
-            // });
-
-            var calendarEl = document.getElementById('calendario');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            locale: 'es',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth'
-                // right: 'dayGridMonth,timeGridWeek'
-            },
-            events: events,
-            dateClick: function(info) {
-                alert('Clicked on: ' + info.dateStr);
-            }
+            //Eliminar eventos del listado
+            removeEvents = window.calendar.getEventSources();
+            removeEvents.forEach(event => {
+                event.remove();
             });
-            calendar.render();
+            window.calendar.addEventSource(events) //agregar eventos de resultado de busqueda
+            window.calendar.refetchEvents(); //Recolorear los eventos
+        }
+
+        function formatURLGet(text) {
+            var texto = text;
+            var array = texto.toString().split(' ');
+            var month = "";
+            switch (array[1]) {
+                case 'Jan':
+                    month = "1"
+                    break;
+                case 'Feb':
+                    month = "2"
+                    break;
+                case 'Mar':
+                    month = "3"
+                    break;
+                case 'Apr':
+                    month = "4"
+                    break;
+                case 'May':
+                    month = "5"
+                    break;
+                case 'Jun':
+                    month = "6"
+                    break;
+                case 'Jul':
+                    month = "7"
+                    break;
+                case 'Aug':
+                    month = "8"
+                    break;
+                case 'Sep':
+                    month = "9"
+                    break;
+                case 'Oct':
+                    month = "10"
+                    break;
+                case 'Nov':
+                    month = "11"
+                    break;
+                case 'Dec':
+                    month = "12"
+                    break;
+            }
+
+            url = "/" + array[3] + "/" + month;
+            return url;
         }
     </script>
 @endsection
