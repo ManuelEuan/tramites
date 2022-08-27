@@ -7,7 +7,7 @@
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-10" style="text-align: left;">
-                    <h2 class="titulo">{{$tramite->USTR_CNOMBRE_TRAMITE}}</h2>
+                    <h2 class="titulo">{{$tramite->USTR_CNOMBRE_TRAMITE}}</h2><br><br>
                     <h2 class="subtitulo">{{$tramite->USTR_CCENTRO}}</h2>
                 </div>
                 <div class="col-md-2" style="text-align: center;">

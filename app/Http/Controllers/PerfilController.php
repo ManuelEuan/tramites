@@ -66,12 +66,22 @@ class PerfilController extends Controller
             $idDoc = '';
             $btnRemplazar = '';
             $vencido = '';
+
+            
             foreach ($docsUpdates as $key => $j) {
                 if ($j->ID_CDOCUMENTOS == $i->id) {
                     $tiene = true;
                     $peso = (intval($j->PESO) / 1024).' KB';
                     $estatus = $j->estatus;
                     $idDoc = $j->id;
+                    
+                    ///ultimos doscs actualizados
+                    $docs_u = Cls_Usuario::getTipoDocsACT($j->ID_USUARIO, $i->NOMBRE);
+                    foreach ($docs_u as $key => $H) {
+                        $iiii = $H->USDO_NESTATUS;
+                    }
+                    if($iiii!=''){$estatus=$iiii;}
+                    //////////////////////////////////////////////////////
 
                     if($j->isActual == 1){
                         if($j->VIGENCIA_FIN != ''){
@@ -84,10 +94,17 @@ class PerfilController extends Controller
                         }else{
                             $vencido = 'N/A';
                         }
-                        if (intval($estatus) == 1){
-                            $icono = '<span title="Pendiente revision" class="fa fa-warning" style="color:#eddb04"></span>';
-                        }
                     }
+                    if (intval($estatus) == 0){
+                        $icono = 'Pendiente revision';
+                    };
+                    if (intval($estatus) == 1){
+                        $icono = 'Rechazado <span title="Rechazado" class="fa fa-warning" style="color:#eddb04"></span>';
+                    };
+                    if (intval($estatus) == 2){
+                        $icono = 'Aceptado';
+                    };
+                    //$icono = $icono.'-->'.$iiii;
                     
                 }
             }

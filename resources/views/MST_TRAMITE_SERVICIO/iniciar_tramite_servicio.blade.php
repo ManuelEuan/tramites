@@ -184,12 +184,17 @@
                                     @if(count($sec->preguntas) > 0)
                                         <?php $total++;?>
                                         @if($cont == 0)
-                                            <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" style="border-top-left-radius: 15px; border-bottom-left-radius: 15px;"> <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                            <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" 
+                                            style="border-top-left-radius: 15px; border-bottom-left-radius: 15px;"> 
+                                            <span>{{$sec->FORM_CNOMBRE}} </span> </div>
                                         @elseif($cont == $total - 1)
                                             @if(count($tramite['configuracion']['documentos']) == 0)
-                                                <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                                <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" 
+                                                style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> 
+                                                <span>{{$sec->FORM_CNOMBRE}}</span> </div>
                                             @else
-                                                <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                                <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> 
+                                                    <span>{{$sec->FORM_CNOMBRE}}</span> </div>
                                             @endif
                                         @else
                                             <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> <span>{{$sec->FORM_CNOMBRE}}</span> </div>
@@ -230,10 +235,14 @@
                                                     @case('abierta')
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
+                                                                <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}} </label>
                                                                 @if($preg->respuestas > 0)
                                                                     @foreach($preg->respuestas as $resp)
-                                                                        <input type="text" class="form-control txt_abierta" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0" placeholder="{{$preg->FORM_CPREGUNTA}}" required>
+                                                                        <input type="text" class="form-control txt_abierta" 
+                                                                        name="resp_{{$preg->FORM_NID}}_0" 
+                                                                        id="resp_{{$preg->FORM_NID}}_0" 
+                                                                        placeholder="{{$preg->FORM_CPREGUNTA}}" required>
+                                                                        
                                                                     @endforeach
                                                                 @endif
                                                             </div>
@@ -382,10 +391,17 @@
                                         <tr>
                                             <td>
                                             @foreach($tramite['repositorio'] as $rep)
+
+
                                                 @if($rep->USDO_CDOCNOMBRE == $doc->TRAD_CNOMBRE)
                                                     <div class="custom-control custom-checkbox">
-                                                        <input class="form-check-input chckdfiles" type="checkbox" onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}','{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}','file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" title="Elegir archivo existente" checked>
-                                                        <a href='{{ asset('') }}{{$rep->USDO_CRUTADOC}}' target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  ><i title='Descargar documento' class='fas fa-download'></i></a>
+                                                        <input class="form-check-input chckdfiles" type="checkbox" 
+                                                        onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}','{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}','file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" 
+                                                        value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" title="Elegir archivo existente" checked>
+                                                        <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" 
+                                                            target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  >
+                                                            <i title='Descargar documento' class='fas fa-download'></i>
+                                                        </a>
                                                     </div>
                                                     @break;
                                                 @endif
@@ -410,7 +426,23 @@
                                                 </div>
                                             </td>
                                             <td>
+                                            <?php $nmbres = $doc->TRAD_CNOMBRE; 
+                                                 $P_NESTATUS = $tramite['USDO_NESTATUS'][$nmbres].'-'.$tramite['USDO_NIDUSUARIORESP'][$nmbres];
+                                                 $P_NIDUSUARIORESP = $tramite['USDO_NIDUSUARIORESP'][$nmbres];
+                                                 
+                                            //echo $P_NESTATUS;
+                                            if($P_NESTATUS==0){$TXT_STAT='Pendiente revisión';};
+                                            if($P_NESTATUS==1){$TXT_STAT='Rechazado';};
+                                            if($P_NESTATUS==2){$TXT_STAT='';};
+                                            ?>
+                                            
+                                            
                                             {{$doc->TRAD_CNOMBRE}}
+                                            
+                                            <?php
+                                            //echo '<br>'.$P_NESTATUS;
+                                            ?>
+
 
                                                 @if($doc->TRAD_NOBLIGATORIO == 1 )
                                                     <span class="text-danger">*</span>
@@ -420,8 +452,12 @@
                                                 <div id="size_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
                                                 </div>
                                             </td>
-                                            <td class="text-center">Pendiente revisión</td>
-                                            <td class="text-center"><img src="{{ asset('assets/template/img/warning.png') }}" width="20" height="20"></td>
+                                            <td class="text-center">{{$TXT_STAT}}</td>
+                                            <td class="text-center">
+                                            @if($P_NESTATUS==1)                                            
+                                                <img src="{{ asset('assets/template/img/warning.png') }}" width="20" height="20">
+                                            @endif
+                                            </td>
                                             <td style="width: 70px;">
                                                 <input type="hidden" name="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="0_0_0_{{$doc->TRAD_CNOMBRE}}">
                                                 <input class="file-select documentos" name="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file"  data-doctype="{{$doc->TRAD_CNOMBRE}}" {{$doc->TRAD_NOBLIGATORIO == 1 ? 'required' : '' }}>
@@ -433,7 +469,9 @@
                                             </td>
 
                                             <td>
-                                                <h5 class="font-weight-bold"><span class="circle-error-multi"  onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}')" >x</span></h5>
+                                                <h5 class="font-weight-bold">
+                                                    <span class="circle-error-multi"  onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}')" >x</span>
+                                                </h5>
                                             </td>
                                         </tr>
                                     @endforeach

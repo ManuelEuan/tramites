@@ -276,6 +276,7 @@ class TramiteServicioController extends Controller
 
     public function iniciar_tramite_servicio($id)
     {
+
         $tramites   = new Cls_Tramite_Servicio();
         $detalle    = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE($id);
         $folio      = strtoupper(substr($detalle->TRAM_CCENTRO, 0, 3)) . substr(date("Y"), -2);
@@ -301,25 +302,61 @@ class TramiteServicioController extends Controller
         $tramite['disabled']            = is_null($detalle->TRAM_NESTATUS_PROCESO) && $detalle->TRAM_NESTATUS_PROCESO != 1 ?  "disabled" : "";
         $tramite['configuracion']       = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
 
+        //datos de ciudadano
+        $ObjAuth = Auth::user();
+        $tramite['USUA_CRFC'] = $ObjAuth->USUA_CRFC;
+        $tramite['USUA_CCURP'] = $ObjAuth->USUA_CCURP;
+        $tramite['USUA_CRAZON_SOCIAL'] = $ObjAuth->USUA_CRAZON_SOCIAL;
+        $tramite['USUA_CNOMBRES'] = $ObjAuth->USUA_CNOMBRES;
+        $tramite['USUA_CPRIMER_APELLIDO'] = $ObjAuth->USUA_CPRIMER_APELLIDO;
+        $tramite['USUA_CSEGUNDO_APELLIDO'] = $ObjAuth->USUA_CSEGUNDO_APELLIDO;
+        $tramite['USUA_DFECHA_NACIMIENTO'] = $ObjAuth->USUA_DFECHA_NACIMIENTO;
+        $tramite['USUA_CCORREO_ELECTRONICO'] = $ObjAuth->USUA_CCORREO_ELECTRONICO;
+        $tramite['USUA_CCORREO_ALTERNATIVO'] = $ObjAuth->USUA_CCORREO_ALTERNATIVO;
+        $tramite['USUA_NTELEFONO'] = $ObjAuth->USUA_NTELEFONO;
+        $tramite['USUA_CCALLE_PARTICULAR'] = $ObjAuth->USUA_CCALLE_PARTICULAR;
+        $tramite['USUA_NNUMERO_INTERIOR_PARTICULAR'] = $ObjAuth->USUA_NNUMERO_INTERIOR_PARTICULAR;
+        $tramite['USUA_NNUMERO_EXTERIOR_PARTICULAR'] = $ObjAuth->USUA_NNUMERO_EXTERIOR_PARTICULAR;
+        $tramite['USUA_NCP_PARTICULAR'] = $ObjAuth->USUA_NCP_PARTICULAR;
+        $tramite['USUA_CCOLONIA_PARTICULAR'] = $ObjAuth->USUA_CCOLONIA_PARTICULAR;
+        $tramite['USUA_CMUNICIPIO_PARTICULAR'] = $ObjAuth->USUA_CMUNICIPIO_PARTICULAR;
+        $tramite['USUA_CESTADO_PARTICULAR'] = $ObjAuth->USUA_CESTADO_PARTICULAR;
+        $tramite['USUA_CPAIS_PARTICULAR'] = $ObjAuth->USUA_CPAIS_PARTICULAR;
+        //$tramite['iii'] = $ObjAuth->iii; 
+
+
         //Documentos en General Para el Repositorio
         $repositorio = Cls_Usuario_Documento::where('USDO_NIDUSUARIOBASE', Auth::user()->USUA_NIDUSUARIO)
-            ->select('USDO_CDOCNOMBRE', 'USDO_CEXTENSION', 'USDO_CRUTADOC', 'USDO_NPESO', 'created_at')
+            ->select('*')
             ->distinct()
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'DESC')
             ->get()->toArray();
 
         $tramite['repositorio'] = [];
-        foreach ($repositorio as $_doc) {
+        foreach ($repositorio as $_doc) {  
             $repodoc = new Cls_Usuario_Documento;
             $repodoc->USDO_CDOCNOMBRE = $_doc['USDO_CDOCNOMBRE'];
             $repodoc->USDO_CEXTENSION = $_doc['USDO_CEXTENSION'];
             $repodoc->USDO_CRUTADOC = $_doc['USDO_CRUTADOC'];
-            $repodoc->USDO_NPESO = $_doc['USDO_NPESO'];
+            $repodoc->USDO_NPESO = $_doc['USDO_NPESO'];     
+            $f_USDO_CDOCNOMBRE = $repodoc->USDO_CDOCNOMBRE;  
+            $tramite['USDO_NIDUSUARIORESP'][$f_USDO_CDOCNOMBRE] = $_doc['USDO_NESTATUS'];
+            $tramite['USDO_NESTATUS'][$f_USDO_CDOCNOMBRE] = $_doc['USDO_NIDUSUARIORESP']; 
+
+            $exist = Cls_Usuario_Documento::where('USDO_CDOCNOMBRE', $repodoc->USDO_CDOCNOMBRE) 
+            ->select('*')
+            ->orderBy('created_at', 'DESC') 
+            ->first();  
+            $tramite['USDO_NIDUSUARIORESP'][$f_USDO_CDOCNOMBRE] = $exist->USDO_NIDUSUARIORESP;
+            $tramite['USDO_NESTATUS'][$f_USDO_CDOCNOMBRE]  = $exist->USDO_NESTATUS;
+            
 
             $tramite['repositorio'][] = $repodoc;
         }
 
-        return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite'));
+        $nmbres='';$P_NESTATUS='';$TXT_STAT='';
+
+        return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'nmbres', 'P_NESTATUS', 'TXT_STAT'));
     }
 
     public function seguimiento_tramite_servicio($id)
@@ -1408,6 +1445,7 @@ class TramiteServicioController extends Controller
                 $doc->USDO_NIDTRAMITEDOCUMENTO = $arr_key[2];
                 $doc->USDO_CDOCNOMBRE = $arr_value[3];
                 $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
+                
                 $doc->save();
             }
         }
