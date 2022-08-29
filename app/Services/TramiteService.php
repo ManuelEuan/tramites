@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Cls_Tramite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -316,5 +317,19 @@ class TramiteService
                         ->select('s.Id as estadoId', 's.Name as estado', 'm.Id as municipioId', 'm.Name as municipio')
                         ->where('d.iId',$dependenciaID)->first();
         return $datos;
+    }
+
+    /**
+     * Retorna los tramites de siegy
+     * @param int $tramiteAccedeId
+     * @return Collection 
+     */
+    public function getTramitesSiegy($tramiteAccedeId = null){
+        $query = Cls_Tramite::where('TRAM_NIMPLEMENTADO', true);
+
+        if(!is_null($tramiteAccedeId))
+            $query->where('TRAM_NIDTRAMITE_ACCEDE', $tramiteAccedeId);
+
+        return !is_null($tramiteAccedeId) ? $query->first() : $query->get();
     }
 }

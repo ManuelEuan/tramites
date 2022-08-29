@@ -393,8 +393,8 @@
         let array = hora.split(':');
         var ampm = array[0] >= 12 ? 'pm' : 'am';
         array[0] = array[0] % 12;
-        array[0] = array[0] ? array[0] : 12; // the hour '0' should be '12'
-        array[1] = array[1] < 10 ? '0'+ array[1] : array[1];
+        array[0] = array[0] < 10 ? '0' + array[0] : array[0];
+        array[0] = array[0] == '00' ? '12' : array[0];
 
         return array[0] + ':' + array[1] + ' ' + ampm;
     }
