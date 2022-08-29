@@ -168,7 +168,7 @@ class TramiteServicioController extends Controller
         foreach ($resultTram as $i) {
             $html .= '<div class="card text-left" style="margin-bottom: 2rem;">
                 <div class="card-header text-primary titleCard">
-                    ' . $i->TRAM_CNOMBRE . ' <span class="badge badge-warning">' . $i->TRAM_CCENTRO . '</span>
+                    ' . $i->TRAM_CNOMBRE . ' <span class="badge badge-warning">' . $i->TRAM_CNOMBRE . '</span>
                 </div>
                 <div class="card-body">
                     <h6 class="card-text" style="color: #212529;">
@@ -333,6 +333,7 @@ class TramiteServicioController extends Controller
             ->get()->toArray();
 
         $tramite['repositorio'] = [];
+        $docs_base='';
         foreach ($repositorio as $_doc) {  
             $repodoc = new Cls_Usuario_Documento;
             $repodoc->USDO_CDOCNOMBRE = $_doc['USDO_CDOCNOMBRE'];
@@ -351,12 +352,16 @@ class TramiteServicioController extends Controller
             $tramite['USDO_NESTATUS'][$f_USDO_CDOCNOMBRE]  = $exist->USDO_NESTATUS;
             
 
+            
+
             $tramite['repositorio'][] = $repodoc;
         }
 
-        $nmbres='';$P_NESTATUS='';$TXT_STAT='';
 
-        return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'nmbres', 'P_NESTATUS', 'TXT_STAT'));
+
+        $nmbres='';$P_NESTATUS='';$TXT_STAT='';$docs_base;
+
+        return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'nmbres', 'P_NESTATUS', 'TXT_STAT', 'docs_base'));
     }
 
     public function seguimiento_tramite_servicio($id)
@@ -1325,6 +1330,9 @@ class TramiteServicioController extends Controller
                     $doc->USDO_CDOCNOMBRE = $arr_value[3];
                     $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
                     $doc->save();
+
+                    
+
                 } else {
                     Cls_Usuario_Documento::where(['USDO_NIDUSUARIORESP' => $exist_docs->USDO_NIDUSUARIORESP])
                         ->update(['USDO_CRUTADOC' => $arr_value[0], 'USDO_CEXTENSION' => $arr_value[1], 'USDO_NPESO' => $arr_value[2]]);

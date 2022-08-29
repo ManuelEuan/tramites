@@ -477,18 +477,53 @@ class TramitesController extends Controller
             }
 
             //Cambiar estatus y observación de documentos
+            $TEST_MS='';
             if (isset($request->CONF_DOCUMENTOS)) {
                 if (count($request->CONF_DOCUMENTOS)) {
 
                     foreach ($request->CONF_DOCUMENTOS as $documento) {
-
+ 
                         Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
-                        //Aqui se agrega la vigencia
+                        //Aqui se agrega la vigencia//
+                        //getIdDocExp afecta tram_mdv_usuariordocumento, el parametro es para USDO_NIDTRAMITEDOCUMENTO
                         $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
-                        if(isset($idDocExp->id)){
+                        //////////////// 
+                        //
+                        $TEST_MS = $TEST_MS.'( DOCid: '.$documento['documento_id'];
+                        if(isset($idDocExp->id)){ 
+                            //$TEST_MS = $TEST_MS.'( idDocExp1: '.$idDocExp->id;
+                            //modificamos la vigencia en la tabla tram_mst_documentosbase
                             Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
-                        }
-                        
+                        }else{//si el idDocsExpediente no existe
+                            
+                            $idDocExp2 = Cls_Seguimiento_Servidor_Publico::getnombDocExp($documento['documento_id']);
+                            if(isset($idDocExp2->USDO_CDOCNOMBRE)){
+                                $idDocExp3 = Cls_Seguimiento_Servidor_Publico::getIdusrTram($request->CONF_NIDUSUARIOTRAMITE);
+                                if(isset($idDocExp3->id)){
+                            
+                                    $USDO_CDOCNOMBRE =$idDocExp2->USDO_CDOCNOMBRE;
+                                    $USDO_NIDUSUARIOBASE =$idDocExp3->id;
+                                    
+                                    //obtenemos el id de tram_mst_configdocumentos
+                                    $id_doc_config = Cls_Seguimiento_Servidor_Publico::getConfigDocumentos($USDO_CDOCNOMBRE);
+                                    if(isset($id_doc_config->id)){
+                                        $id_doc_base='';
+                                        //obtenemos el id de tram_mst_documentosbase
+                                        $doc_base = Cls_Seguimiento_Servidor_Publico::getDocBase($id_doc_config->id, $USDO_NIDUSUARIOBASE);
+                                        foreach ($doc_base as $key => $H) {
+                                            $id_doc_base = $H->id;
+                                        }
+                                        if($id_doc_base!=''){                                        
+                                            Cls_Seguimiento_Servidor_Publico::ActualizarDocVigencia($id_doc_base, $documento['vigencia']);
+                                        };
+                                        //*/
+                                    };
+                                    
+                                };
+
+                            };
+                        };
+                        $TEST_MS = $TEST_MS.')  ';
                     }
                 }
             }
@@ -501,7 +536,7 @@ class TramitesController extends Controller
             $response = [
                 "estatus" => "success",
                 "codigo" => 200,
-                "mensaje" => "Se ha notificado al ciudadano los campos y documentos a corregir",
+                "mensaje" => "Se ha notificado al ciudadano los campos y documentos a corregir".$TEST_MS ,
                 "ruta" => $rutaNew
             ];
         } catch (\Throwable $e) {

@@ -427,7 +427,7 @@
                                             </td>
                                             <td>
                                             <?php $nmbres = $doc->TRAD_CNOMBRE; 
-                                                 $P_NESTATUS = $tramite['USDO_NESTATUS'][$nmbres].'-'.$tramite['USDO_NIDUSUARIORESP'][$nmbres];
+                                                 $P_NESTATUS = $tramite['USDO_NESTATUS'][$nmbres];
                                                  $P_NIDUSUARIORESP = $tramite['USDO_NIDUSUARIORESP'][$nmbres];
                                                  
                                             //echo $P_NESTATUS;
@@ -439,10 +439,7 @@
                                             
                                             {{$doc->TRAD_CNOMBRE}}
                                             
-                                            <?php
-                                            //echo '<br>'.$P_NESTATUS;
-                                            ?>
-
+                                            
 
                                                 @if($doc->TRAD_NOBLIGATORIO == 1 )
                                                     <span class="text-danger">*</span>

@@ -86,7 +86,9 @@ class PerfilController extends Controller
                     if($j->isActual == 1){
                         if($j->VIGENCIA_FIN != ''){
                             if($j->VIGENCIA_FIN < $hoy){
-                                $btnRemplazar = '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>';
+                                $btnRemplazar = '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
+                                <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'"
+                                 class="btn btn-success"><i class="fa fa-plus"></i></button>';
                                 $vencido = '<span>Vencido</span>';
                             }else{
                                 $vencido = $j->VIGENCIA_FIN;
@@ -95,6 +97,8 @@ class PerfilController extends Controller
                             $vencido = 'N/A';
                         }
                     }
+                    $det_btn_color = 'btn-danger';
+                    $det_btn_click = 'onclick="deleteDocUser('.$idDoc.')"';
                     if (intval($estatus) == 0){
                         $icono = 'Pendiente revision';
                     };
@@ -103,6 +107,8 @@ class PerfilController extends Controller
                     };
                     if (intval($estatus) == 2){
                         $icono = 'Aceptado';
+                        $det_btn_color = 'btn-secondary';
+                        $det_btn_click = 'style="opacity:0"';
                     };
                     //$icono = $icono.'-->'.$iiii;
                     
@@ -113,7 +119,11 @@ class PerfilController extends Controller
                 '1' => $peso,
                 '2' => $icono,
                 '3' => $vencido,
-                '4' => ($tiene) ? $btnRemplazar.' <button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button> <button onclick="deleteDocUser('.$idDoc.')" title="Eliminar documento" class="btn btn-danger"><i class="fa fa-times"></i></button></td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>',
+                '4' => ($tiene) ? $btnRemplazar.' 
+                <button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button> 
+                <button '.$det_btn_click.' title="Eliminar documento" class="btn '.$det_btn_color.'"><i class="fa fa-times"></i></button>
+                </td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
+                <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>'
             );
         }
         $results = array(
