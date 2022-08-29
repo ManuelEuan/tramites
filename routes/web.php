@@ -244,4 +244,6 @@ Route::get('/generar', 'GenerarReportes@gentreporte');
  */
 Route::group(['prefix' => 'citas'], function () {
     Route::get('/calendario', 'CitasController@calendario');
+    Route::get('/agenda', 'CitasController@agenda');
+    Route::get('/listado', 'CitasController@getListado');
 });
