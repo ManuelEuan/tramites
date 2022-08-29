@@ -2,40 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Cls_Notificacion_Tramite;
-use Illuminate\Http\Request;
-use App\Cls_Tramite_Servicio;
-use App\Cls_Seguimiento_Servidor_Publico;
+
+use File;
+use ZipArchive;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 use App\Cls_Usuario_Tramite;
-use App\Cls_Usuario_Respuesta;
-use App\Cls_Usuario_Documento;
+use Illuminate\Http\Request;
 use App\Cls_Usuario_Concepto;
+use App\Cls_Usuario_Documento;
+use App\Cls_Usuario_Respuesta;
+use App\Services\CitasService;
 use App\Services\VariosService;
-use  Illuminate\Pagination\LengthAwarePaginator;
-use  Illuminate\Pagination\Paginator;
+use PhpOffice\PhpWord\Settings;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Mail\MailService;
-use Illuminate\Support\Facades\Mail;
-use ZipArchive;
-use File;
-use Carbon\Carbon;
-use PDF;
-use Illuminate\Support\Str;
 
-use PhpOffice\PhpWord\Settings;
+use Illuminate\Support\Facades\Mail;
+use App\Cls_Seguimiento_Servidor_Publico;
 
 class TramitesController extends Controller
 {
     protected $variosService;
+    protected $citasService;
+    protected $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
 
-
-    public function __construct()
-    {
+    public function __construct() {
         $this->variosService    = new VariosService();
+        $this->citasService     = new CitasService();
     }
 
-    protected $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
+    /**
+     * Retorna las citas agendadas
+     * @param Request $request
+     * @return Response
+     */
+    public function getCitasAgendadas(Request $request){
+        $order      = "desc";
+        $order_by   = "c.id";
+
+        $query = DB::table('citas_tramites_calendario as c')
+                    ->join('tram_mst_usuario as u', 'c.CITA_IDUSUARIO', '=', 'u.USUA_NIDUSUARIO')
+                    ->select('c.*', 'u.USUA_CRFC AS rfc', 'u.USUA_CRFC as rfc', 'u.USUA_CNOMBRES as nombre', 'u.USUA_CPRIMER_APELLIDO as apellido_paterno', 'u.USUA_CSEGUNDO_APELLIDO as apellido_materno');
+
+        if(!is_null($request->usuario_id))
+            $query->where("c.CITA_IDUSUARIO", $request->usuario_id);
+        if(!is_null($request->tramite_id))
+            $query->where("c.CITA_IDTRAMITE", $request->tramite_id);
+        if(!is_null($request->modulo_id))
+            $query->where("c.CITA_IDMODULO", $request->modulo_id);
+        if(!is_null($request->fecha_inicio))
+            $query->where("c.CITA_FECHA",">=", $request->fecha_inicio);
+        if(!is_null($request->fecha_final))
+            $query->where("c.CITA_FECHA","<=", $request->fecha_final);
+        if(!is_null($request->confirmado))
+            $query->where("c.confirmado", $request->confirmado);
+
+
+        if(!is_null($request->order))
+            $order = $request->order == 'asc'? "asc" : "desc";
+        if(!is_null($request->order_by))
+            $order_by = $request->order_by;
+
+        $query->orderBy($order_by, $order);
+
+        return response()->json(["data" => $query->get()], 200);
+    }
 
     public function listado()
     {
@@ -220,7 +252,7 @@ class TramitesController extends Controller
         $template->setValue('title', 'Mr.');
         $template->setValue('firstname', 'Josue');
         $template->setValue('lastname', 'Lopez');
- */
+        */
         /*@ Save Temporary Word File With New Name */
         $saveDocPath = $rutaBase . 'new-result' . $nameFile[0] . '.docx';
         $template->saveAs($saveDocPath);
