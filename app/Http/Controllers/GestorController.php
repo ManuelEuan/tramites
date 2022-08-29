@@ -23,7 +23,7 @@ class GestorController extends Controller
     /**
      * @var String
      */
-    private $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
+    private $host = 'https://remtys-qro-qa.azurewebsites.net';
 
     /**
      * @var TramiteService

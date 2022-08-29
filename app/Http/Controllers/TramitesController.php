@@ -35,7 +35,7 @@ class TramitesController extends Controller
         $this->variosService    = new VariosService();
     }
 
-    protected $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
+    protected $host = 'https://remtys-qro-qa.azurewebsites.net';
 
     public function listado()
     {
