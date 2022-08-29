@@ -76,7 +76,7 @@
         </div>
     </div>
     <!-- Modal de carga -->
-    <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+    <div class="modal fade bd-example-modal-lg" id="modalLoad" data-backdrop="static" data-keyboard="false" tabindex="-1">
         <div class="modal-dialog modal-sm" style="display: table; position: relative; margin: 0 auto; top: calc(50% - 24px);">
             <div class="modal-content" style="width: 48px; background-color: transparent; border: none;">
                 <div class="spinner-border text-primary" style="width: 10rem; height: 10rem;" role="status">
@@ -84,6 +84,32 @@
                 </div>
             </div>
         </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="citaInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">¡Tu cita hasido agendada!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body text-center center">
+            <p id="citaFolio"></p>
+            <p id="citaFecha"></p>
+            <p id="citaHora"></p>
+            <p id="citaMunicipio"></p>
+            <p id="citaModulo"></p>
+
+            <button id="btnPDF" class="btn btn-primary" style="margin: 15px;">Descargar PDF</button>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
     </div>
 @endsection
 
@@ -131,7 +157,7 @@
             mostrarAlerta('Debe seleccionar los criterios para la búsqueda.');
             return;
         }
-        $('.modal').modal('show');
+        $('#modalLoad').modal('show');
         var url_api = "<?= $data['API_URL'] ?>";
         var URL_COMP = "";
         if (payload == null){
@@ -148,7 +174,7 @@
         });
         //On success
         request.done(function (response, textStatus, jqXHR){
-            $('.modal').modal('hide');             
+            $('#modalLoad').modal('hide');             
             pintarDisponibilidad(response);
             mostrarAlerta("Se cargaron los horarios disponibles");
             window.resultadoMes = response;
@@ -163,7 +189,7 @@
         });
         //On failure
         request.fail(function (jqXHR, textStatus, errorThrown){
-            $('.modal').modal('hide');
+            $('#modalLoad').modal('hide');
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -256,7 +282,10 @@
             return url;
         }
 
-        function dateClickEvent(info) { 
+        function dateClickEvent(info) {
+            $("#formRFecha").text("Fecha: ");
+            window.dateOnDisplay = null;
+            $(".rowFecha").remove();
             if (window.resultadoMes.length == 0) {
                 mostrarAlerta("Aún debe seleccionar los campos del filtro y agendar en la fecha: " + info.dateStr);
                 return;
@@ -266,8 +295,10 @@
             $("#formRFecha").text("Fecha: " + fechaDFormat);
             var horarios = [];
             for(var row in window.resultadoMes){
-                if (info.dateStr == window.resultadoMes[row]['fecha'])
+                if (info.dateStr == window.resultadoMes[row]['fecha']) {
                     horarios = window.resultadoMes[row]['horario'];
+                    window.dateOnDisplay = row;
+                }
             }
             $(".rowFecha").remove();
             let ventanillas = horarios.ventanillas;
@@ -287,9 +318,98 @@
     <script>
         //Funciones para el formulario lateral
         $('#btnAgendarCita').click(function () {
-            // alert("Hola");
-            alert($('input[name="radio"]:checked', '#horariosContainer').val());
-            console.log($('input[name="radio"]:checked', '#horariosContainer').val());
+            $('#modalLoad').modal('show');
+            var citaSeleccionada = $('input[name="radio"]:checked', '#horariosContainer').val();
+            if (window.dateOnDisplay == null || window.dateOnDisplay == undefined ||
+                window.dateOnDisplay == 0 || citaSeleccionada == null || citaSeleccionada == undefined) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Necesita seleccionar un horario para agendar una cita'
+                });
+                return;
+            }
+
+            let data    = { 
+                "CITA_IDUSUARIO": 999,
+                "CITA_FECHA": window.resultadoMes[window.dateOnDisplay].fecha,
+                "CITA_HORA": window.resultadoMes[window.dateOnDisplay].horario.disponibles[citaSeleccionada].horario,
+                "CITA_IDTRAMITE": document.getElementById('formTramite').value,
+                "CITA_IDMODULO":  document.getElementById('formEdificio').value
+            };
+            $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+            request = $.ajax({
+                url : '/api/citas',
+                type: "POST",
+                data: data,
+            });
+            //On success
+            request.done(function (response, textStatus, jqXHR){
+                $('#modalLoad').modal('hide');
+                if (response.codigo == 200) {
+                    $("#citaFolio").text("Folio: " + response.cita.CITA_FOLIO);
+                    $("#citaFecha").text("Fecha: " + response.cita.CITA_FECHA);
+                    $("#citaHora").text("Hora: " + response.cita.CITA_HORA);
+                    $("#citaMunicipio").text("Municipio: " + response.cita.CITA_MUNICIPIO);
+                    $("#citaModulo").text("Módulo: " + document.getElementById('formEdificio').value);
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Operación exitosa',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }, 400);
+                    window.cita = response.cita;
+                    $('#citaInfoModal').modal('show');
+                } else {
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: response.estatus,
+                            title: 'Alerta',
+                            text: response.mensaje,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }, 400);
+
+                }
+            });
+            //On failure
+            request.fail(function (jqXHR, textStatus, errorThrown){
+                $('#modalLoad').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
+                });
+            });
+        });
+
+        $('#btnPDF').click(function () {
+            $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+            request = $.ajax({
+                url : '/citas/descargar',
+                type: "POST",
+                data: window.cita,
+                responseType: 'blob'
+            });
+            //On success
+            request.done(function (response, textStatus, jqXHR){
+                var blob = new Blob([response]);
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "cita.pdf";
+                link.click();
+            });
+            //On failure
+            request.fail(function (jqXHR, textStatus, errorThrown){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
+                });
+            });
         });
     </script>
 @endsection

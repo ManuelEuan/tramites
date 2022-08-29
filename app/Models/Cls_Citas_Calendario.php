@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\TramiteService;
 
 class Cls_Citas_Calendario extends Model{
+    protected $primaryKey = 'idcitas_tramites_calendario';
     protected $table = 'citas_tramites_calendario';
     protected $fillable = [
         'CITA_IDUSUARIO', //Quiuen lo solicita
@@ -15,8 +16,10 @@ class Cls_Citas_Calendario extends Model{
         'CITA_HORA', //Hora de la cita
         'CITA_IDTRAMITE', //Trámite seleccionado
         'CITA_IDMODULO', //Módulo seleccionado
-        'CITA_CONFIRMADO' //Confirmación de cita
+        'CITA_CONFIRMADO', //Confirmación de cita
+        'CITA_FOLIO' //Folio de la cita
     ];
+    public $timestamps = false;
 
     public static function getAll(){
         return Cls_Citas_Calendario::all();
@@ -108,5 +111,12 @@ class Cls_Citas_Calendario extends Model{
         }
 
         return $fechasDisponibles;
+    }
+    public static function validaNueva($cita) {
+        $result = DB::table('citas_tramites_calendario')
+            ->where('CITA_IDUSUARIO', $cita->CITA_IDUSUARIO)
+            ->where('CITA_IDTRAMITE', $cita->CITA_IDTRAMITE)
+            ->get();
+        return ($result->count() == 0 ? true : false);
     }
 }
