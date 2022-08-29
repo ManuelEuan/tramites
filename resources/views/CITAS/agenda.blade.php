@@ -1,4 +1,3 @@
-
 @extends('layout.Layout')
 
 @section('body')
@@ -78,6 +77,7 @@
             </div>
         </div>
     </div>
+    
     //Modal de carga
     <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
         <div class="modal-dialog modal-sm" style="display: table; position: relative; margin: 0 auto; top: calc(50% - 24px);">
@@ -95,6 +95,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/locales-all.js"></script>
 
+
     <script>
         window.resultadoMes = [];
         function cambiarTextoBtnMostartFiltro() {
@@ -102,85 +103,80 @@
             var txtModulo = $("#formEdificio option:selected").text();
             $("#mostrarFiltro").text("Filtro Seleccionado: "+txtTramite+" / "+txtModulo);
         }
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        cambiarTextoBtnMostartFiltro();        
-        var calendarEl = document.getElementById('calendario');
-        window.calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          locale: 'es',
-          headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth'
-            // right: 'dayGridMonth,timeGridWeek'
-          },
-          events: [],
-          datesSet: cargarEventos,
-          dateClick: function(info) {
-            // alert('Clicked on: ' + info.dateStr);
-            mostrarAlerta("Aún debe seleccionar los campos del filtro y agendar en la fecha: " + info.dateStr);
-          }
-        });
-        window.calendar.render();
-    });     
-    </script>
 
-    <script>
-    function cargarEventos(payload) {
-        var tramite = document.getElementById('formTramite').value;
-        var modulo = document.getElementById('formEdificio').value;
-        if (tramite == 0 || modulo == 0) {
-            mostrarAlerta('Debe seleccionar los criterios para la búsqueda.');
-            return;
-        }
-        $('.modal').modal('show');
-        var url_api = "<?= $data['API_URL'] ?>";
-        var URL_COMP = "";
-        if (payload == null){
-            const d = new Date();
-            URL_COMP = '/' + d.getFullYear() + '/' + (d.getMonth() + 1)
-        } else {
-            URL_COMP = formatURLGet(payload.view.currentStart);
-        }
-
-        $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
-        request = $.ajax({
-            url : '/api/citas/'+ tramite + '/' + modulo + URL_COMP,
-            type: "GET"
-        });
-        //On success
-        request.done(function (response, textStatus, jqXHR){
-            $('.modal').modal('hide');             
-            pintarDisponibilidad(response);
-            mostrarAlerta("Se cargaron los horarios disponibles");
-            window.resultadoMes = response;
-            setTimeout(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Operación exitosa',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }, 400);
-        });
-        //On failure
-        request.fail(function (jqXHR, textStatus, errorThrown){
-            $('.modal').modal('hide');
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'se presento el siguiente error: ' + errorThrown
+        document.addEventListener('DOMContentLoaded', function() {
+            cambiarTextoBtnMostartFiltro();        
+            var calendarEl = document.getElementById('calendario');
+            window.calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'es',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth'
+                // right: 'dayGridMonth,timeGridWeek'
+            },
+            events: [],
+            datesSet: cargarEventos,
+            dateClick: function(info) {
+                // alert('Clicked on: ' + info.dateStr);
+                mostrarAlerta("Aún debe seleccionar los campos del filtro y agendar en la fecha: " + info.dateStr);
+            }
             });
-        });
-    }        
-    $('#formFiltrar').click(function () {
-        cargarEventos();
-    }); 
-    </script>
+            window.calendar.render();
+        });     
 
-    <script>
+        function cargarEventos(payload) {
+            var tramite = document.getElementById('formTramite').value;
+            var modulo = document.getElementById('formEdificio').value;
+            if (tramite == 0 || modulo == 0) {
+                mostrarAlerta('Debe seleccionar los criterios para la búsqueda.');
+                return;
+            }
+            $('.modal').modal('show');
+            var url_api = "<?= $data['API_URL'] ?>";
+            var URL_COMP = "";
+            if (payload == null){
+                const d = new Date();
+                URL_COMP = '/' + d.getFullYear() + '/' + (d.getMonth() + 1)
+            } else {
+                URL_COMP = formatURLGet(payload.view.currentStart);
+            }
+
+            $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+            request = $.ajax({
+                url : '/api/citas/'+ tramite + '/' + modulo + URL_COMP,
+                type: "GET"
+            });
+            //On success
+            request.done(function (response, textStatus, jqXHR){
+                $('.modal').modal('hide');             
+                pintarDisponibilidad(response);
+                mostrarAlerta("Se cargaron los horarios disponibles");
+                window.resultadoMes = response;
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Operación exitosa',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }, 400);
+            });
+            //On failure
+            request.fail(function (jqXHR, textStatus, errorThrown){
+                $('.modal').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
+                });
+            });
+        }        
+        $('#formFiltrar').click(function () {
+            cargarEventos();
+        }); 
+
         function mostrarAlerta(txt) {
             $("#toastMsj").text(txt);
             $('.toast').toast({delay: 3000});

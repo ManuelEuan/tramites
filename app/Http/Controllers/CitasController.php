@@ -112,4 +112,11 @@ class CitasController extends Controller
         return response()->json($result);        
     }
 
+    /**
+     * Retorna la vista de la agenda
+     */
+    public function agenda(Request $request) {
+        $data = ['API_URL' => env('APP_URL')."/api"];
+        return view('CITAS.agenda', compact('data'));
+    }
 }
