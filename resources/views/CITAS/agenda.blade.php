@@ -31,10 +31,6 @@
                     <div class="form-group col-lg-2 col-md-2 col-sm-12 text-center center">
                         <button id="formFiltrar" style="margin-top: 3px;" class="btn btn-primary btn-lg"><i class="fas fa-search"></i>&nbspFiltrar</button>
                     </div>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#infoCita">
-                        Launch demo modal
-                      </button>
-
                 </div>
             </div>
         </div>
@@ -51,10 +47,7 @@
                         <hr class="text-primary">
                         <div class="col-lg-12 text-center" style=" width: 100%">
                             <p id="formRFecha">Fecha: </p>
-                            <div id="horariosContainer" class="col-lg-12" style="height:300px; overflow-y: scroll;">
-
-                            </div>
-                            <button id="btnAgendarCita" disabled class="btn btn-primary" style="margin: 15px;">Agendar</button>
+                            <div id="horariosContainer" class="col-lg-12" style="height:300px; overflow-y: scroll;"></div>
                         </div>
                     </div>
                 </div>
@@ -94,12 +87,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Información de cita</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
                 <div class="modal-body" style="text-align: center;">
+                    <input type="hidden" name="txtCitdaId" id="txtCitdaId">
                     <p>
                         <label class="titulo"> <b>Trámite:</b></label>
                         <label class="respuesta" id="txtTramite"></label>
@@ -124,10 +118,27 @@
                         <label class="titulo"> <b>Municipio:</b></label>
                         <label class="respuesta" id="txtMunicipio"></label>
                     </p>
+
+                    <div style="display: none;" id="divUpdate">
+                        <hr>
+                        <div class="row" >
+                            <div class="form-group col-lg-5 col-md-5 col-sm-12">
+                                <input type="date" id="dtFecha">
+                            </div>
+    
+                            <div class="form-group col-lg-5 col-md-5 col-sm-12">
+                                <select id="hrsDisponibles" class="form-control">
+                                    <option value="0" selected>Seleccionar horario</option>>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Reagendar</button>
+                    <button id="btnReagendar" onclick="reAgendar()" type="button" class="btn btn-primary">Reagendar</button>
+                    <button id="btnGuardar" onclick="update()" style="display: none;" type="button" class="btn btn-primary">Guardar </button>
+                    <button id='btnCancelar'onclick="reAgendar(true)" style="display: none;"  type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
@@ -171,7 +182,11 @@
     </script>
 
     <script>
-        var citas = [];
+        var citas       = [];
+        var oficinas    = [];
+        var reagendar   = false;
+        var fechaSeleccionada;
+
         function cargarEventos(payload) {
             var tramite = document.getElementById('formTramite').value;
             var modulo = document.getElementById('formEdificio').value;
@@ -278,7 +293,8 @@
             citas           = [];
             var arrFecha    = info.dateStr.split('-');
             let horarios    = [];
-            let fechaDFormat = arrFecha[2] + "/" + arrFecha[1] + "/" + arrFecha[0];
+            let fechaDFormat    = arrFecha[2] + "/" + arrFecha[1] + "/" + arrFecha[0];
+            fechaSeleccionada   = info.dateStr;
             $("#formRFecha").text("Fecha: " + fechaDFormat);
             $('#modalLoading').modal('show');
 
@@ -286,8 +302,8 @@
                 url: "/citas/listado",
                 type: "GET",
                 data: {
-                    tramite_id  : 60,
-                    modulo_id   : 13,
+                    accede_id: $("#formTramite").val(),
+                    modulo_id: $("#formEdificio").val(),
                     fecha_inicio: info.dateStr,
                     fecha_final : info.dateStr,
                     order_by    : "c.CITA_HORA"
@@ -323,26 +339,35 @@
         }
 
         function getDetalle(citaId){
-            let tramite = $("#formTramite").text();
-
-            /* citas.forEach(element => {
+            citas.forEach(element => {
                 if(element.idcitas_tramites_calendario == citaId){
                     let hr      = formatAMPM(element.CITA_HORA);
                     let arrFech = element.CITA_FECHA.split('-');
                     let fecha   = arrFech[2] + "/" + arrFech[1] + "/" + arrFech[0];
                     let solici  = element.nombre.toUpperCase() + " " + element.apellido_paterno.toUpperCase();
-
+                    let tramite = $('#formTramite option:selected').html();
+                    let oficina     = $("#formEdificio").val(); 
+                    let municipio   = "";
+            
+                    oficinas.forEach(element => {
+                        if(element.iId == oficina){
+                            municipio = element.Municipality
+                        }
+                    });
 
                     $("#txtFolio").text(element.CITA_FOLIO);
                     $("#txtHora").text(hr);
                     $("#txtFecha").text(fecha);
                     $("#txtSolicitante").text(solici);
-                    console.log("entro", element);
+                    $("#txtTramite").text(tramite);
+                    $("#txtMunicipio").text(municipio);
+                    $("#txtCitdaId").val(citaId);
                 }
 
             });
 
-            $("#infoCita").modal("show"); */
+            reAgendar(true);
+            $("#infoCita").modal("show");
         }
 
         function formatAMPM(hora) {
@@ -353,6 +378,78 @@
             array[0] = array[0] == '00' ? '12' : array[0];
 
             return array[0] + ':' + array[1] + ' ' + ampm;
+        }
+
+        function reAgendar(abrir = false) {
+            if(abrir == false) {
+                $("#btnReagendar").hide();
+                $("#btnGuardar").show();
+                $("#btnCancelar").show();
+                $("#divCancelar").show();
+                $("#divUpdate").show();
+            }
+            else{
+                $("#infoCita").modal("show");
+                $("#btnReagendar").show();
+                $("#btnGuardar").hide();
+                $("#btnCancelar").hide();
+                $("#divCancelar").hide();
+                $("#divUpdate").hide();
+
+                let today = new Date();
+                $("#dtFecha").val(today.toISOString());
+                let html = '<option value="0" selected>Seleccionar horario</option>';
+                $("#hrsDisponibles").html(html);
+            }
+        }
+
+        function update(){
+            $("#dtFecha").val() == "" ? $("#dtFecha").addClass("is-invalid") : $("#dtFecha").removeClass("is-invalid");
+            $("#hrsDisponibles").val() == 0  ? $("#hrsDisponibles").addClass("is-invalid") : $("#hrsDisponibles").removeClass("is-invalid");
+
+            if($("#dtFecha").val() == "" || $("#hrsDisponibles").val() == 0){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Seleccionar fecha y hora a cambiar.',
+                    text: ''
+                });
+                return;
+            }
+
+            $('#btnGuardar').prop('disabled', true);
+            $('#btnCancelar').prop('disabled', true);
+            
+            $.ajax({
+                url: "/api/citas/update",
+                type: "POST", 
+                data: { cita_Id: $("#txtCitdaId").val(), fecha: $("#dtFecha").val(), hora: $("#hrsDisponibles").val() },
+                success: function(resp) {
+                    $('#btnCancelar').prop('disabled', false);
+                    $('#btnGuardar').prop('disabled', false);
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Operación exitosa.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    setTimeout(() => {
+                        $("#btnCancelar").click();
+                    }, 1800);
+                    let object = { "date": "2022-08-30T05:00:00.000Z", "dateStr": fechaSeleccionada};
+                    dateClickEvent(object);
+                },
+                error: function(err) {
+                    console.log(err);
+                
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'se presento el siguiente error: ' + err
+                    });
+                }
+            });
         }
     </script>
 
@@ -367,11 +464,12 @@
             let tramiteId = $("#formTramite").val();
             $('#modalLoading').modal('show');
 
+            oficinas = [];
             $.ajax({
                 url: "/gestores/detalleTramite/" + tramiteId,
                 type: "GET",
                 success: function(data) {
-                    let oficinas    = data.data.oficinas;
+                    oficinas    = data.data.oficinas;
                     let html        = '<option value="0" selected>Seleccionar edificio</option>';
 
                     oficinas.forEach(element => {
@@ -395,6 +493,50 @@
 
         $('#formFiltrar').click(function () {
             cargarEventos();
+        });
+
+        $("#dtFecha").change( function() {
+            let fecha = new Date($("#dtFecha").val());
+            let today = new Date();
+            
+            if(fecha < today){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'La fecha debe ser mayor al día actual.',
+                    text: ''
+                });
+            }
+            else{
+                let html = '<option value="0" selected>Seleccionar horario</option>';
+                $("#hrsDisponibles").html(html);
+
+                $.ajax({
+                    url: "/api/citas/disponibilidad",
+                    type: "POST",
+                    data:  { accede_id: $("#formTramite").val(), modulo_id: $("#formEdificio").val(), fecha: $("#dtFecha").val() },
+                    success: function(resp) {
+                        html = '<option value="0" selected>Seleccionar horario</option>';
+                        
+                        resp.forEach(element => {
+                            if(element.ocupado == false){
+                                let hr   =  formatAMPM(element.horario);
+                                html += '<option value="'+ element.horario +'">' + hr+ '</option>';
+                            }
+                        });
+
+                        $("#hrsDisponibles").html(html);
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'se presento el siguiente error: ' + err
+                        });
+                    }
+                });
+            }
         });
     </script>
 
