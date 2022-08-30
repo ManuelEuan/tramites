@@ -1,7 +1,10 @@
 @extends('layout.Layout')
 
 @section('body')
-    <?php header('Access-Control-Allow-Origin: *'); ?>
+    <?php
+    header('Access-Control-Allow-Origin: *'); 
+    // dd($tramite['modulo']);
+    ?>
     <!-- <%-- Contenido individual --%> -->
     <div class="container-fluid contentPage">
         <br>
@@ -705,11 +708,6 @@
                                             <h6 style="font-size: 1rem; font-weight:bold;">Citas Disponibles</h6>
                                             </p>
                                             <br /><br />
-                                            <div class="col-md-6" style="margin-top: 35px">
-                                                <label>Edificios:</label>
-                                                <select class="form-control" id="cita_edificios" onChange="loadCitas()">
-                                                </select>
-                                            </div>
                                             <div class="col-md-12" style="margin-top: 15px">
                                                 <!-- CALENDARIO -->
                                                 <div class="col-lg-12">            
@@ -1522,36 +1520,11 @@
                 success: function(data) {
 				    console.log("resp");
 				    console.log(data);
-                	location.reload();
+                	// location.reload();
                 },
                 error: function(data) {}
             });
 		}
-
-                //Cuando se selecciona un edificio, busca... las disponibilidades
-                // function loadCitas() {
-                //     var idusuario = "{{ $tramite['idsuario'] }}";
-                //     var idtramiteAccede = "{{ $tramite['idtramiteaccede'] }}";
-                //     var nombre = "{{ $tramite['nombreUsuario'] }}";
-                //     var apellidop = "{{ $tramite['apellidoPUsuario'] }}";
-                //     var apellidom = "{{ $tramite['apellidoMUsuario'] }}";
-                //     var correo = "{{ $tramite['correoUsuario'] }}";
-
-                //     //checar dropdown de edificios disponibles
-                //     var selectedValue = $("#cita_edificios").children("option:selected").val();
-                //     console.log("EDIFICIO: " + selectedValue);
-
-                //     if (selectedValue != 0) {
-
-                //         console.log("TRAMITE: " + idtramiteAccede);
-
-                //         $("#citasdisponibles").show();
-                //         $('#citasdisponibles').DataTable().clear().destroy();
-
-                //         citasDisponibles(idtramiteAccede, selectedValue, idusuario, nombre, apellidop, apellidom, correo,
-                //             '9999999999', id);
-                //     }
-                // }
 
                 $(document).ready(function() {
                     var idusuario = "{{ $tramite['idsuario'] }}";
@@ -1793,34 +1766,6 @@
                         required: "Es requerido",
                     });
 
-                    //Cargar mapa y ubicacion de oficina
-                    /*setTimeout(function() {
-                        var latitud = 28.640157192843148;
-                        var longitud = -106.07436882706008;
-                        var  map = new google.maps.Map(document.getElementById('mapaEdificios'), {
-                            center: {
-                                lat : latitud,
-                                lng : longitud
-                                //lat: 28.6389324,
-                                //lng: -106.075353
-                            },
-                            zoom: 15,
-                            mapTypeControlOptions: {
-                                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                                position: google.maps.ControlPosition.TOP_CENTER,
-                            },
-                            fullscreenControlOptions: {
-                                position: google.maps.ControlPosition.BOTTOM_RIGHT,
-                            },
-                        });
-
-                        var marker = new google.maps.Marker({
-                            position: new google.maps.LatLng(latitud, longitud),
-                            map: map,
-                            title: 'Ubicación'
-                        });
-                    }, 10000);*/
-
                     $('.secconceptos').each(function() {
                         var id = this.id;
                         var _arr = id.split("_");
@@ -1905,9 +1850,6 @@
 
                                 $("#PagosIframe").attr("src", string_);
                                 $("#linkPago").attr("href", string_);
-                                //$('#PagosIframe').append('<iframe style="height:700px;width:100%;" src="'+string_+'"></iframe>');
-
-                                //$('#PagosIframe').append('<iframe style="height:700px;width:100%;" src="https://ipagostest.chihuahua.gob.mx/PagosDiversos/?parametro='+data.encriptado+'" title="description"></iframe>');
                             },
                             error: function(data) {
                                 Swal.fire({
@@ -2150,7 +2092,6 @@
                     }
                 };
 
-
                 function TRAM_FN_VERIFICAR_LLENADO() {
 
                     var descripcionllenada = 0
@@ -2180,9 +2121,6 @@
                         $("#estatusFormulario" + id).html("");
                     }
                 };
-
-
-
 
                 function TRAM_AJX_GUARDAR() {
                     $("#loading-text").html("Guardando...");
@@ -2535,8 +2473,7 @@
 
             <script> //Construccion del calendario
                 document.addEventListener('DOMContentLoaded', function() {
-                    // cambiarTextoBtnMostartFiltro();   
-                    console.log("Creando calendario");
+                    // cambiarTextoBtnMostartFiltro();
                     var calendarEl = document.getElementById('calendario');
                     window.calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
@@ -2554,14 +2491,13 @@
                     }
                     });
                     window.calendar.render();
-                    console.log("Calendario creado");
                 });     
             </script>
 
             <script> //Carga de eventos en el calendario
                 function cargarEventos(payload) {
                     var tramite = "{{ $tramite['idtramiteaccede'] }}";
-                    var modulo = $("#cita_edificios").children("option:selected").val();
+                    var modulo = "{{ $tramite['modulo'] }}";
 
                     console.log("tramite: " + tramite);
                     console.log("modulo: " + modulo);
