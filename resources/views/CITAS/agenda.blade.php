@@ -87,12 +87,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Información de cita</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
                 <div class="modal-body" style="text-align: center;">
+                    <input type="hidden" name="txtCitdaId" id="txtCitdaId">
                     <p>
                         <label class="titulo"> <b>Trámite:</b></label>
                         <label class="respuesta" id="txtTramite"></label>
@@ -136,8 +137,8 @@
 
                 <div class="modal-footer">
                     <button id="btnReagendar" onclick="reAgendar()" type="button" class="btn btn-primary">Reagendar</button>
-                    <button id="btnGuardar" onclick="update()" style="display: none;" type="button" class="btn btn-primary">Guardar</button>
-                    <button id='btnCancelar' style="display: none;"  type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button id="btnGuardar" onclick="update()" style="display: none;" type="button" class="btn btn-primary">Guardar </button>
+                    <button id='btnCancelar'onclick="reAgendar(true)" style="display: none;"  type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
@@ -184,6 +185,7 @@
         var citas       = [];
         var oficinas    = [];
         var reagendar   = false;
+        var fechaSeleccionada;
 
         function cargarEventos(payload) {
             var tramite = document.getElementById('formTramite').value;
@@ -291,7 +293,8 @@
             citas           = [];
             var arrFecha    = info.dateStr.split('-');
             let horarios    = [];
-            let fechaDFormat = arrFecha[2] + "/" + arrFecha[1] + "/" + arrFecha[0];
+            let fechaDFormat    = arrFecha[2] + "/" + arrFecha[1] + "/" + arrFecha[0];
+            fechaSeleccionada   = info.dateStr;
             $("#formRFecha").text("Fecha: " + fechaDFormat);
             $('#modalLoading').modal('show');
 
@@ -358,6 +361,7 @@
                     $("#txtSolicitante").text(solici);
                     $("#txtTramite").text(tramite);
                     $("#txtMunicipio").text(municipio);
+                    $("#txtCitdaId").val(citaId);
                 }
 
             });
@@ -380,6 +384,7 @@
             if(abrir == false) {
                 $("#btnReagendar").hide();
                 $("#btnGuardar").show();
+                $("#btnCancelar").show();
                 $("#divCancelar").show();
                 $("#divUpdate").show();
             }
@@ -387,6 +392,7 @@
                 $("#infoCita").modal("show");
                 $("#btnReagendar").show();
                 $("#btnGuardar").hide();
+                $("#btnCancelar").hide();
                 $("#divCancelar").hide();
                 $("#divUpdate").hide();
 
@@ -397,6 +403,54 @@
             }
         }
 
+        function update(){
+            $("#dtFecha").val() == "" ? $("#dtFecha").addClass("is-invalid") : $("#dtFecha").removeClass("is-invalid");
+            $("#hrsDisponibles").val() == 0  ? $("#hrsDisponibles").addClass("is-invalid") : $("#hrsDisponibles").removeClass("is-invalid");
+
+            if($("#dtFecha").val() == "" || $("#hrsDisponibles").val() == 0){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Seleccionar fecha y hora a cambiar.',
+                    text: ''
+                });
+                return;
+            }
+
+            $('#btnGuardar').prop('disabled', true);
+            $('#btnCancelar').prop('disabled', true);
+            
+            $.ajax({
+                url: "/api/citas/update",
+                type: "POST", 
+                data: { cita_Id: $("#txtCitdaId").val(), fecha: $("#dtFecha").val(), hora: $("#hrsDisponibles").val() },
+                success: function(resp) {
+                    $('#btnCancelar').prop('disabled', false);
+                    $('#btnGuardar').prop('disabled', false);
+                    
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Operación exitosa.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    setTimeout(() => {
+                        $("#btnCancelar").click();
+                    }, 1800);
+                    let object = { "date": "2022-08-30T05:00:00.000Z", "dateStr": fechaSeleccionada};
+                    dateClickEvent(object);
+                },
+                error: function(err) {
+                    console.log(err);
+                
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'se presento el siguiente error: ' + err
+                    });
+                }
+            });
+        }
     </script>
 
     <script>
@@ -459,7 +513,7 @@
                 $.ajax({
                     url: "/api/citas/disponibilidad",
                     type: "POST",
-                    data: { accede_id: $("#formTramite").val(), modulo_id:$("#formEdificio").val(), fecha: $("#dtFecha").val() },
+                    data:  { accede_id: $("#formTramite").val(), modulo_id: $("#formEdificio").val(), fecha: $("#dtFecha").val() },
                     success: function(resp) {
                         html = '<option value="0" selected>Seleccionar horario</option>';
                         
@@ -482,7 +536,6 @@
                         });
                     }
                 });
-
             }
         });
     </script>
