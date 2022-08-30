@@ -320,5 +320,32 @@ class Cls_Tramite_Servicio extends Model
 
         return $resp;
     }
+    
+
+
+
+
+
+    
+
+    static function getConfigDocumentos($nombre) 
+    {
+        $docs = DB::select("SELECT * FROM `tram_mst_configdocumentos` WHERE NOMBRE = '".$nombre."' LIMIT 0,1");
+        
+        return $docs;
+    } 
+    static function getTipoDocsBASE($idUSER, $id_DOC)
+    {
+        $docsUser = DB::select("SELECT * FROM `tram_mst_documentosbase` 
+        WHERE ID_USUARIO = '".$idUSER."' AND ID_CDOCUMENTOS ='".$id_DOC."'  LIMIT 0,1");
+        
+        return $docsUser;
+    }
+
+
+
+
+
+
 
 }

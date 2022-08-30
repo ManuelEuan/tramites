@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Services\TramiteService;
 
 class Cls_Citas_Calendario extends Model{
-    protected $primaryKey = 'idcitas_tramites_calendario';
-    protected $table = 'citas_tramites_calendario';
+    protected $table        = 'citas_tramites_calendario';
+    protected $primaryKey   = 'idcitas_tramites_calendario';
+    public $timestamps      = false;
+
     protected $fillable = [
+        'idcitas_tramites_calendario',
         'CITA_IDUSUARIO', //Quiuen lo solicita
         'CITA_FECHA', //Fecha de la cita
         'CITA_HORA', //Hora de la cita
@@ -19,7 +20,6 @@ class Cls_Citas_Calendario extends Model{
         'CITA_CONFIRMADO', //Confirmación de cita
         'CITA_FOLIO' //Folio de la cita
     ];
-    public $timestamps = false;
 
     public static function getAll(){
         return Cls_Citas_Calendario::all();

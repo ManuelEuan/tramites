@@ -392,6 +392,33 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         return $affected;
     }
 
+    
+    
+    static function ActualizarDocVigencia($idbase, $vigencia){
+        $affected = DB::table('tram_mst_documentosbase')
+            ->where('id', $idbase)
+            ->update(['VIGENCIA_FIN' => $vigencia]);
+        return $affected;
+    }
+
+
+    static function getDocBase($docs, $usr)  
+    {
+        $docsUser = DB::select("SELECT * FROM `tram_mst_documentosbase` 
+        WHERE ID_USUARIO = '".$usr."' AND ID_CDOCUMENTOS ='".$docs."'  LIMIT 0,1");
+          
+        return $docsUser;
+        
+    }
+    static function getConfigDocumentos($nombre)
+    {
+        $sql = DB::table('tram_mst_configdocumentos')
+            ->select('id')
+            ->where('NOMBRE', $nombre)
+            ->first();
+        return $sql;
+    }
+
     static function getVigencia($idDoc)
     {
         $sql = DB::table('tram_mst_documentosbase')
@@ -404,8 +431,43 @@ class Cls_Seguimiento_Servidor_Publico extends Model
     static function getIdDocExp($idDoc)
     {
         $sql = DB::table('tram_mdv_usuariordocumento')
-            ->select('idDocExpediente as id')
-            ->where('USDO_NIDTRAMITEDOCUMENTO', $idDoc)
+            ->select('idDocExpediente as id') 
+            ->where('USDO_NIDTRAMITEDOCUMENTO', $idDoc) 
+            ->first();
+        return $sql;
+    }
+    
+    static function getIdusrTram($idDoc)
+    {
+        $sql = DB::table('tram_mdv_usuariotramite')
+            ->select('USTR_NIDUSUARIO as id') 
+            ->where('USTR_NIDUSUARIOTRAMITE', $idDoc) 
+            ->first();
+        return $sql;
+    }
+
+    static function getIdidExp($idDoc)
+    {
+        $sql = DB::table('tram_mdv_usuariordocumento')
+            ->select('USDO_NIDUSUARIORESP') 
+            ->where('USDO_NIDTRAMITEDOCUMENTO', $idDoc) 
+            ->first();
+        return $sql;
+    }
+
+    static function getnombDocExp($idDoc)
+    {
+        $sql = DB::table('tram_mdv_usuariordocumento')
+            ->select('USDO_CDOCNOMBRE') 
+            ->where('USDO_NIDTRAMITEDOCUMENTO', $idDoc) 
+            ->first();
+        return $sql;
+    }
+    static function getuserDocExp($idDoc)
+    {
+        $sql = DB::table('tram_mdv_usuariordocumento')
+            ->select('USDO_NIDUSUARIOBASE') 
+            ->where('USDO_NIDTRAMITEDOCUMENTO', $idDoc) 
             ->first();
         return $sql;
     }
