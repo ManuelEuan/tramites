@@ -18,8 +18,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-###################### Pruebas Manuel Euan ######################
-Route::get('/getFiltros', 'GestorController@obtener_filtro');
+###################### Manuel Euan ######################
+/* Route::get('/getFiltros', 'GestorController@obtener_filtro');
 Route::get('/getTramite/{id}/{configuracionID}', 'GestorController@consultar_tramite');
 Route::get('/configurarTramite/{tramiteID}/{tramiteIDConfig}','GestorController@configurar_tramite');
 Route::get('/tramite_servicio/{id}','TramiteServicioController@obtener_detalle_tramite');
@@ -29,7 +29,11 @@ Route::post('/gestores/crear', 'GestorController@save');
 Route::get('/obtener_municipio/{id}','TramiteServicioController@obtener_municipio');
 Route::get('/obtener_modulo/{id}/{idaccede}', 'TramiteServicioController@obtener_modulo');
 Route::post('/subir_documento', 'TramiteServicioController@subir_documento');
-###################### Pruebas Manuel Euan ######################
+Route::get('/getCitasAgendadas', 'TramitesController@getCitasAgendadas'); */
+
+Route::post('/citas/disponibilidad', 'CitasController@disponibilidad');
+Route::post('/citas/update', 'CitasController@update');
+###################### Manuel Euan ######################
 
 
 
@@ -121,3 +125,5 @@ Route::post('/vw_accede_tramite_filtro', array('uses' => 'VistaAccedeController@
 //CITAS Angel Ruiz
 Route::get('/citas/index', array('uses' => 'CitasController@getCitas'));
 Route::get('/citas/{idtramite}/{idedificio}/{anio}/{mes}', array('uses' => 'CitasController@getCitasFiltro'));
+Route::post('citas', array('uses' => 'CitasController@saveCita'));
+// Route::post('citas/descargar', array('uses' => 'CitasController@descargaPDFCita'));

@@ -2,33 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Exception;
 use App\Cls_Citas;
-use Illuminate\Support\Carbon;
-use  Illuminate\Pagination\LengthAwarePaginator;
-use  Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
+use App\Services\CitasService;
+use App\Services\TramiteService;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\GeneralValidator;
 use App\Models\Cls_Citas_Calendario;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class CitasController extends Controller
 {
     protected $host = "https://vucapacita.chihuahua.gob.mx/api/";
+    
+    /**
+     * Construct Gestor
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->tramiteService   = new TramiteService();
+        $this->citasService     = new CitasService();
+        $this->validaciones     = new GeneralValidator();
+    }
+
      //Obtener formularios activos
     public function consultar_citas($idusuario, $idtramiteconf)
     {
 
          $citas = new Cls_Citas();
          $registros = $citas->TRAM_SP_CITACONSULTAR($idusuario, $idtramiteconf);
- 
+
          $response = [
              'data' => $registros,
          ];
- 
+
          return response()->json($response);
     }
 
-    public function guardar_cita(Request $request)
-    {
+    public function guardar_cita(Request $request){
 
         $url = $this->host.'sp_sici_guardar_cita';
         $options = array(
@@ -106,10 +119,156 @@ class CitasController extends Controller
         return response()->json(Cls_Citas_Calendario::all());
     }
     // Obtener las citas disponibles por mes
-    public function getCitasFiltro($idtramite,$idedificio,$anio,$mes) {
-        $values = array((int)$idtramite,(int)$idedificio,$anio,$mes);
-        $result = Cls_Citas_Calendario::getByFiltro($idtramite,$idedificio,$anio,$mes);
-        return response()->json($result);        
+    public function getCitasFiltro($idtramiteAccede,$idedificio,$anio,$mes) {
+        $tramite    = $this->tramiteService->getTramitesSiegy($idtramiteAccede);
+        $result     = Cls_Citas_Calendario::getByFiltro($tramite->TRAM_NIDTRAMITE,$idedificio,$anio,$mes);
+        return response()->json($result);
+    }
+
+    /**
+     * Retorna la vista de la agenda
+     */
+    public function agenda(Request $request) {
+        $data['API_URL']    = env('APP_URL')."/api";
+        $data['tramites']   = $this->tramiteService->getTramitesSiegy();
+        return view('CITAS.agenda', compact('data'));
+    }
+
+    /**
+     * Retorna las citas agendadas
+     * @param Request $request
+     * @return Response
+     */
+    public function getListado(Request $request){
+        $order      = "desc";
+        $order_by   = "c.CITA_IDTRAMITE";
+
+        $query = DB::table('citas_tramites_calendario as c')
+                    ->join('tram_mst_usuario as u', 'c.CITA_IDUSUARIO', '=', 'u.USUA_NIDUSUARIO')
+                    ->select('c.*', 'u.USUA_CRFC AS rfc', 'u.USUA_CRFC as rfc', 'u.USUA_CNOMBRES as nombre', 'u.USUA_CPRIMER_APELLIDO as apellido_paterno', 'u.USUA_CSEGUNDO_APELLIDO as apellido_materno');
+
+        if(!is_null($request->usuario_id))
+            $query->where("c.CITA_IDUSUARIO", $request->usuario_id);
+        if(!is_null($request->tramite_id)) {
+            $objTramite = $this->tramiteService->getTramitesSiegy($request->accede_id);
+            if(is_null(!$objTramite))
+                $query->where("c.CITA_IDTRAMITE", $objTramite->TRAM_NIDTRAMITE);
+        }
+        if(!is_null($request->modulo_id))
+            $query->where("c.CITA_IDMODULO", $request->modulo_id);
+        if(!is_null($request->fecha_inicio))
+            $query->where("c.CITA_FECHA",">=", $request->fecha_inicio);
+        if(!is_null($request->fecha_final))
+            $query->where("c.CITA_FECHA","<=", $request->fecha_final);
+        if(!is_null($request->confirmado))
+            $query->where("c.confirmado", $request->confirmado);
+
+
+        if(!is_null($request->order))
+            $order = $request->order == 'asc'? "asc" : "desc";
+        if(!is_null($request->order_by))
+            $order_by = $request->order_by;
+
+        $query->orderBy($order_by, $order);
+
+        return response()->json(["data" => $query->get()], 200);
+    }
+
+    /**
+     * Actualiza la cita agendada
+     * @param Request $request
+     * @return Response
+     */
+    public function update(Request $request){
+        $statusCode = 200;
+
+        try {
+            $validacion = $this->validaciones->citas($request, 'update');
+            if($validacion !== true)
+                return response()->json(['error' => $validacion->original], 403);
+
+            $result = $this->citasService->update((object)$request);
+        } catch (Exception $ex) {
+            $statusCode = 403;
+            $result     = ['error' => $ex->getMessage()];
+        }
+
+        return response()->json($result, $statusCode);
+    }
+
+    /**
+     * Retorna la disponibilidad para la cita de un tramte
+     * @param Request $request
+     * @return Response
+     */
+    public function disponibilidad(Request $request) {
+        $statusCode = 200;
+
+        try {
+            $validacion = $this->validaciones->disponibilidad($request);
+            if($validacion !== true)
+                return response()->json(['error' => $validacion->original], 403);
+
+            $objTramite = $this->tramiteService->getTramitesSiegy($request->accede_id);
+            $resultado  = $this->citasService->disponibilidad($objTramite->TRAM_NIDTRAMITE, $request->modulo_id, $request->fecha);
+        } catch (Exception $ex) {
+            $statusCode = 403;
+            $resultado  = ['error' => $ex->getMessage()];
+        }
+
+        return response()->json($resultado, $statusCode);
+        
+    }
+    public function saveCita(Request $request) {
+        $cita = new Cls_Citas_Calendario();
+        $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $folio = substr(str_shuffle($permitted_chars), 0, 10);
+
+        $cita->CITA_IDUSUARIO = $request->CITA_IDUSUARIO;
+        $cita->CITA_FECHA = $request->CITA_FECHA;
+        $cita->CITA_HORA = $request->CITA_HORA;
+        $cita->CITA_IDTRAMITE = $request->CITA_IDTRAMITE;
+        $cita->CITA_IDMODULO = $request->CITA_IDMODULO;
+        $cita->CITA_FOLIO = $folio;
+        if (Cls_Citas_Calendario::validaNueva($cita)) {
+            $cita->save();
+            return response()->json([
+                "estatus" => "success",
+                "codigo" => 200,
+                "cita" => $cita,
+                "mensaje" => "Cita guardada con éxito"
+            ]);            
+        }
+        return response()->json([
+            "estatus" => "warning",
+            "codigo" => 500,
+            "mensaje" => "No se puede agendar otra cita para el mismo tramite"
+        ]);
+    }
+
+    public function descargaPDFCita(Request $request) {
+
+        $html = '
+                <p><span>Folio:</span> '. "asdaasdfasdf" .'.</p>
+                <p><span>Fecha:</span> '. "sdsfasdfs" .'.</p>
+                <p><span>Hora:</span> '. "dsvasfvavasd" .'.</p>
+                <p><span>Municipio:</span> Prueba.</p>
+                <p><span>Módulo:</span> Prueba.</p>
+            ';
+        // $html = '
+        //         <p><span>Folio:</span> '. $cita->CITA_FOLIO .'.</p>
+        //         <p><span>Fecha:</span> '. $cita->CITA_FECHA .'.</p>
+        //         <p><span>Hora:</span> '. $cita->CITA_HORA .'.</p>
+        //         <p><span>Municipio:</span> Prueba.</p>
+        //         <p><span>Módulo:</span> Prueba.</p>
+        //     ';
+        $pdf = PDF::loadHTML($html)->setPaper('a4', 'portrait');
+        $path = storage_path();
+        $archivoPDF = $path.'/'."CITA".'.pdf';
+        $pdf->save($archivoPDF);
+        return response()->download($archivoPDF, 'CITA.pdf')->deleteFileAfterSend();
+
+        return $pdf->download('CITA.pdf');
     }
 
 }

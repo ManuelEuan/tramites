@@ -66,28 +66,60 @@ class PerfilController extends Controller
             $idDoc = '';
             $btnRemplazar = '';
             $vencido = '';
+
+            
             foreach ($docsUpdates as $key => $j) {
                 if ($j->ID_CDOCUMENTOS == $i->id) {
                     $tiene = true;
                     $peso = (intval($j->PESO) / 1024).' KB';
                     $estatus = $j->estatus;
                     $idDoc = $j->id;
+                    
+                    ///ESTATUS ultimo dosc actualizado
+                    $estatusDOCSa='';$id_docs_ACT='';$idusrBase='';
+                    $docs_u = Cls_Usuario::getTipoDocsACT($j->ID_USUARIO, $i->NOMBRE);
+                    foreach ($docs_u as $key => $H) {
+                        $estatusDOCSa = $H->USDO_NESTATUS;
+                        $idusrBase = $H->USDO_NIDUSUARIOBASE;
+                    }
+                    if($estatusDOCSa!=''){$estatus=$estatusDOCSa;}
+                    //////////////////////////////////////////////////////
+                    $id_config = '';
+                    $docs_con = Cls_Usuario::getVigDocsBASE($j->id);
+                    foreach ($docs_con as $kys => $ks) {
+                        $id_config = $ks->VIG;
+                    }
+                    //////////////////////////////////////////////////////
+                    $vg_FIN = '<span style="color:#FF0000">'.$id_config.'</span>';
 
                     if($j->isActual == 1){
                         if($j->VIGENCIA_FIN != ''){
                             if($j->VIGENCIA_FIN < $hoy){
-                                $btnRemplazar = '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>';
-                                $vencido = '<span>Vencido</span>';
+                                $btnRemplazar = '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
+                                <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'"
+                                 class="btn btn-success"><i class="fa fa-plus"></i></button>';
+                                $vencido = '<span>Vencido</span><br>'.$vg_FIN;
                             }else{
                                 $vencido = $j->VIGENCIA_FIN;
                             }
                         }else{
                             $vencido = 'N/A';
                         }
-                        if (intval($estatus) == 1){
-                            $icono = '<span title="Pendiente revision" class="fa fa-warning" style="color:#eddb04"></span>';
-                        }
                     }
+                    $det_btn_color = 'btn-danger';
+                    $det_btn_click = 'onclick="deleteDocUser('.$idDoc.')"';
+                    if (intval($estatus) == 0){
+                        $icono = 'Pendiente revision';
+                    };
+                    if (intval($estatus) == 1){
+                        $icono = 'Rechazado <span title="Rechazado" class="fa fa-warning" style="color:#eddb04"></span>';
+                    };
+                    if (intval($estatus) == 2){
+                        $icono = 'Aceptado';
+                        $det_btn_color = 'btn-secondary';
+                        $det_btn_click = 'style="opacity:0"';
+                    };
+                    //$icono = $icono.'-->'.$iiii;
                     
                 }
             }
@@ -96,7 +128,11 @@ class PerfilController extends Controller
                 '1' => $peso,
                 '2' => $icono,
                 '3' => $vencido,
-                '4' => ($tiene) ? $btnRemplazar.' <button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button> <button onclick="deleteDocUser('.$idDoc.')" title="Eliminar documento" class="btn btn-danger"><i class="fa fa-times"></i></button></td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>',
+                '4' => ($tiene) ? $btnRemplazar.' 
+                <button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button> 
+                <button '.$det_btn_click.' title="Eliminar documento" class="btn '.$det_btn_color.'"><i class="fa fa-times"></i></button>
+                </td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
+                <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>'
             );
         }
         $results = array(

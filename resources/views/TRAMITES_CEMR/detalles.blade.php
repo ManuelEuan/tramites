@@ -7,7 +7,7 @@
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12" style="text-align: left;">
-                    <h2 class="titulo">{{$tramite->USTR_CNOMBRE_TRAMITE}}</h2>
+                    <h2 class="titulo">{{$tramite->USTR_CNOMBRE_TRAMITE}}</h2><br><br>
                     <h2 class="subtitulo">{{$tramite->USTR_CCENTRO}}</h2>
                 </div>
             </div>
@@ -35,7 +35,8 @@
                                             <label class='respuesta_pequena'>{{$tramite->USTR_CSEGUNDO_APELLIDO}}</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <button id="btnRevision" disabled class="btn btn-primary btnLetras" onclick="seguimiento()" type="button">Iniciar revisión</button>
+                                            <button id="btnRevision" disabled class="btn btn-primary btnLetras" 
+                                            onclick="seguimiento()" type="button">Iniciar revisión</button>
                                         </div>
                                     </div>
                                     <div class="row columna">
@@ -144,8 +145,8 @@
                         var itemCollapse = '<div class="card">' +
                             '<div class="card-header" id="heading_' + value.FORM_NID + '">' +
                             '<h5 class="mb-0">' +
-                            '<button class="btn btn-link" data-toggle="collapse" data-target="#collapse_' + value.FORM_NID + '" aria-controls="collapse_' + value.FORM_NID + '">' +
-                            '' + value.FORM_CNOMBRE + '' +
+                            '<button class="btn btn-link" data-toggle="collapse" data-target="#collapse_' + value.FORM_NID + 
+                            '" aria-controls="collapse_' + value.FORM_NID + '">' + '' + value.FORM_CNOMBRE + '' +
                             '</button>' +
                             '</h5>' +
                             '</div>';

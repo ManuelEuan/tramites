@@ -40,6 +40,22 @@ class Cls_Usuario extends Model
         $docsUser = DB::select("SELECT * FROM `tram_mst_configdocumentos` WHERE TIPO_PERSONA = 'AMBAS' OR TIPO_PERSONA = '".$tipoUser."'");
         return $docsUser;
     }
+
+    static function getTipoDocsACT($idUSER, $nombre)
+    {
+        $docsUser = DB::select("SELECT * FROM `tram_mdv_usuariordocumento` 
+        WHERE USDO_NIDUSUARIOBASE = '".$idUSER."' AND USDO_CDOCNOMBRE ='".$nombre."' ");
+        
+        return $docsUser;
+    }
+    static function getVigDocsBASE($id)
+    {
+        $docsUser = DB::select("SELECT VIGENCIA_FIN AS VIG FROM `tram_mst_documentosbase` 
+        WHERE id ='".$id."' ORDER BY id DESC LIMIT 0,1");
+        
+        return $docsUser;
+    }
+
     static function getDocsUser($id){
         $docsUser = DB::select("SELECT * FROM `tram_mst_documentosbase` WHERE ID_USUARIO = $id AND isDelete != 1");
         return $docsUser;
