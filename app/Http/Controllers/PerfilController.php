@@ -75,13 +75,22 @@ class PerfilController extends Controller
                     $estatus = $j->estatus;
                     $idDoc = $j->id;
                     
-                    ///ultimos doscs actualizados
+                    ///ESTATUS ultimo dosc actualizado
+                    $estatusDOCSa='';$id_docs_ACT='';$idusrBase='';
                     $docs_u = Cls_Usuario::getTipoDocsACT($j->ID_USUARIO, $i->NOMBRE);
                     foreach ($docs_u as $key => $H) {
-                        $iiii = $H->USDO_NESTATUS;
+                        $estatusDOCSa = $H->USDO_NESTATUS;
+                        $idusrBase = $H->USDO_NIDUSUARIOBASE;
                     }
-                    if($iiii!=''){$estatus=$iiii;}
+                    if($estatusDOCSa!=''){$estatus=$estatusDOCSa;}
                     //////////////////////////////////////////////////////
+                    $id_config = '';
+                    $docs_con = Cls_Usuario::getVigDocsBASE($j->id);
+                    foreach ($docs_con as $kys => $ks) {
+                        $id_config = $ks->VIG;
+                    }
+                    //////////////////////////////////////////////////////
+                    $vg_FIN = '<span style="color:#FF0000">'.$id_config.'</span>';
 
                     if($j->isActual == 1){
                         if($j->VIGENCIA_FIN != ''){
@@ -89,7 +98,7 @@ class PerfilController extends Controller
                                 $btnRemplazar = '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
                                 <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'"
                                  class="btn btn-success"><i class="fa fa-plus"></i></button>';
-                                $vencido = '<span>Vencido</span>';
+                                $vencido = '<span>Vencido</span><br>'.$vg_FIN;
                             }else{
                                 $vencido = $j->VIGENCIA_FIN;
                             }

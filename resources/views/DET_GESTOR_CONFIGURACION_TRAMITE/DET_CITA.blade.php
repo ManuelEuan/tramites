@@ -18,9 +18,9 @@
 </div>
 <div class="parrafo">
     <br>
-    <p style="color: #000000 !important; font-size:16px;"><strong style="font-weight:bold;">ID de trámite:</strong> {id_accede_cita}</p>
+    {{-- <p style="color: #000000 !important; font-size:16px;"><strong style="font-weight:bold;">ID de trámite:</strong> {id_accede_cita}</p> --}}
     <p style="color: #000000 !important; font-size:16px;"><strong style="font-weight:bold;">Nombre del trámite:</strong> {nombre_tramite_cita} </p>
-    <p style="color: #000000 !important; font-size:16px;"><strong style="font-weight:bold;">Estatus de sincronización al Portal de Citas:</strong> <label style="color: orange;" id="lblSyncCita">...Cargando...</label></p>
+    {{-- <p style="color: #000000 !important; font-size:16px;"><strong style="font-weight:bold;">Estatus de sincronización al Portal de Citas:</strong> <label style="color: orange;" id="lblSyncCita">...Cargando...</label></p> --}}
 </div>
 <br>
 
@@ -393,8 +393,8 @@
         let array = hora.split(':');
         var ampm = array[0] >= 12 ? 'pm' : 'am';
         array[0] = array[0] % 12;
-        array[0] = array[0] ? array[0] : 12; // the hour '0' should be '12'
-        array[1] = array[1] < 10 ? '0'+ array[1] : array[1];
+        array[0] = array[0] < 10 ? '0' + array[0] : array[0];
+        array[0] = array[0] == '00' ? '12' : array[0];
 
         return array[0] + ':' + array[1] + ' ' + ampm;
     }

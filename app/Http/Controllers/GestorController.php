@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Cls_Gestor;
 use App\Cls_Resolutivo;
-use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Cls_Tramite_Servicio;
+use App\Services\CitasService;
 use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
 use Illuminate\Support\Collection;
@@ -31,12 +31,18 @@ class GestorController extends Controller
     private $tramiteService;
 
     /**
+     * @var CitasService
+     */
+    private $citasService;
+
+    /**
      * Construct Gestor
      */
     public function __construct()
     {
         /* $this->middleware('auth'); */
-        $this->tramiteService = new TramiteService();
+        $this->tramiteService   = new TramiteService();
+        $this->citasService     = new CitasService();
     }
 
     /**
@@ -343,7 +349,7 @@ class GestorController extends Controller
     {
         $gestor = new Cls_Gestor();
         $result = $gestor->TRAM_CONSULTAR_CONFIGURACION_TRAMITE($TRAM_NIDTRAMITE_CONFIG);
-        $result['citas'] = $this->tramiteService->getCitas($TRAM_NIDTRAMITE_CONFIG);
+        $result['citas'] = $this->citasService->getCitas($TRAM_NIDTRAMITE_CONFIG);
         return response()->json($result);
     }
 
@@ -500,7 +506,7 @@ class GestorController extends Controller
                     //Valido si tiene la seccion cita y si cuenta con su detalle
                     if ($seccion['CONF_NSECCION'] === "Citas en línea") {
                         $citas = isset($seccion['CONF_ARRAY_DETALLE_CITA']) ? $seccion['CONF_ARRAY_DETALLE_CITA'] : [];
-                        $this->tramiteService->createCitas($TramiteID, $citas);
+                        $this->citasService->create($TramiteID, $citas);
                     }
                 }
 
