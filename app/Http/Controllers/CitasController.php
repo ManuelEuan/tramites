@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Cls_Citas;
 use Illuminate\Http\Request;
 use App\Services\CitasService;
 use App\Services\TramiteService;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\GeneralValidator;
 use App\Models\Cls_Citas_Calendario;
 
 class CitasController extends Controller
@@ -22,6 +24,7 @@ class CitasController extends Controller
         /* $this->middleware('auth'); */
         $this->tramiteService   = new TramiteService();
         $this->citasService     = new CitasService();
+        $this->validaciones     = new GeneralValidator();
     }
 
 
@@ -132,7 +135,7 @@ class CitasController extends Controller
         return view('CITAS.agenda', compact('data'));
     }
 
-        /**
+    /**
      * Retorna las citas agendadas
      * @param Request $request
      * @return Response
@@ -147,8 +150,11 @@ class CitasController extends Controller
 
         if(!is_null($request->usuario_id))
             $query->where("c.CITA_IDUSUARIO", $request->usuario_id);
-        if(!is_null($request->tramite_id))
-            $query->where("c.CITA_IDTRAMITE", $request->tramite_id);
+        if(!is_null($request->tramite_id)) {
+            $objTramite = $this->tramiteService->getTramitesSiegy($request->accede_id);
+            if(is_null(!$objTramite))
+                $query->where("c.CITA_IDTRAMITE", $objTramite->TRAM_NIDTRAMITE);
+        }
         if(!is_null($request->modulo_id))
             $query->where("c.CITA_IDMODULO", $request->modulo_id);
         if(!is_null($request->fecha_inicio))
@@ -169,4 +175,49 @@ class CitasController extends Controller
         return response()->json(["data" => $query->get()], 200);
     }
 
+    /**
+     * Actualiza la cita agendada
+     * @param Request $request
+     * @return Response
+     */
+    public function update(Request $request){
+        $statusCode = 200;
+
+        try {
+            $validacion = $this->validaciones->citas($request, 'update');
+            if($validacion !== true)
+                return response()->json(['error' => $validacion->original], 403);
+
+            $result = $this->citasService->update((object)$request);
+        } catch (Exception $ex) {
+            $statusCode = 403;
+            $result     = ['error' => $ex->getMessage()];
+        }
+
+        return response()->json($result, $statusCode);
+    }
+
+    /**
+     * Retorna la disponibilidad para la cita de un tramte
+     * @param Request $request
+     * @return Response
+     */
+    public function disponibilidad(Request $request) {
+        $statusCode = 200;
+
+        try {
+            $validacion = $this->validaciones->disponibilidad($request);
+            if($validacion !== true)
+                return response()->json(['error' => $validacion->original], 403);
+
+            $objTramite = $this->tramiteService->getTramitesSiegy($request->accede_id);
+            $resultado  = $this->citasService->disponibilidad($objTramite->TRAM_NIDTRAMITE, $request->modulo_id, $request->fecha);
+        } catch (Exception $ex) {
+            $statusCode = 403;
+            $resultado  = ['error' => $ex->getMessage()];
+        }
+
+        return response()->json($resultado, $statusCode);
+        
+    }
 }
