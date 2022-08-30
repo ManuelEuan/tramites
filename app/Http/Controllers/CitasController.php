@@ -15,6 +15,18 @@ use Barryvdh\DomPDF\Facade as PDF;
 class CitasController extends Controller
 {
     protected $host = "https://vucapacita.chihuahua.gob.mx/api/";
+    
+    /**
+     * Construct Gestor
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->tramiteService   = new TramiteService();
+        $this->citasService     = new CitasService();
+        $this->validaciones     = new GeneralValidator();
+    }
+
      //Obtener formularios activos
     public function consultar_citas($idusuario, $idtramiteconf)
     {
