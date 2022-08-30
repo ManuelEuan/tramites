@@ -87,29 +87,29 @@
     </div>
     <!-- Modal -->
     <div class="modal fade" id="citaInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">¡Tu cita hasido agendada!</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body text-center center">
-            <p id="citaFolio"></p>
-            <p id="citaFecha"></p>
-            <p id="citaHora"></p>
-            <p id="citaMunicipio"></p>
-            <p id="citaModulo"></p>
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">¡Tu cita hasido agendada!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center center">
+                <p id="citaFolio"></p>
+                <p id="citaFecha"></p>
+                <p id="citaHora"></p>
+                <p id="citaMunicipio"></p>
+                <p id="citaModulo"></p>
 
-            <button id="btnPDF" class="btn btn-primary" style="margin: 15px;">Descargar PDF</button>
+                <button id="btnPDF" class="btn btn-primary" style="margin: 15px;">Descargar PDF</button>
 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-        </div>
-    </div>
     </div>
 @endsection
 
