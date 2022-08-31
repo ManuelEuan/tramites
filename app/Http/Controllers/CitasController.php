@@ -149,7 +149,7 @@ class CitasController extends Controller
 
         if(!is_null($request->usuario_id))
             $query->where("c.CITA_IDUSUARIO", $request->usuario_id);
-        if(!is_null($request->tramite_id)) {
+        if(!is_null($request->accede_id)) {
             $objTramite = $this->tramiteService->getTramitesSiegy($request->accede_id);
             if(is_null(!$objTramite))
                 $query->where("c.CITA_IDTRAMITE", $objTramite->TRAM_NIDTRAMITE);
