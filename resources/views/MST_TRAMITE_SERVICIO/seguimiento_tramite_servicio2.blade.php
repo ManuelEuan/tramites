@@ -1,7 +1,11 @@
 @extends('layout.Layout')
 
 @section('body')
-    <?php header('Access-Control-Allow-Origin: *'); ?>
+    <?php
+    header('Access-Control-Allow-Origin: *'); 
+    // dd($tramite);
+    // dd($tramite['modulo']);
+    ?>
     <!-- <%-- Contenido individual --%> -->
     <div class="container-fluid contentPage">
         <br>
@@ -705,11 +709,6 @@
                                             <h6 style="font-size: 1rem; font-weight:bold;">Citas Disponibles</h6>
                                             </p>
                                             <br /><br />
-                                            <div class="col-md-6" style="margin-top: 35px">
-                                                <label>Edificios:</label>
-                                                <select class="form-control" id="cita_edificios" onChange="loadCitas()">
-                                                </select>
-                                            </div>
                                             <div class="col-md-12" style="margin-top: 15px">
                                                 <!-- CALENDARIO -->
                                                 <div class="col-lg-12">            
@@ -723,7 +722,7 @@
                                                                 <hr class="text-primary">
                                                                 <div class="col-lg-12 text-center" style=" width: 100%">
                                                                     <p id="formRFecha">Fecha: </p>
-                                                                    <div id="horariosContainer" class="col-lg-12" style="height:300px; overflow-y: scroll;"></div>
+                                                                    <div id="horariosContainer" class="col-lg-12 text-center" style="height: 400px; overflow-y: scroll;"></div>
                                                                     <button id="btnAgendarCita" disabled class="btn btn-primary" style="margin: 15px;">Agendar</button>
                                                                 </div>
                                                             </div>
@@ -1522,36 +1521,11 @@
                 success: function(data) {
 				    console.log("resp");
 				    console.log(data);
-                	location.reload();
+                	// location.reload();
                 },
                 error: function(data) {}
             });
 		}
-
-                //Cuando se selecciona un edificio, busca... las disponibilidades
-                // function loadCitas() {
-                //     var idusuario = "{{ $tramite['idsuario'] }}";
-                //     var idtramiteAccede = "{{ $tramite['idtramiteaccede'] }}";
-                //     var nombre = "{{ $tramite['nombreUsuario'] }}";
-                //     var apellidop = "{{ $tramite['apellidoPUsuario'] }}";
-                //     var apellidom = "{{ $tramite['apellidoMUsuario'] }}";
-                //     var correo = "{{ $tramite['correoUsuario'] }}";
-
-                //     //checar dropdown de edificios disponibles
-                //     var selectedValue = $("#cita_edificios").children("option:selected").val();
-                //     console.log("EDIFICIO: " + selectedValue);
-
-                //     if (selectedValue != 0) {
-
-                //         console.log("TRAMITE: " + idtramiteAccede);
-
-                //         $("#citasdisponibles").show();
-                //         $('#citasdisponibles').DataTable().clear().destroy();
-
-                //         citasDisponibles(idtramiteAccede, selectedValue, idusuario, nombre, apellidop, apellidom, correo,
-                //             '9999999999', id);
-                //     }
-                // }
 
                 $(document).ready(function() {
                     var idusuario = "{{ $tramite['idsuario'] }}";
@@ -1793,34 +1767,6 @@
                         required: "Es requerido",
                     });
 
-                    //Cargar mapa y ubicacion de oficina
-                    /*setTimeout(function() {
-                        var latitud = 28.640157192843148;
-                        var longitud = -106.07436882706008;
-                        var  map = new google.maps.Map(document.getElementById('mapaEdificios'), {
-                            center: {
-                                lat : latitud,
-                                lng : longitud
-                                //lat: 28.6389324,
-                                //lng: -106.075353
-                            },
-                            zoom: 15,
-                            mapTypeControlOptions: {
-                                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                                position: google.maps.ControlPosition.TOP_CENTER,
-                            },
-                            fullscreenControlOptions: {
-                                position: google.maps.ControlPosition.BOTTOM_RIGHT,
-                            },
-                        });
-
-                        var marker = new google.maps.Marker({
-                            position: new google.maps.LatLng(latitud, longitud),
-                            map: map,
-                            title: 'Ubicación'
-                        });
-                    }, 10000);*/
-
                     $('.secconceptos').each(function() {
                         var id = this.id;
                         var _arr = id.split("_");
@@ -1905,9 +1851,6 @@
 
                                 $("#PagosIframe").attr("src", string_);
                                 $("#linkPago").attr("href", string_);
-                                //$('#PagosIframe').append('<iframe style="height:700px;width:100%;" src="'+string_+'"></iframe>');
-
-                                //$('#PagosIframe').append('<iframe style="height:700px;width:100%;" src="https://ipagostest.chihuahua.gob.mx/PagosDiversos/?parametro='+data.encriptado+'" title="description"></iframe>');
                             },
                             error: function(data) {
                                 Swal.fire({
@@ -2150,7 +2093,6 @@
                     }
                 };
 
-
                 function TRAM_FN_VERIFICAR_LLENADO() {
 
                     var descripcionllenada = 0
@@ -2180,9 +2122,6 @@
                         $("#estatusFormulario" + id).html("");
                     }
                 };
-
-
-
 
                 function TRAM_AJX_GUARDAR() {
                     $("#loading-text").html("Guardando...");
@@ -2535,8 +2474,7 @@
 
             <script> //Construccion del calendario
                 document.addEventListener('DOMContentLoaded', function() {
-                    // cambiarTextoBtnMostartFiltro();   
-                    console.log("Creando calendario");
+                    // cambiarTextoBtnMostartFiltro();
                     var calendarEl = document.getElementById('calendario');
                     window.calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
@@ -2554,14 +2492,13 @@
                     }
                     });
                     window.calendar.render();
-                    console.log("Calendario creado");
                 });     
             </script>
 
             <script> //Carga de eventos en el calendario
                 function cargarEventos(payload) {
                     var tramite = "{{ $tramite['idtramiteaccede'] }}";
-                    var modulo = $("#cita_edificios").children("option:selected").val();
+                    var modulo = "{{ $tramite['modulo'] }}";
 
                     console.log("tramite: " + tramite);
                     console.log("modulo: " + modulo);
@@ -2627,8 +2564,8 @@
                         var color = (data[row].horario.porcentajeOcupacion < 40 // menos de 40 Verde
                             ? '#42E04C' 
                             : ( 40 <= data[row].horario.porcentajeOcupacion // 40 - 80 Amarillo
-                            && data[row].horario.porcentajeOcupacion < 80 ? '#FAE847' : '#F01919')); //Mayor a 80 Rojo
-                        color = (data[row].horario.length == 0 ? '#F01919' : color)
+                            && data[row].horario.porcentajeOcupacion < 80 ? '#FAE847' : '#F01919')); //Mayor a 80 Rojo  
+                        color = (data[row].horario.length == 0 ? '#0A0A0A' : color);
                         var colores = {
                             start: data[row].fecha,
                             end: data[row].fecha,
@@ -2695,8 +2632,9 @@
                 }
                 // Evento al click en la celda de la fecha
                 //Carga los horarios disponibles para cita en el formulario
-                function dateClickEvent(info) {
+                function dateClickEvent(info) {                    
                     $("#formRFecha").text("Fecha: ");
+                    $('#btnAgendarCita').attr('disabled', true);
                     window.dateOnDisplay = null;
                     $(".rowFecha").remove();
                     if (window.resultadoMes.length == 0) {
@@ -2714,12 +2652,17 @@
                         }
                     }
                     $(".rowFecha").remove();
+                    if (horarios == [] || horarios == undefined || horarios.length == 0) {
+                        mostrarAlerta("No hay horarios para la fecha seleccionada: " + info.dateStr);
+                        $("#formRFecha").text("Fecha: ");
+                        return;
+                    }
                     let ventanillas = horarios.ventanillas;
                     var container = document.getElementById("horariosContainer");
                     for(var row in horarios.disponibles){
                         if (horarios.disponibles[row].recervas < ventanillas) {
                             let element = '<div class="col-lg-12 row rowFecha"><div class="col-lg-9"><p style="margin-top: 6px; margin-bottom: 10px;">' +
-                            horarios.disponibles[row].horario + '</p></div><div class="col-lg-3"><label class="container"><input value="' +
+                            horarios.disponibles[row].horario + '</p></div><div class="col-lg-3"><label class="containerL"><input value="' +
                             row +'" type="radio" name="radio"><span class="checkmark"></span></label></div></div>';
                             container.insertAdjacentHTML('beforeend', element);
                         }
@@ -2740,15 +2683,18 @@
                             title: 'Oops...',
                             text: 'Necesita seleccionar un horario para agendar una cita'
                         });
+                        $('#modalLoad').modal('hide');
                         return;
                     }
 
                     let data    = { 
-                        "CITA_IDUSUARIO": 999,
+                        "CITA_IDUSUARIO": "{{ $tramite['idusuariotramite'] }}",
                         "CITA_FECHA": window.resultadoMes[window.dateOnDisplay].fecha,
                         "CITA_HORA": window.resultadoMes[window.dateOnDisplay].horario.disponibles[citaSeleccionada].horario,
-                        "CITA_IDTRAMITE": document.getElementById('formTramite').value,
-                        "CITA_IDMODULO":  document.getElementById('formEdificio').value
+                        "CITA_IDTRAMITE": "{{ $tramite['id'] }}",
+                        "CITA_IDMODULO":  "{{ $tramite['modulo'] }}",
+                        "CITA_FOLIO":  "{{ $tramite['folio'] }}"
+
                     };
                     $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
                     request = $.ajax({
@@ -2764,7 +2710,7 @@
                             $("#citaFecha").text("Fecha: " + response.cita.CITA_FECHA);
                             $("#citaHora").text("Hora: " + response.cita.CITA_HORA);
                             $("#citaMunicipio").text("Municipio: " + response.cita.CITA_MUNICIPIO);
-                            $("#citaModulo").text("Módulo: " + document.getElementById('formEdificio').value);
+                            $("#citaModulo").text("Módulo: " + "{{ $tramite['modulo'] }}");
                             setTimeout(() => {
                                 Swal.fire({
                                     icon: 'success',
