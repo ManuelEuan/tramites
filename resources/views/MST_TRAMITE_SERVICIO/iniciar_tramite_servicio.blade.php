@@ -389,15 +389,49 @@
                                 @if(count($tramite['configuracion']['documentos'])> 0)
                                     @foreach($tramite['configuracion']['documentos'] as $doc)
                                         <tr>
+                                            
+                                        <?php $otrotest = $TXT_STAT;
+                                            //$tramite['DOCS_BASE'][$NOMBRE_BASE]
+
+                                            $nmbres = $doc->TRAD_CNOMBRE; $TXT_STAT='';
+
+                                            //si no hay archivo cargado desde solicitudes checar en expediente
+                                            $otrotest = '';
+                                            if($tramite['repositorio']){}else{
+                                                if (array_key_exists($nmbres, $tramite['DOCS_BASE'])) {
+                                                    $repodoc = new stdClass();
+                                                    $repodoc->USDO_CDOCNOMBRE = $nmbres;
+                                                    $repodoc->USDO_CEXTENSION = $tramite['DOCS_BASE'][$nmbres][2];
+                                                    $repodoc->USDO_CRUTADOC = $tramite['DOCS_BASE'][$nmbres][0];
+                                                    $repodoc->USDO_NPESO = $tramite['DOCS_BASE'][$nmbres][1];
+                                                    $P_NESTATUS = $tramite['DOCS_BASE'][$nmbres][3];
+                                                    $tramite['repositorio'][] = $repodoc;
+
+                                                    //$otrotest = '<br><span style="color:red">*Si hay expediente</span><br>';
+                                                };
+                                            };
+                                                 
+                                                if (array_key_exists($nmbres, $tramite['USDO_NIDUSUARIORESP'])) {
+                                                    $P_NESTATUS = $tramite['USDO_NESTATUS'][$nmbres];
+                                                }else{
+                                                    $P_NESTATUS = 2;
+                                                };
+                                                 
+                                            //echo $P_NESTATUS;
+                                            if($P_NESTATUS==0){$TXT_STAT='Pendiente revisión';};
+                                            if($P_NESTATUS==1){$TXT_STAT='Rechazado';};
+                                            if($P_NESTATUS==2){$TXT_STAT='';};
+
+                                            
+                                            ?>
                                             <td>
                                             @foreach($tramite['repositorio'] as $rep)
-
-
                                                 @if($rep->USDO_CDOCNOMBRE == $doc->TRAD_CNOMBRE)
                                                     <div class="custom-control custom-checkbox">
                                                         <input class="form-check-input chckdfiles" type="checkbox" 
                                                         onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}','{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}','file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" 
-                                                        value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" title="Elegir archivo existente" checked>
+                                                        value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
+                                                        title="Elegir archivo existente" checked>
                                                         <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" 
                                                             target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  >
                                                             <i title='Descargar documento' class='fas fa-download'></i>
@@ -407,6 +441,8 @@
                                                 @endif
                                             @endforeach
                                             </td>
+
+
                                             <td>
                                                 <div id="icon_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
                                                     @switch($doc->TRAD_CEXTENSION)
@@ -426,17 +462,8 @@
                                                 </div>
                                             </td>
                                             <td>
-                                            <?php $nmbres = $doc->TRAD_CNOMBRE; 
-                                                 $P_NESTATUS = $tramite['USDO_NESTATUS'][$nmbres];
-                                                 $P_NIDUSUARIORESP = $tramite['USDO_NIDUSUARIORESP'][$nmbres];
-                                                 
-                                            //echo $P_NESTATUS;
-                                            if($P_NESTATUS==0){$TXT_STAT='Pendiente revisión';};
-                                            if($P_NESTATUS==1){$TXT_STAT='Rechazado';};
-                                            if($P_NESTATUS==2){$TXT_STAT='';};
-                                            ?>
                                             
-                                            
+                                            <?php echo $otrotest;?>
                                             {{$doc->TRAD_CNOMBRE}}
                                             
                                             

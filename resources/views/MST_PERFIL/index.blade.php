@@ -1539,7 +1539,7 @@
                                         <nav>
                                             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                                                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Expedientes</a>
-                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Histórico ducumentos tramite</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Histórico documentos tramite</a>
                                             </div>
                                         </nav>
                                         <div class="tab-content" id="nav-tabContent">
@@ -1572,8 +1572,8 @@
                                                     <thead>
                                                         <th>#</th>
                                                         <th>Nombre</th>
+                                                        <th>Estatus</th>
                                                         <th>Fecha vencimiento</th>
-                                                        <th>Fecha registro</th>
                                                     </thead>
                                                 </table>
                                             </div>
