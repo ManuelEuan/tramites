@@ -41,7 +41,11 @@ class Cls_Citas_Calendario extends Model{
 
         for($i=strtotime(date($inicio)); $i<=strtotime(date($fin)); $i+=86400){
             $rowHorario = array();
-            $rowOcupacion = DB::table('citas_tramites_calendario')->where('CITA_FECHA', date("Y-m-d", $i))->get();
+            $rowOcupacion = DB::table('citas_tramites_calendario')
+                ->where('CITA_FECHA', date("Y-m-d", $i))
+                ->where('CITA_IDTRAMITE', $idtramite)
+                ->where('CITA_IDMODULO', $idedificio)
+                ->get();
             $ocupacion = count($rowOcupacion);
             $dia = "";
             switch (date("N", $i)) {

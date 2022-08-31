@@ -221,15 +221,15 @@ class CitasController extends Controller
     }
     public function saveCita(Request $request) {
         $cita = new Cls_Citas_Calendario();
-        $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $folio = substr(str_shuffle($permitted_chars), 0, 10);
+        // $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        // $folio = substr(str_shuffle($permitted_chars), 0, 10);
 
         $cita->CITA_IDUSUARIO = $request->CITA_IDUSUARIO;
         $cita->CITA_FECHA = $request->CITA_FECHA;
         $cita->CITA_HORA = $request->CITA_HORA;
         $cita->CITA_IDTRAMITE = $request->CITA_IDTRAMITE;
         $cita->CITA_IDMODULO = $request->CITA_IDMODULO;
-        $cita->CITA_FOLIO = $folio;
+        $cita->CITA_FOLIO = $request->CITA_FOLIO;
         if (Cls_Citas_Calendario::validaNueva($cita)) {
             $cita->save();
             return response()->json([
@@ -248,27 +248,28 @@ class CitasController extends Controller
 
     public function descargaPDFCita(Request $request) {
 
-        $html = '
-                <p><span>Folio:</span> '. "asdaasdfasdf" .'.</p>
-                <p><span>Fecha:</span> '. "sdsfasdfs" .'.</p>
-                <p><span>Hora:</span> '. "dsvasfvavasd" .'.</p>
-                <p><span>Municipio:</span> Prueba.</p>
-                <p><span>Módulo:</span> Prueba.</p>
-            ';
         // $html = '
-        //         <p><span>Folio:</span> '. $cita->CITA_FOLIO .'.</p>
-        //         <p><span>Fecha:</span> '. $cita->CITA_FECHA .'.</p>
-        //         <p><span>Hora:</span> '. $cita->CITA_HORA .'.</p>
+        //         <p><span>Folio:</span> '. "asdaasdfasdf" .'.</p>
+        //         <p><span>Fecha:</span> '. "sdsfasdfs" .'.</p>
+        //         <p><span>Hora:</span> '. "dsvasfvavasd" .'.</p>
         //         <p><span>Municipio:</span> Prueba.</p>
         //         <p><span>Módulo:</span> Prueba.</p>
         //     ';
+        $html = '
+                <p><span>Folio:</span> '. $request->CITA_FOLIO .'.</p>
+                <p><span>Fecha:</span> '. $request->CITA_FECHA .'.</p>
+                <p><span>Hora:</span> '. $request->CITA_HORA .'.</p>
+                <p><span>Municipio:</span> Prueba.</p>
+                <p><span>Módulo:</span> Prueba.</p>
+            ';
         $pdf = PDF::loadHTML($html)->setPaper('a4', 'portrait');
-        $path = storage_path();
-        $archivoPDF = $path.'/'."CITA".'.pdf';
-        $pdf->save($archivoPDF);
-        return response()->download($archivoPDF, 'CITA.pdf')->deleteFileAfterSend();
+        return $pdf->download($request->CITA_FOLIO.'.pdf');
+        // $path = storage_path();
+        // $archivoPDF = $path.'/'."CITA".'.pdf';
+        // $pdf->save($archivoPDF);
+        // return response()->download($archivoPDF, 'CITA.pdf')->deleteFileAfterSend();
 
-        return $pdf->download('CITA.pdf');
+        // return $pdf->download('CITA.pdf');
     }
 
 }
