@@ -39,11 +39,26 @@
             </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <div id="calendario"></div>
-            </div>
-        </div>
+        <div class="col-lg-12">            
+            <div class="card col-lg-12">
+                <div class="card-body col-lg-12 row">
+                    <div class="col-lg-9">
+                        <div id="calendario"></div>
+                    </div>
+                    <div class="col-lg-3" style="background-color: #f0f0f0; padding-top: 20px;">
+                        <h5 class="text-primary text-center"><i class="fas fa-clock text-info"></i>&nbspHorarios disponibles</h5>
+                        <hr class="text-primary">
+                        <div class="col-lg-12 text-center" style=" width: 100%">
+                            <p id="formRFecha">Fecha: </p>
+                            <div id="horariosContainer" class="col-lg-12" style="height:300px; overflow-y: scroll;">
+                            
+                            </div>
+                            <button id="btnAgendarCita" disabled class="btn btn-primary" style="margin: 15px;">Agendar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>        
     </div>
     <div class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
         <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -60,13 +75,39 @@
             </div>
         </div>
     </div>
-    //Modal de carga
-    <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+    <!-- Modal de carga -->
+    <div class="modal fade bd-example-modal-lg" id="modalLoad" data-backdrop="static" data-keyboard="false" tabindex="-1">
         <div class="modal-dialog modal-sm" style="display: table; position: relative; margin: 0 auto; top: calc(50% - 24px);">
             <div class="modal-content" style="width: 48px; background-color: transparent; border: none;">
                 <div class="spinner-border text-primary" style="width: 10rem; height: 10rem;" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="citaInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">¡Tu cita hasido agendada!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center center">
+                <p id="citaFolio"></p>
+                <p id="citaFecha"></p>
+                <p id="citaHora"></p>
+                <p id="citaMunicipio"></p>
+                <p id="citaModulo"></p>
+
+                <button id="btnPDF" class="btn btn-primary" style="margin: 15px;">Descargar PDF</button>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
             </div>
         </div>
     </div>
@@ -101,8 +142,7 @@
           events: [],
           datesSet: cargarEventos,
           dateClick: function(info) {
-            // alert('Clicked on: ' + info.dateStr);
-            mostrarAlerta("Aún debe seleccionar los campos del filtro y agendar en la fecha: " + info.dateStr);
+            dateClickEvent(info);
           }
         });
         window.calendar.render();
@@ -117,7 +157,7 @@
             mostrarAlerta('Debe seleccionar los criterios para la búsqueda.');
             return;
         }
-        $('.modal').modal('show');
+        $('#modalLoad').modal('show');
         var url_api = "<?= $data['API_URL'] ?>";
         var URL_COMP = "";
         if (payload == null){
@@ -134,7 +174,7 @@
         });
         //On success
         request.done(function (response, textStatus, jqXHR){
-            $('.modal').modal('hide');             
+            $('#modalLoad').modal('hide');             
             pintarDisponibilidad(response);
             mostrarAlerta("Se cargaron los horarios disponibles");
             window.resultadoMes = response;
@@ -149,7 +189,7 @@
         });
         //On failure
         request.fail(function (jqXHR, textStatus, errorThrown){
-            $('.modal').modal('hide');
+            $('#modalLoad').modal('hide');
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -241,5 +281,135 @@
             url = "/" + array[3] + "/" + month;
             return url;
         }
+
+        function dateClickEvent(info) {
+            $("#formRFecha").text("Fecha: ");
+            window.dateOnDisplay = null;
+            $(".rowFecha").remove();
+            if (window.resultadoMes.length == 0) {
+                mostrarAlerta("Aún debe seleccionar los campos del filtro y agendar en la fecha: " + info.dateStr);
+                return;
+            }
+            var arrFecha = info.dateStr.split('-');
+            let fechaDFormat = arrFecha[2] + "/" + arrFecha[1] + "/" + arrFecha[0];
+            $("#formRFecha").text("Fecha: " + fechaDFormat);
+            var horarios = [];
+            for(var row in window.resultadoMes){
+                if (info.dateStr == window.resultadoMes[row]['fecha']) {
+                    horarios = window.resultadoMes[row]['horario'];
+                    window.dateOnDisplay = row;
+                }
+            }
+            $(".rowFecha").remove();
+            let ventanillas = horarios.ventanillas;
+            var container = document.getElementById("horariosContainer");
+            for(var row in horarios.disponibles){
+                if (horarios.disponibles[row].recervas < ventanillas) {
+                    let element = '<div class="col-lg-12 row rowFecha"><div class="col-lg-9"><p style="margin-top: 6px; margin-bottom: 10px;">' +
+                    horarios.disponibles[row].horario + '</p></div><div class="col-lg-3"><label class="container"><input value="' +
+                    row +'" type="radio" name="radio"><span class="checkmark"></span></label></div></div>';
+                    container.insertAdjacentHTML('beforeend', element);
+                }
+            }
+            $('#btnAgendarCita').removeAttr('disabled');
+        }
+    </script>
+
+    <script>
+        //Funciones para el formulario lateral
+        $('#btnAgendarCita').click(function () {
+            $('#modalLoad').modal('show');
+            var citaSeleccionada = $('input[name="radio"]:checked', '#horariosContainer').val();
+            if (window.dateOnDisplay == null || window.dateOnDisplay == undefined ||
+                window.dateOnDisplay == 0 || citaSeleccionada == null || citaSeleccionada == undefined) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Necesita seleccionar un horario para agendar una cita'
+                });
+                return;
+            }
+
+            let data    = { 
+                "CITA_IDUSUARIO": 999,
+                "CITA_FECHA": window.resultadoMes[window.dateOnDisplay].fecha,
+                "CITA_HORA": window.resultadoMes[window.dateOnDisplay].horario.disponibles[citaSeleccionada].horario,
+                "CITA_IDTRAMITE": document.getElementById('formTramite').value,
+                "CITA_IDMODULO":  document.getElementById('formEdificio').value
+            };
+            $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+            request = $.ajax({
+                url : '/api/citas',
+                type: "POST",
+                data: data,
+            });
+            //On success
+            request.done(function (response, textStatus, jqXHR){
+                $('#modalLoad').modal('hide');
+                if (response.codigo == 200) {
+                    $("#citaFolio").text("Folio: " + response.cita.CITA_FOLIO);
+                    $("#citaFecha").text("Fecha: " + response.cita.CITA_FECHA);
+                    $("#citaHora").text("Hora: " + response.cita.CITA_HORA);
+                    $("#citaMunicipio").text("Municipio: " + response.cita.CITA_MUNICIPIO);
+                    $("#citaModulo").text("Módulo: " + document.getElementById('formEdificio').value);
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Operación exitosa',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }, 400);
+                    window.cita = response.cita;
+                    $('#citaInfoModal').modal('show');
+                } else {
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: response.estatus,
+                            title: 'Alerta',
+                            text: response.mensaje,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }, 400);
+
+                }
+            });
+            //On failure
+            request.fail(function (jqXHR, textStatus, errorThrown){
+                $('#modalLoad').modal('hide');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
+                });
+            });
+        });
+
+        $('#btnPDF').click(function () {
+            $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+            request = $.ajax({
+                url : '/citas/descargar',
+                type: "POST",
+                data: window.cita,
+                responseType: 'blob'
+            });
+            //On success
+            request.done(function (response, textStatus, jqXHR){
+                var blob = new Blob([response]);
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "cita.pdf";
+                link.click();
+            });
+            //On failure
+            request.fail(function (jqXHR, textStatus, errorThrown){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
+                });
+            });
+        });
     </script>
 @endsection

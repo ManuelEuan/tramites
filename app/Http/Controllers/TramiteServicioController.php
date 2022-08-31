@@ -595,7 +595,7 @@ class TramiteServicioController extends Controller
 
         //dd($tramite);
 
-        return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio', compact('tramite'));
+        return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 
     public function ubicacion_ventanilla_sin_cita(Request $request)
