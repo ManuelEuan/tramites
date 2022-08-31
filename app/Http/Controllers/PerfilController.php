@@ -334,11 +334,15 @@ class PerfilController extends Controller
              $nombre= explode("/", $i->USDO_CRUTADOC);
              $ultimo = count($nombre) - 1;
              $numero = $key + 1;
+             $P_NESTATUS =  $i->USDO_NESTATUS;
+             if($P_NESTATUS==0){$TXT_STAT='Pendiente revisión';};
+             if($P_NESTATUS==1){$TXT_STAT='Rechazado';};
+             if($P_NESTATUS==2){$TXT_STAT='';};
             $data[] = array(
-                '0' => $numero,
-                '1' => '<a href="'.asset('').$i->USDO_CRUTADOC. '" target="_blank">'.$nombre[$ultimo].'</a>',
-                '2' => '',
-                '3' => $i->created_at
+                '0' => $numero, 
+                '1' => '<a href="'.asset('').$i->USDO_CRUTADOC. '" target="_blank">'.$i->USDO_CDOCNOMBRE.'</a>',
+                '2' => $TXT_STAT,  
+                '3' => '' 
             );
         }
         $results = array(
