@@ -195,11 +195,11 @@
                 </div>
         
                 <div id="collapse${oficina.iId}" class="collapse ${show}" aria-labelledby="heading${oficina.iId}" data-parent="#accordionExample">
-                    <div class="container formHorario">
+                    <div class="formHorario">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row ">
-                                    <div class="form-group  col-md-3">
+                                    <div class="form-group  col-md-8">
                                         <label for="diaSemana">Días</label>
                                         <select class="custom-select" id="diaSemana${oficina.iId}">
                                             <option value="0">Seleccionar</option>
@@ -212,29 +212,42 @@
                                             <option value="Domingo">Domingo</option>
                                         </select>
                                     </div>
-        
-                                    <div class="form-group col-md-2">
-                                        <label for="horaInicial">Hora inicial</label>
-                                        <input type="time" class="form-control" id="horaInicial${oficina.iId}" placeholder="Hora inicial" required>
-                                    </div>
-        
-                                    <div class="form-group col-md-2">
-                                        <label for="horaFinal">Hora final</label>
-                                        <input type="time" class="form-control" id="horaFinal${oficina.iId}" placeholder="Hora final" required>
-                                    </div>
-                                    <div class="form-group col-md-2">
-                                        <label for="capacidad">Capacidad</label>
-                                        <input type="number" min="0" class="form-control" id="capacidad${oficina.iId}" placeholder="Personas" required>
-                                    </div>
-                                    <div class="col-md-2 btnAddDia">
+                                    <div class="col-md-4 btnAddDia">
                                         <button type="button" class="btn btn-info btn-circle btn-xl" onclick="agregarDia(${oficina.iId})" title="Agregar">
                                             <i class="fa fa-add"></i>
                                         </button>
                                     </div>
+        
+                                    <div class="form-group col-md-6">
+                                        <label for="horaInicial">Hora inicial</label>
+                                        <input type="time" class="form-control" id="horaInicial${oficina.iId}" placeholder="Hora inicial" required>
+                                    </div>
+        
+                                    <div class="form-group col-md-6">
+                                        <label for="horaFinal">Hora final</label>
+                                        <input type="time" class="form-control" id="horaFinal${oficina.iId}" placeholder="Hora final" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="capacidad">Capacidad</label>
+                                        <input type="number" min="0" class="form-control" id="capacidad${oficina.iId}" placeholder="Personas" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                            <label for="tiempoAtencion">Tiempo de atención</label>
+                                            <input type="number" min="1" class="form-control" placeholder="Minutos"  id="tiempo${oficina.iId}" required>
+                                        </div>
+
+                                   
                                 </div>
                                 
                                 <div class="row">
-                                    <div class="col-sm-7">
+                                    <div class="col-sm-12" >
+                                        
+                                        <div class="f">
+                                            <label for="ventanillas">Ventanillas</label>
+                                            <input type="number" min="10" class="form-control" placeholder="Ventanillas" id="ventanillas${oficina.iId}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
                                         <div class="card cardDias">
                                             <div class="card-header"><label class="tituloHorario"> Horario de atención </label></div>
                                             <div class="card-body" id="detalle${oficina.iId}"> 
@@ -243,17 +256,7 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="col-sm-5" >
-                                        <div class="form-group col-md-6" style="margin-top: 10%;">
-                                            <label for="tiempoAtencion">Tiempo de atención</label>
-                                            <input type="number" min="1" class="form-control" placeholder="Minutos"  id="tiempo${oficina.iId}" required>
-                                        </div>
-
-                                        <div class="form-group col-md-6">
-                                            <label for="ventanillas">Ventanillas</label>
-                                            <input type="number" min="10" class="form-control" placeholder="Ventanillas" id="ventanillas${oficina.iId}" required>
-                                        </div>
-                                    </div>
+                                   
                                 </div>
                             </div>
                         </div>
