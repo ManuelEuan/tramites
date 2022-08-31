@@ -3,6 +3,7 @@
 @section('body')
     <?php
     header('Access-Control-Allow-Origin: *'); 
+    // dd($tramite);
     // dd($tramite['modulo']);
     ?>
     <!-- <%-- Contenido individual --%> -->
@@ -721,7 +722,7 @@
                                                                 <hr class="text-primary">
                                                                 <div class="col-lg-12 text-center" style=" width: 100%">
                                                                     <p id="formRFecha">Fecha: </p>
-                                                                    <div id="horariosContainer" class="col-lg-12" style="height:300px; overflow-y: scroll;"></div>
+                                                                    <div id="horariosContainer" class="col-lg-12 text-center" style="height: 400px; overflow-y: scroll;"></div>
                                                                     <button id="btnAgendarCita" disabled class="btn btn-primary" style="margin: 15px;">Agendar</button>
                                                                 </div>
                                                             </div>
@@ -2563,8 +2564,8 @@
                         var color = (data[row].horario.porcentajeOcupacion < 40 // menos de 40 Verde
                             ? '#42E04C' 
                             : ( 40 <= data[row].horario.porcentajeOcupacion // 40 - 80 Amarillo
-                            && data[row].horario.porcentajeOcupacion < 80 ? '#FAE847' : '#F01919')); //Mayor a 80 Rojo
-                        color = (data[row].horario.length == 0 ? '#F01919' : color)
+                            && data[row].horario.porcentajeOcupacion < 80 ? '#FAE847' : '#F01919')); //Mayor a 80 Rojo  
+                        color = (data[row].horario.length == 0 ? '#0A0A0A' : color);
                         var colores = {
                             start: data[row].fecha,
                             end: data[row].fecha,
@@ -2631,8 +2632,9 @@
                 }
                 // Evento al click en la celda de la fecha
                 //Carga los horarios disponibles para cita en el formulario
-                function dateClickEvent(info) {
+                function dateClickEvent(info) {                    
                     $("#formRFecha").text("Fecha: ");
+                    $('#btnAgendarCita').attr('disabled', true);
                     window.dateOnDisplay = null;
                     $(".rowFecha").remove();
                     if (window.resultadoMes.length == 0) {
@@ -2650,12 +2652,17 @@
                         }
                     }
                     $(".rowFecha").remove();
+                    if (horarios == [] || horarios == undefined || horarios.length == 0) {
+                        mostrarAlerta("No hay horarios para la fecha seleccionada: " + info.dateStr);
+                        $("#formRFecha").text("Fecha: ");
+                        return;
+                    }
                     let ventanillas = horarios.ventanillas;
                     var container = document.getElementById("horariosContainer");
                     for(var row in horarios.disponibles){
                         if (horarios.disponibles[row].recervas < ventanillas) {
                             let element = '<div class="col-lg-12 row rowFecha"><div class="col-lg-9"><p style="margin-top: 6px; margin-bottom: 10px;">' +
-                            horarios.disponibles[row].horario + '</p></div><div class="col-lg-3"><label class="container"><input value="' +
+                            horarios.disponibles[row].horario + '</p></div><div class="col-lg-3"><label class="containerL"><input value="' +
                             row +'" type="radio" name="radio"><span class="checkmark"></span></label></div></div>';
                             container.insertAdjacentHTML('beforeend', element);
                         }
@@ -2676,15 +2683,18 @@
                             title: 'Oops...',
                             text: 'Necesita seleccionar un horario para agendar una cita'
                         });
+                        $('#modalLoad').modal('hide');
                         return;
                     }
 
                     let data    = { 
-                        "CITA_IDUSUARIO": 999,
+                        "CITA_IDUSUARIO": "{{ $tramite['idusuariotramite'] }}",
                         "CITA_FECHA": window.resultadoMes[window.dateOnDisplay].fecha,
                         "CITA_HORA": window.resultadoMes[window.dateOnDisplay].horario.disponibles[citaSeleccionada].horario,
-                        "CITA_IDTRAMITE": document.getElementById('formTramite').value,
-                        "CITA_IDMODULO":  document.getElementById('formEdificio').value
+                        "CITA_IDTRAMITE": "{{ $tramite['id'] }}",
+                        "CITA_IDMODULO":  "{{ $tramite['modulo'] }}",
+                        "CITA_FOLIO":  "{{ $tramite['folio'] }}"
+
                     };
                     $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
                     request = $.ajax({
@@ -2700,7 +2710,7 @@
                             $("#citaFecha").text("Fecha: " + response.cita.CITA_FECHA);
                             $("#citaHora").text("Hora: " + response.cita.CITA_HORA);
                             $("#citaMunicipio").text("Municipio: " + response.cita.CITA_MUNICIPIO);
-                            $("#citaModulo").text("Módulo: " + document.getElementById('formEdificio').value);
+                            $("#citaModulo").text("Módulo: " + "{{ $tramite['modulo'] }}");
                             setTimeout(() => {
                                 Swal.fire({
                                     icon: 'success',
