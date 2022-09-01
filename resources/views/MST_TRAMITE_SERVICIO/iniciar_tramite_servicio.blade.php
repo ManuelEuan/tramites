@@ -391,23 +391,26 @@
                                         <tr>
                                             
                                         <?php $otrotest = $TXT_STAT;
-                                            //$tramite['DOCS_BASE'][$NOMBRE_BASE]
+                                            $nmbres = $doc->TRAD_CNOMBRE; $TXT_STAT='';$DOCsolicitudes='';
 
-                                            $nmbres = $doc->TRAD_CNOMBRE; $TXT_STAT='';
+                                            foreach($tramite['repositorio'] as $rep){
+                                                if($rep->USDO_CDOCNOMBRE == $doc->TRAD_CNOMBRE){$DOCsolicitudes = 'si';};
+                                            }
 
                                             //si no hay archivo cargado desde solicitudes checar en expediente
                                             $otrotest = '';
-                                            if($tramite['repositorio']){}else{
+                                            if($DOCsolicitudes==''){
                                                 if (array_key_exists($nmbres, $tramite['DOCS_BASE'])) {
                                                     $repodoc = new stdClass();
                                                     $repodoc->USDO_CDOCNOMBRE = $nmbres;
-                                                    $repodoc->USDO_CEXTENSION = $tramite['DOCS_BASE'][$nmbres][2];
-                                                    $repodoc->USDO_CRUTADOC = $tramite['DOCS_BASE'][$nmbres][0];
+                                                    $repodoc->USDO_CEXTENSION = $tramite['DOCS_BASE'][$nmbres][0];
+                                                    $repodoc->USDO_CRUTADOC = $tramite['DOCS_BASE'][$nmbres][2];
                                                     $repodoc->USDO_NPESO = $tramite['DOCS_BASE'][$nmbres][1];
                                                     $P_NESTATUS = $tramite['DOCS_BASE'][$nmbres][3];
                                                     $tramite['repositorio'][] = $repodoc;
 
                                                     //$otrotest = '<br><span style="color:red">*Si hay expediente</span><br>';
+                                                    //print_r($tramite['DOCS_BASE']);
                                                 };
                                             };
                                                  
@@ -483,18 +486,22 @@
                                             @endif
                                             </td>
                                             <td style="width: 70px;">
-                                                <input type="hidden" name="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="0_0_0_{{$doc->TRAD_CNOMBRE}}">
+                                                <input type="hidden" name="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
+                                                id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="0_0_0_{{$doc->TRAD_CNOMBRE}}">
+                                                
                                                 <input class="file-select documentos" name="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file"  data-doctype="{{$doc->TRAD_CNOMBRE}}" {{$doc->TRAD_NOBLIGATORIO == 1 ? 'required' : '' }}>
                                             </td>
                                             <td>
                                             @if($doc->TRAD_NMULTIPLE == 1)
-                                                <h5 class="font-weight-bold"><span class="circle-multi"  onclick="TRAM_FN_AGREGAR_ROW('{{$doc->TRAD_CNOMBRE}}')" >+</span></h5>
+                                                <h5 class="font-weight-bold"><span class="circle-multi"  
+                                                onclick="TRAM_FN_AGREGAR_ROW('{{$doc->TRAD_CNOMBRE}}')" >+</span></h5>
                                             @endif
                                             </td>
 
                                             <td>
                                                 <h5 class="font-weight-bold">
-                                                    <span class="circle-error-multi"  onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}')" >x</span>
+                                                    <span class="circle-error-multi"  
+                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}')" >x</span>
                                                 </h5>
                                             </td>
                                         </tr>

@@ -238,11 +238,14 @@
         function pintarDisponibilidad(data, payload) {
             var events = [];
             for(var row in data) {
-                var color = (data[row].horario.porcentajeOcupacion < 40 // menos de 40 Verde
-                    ? '#42E04C'
-                    : ( 40 <= data[row].horario.porcentajeOcupacion // 40 - 80 Amarillo
-                    && data[row].horario.porcentajeOcupacion < 80 ? '#FAE847' : '#F01919')); //Mayor a 80 Rojo
-                color = (data[row].horario.length == 0 ? '#F01919' : color)
+                var color = '#fff';
+                
+                if (data[row].horario.porcentajeOcupacion !== undefined){
+                    console.log(data[row].fecha, data[row].horario.porcentajeOcupacion);
+                    color = (data[row].horario.porcentajeOcupacion >= 100 ? '#F01919' 
+                        : (data[row].horario.porcentajeOcupacion < 100  && data[row].horario.porcentajeOcupacion > 40 ? '#F6A70A' : '#42E04C'));
+                }
+
                 var colores = {
                     start: data[row].fecha,
                     end: data[row].fecha,
