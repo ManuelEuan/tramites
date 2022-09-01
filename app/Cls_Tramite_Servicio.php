@@ -62,7 +62,8 @@ class Cls_Tramite_Servicio extends Model
 
     public function TRAM_CONSULTAR_DETALLE_TRAMITE($TRAM_NIDTRAMITE_CONFIG){
         $response = DB::selectOne(
-            'SELECT a.*, b.USTR_NESTATUS as TRAM_NESTATUS_PROCESO, b.USTR_CFOLIO as TRAM_CFOLIO_SEGUIMIENTO, b.USTR_NENCUESTA_CONTESTADA FROM tram_mst_tramite as a
+            'SELECT a.*, b.USTR_NESTATUS as TRAM_NESTATUS_PROCESO, b.USTR_CFOLIO as TRAM_CFOLIO_SEGUIMIENTO, b.USTR_NENCUESTA_CONTESTADA 
+            FROM tram_mst_tramite as a
             LEFT JOIN tram_mdv_usuariotramite as b on a.TRAM_NIDTRAMITE = b.USTR_NIDTRAMITE
             WHERE a.TRAM_NIDTRAMITE = ?',
             array($TRAM_NIDTRAMITE_CONFIG)

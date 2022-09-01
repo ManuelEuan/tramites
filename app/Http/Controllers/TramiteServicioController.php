@@ -951,6 +951,7 @@ class TramiteServicioController extends Controller
             $doc->USDO_NIDTRAMITEDOCUMENTO = $arr_key[2];
             $doc->USDO_CDOCNOMBRE = $arr_value[3];
             $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
+            //$doc->idDocExpediente = $request->idDocExpediente;
             $doc->save(); //
             //}
         }
