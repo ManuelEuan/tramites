@@ -65,33 +65,33 @@ function existeCitaFuncionario(idusuario, tramitelocal){
     });
 }
 
-function existeCita(idusuario, tramitelocal, tramiteaccede){
-    $.ajax({
-        url: URL_BASE + 'consultar_citas/'+idusuario+'/'+tramitelocal,
-        type: 'get',
-        dataType: 'json',
-        //contentType: 'application/json',
-        success: function (data) {
-            console.log(data);
-            if(data.data.length > 0){
-                $("#sincitareservada").hide();
-                $("#concitareservada").show();
+// function existeCita(idusuario, tramitelocal, tramiteaccede){
+//     $.ajax({
+//         url: URL_BASE + 'consultar_citas/'+idusuario+'/'+tramitelocal,
+//         type: 'get',
+//         dataType: 'json',
+//         //contentType: 'application/json',
+//         success: function (data) {
+//             console.log(data);
+//             if(data.data.length > 0){
+//                 $("#sincitareservada").hide();
+//                 $("#concitareservada").show();
                 
-                obtenerStatusCita(data.data[0].CITA_FOLIO);
-                obtenerCitaReservada(data.data[0].CITA_FOLIO, false);
-            }else{
-                $("#concitareservada").hide();
-                $("#sincitareservada").show();
-                obtenerModulos(tramiteaccede);
-                //obtenerEdificios(tramiteaccede);
-                //citasDisponibles(idtramite, idedificio, idusuario, nombre, apellidop, apellidom, correo, celular, tramitelocal);
-            }
-        },
-        error: function (xhr, error) {
-            console.log(xhr.responseText);
-        }
-    });
-}
+//                 obtenerStatusCita(data.data[0].CITA_FOLIO);
+//                 obtenerCitaReservada(data.data[0].CITA_FOLIO, false);
+//             }else{
+//                 $("#concitareservada").hide();
+//                 $("#sincitareservada").show();
+//                 obtenerModulos(tramiteaccede);
+//                 //obtenerEdificios(tramiteaccede);
+//                 //citasDisponibles(idtramite, idedificio, idusuario, nombre, apellidop, apellidom, correo, celular, tramitelocal);
+//             }
+//         },
+//         error: function (xhr, error) {
+//             console.log(xhr.responseText);
+//         }
+//     });
+// }
 
 function reservaCita(idusuario, nombre, apellidop, apellidom, correo, celular, tramitelocal, tramite, edificio, fecha, hora){
 

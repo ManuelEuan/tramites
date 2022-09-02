@@ -126,4 +126,4 @@ Route::post('/vw_accede_tramite_filtro', array('uses' => 'VistaAccedeController@
 Route::get('/citas/index', array('uses' => 'CitasController@getCitas'));
 Route::get('/citas/{idtramite}/{idedificio}/{anio}/{mes}', array('uses' => 'CitasController@getCitasFiltro'));
 Route::post('citas', array('uses' => 'CitasController@saveCita'));
-// Route::post('citas/descargar', array('uses' => 'CitasController@descargaPDFCita'));
+Route::post('citas/descargar', array('uses' => 'CitasController@descargaPDFCita'));
