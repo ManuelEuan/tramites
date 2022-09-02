@@ -375,6 +375,12 @@ class TramiteServicioController extends Controller
                     $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][2] = $_doc['USDO_CRUTADOC']; 
                     $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][3] = $_doc['USDO_NESTATUS']; 
                     $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][4] = 0;//idDocExpediente  
+
+                    
+                    $key_ARR_DOC_CON = array_search($f_USDO_CDOCNOMBRE, $ARR_DOC_CON);
+                    if($key_ARR_DOC_CON>0){
+                        $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][4] = $key_ARR_DOC_CON;
+                    };
                     /*
                     $exist = Cls_Usuario_Documento::where('USDO_CDOCNOMBRE', $repodoc->USDO_CDOCNOMBRE) 
                     ->select('*')
@@ -987,6 +993,22 @@ class TramiteServicioController extends Controller
             $resp->save();
         }
 
+
+
+        //CREO ARRAY CON LOS TIPOS DE DOCUMENTOS 
+        $arrTst='';$ARR_DOC_CON = [];;
+        $tramite['USDO_NIDUSUARIORESP'] = [];
+        $tramite['USDO_NESTATUS'] = [];
+        $Cls_documento_config = new Cls_Tramite_Servicio(); 
+        $result = $Cls_documento_config->getConfigDocArr(); 
+        foreach ($result as $_dtsc) { 
+            $id_arr = $_dtsc->id;
+            $NOMBRE_arr = $_dtsc->NOMBRE;
+            $ARR_DOC_CON[$id_arr] = $NOMBRE_arr;
+        };  
+
+
+
         //Guardar documentos
         foreach ($documentos as $key => $value) {
             //if($value != null){
@@ -994,6 +1016,7 @@ class TramiteServicioController extends Controller
             $arr_value = explode("_", $value);
             
             if($arr_value[2]>0){
+
                 $doc = new Cls_Usuario_Documento();
                 $doc->USDO_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
                 $doc->USDO_CRUTADOC = $arr_value[0];
@@ -1003,7 +1026,12 @@ class TramiteServicioController extends Controller
                 $doc->USDO_NIDTRAMITEDOCUMENTO = $arr_key[2];
                 $doc->USDO_CDOCNOMBRE = $arr_value[3];
                 $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
-                //$doc->idDocExpediente = $request->idDocExpediente;
+
+                $key_ARR_DOC_CON = array_search($arr_value[3], $ARR_DOC_CON);
+                if($key_ARR_DOC_CON>0){
+                    $doc->idDocExpediente = $key_ARR_DOC_CON;
+                };
+
                 $doc->save(); //
             }
             //}

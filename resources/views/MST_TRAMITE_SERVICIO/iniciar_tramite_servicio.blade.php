@@ -391,7 +391,7 @@
                                         <tr>
                                             
                                         <?php   $otrotest = '';$RowDocConf='';
-                                            $TXT_STAT='';$DOCsolicitudes='';
+                                            $TXT_STAT='';$DOCsolicitudes='';$TIPO_DOC='0';
 
                                             //////////////////////////////////////////COLOCA EL NOMBRE CORRECTO
                                             // Verificar existe el campo "TRAD_NID_CONFIGDOCUMENTO" en tram_mdv_documento_tramite
@@ -404,6 +404,7 @@
                                                     //comprobar si existe el id en el array de tipos de documentos
                                                     if (array_key_exists($id_CONF, $ARR_DOC_CON)) {
                                                         $doc->TRAD_CNOMBRE = $ARR_DOC_CON[$id_CONF];
+                                                        $TIPO_DOC = $id_CONF;
                                                     };
                                                 }
                                             //}else{
@@ -424,7 +425,8 @@
                                             
                                             if($DOCsolicitudes=='si'){
                                                 if (array_key_exists($nmbres, $tramite['DOCS_BASE'])) {                                                    
-                                                    $P_NESTATUS = $tramite['DOCS_BASE'][$nmbres][3];   
+                                                    $P_NESTATUS = $tramite['DOCS_BASE'][$nmbres][3];
+                                                    //$TIPO_DOC = $id_CONF; 
                                                     /*$otrotest =  'PESO: '.$tramite['DOCS_BASE'][$nmbres][1].'<br>'.
                                                     'RUTA: '.$tramite['DOCS_BASE'][$nmbres][2].'<br>'.
                                                     'FORMATO: '.$tramite['DOCS_BASE'][$nmbres][0].'<br>';  //*/            
