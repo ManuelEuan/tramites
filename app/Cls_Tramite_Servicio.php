@@ -62,7 +62,8 @@ class Cls_Tramite_Servicio extends Model
 
     public function TRAM_CONSULTAR_DETALLE_TRAMITE($TRAM_NIDTRAMITE_CONFIG){
         $response = DB::selectOne(
-            'SELECT a.*, b.USTR_NESTATUS as TRAM_NESTATUS_PROCESO, b.USTR_CFOLIO as TRAM_CFOLIO_SEGUIMIENTO, b.USTR_NENCUESTA_CONTESTADA FROM tram_mst_tramite as a
+            'SELECT a.*, b.USTR_NESTATUS as TRAM_NESTATUS_PROCESO, b.USTR_CFOLIO as TRAM_CFOLIO_SEGUIMIENTO, b.USTR_NENCUESTA_CONTESTADA 
+            FROM tram_mst_tramite as a
             LEFT JOIN tram_mdv_usuariotramite as b on a.TRAM_NIDTRAMITE = b.USTR_NIDTRAMITE
             WHERE a.TRAM_NIDTRAMITE = ?',
             array($TRAM_NIDTRAMITE_CONFIG)
@@ -185,7 +186,8 @@ class Cls_Tramite_Servicio extends Model
                 $form->secciones = [];
                 foreach($secciones as $sec){
                     $sec->preguntas = DB::select(
-                        'SELECT a.FORM_NID, a.FORM_NFORMULARIOID, a.FORM_NSECCIONID, a.FORM_CPREGUNTA, b.FORM_CTIPORESPUESTA FROM tram_form_pregunta as a
+                        'SELECT a.FORM_NID, a.FORM_NFORMULARIOID, a.FORM_NSECCIONID, a.FORM_CPREGUNTA, b.FORM_CTIPORESPUESTA 
+                        FROM tram_form_pregunta as a
                         LEFT JOIN tram_form_pregunta_respuestas as b on a.FORM_NID = b.FORM_NPREGUNTAID
                         WHERE a.FORM_NFORMULARIOID = ? and a.FORM_NSECCIONID = ?
                         GROUP BY a.FORM_NID, a.FORM_NFORMULARIOID, a.FORM_NSECCIONID, a.FORM_CPREGUNTA, b.FORM_CTIPORESPUESTA',
@@ -233,7 +235,8 @@ class Cls_Tramite_Servicio extends Model
 
                 if(count($response['documentos']) == 0){
                     $response['documentos'] = DB::select(
-                        'SELECT a.*, 1 as TRAD_NESTATUS, "" as TRAD_COBSERVACION, 0 as id, "" as TRAD_CRUTADOC, 0 as TRAD_NPESO  FROM tram_mdv_documento_tramite as a where a.TRAD_NIDTRAMITE = ?',
+                        'SELECT a.*, 1 as TRAD_NESTATUS, "" as TRAD_COBSERVACION, 0 as id, "" as TRAD_CRUTADOC, 0 as TRAD_NPESO  
+                        FROM tram_mdv_documento_tramite as a where a.TRAD_NIDTRAMITE = ?',
                         array($TRAM_NIDTRAMITE_CONFIG)
                     );
                 }
@@ -328,16 +331,28 @@ class Cls_Tramite_Servicio extends Model
 
     
 
+ 
+
+    static function getConfigDocArr() 
+    {
+        $response = DB::select('SELECT * FROM tram_mst_configdocumentos');
+        return $response;
+    } 
+ 
+
     static function getConfigDocumentos($nombre) 
     {
-        $docs = DB::select("SELECT * FROM `tram_mst_configdocumentos` WHERE NOMBRE = '".$nombre."' LIMIT 0,1");
+        //$docs = DB::select("SELECT * FROM `tram_mst_configdocumentos` WHERE NOMBRE = '".$nombre."' LIMIT 0,1");
         
-        return $docs;
+        //return $docs;
+        $response = DB::selectOne('SELECT * FROM tram_mst_configdocumentos WHERE NOMBRE =  ?',
+        array($nombre));
+        return $response;
     } 
-    static function getTipoDocsBASE($idUSER, $id_DOC)
+    static function getTipoDocsBASE($idUSER)
     {
         $docsUser = DB::select("SELECT * FROM `tram_mst_documentosbase` 
-        WHERE ID_USUARIO = '".$idUSER."' AND ID_CDOCUMENTOS ='".$id_DOC."'  LIMIT 0,1");
+        WHERE ID_USUARIO = '".$idUSER."'  ");
         
         return $docsUser;
     }
