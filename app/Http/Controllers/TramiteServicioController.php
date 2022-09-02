@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Cls_Seguimiento_Servidor_Publico;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\Cls_Citas_Calendario;
 
 class TramiteServicioController extends Controller
 {
@@ -593,7 +594,37 @@ class TramiteServicioController extends Controller
             }
         }
 
-        //dd($tramite);
+        //Obtener detalles del tramite
+        $tramiteService = new TramiteService();
+        $objTramite     = $tramiteService->getTramite($tramite['idtramiteaccede']);
+        $result = $tramiteService->getDetalle($objTramite->Id);
+
+        $tramite['infoModulo'] = (array) $result['oficinas'][0];
+        $cita = Cls_Citas_Calendario::where([
+                ["CITA_IDUSUARIO", $detalle->USTR_NIDUSUARIO],
+                ["CITA_IDTRAMITE", $tramite['id']],
+                ["CITA_IDMODULO", $tramite['infoModulo']['iId']],
+            ])->orderBy('idcitas_tramites_calendario', 'DESC');
+        $tramite['cita'] = ($cita->count() > 0 
+            ? array(
+                    "ID" => $cita->first()->idcitas_tramites_calendario,
+                    "USUARIO" => $cita->first()->CITA_IDUSUARIO,
+                    "FECHA" => $cita->first()->CITA_FECHA,
+                    "HORA" => $cita->first()->CITA_HORA,
+                    "TRAMITE" => $cita->first()->CITA_IDTRAMITE,
+                    "MODULO" => $cita->first()->CITA_IDMODULO,
+                    "CONFIRMADO" => $cita->first()->CITA_CONFIRMADO,
+                    "FOLIO" => $cita->first()->CITA_FOLIO,
+                )
+            : array());
+
+        //Cambiar status de la cita en linea
+        if (count($tramite['cita']) > 0) {
+            for ($i=0; $i < count($tramite['configuracion']['secciones']); $i++) {
+                if ($tramite['configuracion']['secciones'][$i]->CONF_NSECCION == "Citas en línea") 
+                    $tramite['configuracion']['secciones'][$i]->CONF_NESTATUS_SEGUIMIENTO = 2; 
+            }
+        }
 
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
