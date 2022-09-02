@@ -682,19 +682,19 @@
                                             <div class="col-md-6">
                                                 <h6 style="font-size: 1rem; font-weight:bold;">Estatus de la Cita</h6>
                                                 <div style="border: 1px dashed black; padding:15px; width:100%">
-                                                    <p style="color: #000;"><b style="font-weight: 600;">ESTATUS:</b> <label
+                                                    <p style="color: #000;"><b style="font-weight: 600;">ESTATUS:</b> <span id="citaConfirmado"></span><label
                                                             id="cita_status"></label></p>
-                                                    <p style="color: #000;"><b style="font-weight: 600;">FOLIO:</b> <label
+                                                    <p style="color: #000;"><b style="font-weight: 600;">FOLIO:</b> <span id="citaFolio"></span><label
                                                             id="cita_folio_cita"></label></p>
-                                                    <p style="color: #000;"><b style="font-weight: 600;">FECHA:</b> <label
+                                                    <p style="color: #000;"><b style="font-weight: 600;">FECHA:</b> <span id="citaFecha"></span><label
                                                             id="cita_fecha"></label></p>
-                                                    <p style="color: #000;"><b style="font-weight: 600;">HORA:</b> <label
+                                                    <p style="color: #000;"><b style="font-weight: 600;">HORA:</b> <span id="citaHora"></span><label
                                                             id="cita_hora"></label></p>
-                                                    <p style="color: #000;"><b style="font-weight: 600;">EDIFICIO:</b> <label
+                                                    <p style="color: #000;"><b style="font-weight: 600;">EDIFICIO:</b> <span id="citaEdificio"></span><label
                                                             id="cita_edificio"></label></p>
-                                                    <p style="color: #000;"><b style="font-weight: 600;">DIRECCIÓN:</b> <label
+                                                    <p style="color: #000;"><b style="font-weight: 600;">DIRECCIÓN:</b> <span id="citaDireccion"></span><label
                                                             id="cita_edificio_direccion"></label></p>
-                                                    <p style="color: #000;"><b style="font-weight: 600;">TRÁMITE:</b> <label
+                                                    <p style="color: #000;"><b style="font-weight: 600;">TRÁMITE:</b> <span id="citaTramite"></span><label
                                                             id="cita_tramite"></label></p>
                                                 </div>
                                             </div>
@@ -717,7 +717,7 @@
                                                             <div class="col-lg-9">
                                                                 <div id="calendario"></div>
                                                             </div>
-                                                            <div class="col-lg-3" style="background-color: #f0f0f0; padding-top: 20px;">
+                                                            <div id="rightContainer" class="col-lg-3" style="background-color: #f0f0f0; padding-top: 20px;">
                                                                 <h5 class="text-primary text-center"><i class="fas fa-clock text-info"></i>&nbspHorarios disponibles</h5>
                                                                 <hr class="text-primary">
                                                                 <div class="col-lg-12 text-center" style=" width: 100%">
@@ -760,7 +760,7 @@
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">¡Tu cita hasido agendada!</h5>
+                                                            <h5 class="modal-title" id="exampleModalLabel">¡Tu cita ha sido agendada!</h5>
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -1538,7 +1538,7 @@
 
                     console.log("este es el id que se manda: " + idtramiteAccede);
 
-                    existeCita(idusuario, id, idtramiteAccede);
+                    // existeCita(idusuario, id, idtramiteAccede);
 
                     if ($('#sincita_edificios') != undefined) {
                         //obtenerEdificios(idtramiteAccede, false)
@@ -2473,36 +2473,37 @@
             <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/locales-all.js"></script>
 
             <script> //Construccion del calendario
-                document.addEventListener('DOMContentLoaded', function() {
-                    // cambiarTextoBtnMostartFiltro();
-                    var calendarEl = document.getElementById('calendario');
-                    window.calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-                    locale: 'es',
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth'
-                        // right: 'dayGridMonth,timeGridWeek'
-                    },
-                    events: [],
-                    datesSet: cargarEventos, 
-                    dateClick: function(info) {
-                        dateClickEvent(info);
-                    }
-                    });
-                    window.calendar.render();
-                });     
+                function calendarInit() {
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var calendarEl = document.getElementById('calendario');
+                        window.calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        locale: 'es',
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth'
+                            // right: 'dayGridMonth,timeGridWeek'
+                        },
+                        events: [],
+                        datesSet: cargarEventos, 
+                        dateClick: function(info) {
+                            dateClickEvent(info);
+                        }
+                        });
+                        window.calendar.render();
+                    }); 
+                }    
             </script>
 
             <script> //Carga de eventos en el calendario
                 function cargarEventos(payload) {
                     var tramite = "{{ $tramite['idtramiteaccede'] }}";
-                    var modulo = "{{ $tramite['modulo'] }}";
+                    var modulo = "{{ $tramite['infoModulo']['iId'] }}";
 
                     console.log("tramite: " + tramite);
                     console.log("modulo: " + modulo);
-                    if (tramite == 0 || tramite == undefined || modulo == 0 || modulo == undefined) {
+                    if (tramite == 0 || tramite == undefined || tramite == null || modulo == 0 || modulo == undefined || modulo == null) {
                         mostrarAlerta('Debe seleccionar un modulo para ver las citas disponibles.');
                         return;
                     }
@@ -2526,23 +2527,11 @@
                         pintarDisponibilidad(response);
                         mostrarAlerta("Se cargaron los horarios disponibles");
                         window.resultadoMes = response;
-                        setTimeout(() => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Operación exitosa',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        }, 400);
                     });
                     //On failure
                     request.fail(function (jqXHR, textStatus, errorThrown){
                         $('#modalLoad').modal('hide');
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'se presento el siguiente error: ' + errorThrown
-                        });
+                        mostrarAlerta("No se encontraron horarios");
                     });
                 }        
                 $('#formFiltrar').click(function () {
@@ -2580,6 +2569,7 @@
                     removeEvents.forEach(event => {
                         event.remove();
                     });
+                    window.calendar.setOption('height', document.querySelector('#rightContainer').offsetHeight);
                     window.calendar.addEventSource(events) //agregar eventos de resultado de busqueda
                     window.calendar.refetchEvents(); //Recolorear los eventos
                 }
@@ -2688,11 +2678,11 @@
                     }
 
                     let data    = { 
-                        "CITA_IDUSUARIO": "{{ $tramite['idusuariotramite'] }}",
+                        "CITA_IDUSUARIO": "{{ $tramite['idsuario'] }}",
                         "CITA_FECHA": window.resultadoMes[window.dateOnDisplay].fecha,
                         "CITA_HORA": window.resultadoMes[window.dateOnDisplay].horario.disponibles[citaSeleccionada].horario,
                         "CITA_IDTRAMITE": "{{ $tramite['id'] }}",
-                        "CITA_IDMODULO":  "{{ $tramite['modulo'] }}",
+                        "CITA_IDMODULO":  "{{ $tramite['infoModulo']['iId'] }}",
                         "CITA_FOLIO":  "{{ $tramite['folio'] }}"
 
                     };
@@ -2709,8 +2699,8 @@
                             $("#citaFolio").text("Folio: " + response.cita.CITA_FOLIO);
                             $("#citaFecha").text("Fecha: " + response.cita.CITA_FECHA);
                             $("#citaHora").text("Hora: " + response.cita.CITA_HORA);
-                            $("#citaMunicipio").text("Municipio: " + response.cita.CITA_MUNICIPIO);
-                            $("#citaModulo").text("Módulo: " + "{{ $tramite['modulo'] }}");
+                            $("#citaMunicipio").text("Municipio: " + "{{ $tramite['infoModulo']['Municipality'] }}");
+                            $("#citaModulo").text("Módulo: " + "{{ $tramite['infoModulo']['Name'] }}");
                             setTimeout(() => {
                                 Swal.fire({
                                     icon: 'success',
@@ -2720,6 +2710,8 @@
                                 });
                             }, 400);
                             window.cita = response.cita;
+                            window.cita.MUNICIPIO = "{{ $tramite['infoModulo']['Municipality'] }}";
+                            window.cita.MODULO = "{{ $tramite['infoModulo']['Name'] }}";
                             $('#citaInfoModal').modal('show');
                         } else {
                             setTimeout(() => {
@@ -2748,18 +2740,19 @@
                 $('#btnPDF').click(function () {
                     $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
                     request = $.ajax({
-                        url : '/citas/descargar',
+                        url : '/api/citas/descargar',
                         type: "POST",
                         data: window.cita,
                         responseType: 'blob'
                     });
                     //On success
                     request.done(function (response, textStatus, jqXHR){
-                        var blob = new Blob([response]);
-                        var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = "cita.pdf";
-                        link.click();
+                        window.open(response.URL);
+                        // var blob = new Blob([response]);
+                        // var link = document.createElement('a');
+                        // link.href = window.URL.createObjectURL(blob);
+                        // link.download = "cita.pdf";
+                        // link.click();
                     });
                     //On failure
                     request.fail(function (jqXHR, textStatus, errorThrown){
@@ -2771,5 +2764,30 @@
                     });
                 });
             </script>
+
+        //FUNCIONALIDAD DE LAS CITAS AGENDADAS
+        <script>          
+            
+            if ("{{ count($tramite['cita']) > 0 }}") {
+                $("#concitareservada").show();
+                $("#sincitareservada").remove();
+                // Información de la cita
+                $("#citaConfirmado").text("{{ ($tramite['cita']['CONFIRMADO'] ? 'Confirmado' : 'Sin confirmar') }}");
+                $("#citaFolio").text("{{ $tramite['cita']['FOLIO'] }}");
+                $("#citaFecha").text("{{ $tramite['cita']['FECHA'] }}");
+                $("#citaHora").text("{{ $tramite['cita']['HORA'] }}");
+                $("#citaEdificio").text("{{ $tramite['infoModulo']['Name'] }}");
+                $("#citaDireccion").text("{{ $tramite['infoModulo']['Street'] }}" + ", N° "
+                    + "{{ $tramite['infoModulo']['ExternalNumber'] }}" + ", CP: "
+                    + "{{ $tramite['infoModulo']['PostalCode'] }}"
+                );
+                $("#citaTramite").text("{{ $tramite['nombre'] }}");
+            } else {
+                $("#sincitareservada").show();
+                $("#concitareservada").remove();
+                calendarInit();
+            }
+
+        </script>
 
         @endsection

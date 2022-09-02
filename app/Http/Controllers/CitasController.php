@@ -229,9 +229,14 @@ class CitasController extends Controller
         $cita->CITA_HORA = $request->CITA_HORA;
         $cita->CITA_IDTRAMITE = $request->CITA_IDTRAMITE;
         $cita->CITA_IDMODULO = $request->CITA_IDMODULO;
-        $cita->CITA_FOLIO = $request->CITA_FOLIO;
-        if (Cls_Citas_Calendario::validaNueva($cita)) {
-            $cita->save();
+        // $cita->CITA_FOLIO = $request->CITA_FOLIO;
+        $anio = substr($request->CITA_FECHA, 0, 4);
+        // $conteo = Cls_Citas_Calendario::where("CITA_IDTRAMITE", $request->CITA_IDTRAMITE)->count();
+        $conteo = Cls_Citas_Calendario::count()+1;
+
+        $cita->CITA_FOLIO = $anio."-".str_pad($conteo, 10, "0", STR_PAD_LEFT);
+
+        if ($cita->save()) {
             return response()->json([
                 "estatus" => "success",
                 "codigo" => 200,
@@ -247,29 +252,25 @@ class CitasController extends Controller
     }
 
     public function descargaPDFCita(Request $request) {
-
-        // $html = '
-        //         <p><span>Folio:</span> '. "asdaasdfasdf" .'.</p>
-        //         <p><span>Fecha:</span> '. "sdsfasdfs" .'.</p>
-        //         <p><span>Hora:</span> '. "dsvasfvavasd" .'.</p>
-        //         <p><span>Municipio:</span> Prueba.</p>
-        //         <p><span>Módulo:</span> Prueba.</p>
-        //     ';
         $html = '
                 <p><span>Folio:</span> '. $request->CITA_FOLIO .'.</p>
                 <p><span>Fecha:</span> '. $request->CITA_FECHA .'.</p>
                 <p><span>Hora:</span> '. $request->CITA_HORA .'.</p>
-                <p><span>Municipio:</span> Prueba.</p>
-                <p><span>Módulo:</span> Prueba.</p>
+                <p><span>Municipio:</span> '.$request->MUNICIPIO.'.</p>
+                <p><span>Módulo:</span> '.$request->MODULO.'.</p>
             ';
-        $pdf = PDF::loadHTML($html)->setPaper('a4', 'portrait');
-        return $pdf->download($request->CITA_FOLIO.'.pdf');
-        // $path = storage_path();
-        // $archivoPDF = $path.'/'."CITA".'.pdf';
-        // $pdf->save($archivoPDF);
-        // return response()->download($archivoPDF, 'CITA.pdf')->deleteFileAfterSend();
 
-        // return $pdf->download('CITA.pdf');
+        $pdf = PDF::loadHTML($html)->setPaper('a4', 'portrait');
+        // return $pdf->download($request->CITA_FOLIO.'.pdf');
+
+
+        $path = storage_path();
+        $archivoPDF = $path.'/app/public/'."CITA".$request->CITA_FOLIO.'.pdf';
+        $pdf->save($archivoPDF);
+        // return response()->json(["data" => "CITA".'.pdf']);
+        return response()->json([
+            "URL" => env("APP_URL")."/storage/CITA".$request->CITA_FOLIO.".pdf"
+        ]);
     }
 
 }

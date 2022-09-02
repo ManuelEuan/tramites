@@ -246,5 +246,5 @@ Route::group(['prefix' => 'citas'], function () {
     Route::get('/calendario', 'CitasController@calendario');
     Route::get('/agenda', 'CitasController@agenda');
     Route::get('/listado', 'CitasController@getListado');
-    Route::post('/descargar', 'CitasController@descargaPDFCita');
+    // Route::post('/descargar', 'CitasController@descargaPDFCita');
 });
