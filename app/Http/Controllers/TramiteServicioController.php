@@ -326,7 +326,12 @@ class TramiteServicioController extends Controller
 
 
 
+        
 
+
+
+
+        //CREO ARRAY CON LOS TIPOS DE DOCUMENTOS 
         $arrTst='';$ARR_DOC_CON = [];;
         $tramite['USDO_NIDUSUARIORESP'] = [];
         $tramite['USDO_NESTATUS'] = [];
@@ -340,19 +345,6 @@ class TramiteServicioController extends Controller
 
 
         //$id_DOC = array_search($f_USDO_CDOCNOMBRE, $ARR_DOC_CON);
-            $tramite["DOCS_BASE"] = [];
-            $userdoc=Auth::user()->USUA_NIDUSUARIO;
-            if($userdoc){                
-                    $result = $Cls_documento_config->getTipoDocsBASE($userdoc); 
-                    foreach ($result as $_dtsc) { 
-                        $id_CONF = $_dtsc->ID_CDOCUMENTOS;
-                        $NOMBRE_BASE = $ARR_DOC_CON[$id_CONF];
-                        $tramite['DOCS_BASE'][$NOMBRE_BASE][0] = $_dtsc->FORMATO;
-                        $tramite['DOCS_BASE'][$NOMBRE_BASE][1] = $_dtsc->PESO;                        
-                        $tramite['DOCS_BASE'][$NOMBRE_BASE][2] = $_dtsc->ruta; 
-                        $tramite['DOCS_BASE'][$NOMBRE_BASE][3] = $_dtsc->estatus;   
-                    }; 
-            };
 
         //Documentos en General Para el Repositorio
         $repositorio = Cls_Usuario_Documento::where('USDO_NIDUSUARIOBASE', Auth::user()->USUA_NIDUSUARIO)
@@ -363,37 +355,96 @@ class TramiteServicioController extends Controller
 
         $tramite['repositorio'] = [];
         $docs_base='';
+        ///////////////////////////////////////////////////////////////////
+        //AGREGANDO LOS DOCUMENTOS DE SOLICITUDES
         foreach ($repositorio as $_doc) {  
-            //$arrTst = $arrTst.'*-'.$_dtsc->id;
+            if($_doc['USDO_NPESO']>0){
+                
+                    $repodoc = new Cls_Usuario_Documento;
+                    $repodoc->USDO_CDOCNOMBRE = $_doc['USDO_CDOCNOMBRE'];
+                    $repodoc->USDO_CEXTENSION = $_doc['USDO_CEXTENSION'];
+                    $repodoc->USDO_CRUTADOC = $_doc['USDO_CRUTADOC'];
+                    $repodoc->USDO_NPESO = $_doc['USDO_NPESO'];     
+                    $f_USDO_CDOCNOMBRE = $repodoc->USDO_CDOCNOMBRE;  
+                    $tramite['USDO_NESTATUS'][$f_USDO_CDOCNOMBRE] = $_doc['USDO_NESTATUS']; 
 
-            $repodoc = new Cls_Usuario_Documento;
-            $repodoc->USDO_CDOCNOMBRE = $_doc['USDO_CDOCNOMBRE'];
-            $repodoc->USDO_CEXTENSION = $_doc['USDO_CEXTENSION'];
-            $repodoc->USDO_CRUTADOC = $_doc['USDO_CRUTADOC'];
-            $repodoc->USDO_NPESO = $_doc['USDO_NPESO'];     
-            $f_USDO_CDOCNOMBRE = $repodoc->USDO_CDOCNOMBRE;  
-            $tramite['USDO_NESTATUS'][$f_USDO_CDOCNOMBRE] = $_doc['USDO_NESTATUS']; 
+                    $tramite['TEST'][$f_USDO_CDOCNOMBRE] =''; 
 
-            $tramite['TEST'][$f_USDO_CDOCNOMBRE] =''; 
-/*
-            $exist = Cls_Usuario_Documento::where('USDO_CDOCNOMBRE', $repodoc->USDO_CDOCNOMBRE) 
-            ->select('*')
-            ->orderBy('created_at', 'DESC') 
-            ->first();  
-            $tramite['USDO_NIDUSUARIORESP'][$f_USDO_CDOCNOMBRE] = $exist->USDO_NIDUSUARIORESP;
-            $tramite['USDO_NESTATUS'][$f_USDO_CDOCNOMBRE]  = $exist->USDO_NESTATUS;
-            //*/
+                    $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][0] = $_doc['USDO_CEXTENSION'];
+                    $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][1] =  $_doc['USDO_NPESO'];                        
+                    $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][2] = $_doc['USDO_CRUTADOC']; 
+                    $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][3] = $_doc['USDO_NESTATUS']; 
+                    $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][4] = 0;//idDocExpediente  
+                    /*
+                    $exist = Cls_Usuario_Documento::where('USDO_CDOCNOMBRE', $repodoc->USDO_CDOCNOMBRE) 
+                    ->select('*')
+                    ->orderBy('created_at', 'DESC') 
+                    ->first();  
+                    $tramite['USDO_NIDUSUARIORESP'][$f_USDO_CDOCNOMBRE] = $exist->USDO_NIDUSUARIORESP;
+                    $tramite['USDO_NESTATUS'][$f_USDO_CDOCNOMBRE]  = $exist->USDO_NESTATUS;
+                    //*/
+
+                    $tramite['repositorio'][] = $repodoc;
+            };
             
 
-
-            $tramite['repositorio'][] = $repodoc;
         }
+        ///////////////////////////////////////////////////////////////////
+
+        //AGREGANDO LOS DOCUMENTOS DE MI EXPEDIENTE
+        $tramite["DOCS_BASE"][] = [];
+        $userdoc=Auth::user()->USUA_NIDUSUARIO;
+        if($userdoc){                
+                $result = $Cls_documento_config->getTipoDocsBASE($userdoc); 
+                foreach ($result as $_dtsc) { 
+                    $id_CONF = $_dtsc->ID_CDOCUMENTOS;
+                    $NOMBRE_BASE = $ARR_DOC_CON[$id_CONF];
+
+                    $FORMATO = $_dtsc->FORMATO;
+                    $PESO = $_dtsc->PESO;
+                    $ruta = $_dtsc->ruta;
+                    $estatus = $_dtsc->estatus;
+
+                    if($PESO >0){                        
+                            $tramite['DOCS_BASE'][$NOMBRE_BASE][0] = $FORMATO;
+                            $tramite['DOCS_BASE'][$NOMBRE_BASE][1] = $PESO;                        
+                            $tramite['DOCS_BASE'][$NOMBRE_BASE][2] = $ruta; 
+                            $tramite['DOCS_BASE'][$NOMBRE_BASE][3] = $estatus; 
+                            $tramite['DOCS_BASE'][$NOMBRE_BASE][4] = $_dtsc->ID_CDOCUMENTOS;  
+                            //////////////////////
+                            
+                            $repodoc = new Cls_Usuario_Documento;
+                            $repodoc->USDO_CDOCNOMBRE = $NOMBRE_BASE;
+                            $repodoc->USDO_CEXTENSION = $FORMATO;
+                            $repodoc->USDO_CRUTADOC = $ruta;
+                            $repodoc->USDO_NPESO = $PESO;     
+                            $f_USDO_CDOCNOMBRE = $NOMBRE_BASE;  
+                            $tramite['USDO_NESTATUS'][$f_USDO_CDOCNOMBRE] = $estatus; 
+                            $tramite['repositorio'][] = $repodoc;
+
+                            $tramite['TEST'][$f_USDO_CDOCNOMBRE] ='';  
+                            if($id_CONF==54){
+                                $NOMBRE_BASE='Comprobante de Domicilio';
+                                $repodoc = new Cls_Usuario_Documento;
+                                $repodoc->USDO_CDOCNOMBRE = $NOMBRE_BASE;
+                                $repodoc->USDO_CEXTENSION = $FORMATO;
+                                $repodoc->USDO_CRUTADOC = $ruta;
+                                $repodoc->USDO_NPESO = $PESO;     
+                                $f_USDO_CDOCNOMBRE = $NOMBRE_BASE;  
+                                $tramite['USDO_NESTATUS'][$f_USDO_CDOCNOMBRE] = $estatus; 
+                                $tramite['repositorio'][] = $repodoc;
+                            };
+                    };
+                    //
+                }; 
+        };
+        
 
 
 
         $nmbres='';$P_NESTATUS='';$TXT_STAT=$arrTst;$docs_base;
 
-        return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'nmbres', 'P_NESTATUS', 'TXT_STAT', 'docs_base'));
+        return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'ARR_DOC_CON', 'nmbres', 'P_NESTATUS', 'TXT_STAT', 'docs_base'));
     }
 
     public function seguimiento_tramite_servicio($id)
