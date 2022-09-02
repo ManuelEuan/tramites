@@ -625,7 +625,8 @@ class TramiteServicioController extends Controller
                     $tramite['configuracion']['secciones'][$i]->CONF_NESTATUS_SEGUIMIENTO = 2; 
             }
         }
-
+        
+        // dd($tramite['cita']);
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 

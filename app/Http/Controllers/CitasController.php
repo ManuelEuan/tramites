@@ -273,4 +273,19 @@ class CitasController extends Controller
         ]);
     }
 
+    public function deleteCita($id) {
+        if(Cls_Citas_Calendario::deleteCita((int)$id)){
+            return response()->json([
+                "estatus" => "success",
+                "codigo" => 200,
+                "mensaje" => "Cita eliminada"
+            ]);
+        }
+        return response()->json([
+            "estatus" => "error",
+            "codigo" => 500,
+            "mensaje" => "No se elimino la cita"
+        ], 500);
+    }
+    
 }
