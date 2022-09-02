@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Cls_Citas_Calendario extends Model{
+class Cls_Citas_Calendario extends Model {
+    use SoftDeletes;
     protected $table        = 'citas_tramites_calendario';
     protected $primaryKey   = 'idcitas_tramites_calendario';
     public $timestamps      = false;
@@ -45,6 +47,7 @@ class Cls_Citas_Calendario extends Model{
                 ->where('CITA_FECHA', date("Y-m-d", $i))
                 ->where('CITA_IDTRAMITE', $idtramite)
                 ->where('CITA_IDMODULO', $idedificio)
+                ->where('deleted_at', null)
                 ->get();
             $ocupacion = count($rowOcupacion);
             $dia = "";
@@ -122,5 +125,11 @@ class Cls_Citas_Calendario extends Model{
             ->where('CITA_IDTRAMITE', $cita->CITA_IDTRAMITE)
             ->get();
         return ($result->count() == 0 ? true : false);
+    }
+
+    public static function deleteCita($pk) {
+        return Cls_Citas_Calendario::find($pk)->delete();
+        // return Cls_Citas_Calendario::where("idcitas_tramites_calendario", $pk)->delete();
+        // return DB::table('citas_tramites_calendario')->where("idcitas_tramites_calendario", $pk)->delete();
     }
 }

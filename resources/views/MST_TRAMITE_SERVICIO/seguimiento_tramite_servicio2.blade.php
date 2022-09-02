@@ -697,6 +697,7 @@
                                                     <p style="color: #000;"><b style="font-weight: 600;">TRÁMITE:</b> <span id="citaTramite"></span><label
                                                             id="cita_tramite"></label></p>
                                                 </div>
+                                                <button id="cancelarCita" class="btn btn-info btn-lg" style="margin-top: 10px;"><strong>Cancelar cita</strong></button>                                              
                                             </div>
                                             <div class="col-md-6">
                                                 <div id="cita_mapa" style="width: 100%; height:25rem;">
@@ -761,7 +762,7 @@
                                                         <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="exampleModalLabel">¡Tu cita ha sido agendada!</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <button id="finish" type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
@@ -776,7 +777,6 @@
 
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                         </div>
                                                         </div>
                                                     </div>
@@ -2547,7 +2547,7 @@
                     $('.toast').toast('show');
                 }
                 // Colorea el calendario con segun los datos del mes
-                function pintarDisponibilidad(data, payload) {
+                function pintarDisponibilidad(data, payload) {console.log(data);
                     var events = [];
                     for(var row in data) {
                         var color = (data[row].horario.porcentajeOcupacion < 40 // menos de 40 Verde
@@ -2664,7 +2664,7 @@
             <script>//Funciones para el formulario lateral
                 //Almacenar la cita con la hora seleccionada en el formulario
                 $('#btnAgendarCita').click(function () {
-                    $('#modalLoad').modal('show');
+                    $('#btnAgendarCita').attr('disabled', true);
                     var citaSeleccionada = $('input[name="radio"]:checked', '#horariosContainer').val();
                     if (window.dateOnDisplay == null || window.dateOnDisplay == undefined ||
                         window.dateOnDisplay == 0 || citaSeleccionada == null || citaSeleccionada == undefined) {
@@ -2673,10 +2673,10 @@
                             title: 'Oops...',
                             text: 'Necesita seleccionar un horario para agendar una cita'
                         });
-                        $('#modalLoad').modal('hide');
+                        $("#btnAgendarCita").removeAttr('disabled');
                         return;
                     }
-
+                    $('#modalLoad').modal('show');
                     let data    = { 
                         "CITA_IDUSUARIO": "{{ $tramite['idsuario'] }}",
                         "CITA_FECHA": window.resultadoMes[window.dateOnDisplay].fecha,
@@ -2723,7 +2723,7 @@
                                     timer: 2000
                                 });
                             }, 400);
-
+                            $("#btnAgendarCita").removeAttr('disabled');
                         }
                     });
                     //On failure
@@ -2748,11 +2748,6 @@
                     //On success
                     request.done(function (response, textStatus, jqXHR){
                         window.open(response.URL);
-                        // var blob = new Blob([response]);
-                        // var link = document.createElement('a');
-                        // link.href = window.URL.createObjectURL(blob);
-                        // link.download = "cita.pdf";
-                        // link.click();
                     });
                     //On failure
                     request.fail(function (jqXHR, textStatus, errorThrown){
@@ -2767,15 +2762,15 @@
 
         //FUNCIONALIDAD DE LAS CITAS AGENDADAS
         <script>          
-            
-            if ("{{ count($tramite['cita']) > 0 }}") {
+            var countCita = "{{ count($tramite['cita']) }}";
+            if (countCita > 0) {
                 $("#concitareservada").show();
                 $("#sincitareservada").remove();
                 // Información de la cita
-                $("#citaConfirmado").text("{{ ($tramite['cita']['CONFIRMADO'] ? 'Confirmado' : 'Sin confirmar') }}");
-                $("#citaFolio").text("{{ $tramite['cita']['FOLIO'] }}");
-                $("#citaFecha").text("{{ $tramite['cita']['FECHA'] }}");
-                $("#citaHora").text("{{ $tramite['cita']['HORA'] }}");
+                $("#citaConfirmado").text("{{ @($tramite['cita']['CONFIRMADO'] ? 'Confirmado' : 'Sin confirmar') }}");
+                $("#citaFolio").text("{{ @$tramite['cita']['FOLIO'] }}");
+                $("#citaFecha").text("{{ @$tramite['cita']['FECHA'] }}");
+                $("#citaHora").text("{{ @$tramite['cita']['HORA'] }}");
                 $("#citaEdificio").text("{{ $tramite['infoModulo']['Name'] }}");
                 $("#citaDireccion").text("{{ $tramite['infoModulo']['Street'] }}" + ", N° "
                     + "{{ $tramite['infoModulo']['ExternalNumber'] }}" + ", CP: "
@@ -2787,6 +2782,55 @@
                 $("#concitareservada").remove();
                 calendarInit();
             }
+
+            function removeCita() {
+                var countCita = "{{ count($tramite['cita']) }}";
+                if (countCita > 0) {
+                    $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+                    request = $.ajax({
+                        url : '/api/citas/'+"{{ @$tramite['cita']['ID'] }}",
+                        type: "DELETE",
+                    });
+                    //On success
+                    request.done(function (response, textStatus, jqXHR){
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: response.estatus,
+                                title: 'Alerta',
+                                text: response.mensaje,
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }, 400);
+                        window.location.reload();
+                    });
+                    //On failure
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'se presento el siguiente error: ' + errorThrown
+                            });
+                        }, 400);
+                        $("#cancelarCita").removeAttr('disabled');
+                        $('#modalLoad').modal('hide');
+                    });
+                } else {
+                    mostrarAlerta("No hay citas agendadas");
+                }
+            }
+
+            $("#cancelarCita").click(function () {
+                $('#modalLoad').modal('show');
+                $("#cancelarCita").attr('disabled', true);
+                removeCita();
+            });
+
+            $("#finish").click(function () {
+                $('#modalLoad').modal('show');
+                window.location.reload();
+            });
 
         </script>
 
