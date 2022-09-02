@@ -992,18 +992,20 @@ class TramiteServicioController extends Controller
             //if($value != null){
             $arr_key = explode("_", $key);
             $arr_value = explode("_", $value);
-
-            $doc = new Cls_Usuario_Documento();
-            $doc->USDO_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
-            $doc->USDO_CRUTADOC = $arr_value[0];
-            $doc->USDO_CEXTENSION = $arr_value[1];
-            $doc->USDO_NPESO = $arr_value[2];
-            $doc->USDO_NESTATUS = 0;
-            $doc->USDO_NIDTRAMITEDOCUMENTO = $arr_key[2];
-            $doc->USDO_CDOCNOMBRE = $arr_value[3];
-            $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
-            //$doc->idDocExpediente = $request->idDocExpediente;
-            $doc->save(); //
+            
+            if($arr_value[2]>0){
+                $doc = new Cls_Usuario_Documento();
+                $doc->USDO_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
+                $doc->USDO_CRUTADOC = $arr_value[0];
+                $doc->USDO_CEXTENSION = $arr_value[1];
+                $doc->USDO_NPESO = $arr_value[2];
+                $doc->USDO_NESTATUS = 0;
+                $doc->USDO_NIDTRAMITEDOCUMENTO = $arr_key[2];
+                $doc->USDO_CDOCNOMBRE = $arr_value[3];
+                $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
+                //$doc->idDocExpediente = $request->idDocExpediente;
+                $doc->save(); //
+            }
             //}
         }
 
