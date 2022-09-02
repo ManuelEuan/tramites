@@ -134,8 +134,17 @@ class CitasService {
                 $ocupado    = false;
 
                 foreach ($ocupados as $item) {
-                    if ($item->CITA_HORA == $hora)
-                        $ocupado = true;
+                    if ($item->CITA_HORA == $hora){
+                        //Valido cuantos estan ocupados por ventanilla
+                        $numero = Cls_Citas_Calendario::where([
+                                    'CITA_IDTRAMITE'    => $tramite_id,
+                                    'CITA_IDMODULO'     => $modulo_id,
+                                    'CITA_FECHA'        => $fecha,
+                                    'CITA_HORA'         => $hora
+                                ])->count();
+                        
+                        $ocupado = $numero >= $cita->ventanillas ? true : false;
+                    }
                 }
 
                 array_push($disponible,array(
