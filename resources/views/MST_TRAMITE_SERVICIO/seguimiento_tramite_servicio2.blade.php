@@ -682,7 +682,7 @@
                                             <div class="col-md-6">
                                                 <h6 style="font-size: 1rem; font-weight:bold;">Estatus de la Cita</h6>
                                                 <div style="border: 1px dashed black; padding:15px; width:100%">
-                                                    <p style="color: #000;"><b style="font-weight: 600;">ESTATUS:</b> <span id="citaConfirmado"></span><label
+                                                    <p style="color: #000;"><b style="font-weight: 600;">ESTATUS:</b> <span id="citaConfirmado">Agendado</span><label
                                                             id="cita_status"></label></p>
                                                     <p style="color: #000;"><b style="font-weight: 600;">FOLIO:</b> <span id="citaFolio"></span><label
                                                             id="cita_folio_cita"></label></p>
@@ -2767,7 +2767,7 @@
                 $("#concitareservada").show();
                 $("#sincitareservada").remove();
                 // Información de la cita
-                $("#citaConfirmado").text("{{ @($tramite['cita']['CONFIRMADO'] ? 'Confirmado' : 'Sin confirmar') }}");
+                // $("#citaConfirmado").text("{{ @($tramite['cita']['CONFIRMADO'] ? 'Confirmado' : 'Sin confirmar') }}");
                 $("#citaFolio").text("{{ @$tramite['cita']['FOLIO'] }}");
                 $("#citaFecha").text("{{ @$tramite['cita']['FECHA'] }}");
                 $("#citaHora").text("{{ @$tramite['cita']['HORA'] }}");
