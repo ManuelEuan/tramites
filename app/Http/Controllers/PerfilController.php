@@ -108,10 +108,10 @@ class PerfilController extends Controller
                     }
                     $det_btn_color = 'btn-danger';
                     $det_btn_click = 'onclick="deleteDocUser('.$idDoc.')"';
-                    if (intval($estatus) == 0){
+                    if (intval($estatus) == 1){
                         $icono = 'Pendiente revision';
                     };
-                    if (intval($estatus) == 1){
+                    if (intval($estatus) == 3){
                         $icono = 'Rechazado <span title="Rechazado" class="fa fa-warning" style="color:#eddb04"></span>';
                     };
                     if (intval($estatus) == 2){

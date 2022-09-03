@@ -352,7 +352,7 @@ class Cls_Tramite_Servicio extends Model
     static function getTipoDocsBASE($idUSER)
     {
         $docsUser = DB::select("SELECT * FROM `tram_mst_documentosbase` 
-        WHERE ID_USUARIO = '".$idUSER."'  ");
+        WHERE ID_USUARIO = '".$idUSER."' AND isDelete = 0 AND isActual = 1 ");
         
         return $docsUser;
     }
