@@ -3596,4 +3596,18 @@
         });
     };
 </script>
+
+AGENDA DE CITAS -- 02/09/2022
+<script>
+
+    var countCita = "{{ count($tramite->cita) }}";
+    if (countCita > 0) {
+        // Información de la cita
+        $("#cita_folio").text("{{ @$tramite->cita['FOLIO'] }}");
+        $("#cita_fecha").text("{{ @$tramite->cita['FECHA'] }}");
+        $("#cita_hora").text("{{ @$tramite->cita['HORA'] }}");
+        $("#cita_edificio").text("{{ @$tramite->infoModulo['Name'] }}");
+    }
+
+</script>
 @endsection
