@@ -390,7 +390,7 @@
                                     @foreach($tramite['configuracion']['documentos'] as $doc)
                                         <tr>
                                             
-                                        <?php   $otrotest = '';$RowDocConf='';
+                                        <?php   $otrotest = '';$RowDocConf='';$P_NESTATUS='';
                                             $TXT_STAT='';$DOCsolicitudes='';$TIPO_DOC='0';
 
                                             //////////////////////////////////////////COLOCA EL NOMBRE CORRECTO
@@ -427,9 +427,12 @@
                                                 if (array_key_exists($nmbres, $tramite['DOCS_BASE'])) {                                                    
                                                     $P_NESTATUS = $tramite['DOCS_BASE'][$nmbres][3];
                                                     //$TIPO_DOC = $id_CONF; 
-                                                    /*$otrotest =  'PESO: '.$tramite['DOCS_BASE'][$nmbres][1].'<br>'.
+                                                    //'RUTA: '.$tramite['DOCS_BASE'][$nmbres][2].'<br>'.
+                                                    /*$otrotest =  '<span style="color: green;font-size:10px;font-weight:bold">
+                                                    PESO: '.$tramite['DOCS_BASE'][$nmbres][1].'<br>'.
                                                     'RUTA: '.$tramite['DOCS_BASE'][$nmbres][2].'<br>'.
-                                                    'FORMATO: '.$tramite['DOCS_BASE'][$nmbres][0].'<br>';  //*/            
+                                                    'FORMATO: '.$tramite['DOCS_BASE'][$nmbres][0].'<br>'.
+                                                    'ESTADO: '.$tramite['DOCS_BASE'][$nmbres][3].'<br></span>';  //*/            
                                                 }; 
                                             }; 
                                                  

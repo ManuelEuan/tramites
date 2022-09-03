@@ -330,6 +330,7 @@ class TramiteServicioController extends Controller
 
 
 
+        $tramite["DOCS_BASE"][] = [];
 
         //CREO ARRAY CON LOS TIPOS DE DOCUMENTOS 
         $arrTst='';$ARR_DOC_CON = [];;
@@ -370,12 +371,15 @@ class TramiteServicioController extends Controller
 
                     $tramite['TEST'][$f_USDO_CDOCNOMBRE] =''; 
 
+                    
+                    if (array_key_exists($f_USDO_CDOCNOMBRE, $tramite['DOCS_BASE'])) {  
+                    }else{
                     $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][0] = $_doc['USDO_CEXTENSION'];
                     $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][1] =  $_doc['USDO_NPESO'];                        
                     $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][2] = $_doc['USDO_CRUTADOC']; 
                     $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][3] = $_doc['USDO_NESTATUS']; 
                     $tramite['DOCS_BASE'][$f_USDO_CDOCNOMBRE][4] = 0;//idDocExpediente  
-
+                    };
                     
                     $key_ARR_DOC_CON = array_search($f_USDO_CDOCNOMBRE, $ARR_DOC_CON);
                     if($key_ARR_DOC_CON>0){
@@ -398,7 +402,6 @@ class TramiteServicioController extends Controller
         ///////////////////////////////////////////////////////////////////
 
         //AGREGANDO LOS DOCUMENTOS DE MI EXPEDIENTE
-        $tramite["DOCS_BASE"][] = [];
         $userdoc=Auth::user()->USUA_NIDUSUARIO;
         if($userdoc){                
                 $result = $Cls_documento_config->getTipoDocsBASE($userdoc); 
@@ -410,13 +413,17 @@ class TramiteServicioController extends Controller
                     $PESO = $_dtsc->PESO;
                     $ruta = $_dtsc->ruta;
                     $estatus = $_dtsc->estatus;
+                    if($estatus==1){$estatus=0;};
 
                     if($PESO >0){                        
+                        if (array_key_exists($NOMBRE_BASE, $tramite['DOCS_BASE'])) {  
+                        }else{
                             $tramite['DOCS_BASE'][$NOMBRE_BASE][0] = $FORMATO;
                             $tramite['DOCS_BASE'][$NOMBRE_BASE][1] = $PESO;                        
                             $tramite['DOCS_BASE'][$NOMBRE_BASE][2] = $ruta; 
                             $tramite['DOCS_BASE'][$NOMBRE_BASE][3] = $estatus; 
                             $tramite['DOCS_BASE'][$NOMBRE_BASE][4] = $_dtsc->ID_CDOCUMENTOS;  
+                        };
                             //////////////////////
                             
                             $repodoc = new Cls_Usuario_Documento;
