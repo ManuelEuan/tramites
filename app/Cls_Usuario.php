@@ -410,6 +410,34 @@ class Cls_Usuario extends Model
         $getH = DB::select('SELECT * FROM tram_mst_documentosbase WHERE ID_CDOCUMENTOS = ? AND ID_USUARIO = ?', [$id, $user]);
         return $getH;
     }
+
+    static function getEXPtram($TIPO, $idUSER)
+    {//
+        //FORMATO DE EXPEDIENTE tram_mdv_documento_tramite
+        //ARRAY PARA IGUALAR ESTATUS 
+        //$ESTATUS_TRAM = array('0' => 1, '1' => '2', '2' => '3');
+//AND BASE.ID_CDOCUMENTOS=CONFIG.id 
+//LEFT JOIN tram_mst_configdocumentos AS CONFIG 
+        $docsUser = DB::select("SELECT BASE.*, 'expediente' AS  TIPO
+        FROM tram_mst_documentosbase AS BASE 
+        WHERE  ID_CDOCUMENTOS = ? AND ID_USUARIO = ? 
+        UNION
+        SELECT  TRAM.USDO_NIDUSUARIORESP AS id, TRAM.USDO_CEXTENSION AS FORMATO, TRAM.USDO_NPESO AS PESO, 
+        '' AS VIGENCIA_INICIO, '' AS VIGENCIA_FIN, TRAM.idDocExpediente AS ID_CDOCUMENTOS, 
+		  TRAM.USDO_NIDUSUARIOBASE AS ID_USUARIO, 
+        TRAM.created_at AS create_at, TRAM.updated_at AS update_at, '0' AS isDelete, 
+        TRAM.USDO_NESTATUS AS estatus, TRAM.USDO_CRUTADOC AS ruta, '0' AS isActual, 'tramite' AS  TIPO 
+        FROM tram_mdv_usuariordocumento AS TRAM  
+        WHERE TRAM.idDocExpediente = ? AND TRAM.USDO_NIDUSUARIOBASE = ?
+         ", [$TIPO, $idUSER, $TIPO, $idUSER]);
+        
+        return $docsUser;
+    }
+
+
+
+
+
     static function ActualizarDoc($id){
         $act = DB::update('UPDATE tram_mst_documentosbase SET isActual = 1 WHERE id = ?',[$id->id]);
         return $act;
@@ -424,4 +452,11 @@ class Cls_Usuario extends Model
             return false;
         }
     }
+
+
+
+
+
+
+
 }

@@ -353,7 +353,7 @@ class TramiteServicioController extends Controller
             ->distinct()
             ->orderBy('created_at', 'DESC')
             ->get()->toArray();
-
+        
         $tramite['repositorio'] = [];
         $docs_base='';
         ///////////////////////////////////////////////////////////////////
@@ -400,7 +400,7 @@ class TramiteServicioController extends Controller
 
         }
         ///////////////////////////////////////////////////////////////////
-
+/*
         //AGREGANDO LOS DOCUMENTOS DE MI EXPEDIENTE
         $userdoc=Auth::user()->USUA_NIDUSUARIO;
         if($userdoc){                
@@ -452,7 +452,7 @@ class TramiteServicioController extends Controller
                 }; 
         };
         
-
+//*/
 
 
         $nmbres='';$P_NESTATUS='';$TXT_STAT=$arrTst;$docs_base;

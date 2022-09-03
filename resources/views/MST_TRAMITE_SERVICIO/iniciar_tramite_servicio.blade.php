@@ -405,6 +405,7 @@
                                                     if (array_key_exists($id_CONF, $ARR_DOC_CON)) {
                                                         $doc->TRAD_CNOMBRE = $ARR_DOC_CON[$id_CONF];
                                                         $TIPO_DOC = $id_CONF;
+
                                                     };
                                                 }
                                             //}else{
@@ -419,6 +420,13 @@
                                             foreach($tramite['repositorio'] as $rep){
                                                 if($rep->USDO_CDOCNOMBRE == $doc->TRAD_CNOMBRE){
                                                     $DOCsolicitudes = 'si';
+
+                                                    /*
+                                                    $otrotest =  '<span style="color: red;font-size:10px;font-weight:bold">
+                                                    PESO: '.$rep->USDO_NPESO.'<br>'.
+                                                    'RUTA: '.$rep->USDO_CRUTADOC.'<br>'.
+                                                    'FORMATO: '.$rep->USDO_CEXTENSION.'<br>'.
+                                                    'ESTADO: <br></span>';  //*/
                                                 };
                                             }
 
