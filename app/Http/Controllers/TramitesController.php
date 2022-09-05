@@ -10,7 +10,9 @@ use App\Cls_Usuario_Tramite;
 use App\Cls_Usuario_Respuesta;
 use App\Cls_Usuario_Documento;
 use App\Cls_Usuario_Concepto;
+use App\Models\Cls_Citas_Calendario;
 use App\Services\VariosService;
+use App\Services\TramiteService;
 use  Illuminate\Pagination\LengthAwarePaginator;
 use  Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
@@ -182,6 +184,30 @@ class TramitesController extends Controller
         );
 
         $resolutivos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
+
+        //Obtener detalles del tramite
+        $tramiteService = new TramiteService();
+        $objTramite     = $tramiteService->getTramite($tramite->USTR_NIDTRAMITE_ACCEDE);
+        $result = $tramiteService->getDetalle($objTramite->Id);
+
+        $tramite->infoModulo = (array) $result['oficinas'][0];
+        $cita = Cls_Citas_Calendario::where([
+                ["CITA_IDUSUARIO", $tramite->USTR_NIDUSUARIO],
+                ["CITA_IDTRAMITE", $tramite->USTR_NIDTRAMITE],
+                ["CITA_IDMODULO", $tramite->infoModulo['iId']],
+            ])->orderBy('idcitas_tramites_calendario', 'DESC');
+        $tramite->cita = ($cita->count() > 0 
+            ? array(
+                    "ID" => $cita->first()->idcitas_tramites_calendario,
+                    "USUARIO" => $cita->first()->CITA_IDUSUARIO,
+                    "FECHA" => $cita->first()->CITA_FECHA,
+                    "HORA" => $cita->first()->CITA_HORA,
+                    "TRAMITE" => $cita->first()->CITA_IDTRAMITE,
+                    "MODULO" => $cita->first()->CITA_IDMODULO,
+                    "CONFIRMADO" => $cita->first()->CITA_CONFIRMADO,
+                    "FOLIO" => $cita->first()->CITA_FOLIO,
+                )
+            : array());
 
         //dd($resolutivos);
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
@@ -660,6 +686,8 @@ class TramitesController extends Controller
             Cls_Seguimiento_Servidor_Publico::TRAM_ACEPTAR_SECCION_CITA($request->CONF_NIDUSUARIOTRAMITE, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO);
             $this->enviar_correo_aprobacion($request->CONF_NIDUSUARIOTRAMITE);
 
+            Cls_Citas_Calendario::aprobarCita($request->IDCITA);
+
             $response = [
                 "estatus" => "success",
                 "mensaje" => "¡Éxito! acción realizada con éxito.",
@@ -844,6 +872,10 @@ class TramitesController extends Controller
         try {
 
             Cls_Seguimiento_Servidor_Publico::TRAM_RECHAZAR_TRAMITE($request->CONF_NIDUSUARIOTRAMITE);
+
+            if($request->IDCITA != null || $request->IDCITA != undefined || $request->IDCITA != "") {
+                Cls_Citas_Calendario::deleteCita($request->IDCITA);
+            }
 
             //Enviar notificacion de rechazo al ciudadano
             $mensaje_corto = "Usted tiene una notificación sobre el rechazo del trámite " . $request->nombre_tramite . ", el cual tiene el número de folio " . $request->folio_tramite . ".";

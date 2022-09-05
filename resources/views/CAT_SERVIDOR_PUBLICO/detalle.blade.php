@@ -137,7 +137,7 @@
         </div>
     </div>
     <br>
-    
+
     <div class="row justify-content-between">
         <div class="col-md-12 text-right">
             {{-- <button class="btn btn-primary btn-md btnSubmit" id="btnSubmit" onclick="TRAM_AJX_CONFIRMAR();">Guardar</button> --}}
@@ -159,7 +159,7 @@
     var lstDependencias_Acceso = [];
     var lstTramites_Acceso = [];
     var StrRol = '{{ Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE }}';
-    
+
     var _cantidad_dependencias  = <?php echo json_encode($Obj->num_dependen); ?>;
     var _cantidad_unidades      = <?php echo json_encode($Obj->num_unidades); ?>;
     var _cantidad_tramites      = <?php echo json_encode($Obj->num_tramites); ?>;
@@ -240,11 +240,11 @@
                                     + '<div class="panel-heading" role="tab" id="headingOne" style="padding-left: 100px !important;">'
                                     +    '<h4 class="panel-title">'
                                     +       '<a role="button" data-toggle="collapse" data-parent="#accordion" href="#tab'+acordeon+'" aria-expanded="true" aria-controls="tab'+_lstUnidad_Administrativa_Acceso[b].UNIDUA_NIDUNIDAD+'">';
-                                    
+
                                     if(html_edificio_acceso != ""){
                                         _html_unidad_acceso +='<i class="more-less fa fa-angle-down float-right"></i>';
                                     }
-                                    
+
                                     _html_unidad_acceso +='<h4 class="font-weight-bold">'+_lstUnidad_Administrativa_Acceso[b].UNIDUA_CNOMBRE+'</h4>'
                                     +        '</a>'
                                     +    '</h4>'
@@ -265,7 +265,7 @@
         $("#txtCantidadTramite").html(_cantidad_tramites);
         $("#txtCantidadEdificio").html(_cantidad_edificios);
     }
-    
+
     function toggleIcon(e) {
         $(e.target)
             .prev(".panel-heading")
@@ -274,7 +274,7 @@
     }
     $(".panel-group").on("hidden.bs.collapse", toggleIcon);
     $(".panel-group").on("shown.bs.collapse", toggleIcon);
-    
+
 </script>
 
 <style>
