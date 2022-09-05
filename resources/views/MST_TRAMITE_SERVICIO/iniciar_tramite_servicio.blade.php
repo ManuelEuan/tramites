@@ -1210,22 +1210,34 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    $("#docs_" + id).val(response.path + "_" + response.extension + "_" + response.size+"_"+response.typename);
-                    $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
-                    switch(response.extension){
-                        case "jpg":
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">');
-                            break;
-                        case "png":
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">');
-                            break;
-                        case "pdf":
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">');
-                            break;
-                        default:
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">');
-                            break;
-                    }
+                    if(response.extension=="pdf"){
+                        $("#docs_" + id).val(response.path + "_" + response.extension + "_" + response.size+"_"+response.typename);
+                        $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
+                        
+                        switch(response.extension){
+                            case "jpg":
+                                $("#icon_" + id).html('<img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">');
+                                break;
+                            case "png":
+                                $("#icon_" + id).html('<img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">');
+                                break;
+                            case "pdf":
+                                $("#icon_" + id).html('<img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">');
+                                break;
+                            default:
+                                $("#icon_" + id).html('<img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">');
+                                break;
+                        }
+                    }else{
+                         //alert("");
+                         Swal.fire({ 
+                            title: 'Error!',
+                            text: 'Solo se permite PDF',
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        })
+
+                    };
                 }
             });
         return false;
