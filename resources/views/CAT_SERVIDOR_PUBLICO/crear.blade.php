@@ -465,8 +465,7 @@
 
                 var html = '<select id="cmbTramites" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_TRAM +'">' + value.TRAMITE + '</option>';
-                    // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    html += '<option value="'+ value.iId +'">' + value.Key + '</option>';
                 });
                 html += '</select>';
 
@@ -480,13 +479,15 @@
                     var selected = $('#cmbTramites').val();
                     lstTramites = [];
                     $('#list_tramites').html('');
-                    TRAM_AJX_EDIFICIOS(selected);
+                    
                     $.each(selected, function(key, value) {
                         lstTramites.push(value);
                         var text = $("#cmbTramites option[value='" + value + "']")[0].innerText;
                         $('#list_tramites').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
                     });
                 });
+
+                TRAM_AJX_EDIFICIOS(id);
             });
         }
 
@@ -618,11 +619,6 @@
 
         //acceso
         function TRAM_AJX_TRAMITES_ACCESO(id){
-            //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
-                console.log(id.toString())
-            //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
-            // $.get('/general/obtenerTramites/' + id.toString(), function (data) {
-
                 unidad = $.ajax({
                 //Estos llaman al nuevo remapeo del retys
                 url: "/servidorespublicos/getTramites",
@@ -636,7 +632,7 @@
 
                 var html = '<select id="cmbTramites_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_TRAM +'">' + value.TRAMITE + '</option>';
+                    html += '<option value="'+ value.iId +'">' + value.Key + '</option>';
                     // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
                 });
                 html += '</select>';
@@ -651,13 +647,14 @@
                     var selected = $('#cmbTramites_acceso').val();
                     lstTramites_Acceso = [];
                     $('#list_tramites_acceso').html('');
-                    TRAM_AJX_EDIFICIOS_ACCESO(selected);
                     $.each(selected, function(key, value) {
                         lstTramites_Acceso.push(value);
                         var text = $("#cmbTramites_acceso option[value='" + value + "']")[0].innerText;
                         $('#list_tramites_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
                     });
                 });
+
+                TRAM_AJX_EDIFICIOS_ACCESO(id);
             });
         }
 
@@ -1178,11 +1175,7 @@
     //guardar
     var clickGuardar = 0;
     function TRAM_AJX_CONFIRMAR(){
-        if(clickGuardar == 0){
-            TRAM_AJX_GUARDAR();
-            clickGuardar = 1;
-        }
-
+        TRAM_AJX_GUARDAR();
     };
 
     function TRAM_AJX_GUARDAR(){
@@ -1209,7 +1202,7 @@
         $("#btnSubmit").prop("disabled", true);
         if (!$("#frmForm").valid()){
 
-            $('.listError').hide();
+            $(".listError").html('');
             var validator = $('#frmForm').validate();
             var htmlError = "<div class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Los siguientes datos son obligatorios:</strong> <br/>";
 
@@ -1239,7 +1232,7 @@
 
 
             if(lstEdificios.length == 0){
-                var campo = "Trámites";
+                var campo = "Edificios";
                 htmlError += 'El campo "' + campo + '" es requerido.<br/>';
             }
 
@@ -1268,13 +1261,13 @@
 
 
             if(lstTramites.length == 0){
-                var campo = "Trámites";
+                var campo = "Trámites que pertenece";
                 htmlError += 'El campo "' + campo + '" es requerido.<br/>';
             }
 
 
             if(lstEdificios.length == 0){
-                var campo = "Trámites";
+                var campo = "Edificios que pertenece";
                 htmlError += 'El campo "' + campo + '" es requerido.<br/>';
             }
 
@@ -1294,7 +1287,6 @@
                 type: "POST",
                 dataType: 'json',
                 success: function (data) {
-
                     $("#btnSubmit").prop("disabled", false);
                     if(data.status == "success"){
                         $('#frmForm').trigger("reset");

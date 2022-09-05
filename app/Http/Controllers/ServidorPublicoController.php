@@ -6,6 +6,8 @@ use Exception;
 use App\Cls_Usuario;
 use App\Cls_Bitacora;
 use Illuminate\Http\Request;
+use App\Services\TramiteService;
+use Illuminate\Support\Facades\DB;
 use App\Services\ServidoresService;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\GeneralController;
@@ -14,9 +16,10 @@ class ServidorPublicoController extends Controller
 {
 
     protected $servidoresService;
-
+    protected $tramiteService;
     public function __construct() {
-        $this->servidoresService   = new ServidoresService();
+        $this->servidoresService    = new ServidoresService();
+        $this->tramiteService       = new TramiteService();
     }
 
     public function index(Request $request)
@@ -40,37 +43,41 @@ class ServidorPublicoController extends Controller
     public function agregar(Request $request){
         $response = [];
         $IntUsuarioId = 0;
+        
         try {
-            $request->txtRol = $request->cmbRol;
-            $request->rdbTipo_Persona = "FISICA";
-            $request->txtRfc = "XAXX010101000";
-            $request->txtCurp = "11111111111111";
-            $request->txtCalle_Fiscal = "1";
+            $request->txtRol            = $request->cmbRol;
+            $request->rdbTipo_Persona   = "FISICA";
+            $request->txtRfc            = "XAXX010101000";
+            $request->txtCurp           = "11111111111111";
+            $request->txtCalle_Fiscal   = "1";
+            $request->txtCP_Fiscal      = 11111;
+            $request->cmbColonia_Fiscal = "1";
+            $request->cmbEstado_Fiscal  = "1";
+            $request->cmbPais_Fiscal    = "1";
             $request->txtNumero_Interior_Fiscal = 1;
             $request->txtNumero_Exterior_Fiscal = 1;
-            $request->txtCP_Fiscal = 11111;
-            $request->cmbColonia_Fiscal = "1";
-            $request->cmbMunicipio_Fiscal = "1";
-            $request->cmbEstado_Fiscal = "1";
-            $request->cmbPais_Fiscal = "1";
+            $request->cmbMunicipio_Fiscal       = "1";
+
+            DB::beginTransaction();
             $IntUsuarioId = Cls_Usuario::TRAM_SP_AGREGARUSUARIO($request);
 
             Cls_Usuario::TRAM_SP_ELIMINAR_AREAS_PERTENECE_ACCESO($IntUsuarioId);
             //Agregar areas pertenece
-    
+            
             if($request->lstDependenciaPertenece != null && count($request->lstDependenciaPertenece) > 0){
                 foreach ($request->lstDependenciaPertenece as $value) {
-                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($value, $IntUsuarioId);
+                    $retys = $this->tramiteService->getRetys('dependencies',$value);
+                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
                 }
             }
-           
-     
+
             if( $request->lstUnidadPertence != null && count($request->lstUnidadPertence) > 0){
                 foreach ($request->lstUnidadPertence as $value) {
-                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE($value, $IntUsuarioId);
+                    $retys = $this->tramiteService->getRetys('administrativeunits',$value);
+                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
                 }
             }
-       
+
             if( $request->lstTramitePertence != null && count($request->lstTramitePertence) > 0){
                 foreach ($request->lstTramitePertence as $value) {
                     Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_PERTENECE($value, $IntUsuarioId);
@@ -80,22 +87,24 @@ class ServidorPublicoController extends Controller
 
             if(  $request->lstEdificioPertence != null && count($request->lstEdificioPertence) > 0){
                 foreach ($request->lstEdificioPertence as $value) {
-                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE($value, $IntUsuarioId);
+                    $retys = $this->tramiteService->getRetys('administrativeunitbuildings',$value);
+                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
                 }
             }
        
 
             //Agregar areas acceso
-     
             if($request->lstDependenciaAcceso != null && count($request->lstDependenciaAcceso) > 0){
                 foreach ($request->lstDependenciaAcceso as $value) {
-                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO($value, $IntUsuarioId);
+                    $retys = $this->tramiteService->getRetys('dependencies',$value);
+                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
                 }
             }
 
             if($request->lstUnidadAcceso != null && count($request->lstUnidadAcceso)> 0){
                 foreach ($request->lstUnidadAcceso as $value) {
-                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO($value, $IntUsuarioId);
+                    $retys = $this->tramiteService->getRetys('administrativeunits',$value);
+                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
                 }
             }
 
@@ -108,11 +117,42 @@ class ServidorPublicoController extends Controller
             
             if($request->lstEdificioAcceso != null  && count($request->lstEdificioAcceso) > 0){
                 foreach ($request->lstEdificioAcceso as $value) {
-                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO($value, $IntUsuarioId);
+                    $retys = $this->tramiteService->getRetys('administrativeunitbuildings',$value);
+                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
                 }
             }
+
+            //Envia correo
+            $ObjData['StrNombres'] = $request->txtNombres;
+            $ObjData['StrHost'] = $request->getHttpHost();
+            $ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
+            $ObjData['StrCorreoElectronico'] = $request->txtCorreo_Electronico;
+            Mail::send('MSTP_MAIL.registro_funcionario', $ObjData, function ($message) use($ObjData) {
+                $message->from('ldavalos@esz.com.mx', 'ldavalos');
+                $message->to($ObjData['StrCorreoElectronico'], '')->subject('Registro.');
+            });
+
+            if($IntUsuarioId > 0){
+                //Insertar bitacora
+                $ObjBitacora = new Cls_Bitacora();
+                $ObjBitacora->BITA_NIDUSUARIO = $IntUsuarioId;
+                $ObjBitacora->BITA_CMOVIMIENTO = "Registro usuario servidor público";
+                $ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
+                $ObjBitacora->BITA_CIP = $request->ip();
+                Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+            }
+
+            $response = [
+                'codigo' => $IntUsuarioId > 0 ? 200 : 400, 
+                'status' => $IntUsuarioId > 0 ? "success" : "error",
+                'message' => $IntUsuarioId > 0 ? '¡Éxito! Acción realizada con éxito.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<>>",
+                'data' => $IntUsuarioId
+            ];
+            
+            DB::commit();
         }
         catch(Exception $e) {
+            DB::rollBack();
             $response = [
                 'codigo' => 400, 
                 'status' => "error", 
@@ -120,42 +160,6 @@ class ServidorPublicoController extends Controller
                 'data' => $IntUsuarioId
             ];
         }
-        
-        //Envia correo
-		// $ObjData['StrNombres'] = $request->txtNombres;
-		// $ObjData['StrHost'] = "https://sigetys.azurewebsites.net";
-		// $ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;
-		// $ObjData['StrCorreoElectronico'] = $request->txtCorreo_Electronico;
-		// $ObjData['StrRFC'] = $request->txtRfc;
-		// Mail::to($request->txtCorreo_Electronico, $request->txtNombres . " " . $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido)->send(new MailService("Registro", $ObjData, "MSTP_MAIL.registro"));
-
-        //Envia correo
-		$ObjData['StrNombres'] = $request->txtNombres;
-		$ObjData['StrHost'] = $request->getHttpHost();
-		$ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
-		$ObjData['StrCorreoElectronico'] = $request->txtCorreo_Electronico;
-		Mail::send('MSTP_MAIL.registro_funcionario', $ObjData, function ($message) use($ObjData) {
-			$message->from('ldavalos@esz.com.mx', 'ldavalos');
-			$message->to($ObjData['StrCorreoElectronico'], '')->subject('Registro.');
-        });
-
-        if($IntUsuarioId > 0){
-            //Insertar bitacora
-            $ObjBitacora = new Cls_Bitacora();
-            $ObjBitacora->BITA_NIDUSUARIO = $IntUsuarioId;
-            $ObjBitacora->BITA_CMOVIMIENTO = "Registro usuario servidor público";
-            $ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
-            $ObjBitacora->BITA_CIP = $request->ip();
-            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-        }
-
-        $response = [
-            'codigo' => $IntUsuarioId > 0 ? 200 : 400, 
-            'status' => $IntUsuarioId > 0 ? "success" : "error",
-            'message' => $IntUsuarioId > 0 ? '¡Éxito! Acción realizada con éxito.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<>>",
-            'data' => $IntUsuarioId
-        ];
-
         return Response()->json($response);
     }
 
@@ -315,25 +319,9 @@ class ServidorPublicoController extends Controller
     }
 
     public function getTramites(Request $request){
-
-        $objUnidad    = $this->servidoresService->getTramites($request);
-
-        $unidades = array();
-
-        foreach ($objUnidad as $key => $value) {
-            array_push($unidades, [
-                    'ID_TRAM' => $value->IdAdministrativeUnit,
-                    '0' => $value->Id,
-                    'TRAMITE' => $value->Key,
-                    '1' => $value->Id,
-                ]
-            );
-
-        }
-        
-
-        return $unidades;
+        return $this->servidoresService->getTramites($request);;
     }
+
     public function getEdificios(Request $request){
 
         $objUnidad    = $this->servidoresService->getEdificios($request);
@@ -509,8 +497,6 @@ class ServidorPublicoController extends Controller
 
         return view('CAT_SERVIDOR_PUBLICO.detalle', compact('Obj'));
     }
-
-
 
     public function validar_correo($StrCorreo){
 
