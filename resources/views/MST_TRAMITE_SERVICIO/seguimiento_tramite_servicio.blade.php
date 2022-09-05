@@ -903,9 +903,26 @@
                                         id="linkPago_{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"
                                         class="btn btn-success float-right">Pagar</a> -->
 					@if($confsec->SSEGTRA_PAGADO == 0)
-						<a  rel="noopener noreferrer"
-                                        	onClick="actualizar_pago({{$confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO}})"
-                                        	class="btn btn-success float-right">Pagar</a>
+						<!-- <a  rel="noopener noreferrer"
+                                        	onClick="$PagosManaguer.mostarModal();"
+                                        	class="btn btn-success float-right">Pagar</a> -->
+
+                        <form method="post" action="http://serviciosweb.queretaro.gob.mx:8080/derechosGEQ/liquidacionOpciones.jsp" target="_blank" enctype="application/x-www-form-urlencoded">
+                            <input type="hidden" name="usuario" value="SR682466" />
+                            <input type="hidden" name="password" value="sedesu" />
+                            <input type="hidden" name="rfc" value="{{ $tramite['rfcUser'] }}" />
+                            <input type="hidden" name="nombre" value="{{ $tramite['nombreUsuario'] }}" />
+                            <input type="hidden" name="apaterno" value="{{ $tramite['apellidoPUsuario'] }}" />
+                            <input type="hidden" name="amaterno" value="{{ $tramite['apellidoMUsuario'] }}" />
+                            <input type="hidden" name="observaciones" value="prueba" />
+                            <input type="hidden" name="email" value="{{ $tramite['correoUsuario'] }}" />
+                            <input type="hidden" name="usoCfdi" value="CP01" />
+                            <input type="hidden" name="idPeticionCliente" value="{{ $tramite['idTramitePago'] }}" />
+                            <input type="hidden" name="cliente" value="PRUEBA" />
+                            <input type="hidden" name="claveTramites" value="3202;0" />
+                            <input type="submit" value="Ir a la ventana de Pago" class="btn btn-primary"/>
+                        </form>
+                       <!--  <iframe id="PagosIframe" name="PagosIframe" src="" width="100%" height="800"></iframe> -->
 					@endif
                                     <br>
                                 @endif
@@ -1041,6 +1058,31 @@
                 </div>
             </div>
             <br />
+
+
+            <!-- BASIC MODAL -->
+            <div class="modal fade" id="modalPago">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content modal-content-demo">
+                        <div class="modal-header">
+                            <h6 class="modal-title">Pagar</h6><button aria-label="Close" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <iframe id="inlineFrameExample" width="100%" height="100%" src="http://serviciosweb.queretaro.gob.mx:8080/derechosGEQ/liquidacionOpciones.jsp">
+                            </iframe>
+
+
+                        </div>
+                        <div class="modal-footer">
+
+                            <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <style>
                 .error-input {
                     border: 1px solid red;
@@ -1414,6 +1456,18 @@
 
         @section('scripts')
             <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
+            <script type="text/javascript">
+                $PagosManaguer = {
+                    modalPagos: undefined,
+                    init: function() {
+                        $PagosManaguer.modalPagos = new bootstrap.Modal(document.getElementById('modalPago'), null);
+                    },
+                    mostarModal: function() {
+                        $PagosManaguer.modalPagos.show();
+                    }
+                }
+
+            </script>
             <script>
                 var id = "{{ $tramite['idusuariotramite'] }}";
                 var encuesta_contestada = "{{ $tramite['encuesta_contestada'] }}";
@@ -1453,7 +1507,38 @@
 		
 		//actualizar pago
 		function actualizar_pago(id){
-			$.ajax({
+
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+            myHeaders.append("Cookie", "JSESSIONID=4cabe2513407b5f77dafcb905074");
+
+            var urlencoded = new URLSearchParams();
+            urlencoded.append("apaterno", "lopez");
+            urlencoded.append("amaterno", "guzman");
+            urlencoded.append("nombre", "josue");
+            urlencoded.append("rfc", "logj910318f21");
+            urlencoded.append("observaciones", "prueba");
+            urlencoded.append("email", "yoel_jlg138@hotmail.com");
+            urlencoded.append("usuario", "SR265621");
+            urlencoded.append("password", "PRUEBAS2");
+            urlencoded.append("usoCfdi", "CP01");
+            urlencoded.append("idPeticionCliente", "234");
+            urlencoded.append("cliente", "Seidor");
+            urlencoded.append("claveTramites", "3433;95.20");
+
+            var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+            };
+
+            fetch("http://serviciosweb.queretaro.gob.mx:8080/derechosGEQ/liquidacionOpciones.jsp", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+
+/* 			$.ajax({
                     		data: {},
                     		url: "/tramite_servicio_cemr/seccion_actualizar_pago/" + id,
                     		type: "GET",
@@ -1464,7 +1549,7 @@
                        			location.reload();
                     		},
                    		error: function(data) {}
-               			});
+               			}); */
 		}
 
                 //Cuando se selecciona un edificio, busca... las disponibilidades
@@ -1493,6 +1578,8 @@
                 }
 
                 $(document).ready(function() {
+
+                    $PagosManaguer.init();
 
                     var idusuario = "{{ $tramite['idsuario'] }}";
                     var idtramiteAccede = "{{ $tramite['idtramiteaccede'] }}";
