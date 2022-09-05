@@ -364,9 +364,8 @@ class Cls_Tramite_Servicio extends Model
 
         //FORMATO DE TRAMITE tram_mdv_documento_tramite
         $sec = DB::select("SELECT 'TRAM' AS TIPO, USDO_NIDUSUARIORESP, USDO_CRUTADOC, USDO_NPESO, USDO_NESTATUS, 
-        USDO_COBSERVACION, USDO_NIDTRAMITEDOCUMENTO, created_at, updated_at, 
-		  USDO_CEXTENSION, USDO_NIDUSUARIOBASE, 
-        USDO_CDOCNOMBRE, idDocExpediente
+        USDO_COBSERVACION, USDO_NIDTRAMITEDOCUMENTO, created_at, updated_at,  USDO_CEXTENSION, USDO_NIDUSUARIOBASE, 
+        USDO_CDOCNOMBRE, idDocExpediente, VIGENCIA_FIN
         FROM tram_mdv_usuariordocumento
         WHERE USDO_NIDUSUARIOBASE =  ? 
         UNION        
@@ -374,33 +373,16 @@ class Cls_Tramite_Servicio extends Model
         base.estatus AS USDO_NESTATUS, '' AS USDO_COBSERVACION, 0 AS USDO_NIDTRAMITEDOCUMENTO, 
         base.create_at AS created_at, base.update_at AS updated_at, base.FORMATO AS USDO_CEXTENSION, 
         base.ID_USUARIO AS USDO_NIDUSUARIOBASE, CONFIG.NOMBRE AS USDO_CDOCNOMBRE, 
-		  base.ID_CDOCUMENTOS AS idDocExpediente
+		  base.ID_CDOCUMENTOS AS idDocExpediente, base.VIGENCIA_FIN AS VIGENCIA_FIN
         FROM tram_mst_documentosbase AS base  LEFT JOIN tram_mst_configdocumentos AS CONFIG
         ON base.ID_CDOCUMENTOS = CONFIG.id
         WHERE base.ID_USUARIO = ?
-         ", [$idUSER, $idUSER]); 
+        ORDER BY created_at DESC
+        ", [$idUSER, $idUSER]); 
          
-       // $docsUser = []; 
-         foreach ($sec as $_dtsc) { 
-            //$_dtsc->TIPO;
-            //$_dtsc->USDO_NIDUSUARIORESP;
-            //$_dtsc->USDO_CRUTADOC;
-            //$_dtsc->USDO_NPESO
-            //$_dtsc->USDO_NESTATUS;        
-            //$_dtsc->USDO_COBSERVACION;
-            //$_dtsc->USDO_NIDTRAMITEDOCUMENTO
-            //$_dtsc->created_at
-            //$_dtsc->updated_at
-            //$_dtsc->USDO_CEXTENSION
-            //$_dtsc->USDO_NIDUSUARIOBASE
-            //$_dtsc->USDO_CDOCNOMBRE
-            //$_dtsc->idDocExpediente
-            //$id_arr = $_dtsc->id;
-            //$docsUser[] = $_dtsc;
-         }
-         
+              
         
-        return $docsUser;
+        return $sec;
     }//*/
     
     static function getEXPtram($TIPO, $idUSER)

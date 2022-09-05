@@ -1472,6 +1472,11 @@
                         }
 
                         var rutaDocumento = value.TRAD_CRUTADOC !== null && value.TRAD_CRUTADOC !== "" ? value.TRAD_CRUTADOC : "";
+                        
+                        //VIGENCIA
+                        if(value.vigencia!='' ){
+                                var ckVIG = 'checked';
+                        };
 
                         itemDocumento += '<div class="row">' +
                             '<div class="col-md-6">' +
@@ -1487,13 +1492,16 @@
                         if (value.existe > 0 && rutaDocumento != "") {
                             itemDocumento += '<span style="padding-right: 15px;font-size: 20px;"><i title="Ver documento" style="cursor:pointer;" onclick="TRAM_FN_VER_DOCUMENTO(' + value.TRAD_NIDTRAMITEDOCUMENTO + ')" class="fas fa-eye"></i></span>' +
                                 "<a href='{{ asset('') }}" + rutaDocumento + "' style='padding-right: 15px;font-size: 20px;' download='" + documento_add.nombre + "'><i title='Descargar documento' class='fas fa-download'></i></a> ";
-                            itemDocumento += '<label class="divV"><input class="vigencia" id="vig' + value.TRAD_NIDTRAMITEDOCUMENTO + '" onchange="vigencia(' + value.TRAD_NIDTRAMITEDOCUMENTO + ', this);" type="checkbox" name="vigencia">¿Vigencia?</label>';
-
+                            itemDocumento += '<label class="divV"><input class="vigencia" id="vig' + value.TRAD_NIDTRAMITEDOCUMENTO + '" onchange="vigencia(' + value.TRAD_NIDTRAMITEDOCUMENTO + ', this);" ' + ckVIG + ' type="checkbox" name="vigencia">¿Vigencia?</label>';
                         }
                         itemDocumento += '</div>'; //col-2
                         itemDocumento += '</div>' + //row
                             '</div>'; //col-md-5
-                        itemDocumento += '<div class="col-2" id="divVigencia' + value.TRAD_NIDTRAMITEDOCUMENTO + '"></div>';
+                        itemDocumento += '<div class="col-2" id="divVigencia' + value.TRAD_NIDTRAMITEDOCUMENTO + '">';
+                        if(value.vigencia!='' && checkAceptado =='checked'){
+                            itemDocumento += '<input type="date" id="vigencia' + value.TRAD_NIDTRAMITEDOCUMENTO + '" name="fechaV" value="' + value.vigencia + '">';
+                        };
+                        itemDocumento += '</div>';
 
                         itemDocumento += '<div class="col-md-3 validatePregunta" style="display: block;">' +
                             '<div class="form-check form-check-inline">' +

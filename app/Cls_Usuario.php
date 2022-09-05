@@ -378,10 +378,12 @@ class Cls_Usuario extends Model
     }
     static function guardarDocs($request, $idU, $nombre){
         $hoy = date('Y-m-d');
+        $hoytime = date('Y-m-d H:i:s');
 
         $actualizar = DB::update('update tram_mst_documentosbase set isActual = 0 where ID_CDOCUMENTOS = ?', [$request->tipo]);
 
-        $insert = DB::insert('insert into tram_mst_documentosbase (FORMATO, PESO, VIGENCIA_INICIO, VIGENCIA_FIN, ID_CDOCUMENTOS, ID_USUARIO, estatus, ruta, isDelete, isActual) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        $insert = DB::insert('insert into tram_mst_documentosbase (FORMATO, PESO, VIGENCIA_INICIO, VIGENCIA_FIN, ID_CDOCUMENTOS, 
+        ID_USUARIO, estatus, ruta, isDelete, isActual, create_at) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
             $request->formato,
             $request->peso,
@@ -392,7 +394,8 @@ class Cls_Usuario extends Model
             1,
             'files/documentosUser/'.$idU.'/'.$nombre,
             0,
-            1
+            1,
+            $hoytime
         ]);
 
         return $insert;

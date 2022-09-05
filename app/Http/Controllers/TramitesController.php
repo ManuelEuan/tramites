@@ -413,8 +413,9 @@ class TramitesController extends Controller
                     $doc->TRAD_CRUTADOC = $_doc['USDO_CRUTADOC'];
                     $doc->TRAD_NPESO = $_doc['USDO_NPESO'];
                     $doc->idDocExpediente = $_doc['idDocExpediente'];
-                    $consulartVigencia = Cls_Seguimiento_Servidor_Publico::getVigencia($doc->idDocExpediente);
-                    $doc->vigencia = $consulartVigencia->vigencia ?? "";
+                    $consulartVigencia = $_doc['VIGENCIA_FIN'];//Cls_Seguimiento_Servidor_Publico::getVigencia($doc->idDocExpediente);
+                    if($consulartVigencia==NULL){$consulartVigencia='';};
+                    $doc->vigencia = $consulartVigencia;// $consulartVigencia->vigencia ?? "";
                     break;
                 }
             }
@@ -483,7 +484,8 @@ class TramitesController extends Controller
 
                     foreach ($request->CONF_DOCUMENTOS as $documento) {
  
-                        Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
+                        Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO_VIG($request->CONF_NIDUSUARIOTRAMITE, 
+                        $documento['documento_id'], $documento['estatus'], $documento['observaciones'], $documento['vigencia']);
                         //Aqui se agrega la vigencia//
                         //getIdDocExp afecta tram_mdv_usuariordocumento, el parametro es para USDO_NIDTRAMITEDOCUMENTO
                         $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
@@ -495,14 +497,7 @@ class TramitesController extends Controller
                             //modificamos la vigencia en la tabla tram_mst_documentosbase
                             Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
                         }else{//si el idDocsExpediente no existe
-                            /*/
-                            $uss = Cls_Seguimiento_Servidor_Publico::getIdusrTram($request->CONF_NIDUSUARIOTRAMITE);
-                            //$documento['documento_id'] = $uss->id;
-                            /*$sss = Cls_Seguimiento_Servidor_Publico::getIdidExp( $uss->id);
-                            if(isset($sss->USDO_NIDUSUARIORESP)){
-                                $TEST_MS = $TEST_MS.'..||'.$sss->USDO_NIDUSUARIORESP.'??'.$request->CONF_NIDUSUARIOTRAMITE.'||';
-                            };
-                            //*/
+                           
                             $idDocExp2 = Cls_Seguimiento_Servidor_Publico::getnombDocExp($documento['documento_id']);
                             if(isset($idDocExp2->USDO_CDOCNOMBRE)){
                                 //$TEST_MS = $TEST_MS.$idDocExp2->USDO_CDOCNOMBRE;
@@ -618,7 +613,7 @@ class TramitesController extends Controller
 
                 foreach ($request->CONF_DOCUMENTOS as $documento) {
 
-                    Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones']);
+                    Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO_VIG($request->CONF_NIDUSUARIOTRAMITE, $documento['documento_id'], $documento['estatus'], $documento['observaciones'], $documento['vigencia']);
                     //Aqui se hace la busqueda.
                     $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
                     if(isset($idDocExp->id)){
