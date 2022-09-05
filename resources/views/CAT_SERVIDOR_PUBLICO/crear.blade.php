@@ -367,7 +367,7 @@
     var lstDependencias_Acceso = [];
     var lstTramites_Acceso = [];
     var StrRol = '{{ Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE }}';
-    
+
     $(document).ready(function() {
         $.ajaxSetup({
             headers: {
@@ -380,7 +380,7 @@
                 type: "get",
                 data: {"paginate":true, 'estatus':'Activos'}
             });
-        
+
             // Callback handler that will be called on success
             request.done(function (response, textStatus, jqXHR){
                 var $select = $('#cmbRol');
@@ -389,7 +389,7 @@
                response.forEach(element => {
                     $select.append('<option value=' + element.ROL_NIDROL + '>' + element.ROL_CNOMBRE + '</option>'); // return empty
                });
-                
+
             });
 
             // Callback handler that will be called on failure
@@ -403,7 +403,7 @@
 
         $.validator.addMethod("passwordcheck", function(value) {
             return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(value)// has a special character
-            },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."  
+            },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."
         );
 
         $.validator.addMethod( 'passwordMatch', function(value, element) {
@@ -447,8 +447,8 @@
         };
 
 
-        function TRAM_AJX_TRAMITES(id){  
-            console.log(id.toString())          
+        function TRAM_AJX_TRAMITES(id){
+            console.log(id.toString())
             //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
             // $.get('/general/obtenerTramites/' + id.toString(), function (data) {
 
@@ -460,7 +460,7 @@
                     data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
 
                 });
-            
+
                 unidad.done(function (data, textStatus, jqXHR){
 
                 var html = '<select id="cmbTramites" class="selectpicker form-control" data-live-search="true" multiple>';
@@ -489,7 +489,7 @@
                 });
             });
         }
-        
+
         function TRAM_AJX_UNIDAD_ADMINISTRATIVA(id){
             console.log(id.toString())
             unidad = $.ajax({
@@ -500,7 +500,7 @@
                 data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
 
             });
-        
+
             // Callback handler that will be called on success
             unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbUnidad_administrativa" class="selectpicker form-control"  data-live-search="true" multiple>';
@@ -538,7 +538,7 @@
                 });
             });
         };
-        
+
 
         function TRAM_AJX_DEPENDENCIAS(){
             //Estos llaman al nuevo remapeo del retys
@@ -549,7 +549,7 @@
 
                 data.forEach(function(value) {
                     html += '<option value="'+ value.ID_CENTRO +'">' + value.DESCRIPCION + '</option>';
-                    
+
                 });
                 html += '</select>';
 
@@ -588,7 +588,7 @@
                     data: {"tipo":"multiple","tramite_id": id.toString() ?? '0' }
 
                 });
-            
+
                 unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbEdificios" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
@@ -619,7 +619,7 @@
         //acceso
         function TRAM_AJX_TRAMITES_ACCESO(id){
             //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
-                console.log(id.toString())          
+                console.log(id.toString())
             //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
             // $.get('/general/obtenerTramites/' + id.toString(), function (data) {
 
@@ -631,7 +631,7 @@
                     data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
 
                 });
-            
+
                 unidad.done(function (data, textStatus, jqXHR) {
 
                 var html = '<select id="cmbTramites_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
@@ -660,7 +660,7 @@
                 });
             });
         }
-        
+
         function TRAM_AJX_UNIDAD_ADMINISTRATIVA_ACCESO(id){
 
             unidad = $.ajax({
@@ -671,7 +671,7 @@
                 data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
 
             });
-        
+
             // Callback handler that will be called on success
             unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbUnidad_administrativa_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
@@ -686,7 +686,7 @@
                     noneSelectedText: 'Búsqueda de Unidad Administrativa',
                     noneResultsText: 'No se encontraron resultados',
                 });
-                
+
                 $('#cmbUnidad_administrativa_acceso').on('change', function(e) {
                     var selected = $('#cmbUnidad_administrativa_acceso').val();
                     lstUnidad_Administrativa_Acceso = [];
@@ -721,7 +721,7 @@
                     noneSelectedText: 'Búsqueda de Dependencias',
                     noneResultsText: 'No se encontraron resultados',
                 });
-               
+
 
                 if(StrRol == "ENLOF" || StrRol == "ADMCT"){
                     $("#cmbDependencias_acceso option[value='" + selected + "']").prop("selected", true);
@@ -753,9 +753,9 @@
                     data: {"tipo":"multiple","tramite_id": id.toString() ?? '0' }
 
                 });
-            
+
                 unidad.done(function (data, textStatus, jqXHR) {
-                
+
                 var html = '<select id="cmbEdificios_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
                     html += '<option value="'+ value.ID_EDIFICIO +'">' + value.EDIFICIO + '</option>';
@@ -781,14 +781,14 @@
                 });
             });
         }
-        
+
 
         $.validator.addMethod("lettersonly", function(value, element)  {
             return this.optional(element) || /^[a-z\s]+$/i.test(value);
             }, "El nombre (s) solamente puede tener caracteres alfabéticos y espacios."
         );
-        
-        
+
+
         $("#frmForm").validate({
             focusInvalid: false,
             invalidHandler: function() {
@@ -973,7 +973,7 @@
                 $("#ModalAreasPertence").modal("show");
                 break;
         }
-        
+
     };
 
     //agregar areas a la que pertenece
@@ -1092,7 +1092,7 @@
                 $("#ModalAreasAcceso").modal("show");
                 break;
         }
-        
+
     };
 
     //limpiar areas a la que pertence
@@ -1182,8 +1182,9 @@
             TRAM_AJX_GUARDAR();
             clickGuardar = 1;
         }
- 
+
     };
+
     function TRAM_AJX_GUARDAR(){
         var objData = {
             txtUsuario: $("#txtUsuario").val(),
@@ -1204,13 +1205,14 @@
             lstTramiteAcceso: lstTramites_Acceso,
             lstEdificioAcceso: lstEdificios_Acceso
         };
+
         $("#btnSubmit").prop("disabled", true);
         if (!$("#frmForm").valid()){
-          
+
             $('.listError').hide();
             var validator = $('#frmForm').validate();
             var htmlError = "<div class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Los siguientes datos son obligatorios:</strong> <br/>";
-           
+
             $.each(validator.errorList, function (index, value) {
                 var campo = $("#"+ value.element.id).attr('placeholder') == undefined ? $("#"+ value.element.id).attr('title') : $("#"+ value.element.id).attr('placeholder');
                 if(value.method == "required"){
@@ -1229,32 +1231,30 @@
                 htmlError += 'El campo "' + campo + '" es requerido.<br/>';
             }
 
-            
+
             if(lstTramites.length == 0){
                 var campo = "Trámites";
                 htmlError += 'El campo "' + campo + '" es requerido.<br/>';
             }
 
-                 
+
             if(lstEdificios.length == 0){
                 var campo = "Trámites";
                 htmlError += 'El campo "' + campo + '" es requerido.<br/>';
             }
-            
+
             htmlError += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
             $(".listError").html(htmlError);
             $("#btnSubmit").prop("disabled", false);
             $("html, body").animate({ scrollTop: 0 }, "slow");
             clickGuardar = 0;
             return;
-
-        
         }
 
-     
+
         if(lstDependencias.length == 0 ||lstUnidad_Administrativa.length == 0 || lstTramites.length == 0 || lstEdificios.length == 0){
             var htmlError = "<div class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Los siguientes datos son obligatorios:</strong> <br/>";
-           
+
 
             if(lstDependencias.length == 0){
                 var campo = "Dependencia o entidad";
@@ -1266,13 +1266,13 @@
                 htmlError += 'El campo "' + campo + '" es requerido.<br/>';
             }
 
-            
+
             if(lstTramites.length == 0){
                 var campo = "Trámites";
                 htmlError += 'El campo "' + campo + '" es requerido.<br/>';
             }
 
-                 
+
             if(lstEdificios.length == 0){
                 var campo = "Trámites";
                 htmlError += 'El campo "' + campo + '" es requerido.<br/>';
@@ -1285,38 +1285,51 @@
             clickGuardar = 0;
 
         }else{
-            console.log("guardando");
-     
-            
+            console.log("guardando",objData);
+
+
             $.ajax({
-            data: objData,
-            url: "/servidorespublicos/agregar",
-            type: "POST",
-            dataType: 'json',
-            success: function (data) {
+                data: objData,
+                url: "/servidorespublicos/agregar",
+                type: "POST",
+                dataType: 'json',
+                success: function (data) {
 
-                $("#btnSubmit").prop("disabled", false);
-                if(data.status == "success"){
-                    $('#frmForm').trigger("reset");
-                    $(".listError").html("");
+                    $("#btnSubmit").prop("disabled", false);
+                    if(data.status == "success"){
+                        $('#frmForm').trigger("reset");
+                        $(".listError").html("");
 
+                        clickGuardar = 0;
+
+                        Swal.fire({
+                            title: '¡Éxito!',
+                            text: "Acción realizada con éxito",
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                TRAM_FN_BACK();
+                            }
+                        });
+                    }else {
+
+                        clickGuardar = 0;
+                        Swal.fire({
+                            title: '¡Aviso!',
+                            text: data.message,
+                            icon: 'info',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                },
+                error: function (data) {
                     clickGuardar = 0;
-
-                    Swal.fire({
-                        title: '¡Éxito!',
-                        text: "Acción realizada con éxito",
-                        icon: 'success',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Aceptar'
-                        }).then((result) => {
-                        if (result.isConfirmed) {
-                            TRAM_FN_BACK();
-                        }
-                    });
-                }else {
-
-                    clickGuardar = 0;
+                    $("#btnSubmit").prop("disabled", false);
                     Swal.fire({
                         title: '¡Aviso!',
                         text: data.message,
@@ -1326,23 +1339,10 @@
                         confirmButtonText: 'Aceptar'
                     });
                 }
-            },
-            error: function (data) {
-                clickGuardar = 0;
-                $("#btnSubmit").prop("disabled", false);
-                Swal.fire({
-                        title: '¡Aviso!',
-                        text: data.message,
-                        icon: 'info',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Aceptar'
-                    });
-            }
-        });
+            });
         }
 
- 
+
     };
 
     //Redirige a lista de usuarios
