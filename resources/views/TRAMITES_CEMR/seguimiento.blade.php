@@ -248,7 +248,6 @@
                                                 <div class="col-md-12">
                                                     <div class="col-md-12 mt-5 contenedorBtn">
                                                         <div class="text-right botones">
-                                                            <button onclick="TRAM_FN_REPROGRAMAR_CITA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-warning border btnLetras">Reprogramar</button>
                                                             <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite</button>
                                                             <button onclick="TRAM_FN_APROBAR_CITA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
                                                         </div>
@@ -2511,13 +2510,27 @@
     }
 
     function TRAM_FN_APROBAR_CITA(SeccionID) {
+        var countCita = "{{ count($tramite->cita) }}";
+        if (!(countCita > 0)) {
+            setTimeout(function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Alerta',
+                    text: 'No hay cita en agenda por aprobar',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }, 2000);            
+            return;
+        }
 
         var seccion_cita = {
             "SSEGTRA_NIDSECCION_SEGUIMIENTO": SeccionID,
             "CONF_ESTATUSSECCION": 2,
             "CONF_NOTIFICACION": "",
             "CONF_NIDUSUARIOTRAMITE": parseInt("{{request()->route('id') }}"),
-            "CONF_PREGUNTAS": []
+            "CONF_PREGUNTAS": [],
+            "IDCITA": "{{ @$tramite->cita['ID'] }}"
         };
 
         Swal.fire({
@@ -3389,7 +3402,8 @@
             "CONF_NOTIFICACION": "",
             "nombre_tramite": "{{$tramite->USTR_CNOMBRE_TRAMITE}}",
             "folio_tramite": "{{$tramite->USTR_CFOLIO}}",
-            "CONF_PREGUNTAS": []
+            "CONF_PREGUNTAS": [],
+            "IDCITA": "{{ @$tramite->cita['ID'] }}"
         };
 
         var txtMotivoRechazo = CKEDITOR.instances['textRechazarTramite'].getData();
@@ -3603,6 +3617,7 @@ AGENDA DE CITAS -- 02/09/2022
     var countCita = "{{ count($tramite->cita) }}";
     if (countCita > 0) {
         // Información de la cita
+        $('#cita_status').text("{{ @($tramite->cita['CONFIRMADO'] ? 'Aprobado' : 'Agendado') }}");
         $("#cita_folio").text("{{ @$tramite->cita['FOLIO'] }}");
         $("#cita_fecha").text("{{ @$tramite->cita['FECHA'] }}");
         $("#cita_hora").text("{{ @$tramite->cita['HORA'] }}");

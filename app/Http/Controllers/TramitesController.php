@@ -686,6 +686,8 @@ class TramitesController extends Controller
             Cls_Seguimiento_Servidor_Publico::TRAM_ACEPTAR_SECCION_CITA($request->CONF_NIDUSUARIOTRAMITE, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO);
             $this->enviar_correo_aprobacion($request->CONF_NIDUSUARIOTRAMITE);
 
+            Cls_Citas_Calendario::aprobarCita($request->IDCITA);
+
             $response = [
                 "estatus" => "success",
                 "mensaje" => "¡Éxito! acción realizada con éxito.",
@@ -870,6 +872,10 @@ class TramitesController extends Controller
         try {
 
             Cls_Seguimiento_Servidor_Publico::TRAM_RECHAZAR_TRAMITE($request->CONF_NIDUSUARIOTRAMITE);
+
+            if($request->IDCITA != null || $request->IDCITA != undefined || $request->IDCITA != "") {
+                Cls_Citas_Calendario::deleteCita($request->IDCITA);
+            }
 
             //Enviar notificacion de rechazo al ciudadano
             $mensaje_corto = "Usted tiene una notificación sobre el rechazo del trámite " . $request->nombre_tramite . ", el cual tiene el número de folio " . $request->folio_tramite . ".";
