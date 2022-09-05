@@ -224,6 +224,7 @@
                             <input type="hidden" name="secc_{{$confsec->CONF_NIDCONFIGURACION}}" value="{{$confsec->CONF_NSECCION}}">
                         @endforeach
                     @endif
+                    <?php $resARR = [];?>
                     @if(count($tramite['configuracion']['formularios'])> 0)
                         @foreach($tramite['configuracion']['formularios'] as $form)
                             @if($form->secciones > 0)
@@ -238,11 +239,17 @@
                                                                 <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}} </label>
                                                                 @if($preg->respuestas > 0)
                                                                     @foreach($preg->respuestas as $resp)
+                                                                    <?php 
+                                                                    if (in_array($preg->FORM_NID, $resARR)) {
+                                                                        //echo 'si esta';
+                                                                    }else{
+                                                                    $resARR[] = $preg->FORM_NID;
+                                                                    ?>
                                                                         <input type="text" class="form-control txt_abierta" 
                                                                         name="resp_{{$preg->FORM_NID}}_0" 
                                                                         id="resp_{{$preg->FORM_NID}}_0" 
-                                                                        placeholder="{{$preg->FORM_CPREGUNTA}}" required>
-                                                                        
+                                                                        placeholder="{{$preg->FORM_CPREGUNTA}}" required> 
+                                                                    <?php };    ?>
                                                                     @endforeach
                                                                 @endif
                                                             </div>
@@ -405,6 +412,7 @@
                                                     if (array_key_exists($id_CONF, $ARR_DOC_CON)) {
                                                         $doc->TRAD_CNOMBRE = $ARR_DOC_CON[$id_CONF];
                                                         $TIPO_DOC = $id_CONF;
+
                                                     };
                                                 }
                                             //}else{
@@ -413,35 +421,40 @@
                                             ///////////////////////////////////////////////////////////////////
 
                                             $nmbres = $doc->TRAD_CNOMBRE; 
-
-
+                                            $ARCH_RUTA = '0';
+                                            $ARCH_PESO = '0';
+                                            $ARCH_EXTENCION = '0';$VIGENCIA_FIN = '';
                                             //VERIFICO SI EXISTE ALGUN ARCHIVO
                                             foreach($tramite['repositorio'] as $rep){
-                                                if($rep->USDO_CDOCNOMBRE == $doc->TRAD_CNOMBRE){
+                                                if($rep->USDO_CDOCNOMBRE == $doc->TRAD_CNOMBRE){ 
                                                     $DOCsolicitudes = 'si';
+                                                    $ARCH_RUTA = $rep->USDO_CRUTADOC;
+                                                    $ARCH_PESO = $rep->USDO_NPESO;
+                                                    $ARCH_EXTENCION = $rep->USDO_CEXTENSION;
+                                                    $VIGENCIA_FIN = $rep->VIGENCIA_FIN;
                                                 };
                                             }
 
-                                            
+                                            $VIG_TXT='';
                                             if($DOCsolicitudes=='si'){
                                                 if (array_key_exists($nmbres, $tramite['DOCS_BASE'])) {                                                    
                                                     $P_NESTATUS = $tramite['DOCS_BASE'][$nmbres][3];
-                                                    //$TIPO_DOC = $id_CONF; 
-                                                    //'RUTA: '.$tramite['DOCS_BASE'][$nmbres][2].'<br>'.
-                                                    /*$otrotest =  '<span style="color: green;font-size:10px;font-weight:bold">
-                                                    PESO: '.$tramite['DOCS_BASE'][$nmbres][1].'<br>'.
-                                                    'RUTA: '.$tramite['DOCS_BASE'][$nmbres][2].'<br>'.
-                                                    'FORMATO: '.$tramite['DOCS_BASE'][$nmbres][0].'<br>'.
-                                                    'ESTADO: '.$tramite['DOCS_BASE'][$nmbres][3].'<br></span>';  //*/            
+                                                    $VIGENCIA_FIN = $tramite['DOCS_BASE'][$nmbres][5];
+                                                    $HOY = date("Y-m-d");
+                                                    if($VIGENCIA_FIN != '' &&$VIGENCIA_FIN < $HOY ){$VIG_TXT='VENCIDO';};
                                                 }; 
                                             }; 
                                                  
                                             //echo $P_NESTATUS;
                                             if($P_NESTATUS==NULL&&$DOCsolicitudes!='si'){$TXT_STAT='';
                                             }elseif($P_NESTATUS==0){$TXT_STAT='Pendiente revisión';
+                                                if($VIG_TXT!=''){$TXT_STAT = $VIG_TXT;};
                                             }elseif($P_NESTATUS==1){$TXT_STAT='Rechazado';
-                                            }elseif($P_NESTATUS==2){$TXT_STAT='';};
-
+                                            }elseif($P_NESTATUS==2){
+                                                $TXT_STAT='';
+                                                if($VIG_TXT!=''){$TXT_STAT = $VIG_TXT;};
+                                            };
+                                            //$TXT_STAT=''.$VIG_TXT.'..v: '.$VIGENCIA_FIN.'..va: '.$tramite['DOCS_BASE'][$nmbres][5].'..id: '.$tramite['DOCS_BASE'][$nmbres][6];
                                             
                                             ?>
                                             <td>
@@ -500,7 +513,7 @@
                                             </td>
                                             <td class="text-center">{{$TXT_STAT}}</td>
                                             <td class="text-center">
-                                            @if($P_NESTATUS==1)                                            
+                                            @if($P_NESTATUS==1||$VIG_TXT=='VENCIDO')                                            
                                                 <img src="{{ asset('assets/template/img/warning.png') }}" width="20" height="20">
                                             @endif
                                             </td>
@@ -1197,22 +1210,34 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    $("#docs_" + id).val(response.path + "_" + response.extension + "_" + response.size+"_"+response.typename);
-                    $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
-                    switch(response.extension){
-                        case "jpg":
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">');
-                            break;
-                        case "png":
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">');
-                            break;
-                        case "pdf":
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">');
-                            break;
-                        default:
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">');
-                            break;
-                    }
+                    if(response.extension=="pdf"){
+                        $("#docs_" + id).val(response.path + "_" + response.extension + "_" + response.size+"_"+response.typename);
+                        $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
+                        
+                        switch(response.extension){
+                            case "jpg":
+                                $("#icon_" + id).html('<img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">');
+                                break;
+                            case "png":
+                                $("#icon_" + id).html('<img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">');
+                                break;
+                            case "pdf":
+                                $("#icon_" + id).html('<img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">');
+                                break;
+                            default:
+                                $("#icon_" + id).html('<img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">');
+                                break;
+                        }
+                    }else{
+                         //alert("");
+                         Swal.fire({ 
+                            title: 'Error!',
+                            text: 'Solo se permite PDF',
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        })
+
+                    };
                 }
             });
         return false;
@@ -1222,6 +1247,7 @@
         $(".documentos").each(function() {
             var id = this.id;
             var input = $("#docs_" + id).val();
+            console.log(input);
             var arr = input.split("_");
             $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(arr[2]) + '</span>');
         });
