@@ -1,16 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use Exception;
 use App\Cls_Usuario;
 use App\Cls_Bitacora;
-use Mockery\Undefined;
 use Illuminate\Http\Request;
-use App\Cls_Tramite_Servicio;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\GeneralController;
-use App\Mail\MailService;
-use Illuminate\Support\Facades\Mail;
 use App\Services\ServidoresService;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\GeneralController;
 
 class ServidorPublicoController extends Controller
 {
@@ -95,28 +93,24 @@ class ServidorPublicoController extends Controller
                 }
             }
 
-
-          
-             if($request->lstUnidadAcceso != null && count($request->lstUnidadAcceso)> 0){
+            if($request->lstUnidadAcceso != null && count($request->lstUnidadAcceso)> 0){
                 foreach ($request->lstUnidadAcceso as $value) {
                     Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO($value, $IntUsuarioId);
                 }
-             }
+            }
 
-         
-             if($request->lstTramiteAcceso  != null && count($request->lstTramiteAcceso) > 0){
+        
+            if($request->lstTramiteAcceso  != null && count($request->lstTramiteAcceso) > 0){
                 foreach ($request->lstTramiteAcceso as $value) {
                     Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_ACCESO($value, $IntUsuarioId);
                 }
-             }
-             
-             if($request->lstEdificioAcceso != null  && count($request->lstEdificioAcceso) > 0){
+            }
+            
+            if($request->lstEdificioAcceso != null  && count($request->lstEdificioAcceso) > 0){
                 foreach ($request->lstEdificioAcceso as $value) {
                     Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO($value, $IntUsuarioId);
                 }
-             }
-            
-       
+            }
         }
         catch(Exception $e) {
             $response = [

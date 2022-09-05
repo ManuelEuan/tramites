@@ -466,6 +466,7 @@ class TramiteServicioController extends Controller
         try {
 
             $objUsuario = Auth::user();
+            //dd($objUsuario);
 
             $tramites       = new Cls_Tramite_Servicio();
             $detalle        = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE_SEGUIMIENTO($id);
@@ -492,9 +493,11 @@ class TramiteServicioController extends Controller
             $tramite['idsuario'] = $detalle->USTR_NIDUSUARIO;
             $tramite['modulo'] = intval($detalle->USTR_CMODULO);
             $tramite['nombreUsuario'] = $objUsuario->USUA_CNOMBRES;
+            $tramite['rfcUser'] = $objUsuario->USUA_CRFC;
             $tramite['apellidoPUsuario'] = $objUsuario->USUA_CPRIMER_APELLIDO;
             $tramite['apellidoMUsuario'] = $objUsuario->USUA_CSEGUNDO_APELLIDO;
             $tramite['correoUsuario'] = $objUsuario->USUA_CCORREO_ELECTRONICO;
+            $tramite['idTramitePago'] = time();
             $tramite['nombre'] = $detalle->TRAM_CNOMBRE;
             $tramite['folio'] = $detalle->TRAM_CFOLIO_SEGUIMIENTO;
             $tramite['fechaactualizacion'] = $detalle->updated_at;

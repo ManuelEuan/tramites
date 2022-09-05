@@ -100,6 +100,12 @@
         <p style="color: #393939 !important;"><span id="loading-text"></span></p>
     </div>
 </div>
+
+
+
+
+
+
 @endsection
 
 @section('scripts')
@@ -111,6 +117,7 @@
         font-weight: bold;
         font-size: 1rem;
     }
+
     .loadingFrame {
         background: rgb(255 255 255 / 50%);
         display: table;
@@ -144,8 +151,11 @@
     }
 </style>
 <script>
+    
+
     var page = 1;
     $(document).ready(function() {
+       
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -153,7 +163,8 @@
         });
         var host = "http://vucapacita.chihuahua.gob.mx";
 
-getTramites()
+        getTramites()
+
         function TRAM_AJX_CONSULTAR_FILTRO() {
             var cmbClasificacion = $("#cmbClasificacion");
             var cmbAudiencia = $("#cmbAudiencia");
@@ -276,7 +287,9 @@ getTramites()
             success: function(data) {
                 $('#loading').hide();
                 $('#tramite_servicio').html(data);
-                $("html, body").animate({ scrollTop: 0 }, "slow");
+                $("html, body").animate({
+                    scrollTop: 0
+                }, "slow");
             },
             error: function(data) {
                 $('#loading').hide();
@@ -290,10 +303,10 @@ getTramites()
         });
     }
 
-    function getTramites(){
+    function getTramites() {
         var formData = new FormData()
         formData.append('search', '')
-        formData.append('dependencies','')
+        formData.append('dependencies', '')
         $.ajax({
             data: formData,
             url: "/tramite_servicio/getTramites",

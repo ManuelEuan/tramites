@@ -122,7 +122,7 @@
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </select>
-                    </div>                                
+                    </div>
                     <label style="margin:10px;" for="selctItems">registros. </label>
                 </div>
 
@@ -165,7 +165,7 @@
 @section('scripts')
 <script>
     var table = null;
-    /* Variables para la paginacion */   
+    /* Variables para la paginacion */
     var varPaginacion = {
         "order"          : "desc",
         "order_by"       : "u.USUA_NIDUSUARIO",
@@ -198,7 +198,7 @@
             type: "get",
             data: {"paginate":true, 'estatus':'Activos'}
         });
-    
+
         // Callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){
             var $select = $('#cmbRol');
@@ -207,7 +207,7 @@
                     $select.append('<option value=' + element.ROL_NIDROL + '>' + element.ROL_CNOMBRE + '</option>'); // return empty
                 }
             });
-            
+
         });
 
         // Callback handler that will be called on failure
@@ -223,7 +223,7 @@
             url: "/general/dependencias",
             type: "get",
         });
-    
+
         // Callback handler that will be called on success
         dependencias.done(function (response, textStatus, jqXHR){
             var $dep1 = $('#cmbDepPertenece');
@@ -233,7 +233,7 @@
                 $dep1.append('<option value=' + element.ID_CENTRO + '>' + element.DESCRIPCION + '</option>');
                 $dep2.append('<option value=' + element.ID_CENTRO + '>' + element.DESCRIPCION + '</option>');
             });
-            
+
         });
 
         // Callback handler that will be called on failure
@@ -254,7 +254,7 @@
             data: {"dependencia_id":  data.value }
 
         });
-    
+
         // Callback handler that will be called on success
         unidad.done(function (response, textStatus, jqXHR){
             let unidad = $('#cmbPuedeTenerAcceso');
@@ -278,7 +278,7 @@
         });
 
     }
-    
+
     function TRAM_FN_EDITAR(IntIdUsuario){
         document.location.href = '/servidorespublicos/editar/' + IntIdUsuario;
     };
@@ -288,7 +288,7 @@
     }
 
     function buscar(){
-        
+
         varPaginacion = {
             "nombre"        : $("#txtNombre").val(),
             "primer_Ap"     : $("#txtPaterno").val(),
@@ -317,7 +317,7 @@
         $("#cmbPertenece").val("0");
         $("#cmbDepPuedeTenerAcceso").val("0");
         $("#cmbPuedeTenerAcceso").val("0");
-        
+
         varPaginacion = {
             "order"          : "desc",
             "order_by"       : "u.USUA_NIDUSUARIO",
@@ -338,7 +338,7 @@
 
         listar();
     }
-    
+
     function cambiaPagina(pagina){
         varPaginacion.page = pagina;
         listar();
@@ -356,7 +356,7 @@
                 cancelButtonText: 'Cancelar',
             }).then((result) => {
                 if (result.isConfirmed){
-                                   
+
                     request = $.ajax({
                         url: "/general/delete_usuario",
                         type: "post",
@@ -410,7 +410,7 @@
             data: varPaginacion
         });
 
-        request.done(function (response, textStatus, jqXHR){ 
+        request.done(function (response, textStatus, jqXHR){
             let usuarios = response.data;
             let html = '<tbody id="tbodyFormulario">';
             if(usuarios.length > 0)
@@ -429,14 +429,14 @@
                                     <span>
                                         <button type="button"  onclick="TRAM_AJX_DETALLE(${ usuarios[i].USUA_NIDUSUARIO });" title="Ver" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
                                     </span>
-                                
+
                                     <span>
                                             <button type="button" onclick="cambiaEstatus(${ usuarios[i].USUA_NIDUSUARIO })" title="${estatus}" class="btn btn-link">`;
                                     if(usuarios[i].USUA_NACTIVO == true)
                                                 html += `<i class="fas fa-toggle-off" style="color: black"></i>`;
                                             else
                                                 html += `<i class="fas fa-toggle-on" style="color: black"></i>`;
-                                        
+
                                                 html +=`</button></span>
                                 </td>
                             </tr>`;
@@ -451,14 +451,14 @@
             let paginacion = `
                 <div class="row" id="paginacion" style="margin-top: 30px;">
                     <div class="col-md-6 dataTables_info" style="margin-top:10px;" role="status" aria-live="polite">Mostrando registros del ${response.from} al ${response.to} de un total de ${response.total} registros</div>
-                    
+
                     <div class="col-md-6 float-right">
                     <nav aria-label="Page navigation example" style="float:right;">
                         <ul class="pagination">
                             <li class="page-item  ${anterior}">
                                 <a class="page-link" href="javascript:onclick=cambiaPagina(${ response.current_page - 1 });" tabindex="-1">Anterior</a>
                             </li>`;
-                            
+
                             let num_paginas = response.last_page;
                             let activo = "";
 
@@ -478,7 +478,7 @@
                                         else if( i == 5){
                                             paginacion+=` <li class="page-item ${activo}"><a class="page-link">...</a></li>`;
                                         }
-                                        
+
                                     }
                                     else{
                                         if( i == ( response.current_page -2)){
