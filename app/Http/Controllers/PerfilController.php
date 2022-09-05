@@ -356,7 +356,8 @@ class PerfilController extends Controller
     public function getDocsHistoryExpediente($id)
     {
         $ObjAuth = Auth::user();
-        $rspt = Cls_Usuario::getHistoryExpe($id, $ObjAuth->USUA_NIDUSUARIO);
+        //$rspt = Cls_Usuario::getHistoryExpe($id, $ObjAuth->USUA_NIDUSUARIO);
+        $rspt = Cls_Usuario::getEXPtram($id, $ObjAuth->USUA_NIDUSUARIO);
         $data = array();
         foreach ($rspt as $key => $i) {
             $nombre = explode("/", $i->ruta);

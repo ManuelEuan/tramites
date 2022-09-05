@@ -356,6 +356,57 @@ class Cls_Tramite_Servicio extends Model
         
         return $docsUser;
     }
+    
+    
+    static function getTRAMexp($idUSER) 
+    {
+
+
+        //FORMATO DE TRAMITE tram_mdv_documento_tramite
+        $sec = DB::select("SELECT 'TRAM' AS TIPO, USDO_NIDUSUARIORESP, USDO_CRUTADOC, USDO_NPESO, USDO_NESTATUS, 
+        USDO_COBSERVACION, USDO_NIDTRAMITEDOCUMENTO, created_at, updated_at,  USDO_CEXTENSION, USDO_NIDUSUARIOBASE, 
+        USDO_CDOCNOMBRE, idDocExpediente, VIGENCIA_FIN
+        FROM tram_mdv_usuariordocumento
+        WHERE USDO_NIDUSUARIOBASE =  ? 
+        UNION        
+        SELECT 'EXP' AS TIPO, base.id AS USDO_NIDUSUARIORESP, base.ruta AS USDO_CRUTADOC, base.PESO AS USDO_NPESO, 
+        base.estatus AS USDO_NESTATUS, '' AS USDO_COBSERVACION, 0 AS USDO_NIDTRAMITEDOCUMENTO, 
+        base.create_at AS created_at, base.update_at AS updated_at, base.FORMATO AS USDO_CEXTENSION, 
+        base.ID_USUARIO AS USDO_NIDUSUARIOBASE, CONFIG.NOMBRE AS USDO_CDOCNOMBRE, 
+		  base.ID_CDOCUMENTOS AS idDocExpediente, base.VIGENCIA_FIN AS VIGENCIA_FIN
+        FROM tram_mst_documentosbase AS base  LEFT JOIN tram_mst_configdocumentos AS CONFIG
+        ON base.ID_CDOCUMENTOS = CONFIG.id
+        WHERE base.ID_USUARIO = ?
+        ORDER BY created_at DESC
+        ", [$idUSER, $idUSER]); 
+         
+              
+        
+        return $sec;
+    }//*/
+    
+    static function getEXPtram($TIPO, $idUSER)
+    {//
+        //FORMATO DE EXPEDIENTE tram_mdv_documento_tramite
+        //ARRAY PARA IGUALAR ESTATUS
+        //$ESTATUS_TRAM = array('0' => 1, '1' => '2', '2' => '3');
+//AND BASE.ID_CDOCUMENTOS=CONFIG.id
+//LEFT JOIN tram_mst_configdocumentos AS CONFIG
+        $docsUser = DB::select("SELECT BASE.*, 'expediente' AS  TIPO
+        FROM tram_mst_documentosbase AS BASE 
+        WHERE  ID_CDOCUMENTOS = ? AND ID_USUARIO = ? 
+        UNION
+        SELECT  TRAM.USDO_NIDUSUARIORESP AS id, TRAM.USDO_CEXTENSION AS FORMATO, TRAM.USDO_NPESO AS PESO, 
+        '' AS VIGENCIA_INICIO, '' AS VIGENCIA_FIN, TRAM.idDocExpediente AS ID_CDOCUMENTOS, 
+		  TRAM.USDO_NIDUSUARIOBASE AS ID_USUARIO, 
+        TRAM.created_at AS create_at, TRAM.updated_at AS update_at, '0' AS isDelete, 
+        TRAM.USDO_NESTATUS AS estatus, TRAM.USDO_CRUTADOC AS ruta, '0' AS isActual, 'tramite' AS  TIPO 
+        FROM tram_mdv_usuariordocumento AS TRAM  
+        WHERE TRAM.idDocExpediente = ? AND TRAM.USDO_NIDUSUARIOBASE = ?
+         ", [$TIPO, $idUSER, $TIPO, $idUSER]);
+        
+        return $docsUser;
+    }
 
 
 

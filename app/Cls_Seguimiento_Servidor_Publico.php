@@ -383,6 +383,16 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         } catch (\Throwable $th) {
         }
     }
+    //Cambiar estatus, vigencia y observacion de documentos de usuario
+    static function TRAM_ESTATUS_DOCUMENTO_VIG($USDO_NIDUSUARIOTRAMITE, $USDO_NIDTRAMITEDOCUMENTO, $USDO_NESTATUS, $USDO_COBSERVACION, $VIGENCIA)
+    {//$VIGENCIA
+        try {
+
+            Cls_Usuario_Documento::where(['USDO_NIDUSUARIOTRAMITE' => $USDO_NIDUSUARIOTRAMITE, 'USDO_NIDTRAMITEDOCUMENTO' => $USDO_NIDTRAMITEDOCUMENTO])
+                ->update(['USDO_NESTATUS' => $USDO_NESTATUS, 'VIGENCIA_FIN' => $VIGENCIA, 'USDO_COBSERVACION' => $USDO_COBSERVACION]);
+        } catch (\Throwable $th) {
+        }
+    }
 
     static function ActualizarDocsUsuario($docId, $vigencia)
     {
