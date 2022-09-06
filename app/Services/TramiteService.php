@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Cls_Tramite;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TramiteService
@@ -14,7 +15,9 @@ class TramiteService
      * @return array
      */
     public function busqueda(Request $data){
-        $IntCantidadRegistros = 10;
+        $registros  = 10;
+        $usuario    = Auth::user();
+        $rol        = $usuario->TRAM_CAT_ROL;
 
         $query = DB::connection('mysql2')->table('procedures as p')
                     ->join('administrativeunits as a', 'p.IdAdministrativeUnit', '=', 'a.Id')
@@ -22,14 +25,24 @@ class TramiteService
                     ->select('p.id','p.iId as remtisId','p.CitizenDescription', 'p.name', 'd.name as nameDependencia', 'd.Description as descripcionDependencia', 'p.CreatedDate')
                     ->where(['p.ProcedureState'=> 5, 'p.IsDeleted' => 0]);
 
+        if($rol->ROL_CCLAVE != 'ADM'){
+            $depPertenece   = DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
+            $uniPertenece   = DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
+            $tramPertenece  = DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
+            
+            $query->whereIn('d.iId', $depPertenece->pluck('DEPUP_NIDDEPENCIA'))
+                    ->whereIn('a.iId', $uniPertenece->pluck('UNIDUP_NIDUNIDAD'))
+                    ->whereIn('p.iId', $tramPertenece->pluck('TRAMUP_NIDTRAMITE'));
+        }
+
         if(!is_null($data->palabraClave))
             $query->where('p.name', 'like','%'.$data->palabraClave.'%');
         if(!is_null($data->dependencia) && $data->dependencia != "")
             $query->where('d.id', $data->dependencia);
-        if(!is_null($data->IntCantidadRegistros))
-            $IntCantidadRegistros = $data->IntCantidadRegistros;
+        if(!is_null($data->registros))
+            $registros = $data->registros;
 
-        $tramites = $query->paginate($IntCantidadRegistros);
+        $tramites = $query->paginate($registros);
         foreach ($tramites as $tramite) {
             $tramite->TRAM_NIDTRAMITE           = $tramite->remtisId;
             $tramite->TRAM_NIDTRAMITE_CONFIG    = 0;
@@ -332,5 +345,15 @@ class TramiteService
             $query->where('TRAM_NIDTRAMITE_ACCEDE', $tramiteAccedeId);
 
         return !is_null($tramiteAccedeId) ? $query->first() : $query->get();
+    }
+
+    /**
+     * retorna el registro de retys en base a la tabla que se indique
+     * @param String $tabla
+     * @param String $uuid
+     * @return Object
+     */
+    public function getRetys($tabla, $uuid){
+        return DB::connection('mysql2')->table($tabla)->where('Id', $uuid)->first();
     }
 }
