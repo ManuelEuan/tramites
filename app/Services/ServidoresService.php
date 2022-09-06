@@ -50,7 +50,7 @@ class ServidoresService
         $final      = [];
         $unidades   = explode(",", $request->unidad_id);
 
-        $registros = DB::connection('mysql2')->table('procedures')
+        $registros = DB::connection('mysql2')->table('procedures as p')
                         ->select()->where(['p.ProcedureState'=> 5, 'p.IsDeleted' => 0])->get();
 
         foreach  ($unidades as $unidad) {
