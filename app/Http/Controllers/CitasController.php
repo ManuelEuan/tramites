@@ -145,7 +145,8 @@ class CitasController extends Controller
 
         $query = DB::table('citas_tramites_calendario as c')
                     ->join('tram_mst_usuario as u', 'c.CITA_IDUSUARIO', '=', 'u.USUA_NIDUSUARIO')
-                    ->select('c.*', 'u.USUA_CRFC AS rfc', 'u.USUA_CRFC as rfc', 'u.USUA_CNOMBRES as nombre', 'u.USUA_CPRIMER_APELLIDO as apellido_paterno', 'u.USUA_CSEGUNDO_APELLIDO as apellido_materno');
+                    ->select('c.*', 'u.USUA_CRFC AS rfc', 'u.USUA_CRFC as rfc', 'u.USUA_CNOMBRES as nombre', 'u.USUA_CPRIMER_APELLIDO as apellido_paterno', 'u.USUA_CSEGUNDO_APELLIDO as apellido_materno')
+                    ->whereNull('deleted_at');
 
         if(!is_null($request->usuario_id))
             $query->where("c.CITA_IDUSUARIO", $request->usuario_id);
