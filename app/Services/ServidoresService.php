@@ -52,7 +52,7 @@ class ServidoresService
 
         $registros = DB::connection('mysql2')->table('procedures')
             ->select()
-            ->where('ProcedureState', 0)
+            ->where('ProcedureState', 5)
             ->get();
 
         foreach  ($unidades as $unidad) {
