@@ -668,21 +668,21 @@
 
                             @break
                             @case('Citas en línea')
-                                <div class="col-md-12">
+                                <div class="col-md-12 sinCitaHide">
                                     <h3>Se requiere programar cita</h3>
                                 </div>
-                                <div class="col-md-12" style="border-bottom:1px solid rgb(173, 171, 171); margin-bottom:20px">
+                                <div class="col-md-12 sinCitaHide" style="border-bottom:1px solid rgb(173, 171, 171); margin-bottom:20px">
                                     @if (count($confsec->cita) > 0)
                                         <div style="">{!! $confsec->cita[0]->CONF_CDESCRIPCIONCITA !!}</div>
                                     @endif
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12 sinCitaHide">
                                     <div>
                                         <div class="row" id="concitareservada">
                                             <div class="col-md-6">
                                                 <h6 style="font-size: 1rem; font-weight:bold;">Estatus de la Cita</h6>
                                                 <div style="border: 1px dashed black; padding:15px; width:100%">
-                                                    <p style="color: #000;"><b style="font-weight: 600;">ESTATUS:</b> <span id="citaConfirmado"></span><label
+                                                    <p style="color: #000;"><b style="font-weight: 600;">ESTATUS:</b> <span id="citaConfirmado">Agendado</span><label
                                                             id="cita_status"></label></p>
                                                     <p style="color: #000;"><b style="font-weight: 600;">FOLIO:</b> <span id="citaFolio"></span><label
                                                             id="cita_folio_cita"></label></p>
@@ -1484,8 +1484,6 @@
                 echo json_encode($tramite['configuracion']['conceptos']); 
                 ?>;    
                 var ubicacion_ventanilla_sin_cita = {};
-                console.log('ver conecpyos');
-                console.log(conceptos_pagos);
 
                 //Unicamente se muestra el modal cuando el tramite esta finalizado y cuando el usuario no haya respondido la encuesta de satisfaccion
                 if (estatus_tram == 8) {
@@ -1519,8 +1517,6 @@
                 type: "GET",
                 dataType: 'json',
                 success: function(data) {
-				    console.log("resp");
-				    console.log(data);
                 	// location.reload();
                 },
                 error: function(data) {}
@@ -1531,12 +1527,9 @@
                     var idusuario = "{{ $tramite['idsuario'] }}";
                     var idtramiteAccede = "{{ $tramite['idtramiteaccede'] }}";
                     var seccion_active = "{{ $tramite['seccion_active'] }}";
-                    console.log("seccion active: " + seccion_active);
 
                     var moduloselected = "{{ $tramite['modulo'] }}";
                     localStorage.setItem("IdModuloSelected", moduloselected);
-
-                    console.log("este es el id que se manda: " + idtramiteAccede);
 
                     // existeCita(idusuario, id, idtramiteAccede);
 
@@ -1702,8 +1695,6 @@
                         formData.append('file', files);
 
                         // $.each($("#" + id)[0].files, function(i, file) {
-                        //     console.log('aaa');
-                        //     console.log(file);
                         //     formData.append('file[]', file);
                         // });
                         var name = $(this).data("docname");
@@ -1844,8 +1835,6 @@
                             type: "POST",
                             dataType: 'json',
                             success: function(data) {
-                                console.log(data);
-
                                 string_ = 'https://ipagostest.chihuahua.gob.mx/PagosDiversos/?parametro=' +
                                     string_;
 
@@ -2061,8 +2050,6 @@
                         var id = this.id;
                         var editor_val = CKEDITOR.instances[id].getData();
 
-                        console.log(editor_val, id);
-
                         if (editor_val == "" || editor_val == null) {
                             $("#error_" + id).html('<label><span style="color: red;">¡Error!</span> Es requerido</label>');
                         } else {
@@ -2112,13 +2099,9 @@
                         }
                     });
                     if (!$("#frmForm").valid()) {
-
-                        console.log("No se encuentra lleno completamente");
                         $("#estatusFormulario").html('<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
                             ' El formulario del trámite "' + nombreTramite + '"' + cuerpo + ' </div>');
                     } else {
-
-                        console.log("se encuentra lleno completamente");
                         $("#estatusFormulario" + id).html("");
                     }
                 };
@@ -2400,7 +2383,6 @@
                                         $('#loading_save').hide();
                                     },
                                     error: function(error) {
-                                        console.log(error);
                                         Swal.fire({
                                             title: '¡Aviso!',
                                             text: data.message,
@@ -2500,9 +2482,6 @@
                 function cargarEventos(payload) {
                     var tramite = "{{ $tramite['idtramiteaccede'] }}";
                     var modulo = "{{ $tramite['infoModulo']['iId'] }}";
-
-                    console.log("tramite: " + tramite);
-                    console.log("modulo: " + modulo);
                     if (tramite == 0 || tramite == undefined || tramite == null || modulo == 0 || modulo == undefined || modulo == null) {
                         mostrarAlerta('Debe seleccionar un modulo para ver las citas disponibles.');
                         return;
@@ -2547,7 +2526,7 @@
                     $('.toast').toast('show');
                 }
                 // Colorea el calendario con segun los datos del mes
-                function pintarDisponibilidad(data, payload) {console.log(data);
+                function pintarDisponibilidad(data, payload) {
                     var events = [];
                     for(var row in data) {
                         var color = (data[row].horario.porcentajeOcupacion < 40 // menos de 40 Verde
@@ -2761,13 +2740,18 @@
             </script>
 
         //FUNCIONALIDAD DE LAS CITAS AGENDADAS
-        <script>          
+        <script>   
+            let estatus = "{{ $tramite['estatus'] }}";
             var countCita = "{{ count($tramite['cita']) }}";
             if (countCita > 0) {
                 $("#concitareservada").show();
                 $("#sincitareservada").remove();
                 // Información de la cita
-                $("#citaConfirmado").text("{{ @($tramite['cita']['CONFIRMADO'] ? 'Confirmado' : 'Sin confirmar') }}");
+
+                // $("#citaConfirmado").text("{{ @($tramite['cita']['CONFIRMADO'] ? 'Confirmado' : 'Sin confirmar') }}");
+
+                $("#citaConfirmado").text("{{ @($tramite['cita']['CONFIRMADO'] ? 'Aprobado' : 'Agendado') }}");
+
                 $("#citaFolio").text("{{ @$tramite['cita']['FOLIO'] }}");
                 $("#citaFecha").text("{{ @$tramite['cita']['FECHA'] }}");
                 $("#citaHora").text("{{ @$tramite['cita']['HORA'] }}");
@@ -2777,10 +2761,14 @@
                     + "{{ $tramite['infoModulo']['PostalCode'] }}"
                 );
                 $("#citaTramite").text("{{ $tramite['nombre'] }}");
-            } else {
+            } else if (estatus != 9) {
                 $("#sincitareservada").show();
                 $("#concitareservada").remove();
                 calendarInit();
+            } else {
+                $("#sincitareservada").remove();
+                $("#concitareservada").remove();
+                $(".sinCitaHide").attr("style", "display: none;");
             }
 
             function removeCita() {

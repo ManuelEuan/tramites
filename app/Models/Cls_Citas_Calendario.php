@@ -132,4 +132,10 @@ class Cls_Citas_Calendario extends Model {
         // return Cls_Citas_Calendario::where("idcitas_tramites_calendario", $pk)->delete();
         // return DB::table('citas_tramites_calendario')->where("idcitas_tramites_calendario", $pk)->delete();
     }
+
+    public static function aprobarCita($pk) {
+        return Cls_Citas_Calendario::where('idcitas_tramites_calendario', $pk)->update([
+            'CITA_CONFIRMADO' => 1
+        ]);
+    }
 }

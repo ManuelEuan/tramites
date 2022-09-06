@@ -248,7 +248,6 @@
                                                 <div class="col-md-12">
                                                     <div class="col-md-12 mt-5 contenedorBtn">
                                                         <div class="text-right botones">
-                                                            <button onclick="TRAM_FN_REPROGRAMAR_CITA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-warning border btnLetras">Reprogramar</button>
                                                             <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite</button>
                                                             <button onclick="TRAM_FN_APROBAR_CITA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
                                                         </div>
@@ -1472,6 +1471,11 @@
                         }
 
                         var rutaDocumento = value.TRAD_CRUTADOC !== null && value.TRAD_CRUTADOC !== "" ? value.TRAD_CRUTADOC : "";
+                        
+                        //VIGENCIA
+                        if(value.vigencia!='' ){
+                                var ckVIG = 'checked';
+                        };
 
                         itemDocumento += '<div class="row">' +
                             '<div class="col-md-6">' +
@@ -1487,13 +1491,16 @@
                         if (value.existe > 0 && rutaDocumento != "") {
                             itemDocumento += '<span style="padding-right: 15px;font-size: 20px;"><i title="Ver documento" style="cursor:pointer;" onclick="TRAM_FN_VER_DOCUMENTO(' + value.TRAD_NIDTRAMITEDOCUMENTO + ')" class="fas fa-eye"></i></span>' +
                                 "<a href='{{ asset('') }}" + rutaDocumento + "' style='padding-right: 15px;font-size: 20px;' download='" + documento_add.nombre + "'><i title='Descargar documento' class='fas fa-download'></i></a> ";
-                            itemDocumento += '<label class="divV"><input class="vigencia" id="vig' + value.TRAD_NIDTRAMITEDOCUMENTO + '" onchange="vigencia(' + value.TRAD_NIDTRAMITEDOCUMENTO + ', this);" type="checkbox" name="vigencia">¿Vigencia?</label>';
-
+                            itemDocumento += '<label class="divV"><input class="vigencia" id="vig' + value.TRAD_NIDTRAMITEDOCUMENTO + '" onchange="vigencia(' + value.TRAD_NIDTRAMITEDOCUMENTO + ', this);" ' + ckVIG + ' type="checkbox" name="vigencia">¿Vigencia?</label>';
                         }
                         itemDocumento += '</div>'; //col-2
                         itemDocumento += '</div>' + //row
                             '</div>'; //col-md-5
-                        itemDocumento += '<div class="col-2" id="divVigencia' + value.TRAD_NIDTRAMITEDOCUMENTO + '"></div>';
+                        itemDocumento += '<div class="col-2" id="divVigencia' + value.TRAD_NIDTRAMITEDOCUMENTO + '">';
+                        if(value.vigencia!='' && checkAceptado =='checked'){
+                            itemDocumento += '<input type="date" id="vigencia' + value.TRAD_NIDTRAMITEDOCUMENTO + '" name="fechaV" value="' + value.vigencia + '">';
+                        };
+                        itemDocumento += '</div>';
 
                         itemDocumento += '<div class="col-md-3 validatePregunta" style="display: block;">' +
                             '<div class="form-check form-check-inline">' +
@@ -2511,13 +2518,27 @@
     }
 
     function TRAM_FN_APROBAR_CITA(SeccionID) {
+        var countCita = "{{ count($tramite->cita) }}";
+        if (!(countCita > 0)) {
+            setTimeout(function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Alerta',
+                    text: 'No hay cita en agenda por aprobar',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }, 2000);            
+            return;
+        }
 
         var seccion_cita = {
             "SSEGTRA_NIDSECCION_SEGUIMIENTO": SeccionID,
             "CONF_ESTATUSSECCION": 2,
             "CONF_NOTIFICACION": "",
             "CONF_NIDUSUARIOTRAMITE": parseInt("{{request()->route('id') }}"),
-            "CONF_PREGUNTAS": []
+            "CONF_PREGUNTAS": [],
+            "IDCITA": "{{ @$tramite->cita['ID'] }}"
         };
 
         Swal.fire({
@@ -3389,7 +3410,8 @@
             "CONF_NOTIFICACION": "",
             "nombre_tramite": "{{$tramite->USTR_CNOMBRE_TRAMITE}}",
             "folio_tramite": "{{$tramite->USTR_CFOLIO}}",
-            "CONF_PREGUNTAS": []
+            "CONF_PREGUNTAS": [],
+            "IDCITA": "{{ @$tramite->cita['ID'] }}"
         };
 
         var txtMotivoRechazo = CKEDITOR.instances['textRechazarTramite'].getData();
@@ -3603,6 +3625,7 @@ AGENDA DE CITAS -- 02/09/2022
     var countCita = "{{ count($tramite->cita) }}";
     if (countCita > 0) {
         // Información de la cita
+        $('#cita_status').text("{{ @($tramite->cita['CONFIRMADO'] ? 'Aprobado' : 'Agendado') }}");
         $("#cita_folio").text("{{ @$tramite->cita['FOLIO'] }}");
         $("#cita_fecha").text("{{ @$tramite->cita['FECHA'] }}");
         $("#cita_hora").text("{{ @$tramite->cita['HORA'] }}");
