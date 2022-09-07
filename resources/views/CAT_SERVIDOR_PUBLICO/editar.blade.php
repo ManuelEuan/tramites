@@ -1502,7 +1502,7 @@
             TRAM_FN_DISABLED_INPUT();
             return;
         }
-        console.log(objData);
+
         $.ajax({
             data: objData,
             url: "/servidorespublicos/modificar",
@@ -1523,9 +1523,9 @@
                         confirmButtonColor: '#3085d6',
                         confirmButtonText: 'Aceptar'
                     }).then((result) => {
-                        /* if (result.isConfirmed) {
+                        if (result.isConfirmed) {
                             TRAM_FN_BACK();
-                        } */
+                        }
                     });
                 } else {
                     Swal.fire({

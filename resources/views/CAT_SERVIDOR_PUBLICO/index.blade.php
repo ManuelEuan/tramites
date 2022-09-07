@@ -184,8 +184,6 @@
         "uni_acceso"    : null
     };
 
-
-
     $(document).ready(function () {
         $.ajaxSetup({
             headers: {
@@ -220,7 +218,7 @@
         });
 
         dependencias = $.ajax({
-            url: "/general/dependencias",
+            url: "/servidorespublicos/getDepencencias",
             type: "get",
         });
 
@@ -230,10 +228,9 @@
             var $dep2 = $('#cmbDepPuedeTenerAcceso');
 
             response.forEach(element => {
-                $dep1.append('<option value=' + element.ID_CENTRO + '>' + element.DESCRIPCION + '</option>');
-                $dep2.append('<option value=' + element.ID_CENTRO + '>' + element.DESCRIPCION + '</option>');
+                $dep1.append(`<option value="${element.Id}">${element.Description}</option>`);
+                $dep2.append(`<option value="${element.Id}">${element.Description}</option>`);
             });
-
         });
 
         // Callback handler that will be called on failure
@@ -249,10 +246,9 @@
 
     function cambiaDependencia(data, tipo){
         unidad = $.ajax({
-            url: "/general/unidades_administrativas",
+            url: "/servidorespublicos/getUnity",
             type: "get",
-            data: {"dependencia_id":  data.value }
-
+            data: {"tipo":"multiple","dependencia_id": data.value.toString() ?? '0' }
         });
 
         // Callback handler that will be called on success
@@ -264,7 +260,7 @@
             }
 
             response.forEach(element => {
-                unidad.append('<option value=' + element.ID_CENTRO + '>' + element.DESCRIPCION + '</option>');
+                unidad.append(`<option value="${element.Id}">${element.Description}</option>`);
             });
         });
 
@@ -385,11 +381,6 @@
             });
     }
 
-
-                            /*
-                                <span>
-                                    <button type="button"  onclick="Eliminar(${ usuarios[i].USUA_NIDUSUARIO });" title="Eliminar" class="btn btn-link"><i class="fas fa-trash" style="color: black"></i></button>
-                                </span>*/
     function listar(pag= true){
         $("#btn_search").prop("disabled", true);
         $("#tbodyFormulario").remove();
@@ -405,7 +396,7 @@
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
         request = $.ajax({
-            url: "/general/usuarios",
+            url: "/servidorespublicos/listar",
             type: "get",
             data: varPaginacion
         });

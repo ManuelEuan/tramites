@@ -165,12 +165,6 @@ Route::group(['prefix' => 'notificaciones'], function () {
 
 Route::group(['prefix' => 'general'], function () {
     Route::get('/roles', 'GeneralController@roles');
-    Route::get('/dependencias', 'GeneralController@dependencias');
-    Route::get('/tramites', 'GeneralController@tramites');
-    Route::get('/edificios', 'GeneralController@edificios');
-    Route::get('/unidades_administrativas', 'GeneralController@unidades_administrativas');
-
-    Route::get('/usuarios', 'GeneralController@usuarios');
     Route::post('/delete_usuario', 'GeneralController@deleteUsuario');
     Route::get('/obtenerTramites/{id}', 'GeneralController@obtener');
 });
@@ -211,6 +205,7 @@ Route::group(['prefix' => 'gestores'], function () {
 
 Route::group(['prefix' => 'servidorespublicos'], function () {
     Route::get('/', array('uses' => 'ServidorPublicoController@index'))->middleware("permiso");
+    Route::get('/listar', array('uses' => 'ServidorPublicoController@listar'));
     Route::get('/consultar', array('uses' => 'ServidorPublicoController@consultar'));
     Route::get('/crear', array('uses' => 'ServidorPublicoController@crear'));
     Route::post('/agregar', array('uses' => 'ServidorPublicoController@agregar'));

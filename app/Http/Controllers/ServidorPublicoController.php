@@ -463,4 +463,94 @@ class ServidorPublicoController extends Controller
         }
         return Response()->json($response);
     }
+
+    /**
+     * Listado de los servidores publicos
+     */
+    public function listar(Request $request){
+        $items = [];
+        $order = 'desc';
+        $order_by = 'u.USUA_NIDUSUARIO';
+        $resultados = 10;
+
+        //Comienza el Query
+        $query = DB::table('tram_mst_usuario as u')
+                    ->leftJoin('tram_cat_rol as rol', 'u.USUA_NIDROL', '=', 'rol.ROL_NIDROL')
+                    ->leftJoin('tram_aux_dependencia_usuario_pertenece as dp', 'u.USUA_NIDUSUARIO', '=', 'dp.DEPUP_NIDUSUARIO')
+                    ->leftJoin('tram_aux_dependencia_usuario_acceso as da', 'u.USUA_NIDUSUARIO', '=', 'da.DEPUA_NIDUSUARIO')
+                    ->leftJoin('tram_aux_unidad_usuario_pertenece as up', 'u.USUA_NIDUSUARIO', '=', 'up.UNIDUP_NIDUSUARIO')
+                    ->leftJoin('tram_aux_unidad_usuario_acceso as ua', 'u.USUA_NIDUSUARIO', '=', 'ua.UNIDUA_NIDUSUARIO')
+                    ->select('u.USUA_CUSUARIO', 'u.USUA_CNOMBRES','u.USUA_CPRIMER_APELLIDO','u.USUA_CSEGUNDO_APELLIDO',
+                                'u.USUA_NIDUSUARIO', 'rol.ROL_CNOMBRE as USUA_CROLNOMBRE', 'u.USUA_NACTIVO')
+                    ->groupBy( 'u.USUA_CUSUARIO', 'u.USUA_CNOMBRES','u.USUA_CPRIMER_APELLIDO','u.USUA_CSEGUNDO_APELLIDO',
+                                'u.USUA_NIDUSUARIO', 'rol.ROL_CNOMBRE', 'u.USUA_NACTIVO');
+
+        $query->where('rol.ROL_NIDROL', '<>', 2);
+
+        //$query->where('USUA_NELIMINADO', null);
+
+        if(!is_null($request->nombre) && $request->nombre != "")
+            $query->where('u.USUA_CNOMBRES','like','%'. $request->nombre .'%');
+
+        if(!is_null($request->primer_Ap) && $request->primer_Ap != "")
+            $query->where('u.USUA_CPRIMER_APELLIDO','like','%'. $request->primer_Ap .'%');
+
+        if(!is_null($request->segundo_AP) && $request->segundo_AP != "")
+            $query->where('u.USUA_CSEGUNDO_APELLIDO','like','%'. $request->segundo_AP .'%');
+
+        if(!is_null($request->correo) && $request->correo != "")
+            $query->where('u.USUA_CCORREO_ELECTRONICO','like','%'. $request->correo .'%');
+
+        if(!is_null($request->estatus) && $request->estatus != "0"){
+            $estatus = $request->estatus == 'true' ? true : false;
+            $query->where('u.USUA_NACTIVO', $estatus);
+        }
+
+        if(!is_null($request->rol) && $request->rol != "0")
+            $query->where('rol.ROL_NIDROL', $request->rol);
+
+        if(!is_null($request->dep_pertenece) && $request->dep_pertenece != "0"){
+            $retys = $this->tramiteService->getRetys('dependencies', $request->dep_pertenece);
+            $query->where('dp.DEPUP_NIDDEPENCIA', $retys->iId);
+        }
+
+        if(!is_null($request->uni_pertenece) && $request->uni_pertenece != "0") {
+            $retys = $this->tramiteService->getRetys('administrativeunits', $request->uni_pertenece);
+            $query->where('up.UNIDUP_NIDUNIDAD', $retys->iId);
+        }
+
+        if(!is_null($request->dep_acceso) && $request->dep_acceso != "0"){
+            $retys = $this->tramiteService->getRetys('dependencies', $request->dep_acceso);
+            $query->where('da.DEPUA_NIDDEPENCIA', $retys->iId);
+        }
+
+        if(!is_null($request->uni_acceso) && $request->uni_acceso != "0"){
+            $retys = $this->tramiteService->getRetys('administrativeunits', $request->uni_acceso);
+            $query->where('ua.UNIDUA_NIDUNIDAD', $retys->iId);
+        }
+
+        //Parametros de paginacion y orden
+        if(!is_null($request->order))
+            $order = $request->order;
+
+        if(!is_null($request->order_by))
+            $order_by = $request->order_by;
+
+        $query->orderBy($order_by, $order);
+
+
+
+        if(is_null($request->paginate) || $request->paginate == "true" ){
+            if(!is_null($request->items_to_show))
+                $resultados = $request->items_to_show;
+
+            $items = $query->paginate($resultados);
+        }
+        else{
+            $items = $query->get();
+            return response()->json(["data" => $items], 200);
+        }
+
+        return response()->json($items, 200);
+    }
 }

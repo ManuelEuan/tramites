@@ -534,8 +534,6 @@
         function TRAM_AJX_DEPENDENCIAS(){
             //Estos llaman al nuevo remapeo del retys
             $.get('/servidorespublicos/getDepencencias', function (data) {
-                // $.get('/general/dependencias', function (data) {
-
                 var html = '<select id="cmbDependencias" class="selectpicker form-control"  data-live-search="true" multiple>';
 
                 data.forEach(function(value) {
@@ -607,9 +605,8 @@
         //acceso
         function TRAM_AJX_TRAMITES_ACCESO(id){
                 unidad = $.ajax({
-                //Estos llaman al nuevo remapeo del retys
-                url: "/servidorespublicos/getTramites",
-                // url:"/general/unidades_administrativas",
+                    //Estos llaman al nuevo remapeo del retys
+                    url: "/servidorespublicos/getTramites",
                     type: "get",
                     data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
 
@@ -684,7 +681,6 @@
         }
 
         function TRAM_AJX_DEPENDENCIAS_ACCESO(selected){
-            // $.get('/general/dependencias', function (data) {
             $.get('/servidorespublicos/getDepencencias', function (data) {
 
                 var data_max = "";
