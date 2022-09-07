@@ -448,21 +448,15 @@
 
 
         function TRAM_AJX_TRAMITES(id){
-            console.log(id.toString())
-            //$.get('/general/tramites?unidad_id=' + id.toString(), function (data) {
-            // $.get('/general/obtenerTramites/' + id.toString(), function (data) {
-
-                unidad = $.ajax({
+            unidad = $.ajax({
                 //Estos llaman al nuevo remapeo del retys
                 url: "/servidorespublicos/getTramites",
-                // url:"/general/unidades_administrativas",
-                    type: "get",
-                    data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
+                type: "get",
+                data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
 
-                });
+            });
 
-                unidad.done(function (data, textStatus, jqXHR){
-
+            unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbTramites" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
                     html += '<option value="'+ value.iId +'">' + value.Key + '</option>';
@@ -491,7 +485,7 @@
             });
         }
 
-        function TRAM_AJX_UNIDAD_ADMINISTRATIVA(id){
+        function TRAM_AJX_UNIDAD_ADMINISTRATIVA(id) {
             unidad = $.ajax({
                 //Estos llaman al nuevo remapeo del retys
                 url: "/servidorespublicos/getUnity",

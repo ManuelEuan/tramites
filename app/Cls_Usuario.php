@@ -329,12 +329,20 @@ class Cls_Usuario extends Model
         );
     }
 
+    static function CONSULTAR_TRAMITE_USUARIO_ACCESO($IntIdUsuario) {
+        return DB::table('tram_aux_tramite_usuario_acceso')->where('TRAMUA_NIDUSUARIO', $IntIdUsuario)->get();
+    }
+
     static function TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE($IntIdUsuario)
     {
         return DB::select(
             'call TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE(?)',
             array($IntIdUsuario)
         );
+    }
+
+    static function CONSULTAR_TRAMITE_USUARIO_PERTENECE($IntIdUsuario) {
+        return DB::table('TRAM_AUX_TRAMITE_USUARIO_PERTENECE')->where('TRAMUP_NIDUSUARIO', $IntIdUsuario)->get();
     }
 
     static function TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($IntIdUsuario)

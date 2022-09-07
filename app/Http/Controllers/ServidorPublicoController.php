@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Services\TramiteService;
 use Illuminate\Support\Facades\DB;
 use App\Services\ServidoresService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\GeneralController;
 
@@ -57,7 +58,8 @@ class ServidorPublicoController extends Controller
             $request->txtNumero_Interior_Fiscal = 1;
             $request->txtNumero_Exterior_Fiscal = 1;
             $request->cmbMunicipio_Fiscal       = "1";
-
+            $request->txtNumeroTelefono         = $request->txtTelefono;
+            
             DB::beginTransaction();
             $IntUsuarioId = Cls_Usuario::TRAM_SP_AGREGARUSUARIO($request);
 
@@ -165,40 +167,42 @@ class ServidorPublicoController extends Controller
 
     public function editar($id){
         $objUsuario =  Cls_Usuario::TRAM_SP_OBTENER_USUARIO($id);
-
+      
         //Areas pertenece
         $objUsuario->lstDependenciaPertenece    = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE($id);
         $objUsuario->lstUnidadPertence          = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE($id);
-        $objUsuario->lstTramitePertence         = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE($id);
+        $objUsuario->lstTramitePertence         = Cls_Usuario::CONSULTAR_TRAMITE_USUARIO_PERTENECE($id);
         $objUsuario->lstEdificioPertence        = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE($id);
 
-
         //Areas acceso
-        $objUsuario->lstDependenciaAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id);
-        $objUsuario->lstUnidadAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id);
-        $objUsuario->lstTramiteAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_ACCESO($id);
-        $objUsuario->lstEdificioAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id);
+        $objUsuario->lstDependenciaAcceso   = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id);
+        $objUsuario->lstUnidadAcceso        = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id);
+        $objUsuario->lstTramiteAcceso       = Cls_Usuario::CONSULTAR_TRAMITE_USUARIO_ACCESO($id);
+        $objUsuario->lstEdificioAcceso      = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id);
   
         return view('CAT_SERVIDOR_PUBLICO.editar', compact('objUsuario'));
     }
 
-    public function modificar(Request $request){
+    public function modificar(Request $request){ dd($request->all());
         $response = [];
         try {
-            $request->txtRol = $request->cmbRol;
-            $request->rdbTipo_Persona = "FISICA";
-            $request->txtRfc = "XAXX010101000";
-            $request->txtCurp = "11111111111111";
-            $request->txtCalle_Fiscal = "1";
+            $request->txtRol            = $request->cmbRol;
+            $request->rdbTipo_Persona   = "FISICA";
+            $request->txtCalle_Fiscal   = "1";
+            $request->txtRfc            = "XAXX010101000";
+            $request->txtCurp           = "11111111111111";
+            $request->txtCP_Fiscal      = 11111;
+            $request->cmbColonia_Fiscal = "1";
+            $request->cmbEstado_Fiscal  = "1";
+            $request->cmbPais_Fiscal    = "1";
+            $request->txtNumeroTelefono = $request->txtTelefono;
+            $request->cmbMunicipio_Fiscal       = "1";
             $request->txtNumero_Interior_Fiscal = 1;
             $request->txtNumero_Exterior_Fiscal = 1;
-            $request->txtCP_Fiscal = 11111;
-            $request->cmbColonia_Fiscal = "1";
-            $request->cmbMunicipio_Fiscal = "1";
-            $request->cmbEstado_Fiscal = "1";
-            $request->cmbPais_Fiscal = "1";
+
             Cls_Usuario::TRAM_SP_MODIFICARUSUARIO($request);
             
+            DB::beginTransaction();
             //Insertar bitacora
             $ObjBitacora = new Cls_Bitacora();
             $ObjBitacora->BITA_NIDUSUARIO = $request->txtIdUsuario;
