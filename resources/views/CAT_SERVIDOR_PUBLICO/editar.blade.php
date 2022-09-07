@@ -26,27 +26,27 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input type="hidden" name="txtIdUsuario" id="txtIdUsuario" value="{{$Obj->USUA_NIDUSUARIO}}">
+                            <input type="hidden" name="txtIdUsuario" id="txtIdUsuario" value="{{$objUsuario->USUA_NIDUSUARIO}}">
                             <label for="dteFechaInicio">Usuario <span class="text-danger">*</span></label>
-                            <input type="text" placeholder="Usuario" class="form-control" name="txtUsuario" id="txtUsuario" value="{{$Obj->USUA_CUSUARIO}}" disabled>
+                            <input type="text" placeholder="Usuario" class="form-control" name="txtUsuario" id="txtUsuario" value="{{$objUsuario->USUA_CUSUARIO}}" disabled>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="dteFechaInicio">Rol <span class="text-danger">*</span></label>
                             <select class="combobox form-control" name="cmbRol" id="cmbRol" placeholder="Rol" disabled>
-                                <option value="1" {{$Obj->USUA_NIDROL == "1" ? "selected" : ""}}>Administrador</option>
-                                <option value="3" {{$Obj->USUA_NIDROL == "3" ? "selected" : ""}}>Enlace Oficial</option>
-                                <option value="4" {{$Obj->USUA_NIDROL == "4" ? "selected" : ""}}>Admin-CT</option>
-                                <option value="5" {{$Obj->USUA_NIDROL == "5" ? "selected" : ""}}>Servidor Público</option>
-                                <option value="6" {{$Obj->USUA_NIDROL == "6" ? "selected" : ""}}>Consultor</option>
+                                <option value="1" {{$objUsuario->USUA_NIDROL == "1" ? "selected" : ""}}>Administrador</option>
+                                <option value="3" {{$objUsuario->USUA_NIDROL == "3" ? "selected" : ""}}>Enlace Oficial</option>
+                                <option value="4" {{$objUsuario->USUA_NIDROL == "4" ? "selected" : ""}}>Admin-CT</option>
+                                <option value="5" {{$objUsuario->USUA_NIDROL == "5" ? "selected" : ""}}>Servidor Público</option>
+                                <option value="6" {{$objUsuario->USUA_NIDROL == "6" ? "selected" : ""}}>Consultor</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="bus-txt-centro-trabajo">Correo electrónico <span class="text-danger">*</span> <span>&nbsp;&nbsp; <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreo_Electronico', 1);"></i></span></label>
-                            <input type="email" class="form-control" name="txtCorreo_Electronico" id="txtCorreo_Electronico" value="{{$Obj->USUA_CCORREO_ELECTRONICO}}" placeholder="Correo electrónico" required readonly>
+                            <input type="email" class="form-control" name="txtCorreo_Electronico" id="txtCorreo_Electronico" value="{{$objUsuario->USUA_CCORREO_ELECTRONICO}}" placeholder="Correo electrónico" required readonly>
                             <span id="resultadoExistCorreo" style="font-size: 12px;"></span>
                         </div>
                     </div>
@@ -55,31 +55,31 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="dteFechaInicio">Nombre (s) <span class="text-danger">*</span> <span>&nbsp;&nbsp; <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtNombres', 1);"></i></span></label>
-                            <input type="text" placeholder="Nombre (s)" class="form-control" name="txtNombres" id="txtNombres" value="{{$Obj->USUA_CNOMBRES}}" required readonly>
+                            <input type="text" placeholder="Nombre (s)" class="form-control" name="txtNombres" id="txtNombres" value="{{$objUsuario->USUA_CNOMBRES}}" required readonly>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="txtNombre">Primer apellido <span class="text-danger">*</span> <span>&nbsp;&nbsp; <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtPrimer_Apellido', 1);"></i></span></label>
-                            <input type="text" placeholder="Primer apellido" class="form-control" name="txtPrimer_Apellido" id="txtPrimer_Apellido" value="{{$Obj->USUA_CPRIMER_APELLIDO}}" required readonly>
+                            <input type="text" placeholder="Primer apellido" class="form-control" name="txtPrimer_Apellido" id="txtPrimer_Apellido" value="{{$objUsuario->USUA_CPRIMER_APELLIDO}}" required readonly>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="cmbDependenciaEntidad">Segundo apellido <span>&nbsp;&nbsp; <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtSegundo_Apellido', 1);"></i></span></label>
-                            <input type="text" placeholder="Segundo apellido" class="form-control" name="txtSegundo_Apellido" id="txtSegundo_Apellido" value="{{$Obj->USUA_CSEGUNDO_APELLIDO}}" readonly>
+                            <input type="text" placeholder="Segundo apellido" class="form-control" name="txtSegundo_Apellido" id="txtSegundo_Apellido" value="{{$objUsuario->USUA_CSEGUNDO_APELLIDO}}" readonly>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="dteFechaInicio">Teléfono <span>&nbsp;&nbsp; <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtTelefono', 1);"></i></span></label>
-                            <input type="number" placeholder="Teléfono" class="form-control" name="txtTelefono" id="txtTelefono" value="{{$Obj->USUA_NTELEFONO}}" readonly>
+                            <input type="number" placeholder="Teléfono" class="form-control" name="txtTelefono" id="txtTelefono" value="{{$objUsuario->USUA_NTELEFONO}}" readonly>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="dteFechaInicio">Extensión <span>&nbsp;&nbsp; <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtExtension', 1);"></i></span></label>
-                            <input type="number" placeholder="Extensión" class="form-control" name="txtExtension" id="txtExtension" value="{{$Obj->USUA_NEXTENSION}}" readonly>
+                            <input type="number" placeholder="Extensión" class="form-control" name="txtExtension" id="txtExtension" value="{{$objUsuario->USUA_NEXTENSION}}" readonly>
                         </div>
                     </div>
                 </div>
@@ -350,25 +350,26 @@
 @section('scripts')
 
 <script>
-    var lstEdificios = [];
-    var lstUnidad_Administrativa = [];
+    var StrRol          = '{{ Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE }}';
+    var lstEdificios    = [];
     var lstDependencias = [];
-    var lstTramites = [];
-    var lstEdificios_Acceso = [];
+    var lstTramites     = [];
+    var _lstDependencias        = [];
+    var lstEdificios_Acceso     = [];
+    var lstDependencias_Acceso  = [];
+    var lstTramites_Acceso      = [];
+    var lstUnidad_Administrativa        = [];
     var lstUnidad_Administrativa_Acceso = [];
-    var lstDependencias_Acceso = [];
-    var lstTramites_Acceso = [];
-    var StrRol = '{{ Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE }}';
-    var _lstDependencias = [];
-    _lstDependencias = <?php echo json_encode($Obj->lstDependenciaPertenece) ?>;
-    _lstUnidad_Administrativa = <?php echo json_encode($Obj->lstUnidadPertence) ?>;
-    _lstTramites = <?php echo json_encode($Obj->lstTramitePertence) ?>;
-    _lstEdificios = <?php echo json_encode($Obj->lstEdificioPertence) ?>;
 
-    _lstDependencias_Acceso = <?php echo json_encode($Obj->lstDependenciaAcceso) ?>;
-    _lstUnidad_Administrativa_Acceso = <?php echo json_encode($Obj->lstUnidadAcceso) ?>;
-    _lstTramites_Acceso = <?php echo json_encode($Obj->lstTramiteAcceso) ?>;
-    _lstEdificios_Acceso = <?php echo json_encode($Obj->lstEdificioAcceso) ?>;
+
+    _lstDependencias            = <?php echo json_encode($objUsuario->lstDependenciaPertenece) ?>;
+    _lstUnidad_Administrativa   = <?php echo json_encode($objUsuario->lstUnidadPertence) ?>;
+    _lstTramites                = <?php echo json_encode($objUsuario->lstTramitePertence) ?>;
+    _lstEdificios               = <?php echo json_encode($objUsuario->lstEdificioPertence) ?>;
+    _lstDependencias_Acceso     = <?php echo json_encode($objUsuario->lstDependenciaAcceso) ?>;
+    _lstTramites_Acceso         = <?php echo json_encode($objUsuario->lstTramiteAcceso) ?>;
+    _lstEdificios_Acceso        = <?php echo json_encode($objUsuario->lstEdificioAcceso) ?>;
+    _lstUnidad_Administrativa_Acceso = <?php echo json_encode($objUsuario->lstUnidadAcceso) ?>;
 
 
     $(document).ajaxStart(function() {
@@ -421,17 +422,36 @@
         });
 
         //Consultamos dependencias, unidades, tramite y edificios que pertenece el usuario
-        function TRAM_AJX_EDIFICIOS(tramites = []) {
+        function TRAM_AJX_EDIFICIOS(id) {
+            edificio = $.ajax({
+                //Estos llaman al nuevo remapeo del retys
+                url: "/servidorespublicos/getEdificios",
+                type: "get",
+                data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
 
-            var myJSON = JSON.stringify(tramites);
+            });
 
-            $.get('/general/edificios?tramite_id=' + myJSON, function(data) {
-
+            edificio.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbEdificios" class="selectpicker form-control" data-live-search="true" multiple>';
-
                 data.forEach(function(value) {
-                    html += '<option value="' + value.ID_EDIFICIO + '">' + value.EDIFICIO + '</option>';
-                    $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    let select = '';
+                    _lstEdificios.forEach(element => {
+                        if(element.EDIFUP_NIDEDIFICIO == value.iId){
+                            select      =   'selected';
+                            let option  =   `<div class="group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-12 text-center">
+                                                        <span class="text-dark"> ${ value.Name } </span>
+                                                    </div>
+                                                </div>
+                                            </div`;
+
+                            $('#list_edificios').append(option);
+                            lstEdificios.push(value.Id);
+                        }
+                    });
+                    _lstEdificios = [];
+                    html += `<option ${select} value="${ value.Id }"> ${ value.Name } </option>`;
                 });
                 html += '</select>';
 
@@ -441,118 +461,102 @@
                     noneResultsText: 'No se encontraron resultados',
                 });
 
-                if (_lstEdificios.length > 0) {
-
-                    //Marcamos trámites en select
-                    var listEdificiosID = [];
-                    _lstEdificios.forEach(x => listEdificiosID.push(x.EDIFUP_NIDEDIFICIO));
-                    $('#cmbEdificios').selectpicker('val', listEdificiosID);
-
-                    for (var a = 0; a < _lstEdificios.length; a++) {
-                        var text = $("#cmbEdificios option[value='" + _lstEdificios[a].EDIFUP_NIDEDIFICIO + "']")[0].innerText;
-                        $('#list_edificios').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-                        lstEdificios.push(_lstEdificios[a].EDIFUP_NIDEDIFICIO);
-                    }
-                    _lstEdificios = [];
-                }
-
                 $('#cmbEdificios').on('change', function(e) {
-
                     var selected = $('#cmbEdificios').val();
-
-                    //Limpiamos edificios
                     lstEdificios = [];
                     $('#list_edificios').html('');
-
-                    if (selected === null || !(selected.length > 0)) {
-                        return;
-                    }
-
                     $.each(selected, function(key, value) {
                         lstEdificios.push(value);
                         var text = $("#cmbEdificios option[value='" + value + "']")[0].innerText;
-                        $('#list_edificios').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
+                        $('#list_edificios').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
                     });
                 });
             });
         }
 
         function TRAM_AJX_TRAMITES(id) {
+            tramite = $.ajax({
+                //Estos llaman al nuevo remapeo del retys
+                url: "/servidorespublicos/getTramites",
+                type: "get",
+                data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
+            });
 
-            $.get('/general/tramites?unidad_id=' + id.toString(), function(data) {
-
+            tramite.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbTramites" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="' + value.ID_TRAM + '">' + value.TRAMITE + '</option>';
+                    let select = '';
+                    _lstTramites.forEach(element => {
+                        if(element.TRAMUP_NIDTRAMITE == value.iId){
+                            select      =   'selected';
+                            let option  =   `<div class="group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-12 text-center">
+                                                        <span class="text-dark"> ${ value.Key } </span>
+                                                    </div>
+                                                </div>
+                                            </div`;
+
+                            $('#list_tramites').append(option);
+                            lstTramites.push(value.Id);
+                        }
+                    });
+                    _lstUnidad_Administrativa = [];
+                    html += `<option ${select} value="${ value.Id }"> ${ value.Key } </option>`;
                 });
                 html += '</select>';
-
+                _lstTramites = [];
+                
                 $("#Tramites").html(html);
                 $('#cmbTramites').selectpicker({
                     noneSelectedText: 'Búsqueda de Trámites',
                     noneResultsText: 'No se encontraron resultados',
                 });
 
-                if (_lstTramites.length > 0) {
-
-                    //Marcamos trámites en select
-                    var listTramitesID = [];
-                    _lstTramites.forEach(x => listTramitesID.push(x.TRAMUP_NIDTRAMITE));
-                    $('#cmbTramites').selectpicker('val', listTramitesID);
-
-                    if (listTramitesID.length > 0) {
-                        TRAM_AJX_EDIFICIOS(listTramitesID);
-                    }
-
-                    for (var a = 0; a < _lstTramites.length; a++) {
-                        var text = $("#cmbTramites option[value='" + _lstTramites[a].TRAMUP_NIDTRAMITE + "']")[0].innerText;
-                        $('#list_tramites').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-                        lstTramites.push(_lstTramites[a].TRAMUP_NIDTRAMITE);
-                    }
-
-                    _lstTramites = [];
-                }
-
                 $('#cmbTramites').on('change', function(e) {
-
                     var selected = $('#cmbTramites').val();
-
-                    //Limpiamos trámites
                     lstTramites = [];
                     $('#list_tramites').html('');
-
-                    //Limpiamos edificios
-                    lstEdificios = [];
-                    $('#list_edificios').html('');
-
-                    //Eliminamos opciones de select's edificios
-                    var cmbEdificios = $('#cmbEdificios');
-                    cmbEdificios.find('option').remove();
-                    $('#cmbEdificios').selectpicker('refresh');
-
-                    if (selected === null || !(selected.length > 0)) {
-                        return;
-                    }
-
-                    TRAM_AJX_EDIFICIOS(selected);
-
+                    
                     $.each(selected, function(key, value) {
                         lstTramites.push(value);
                         var text = $("#cmbTramites option[value='" + value + "']")[0].innerText;
-                        $('#list_tramites').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
+                        $('#list_tramites').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
                     });
                 });
             });
         }
 
         function TRAM_AJX_UNIDAD_ADMINISTRATIVA(id) {
+            unidad = $.ajax({
+                url: "/servidorespublicos/getUnity",
+                type: "get",
+                data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
+            });
 
-            $.get('/general/unidades_administrativas?dependencia_id=' + id.toString(), function(data) {
-
-
-                var html = '<select id="cmbUnidad_administrativa" class="selectpicker form-control" data-max-options="1" data-live-search="true" multiple>';
+            unidad.done(function (data, textStatus, jqXHR){
+                var html = '<select id="cmbUnidad_administrativa" class="selectpicker form-control"  data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="' + value.ID_UNIDAD + '">' + value.DESCRIPCION + '</option>';
+                    let select = '';
+                    _lstUnidad_Administrativa.forEach(element => {
+                        if(element.UNIDUP_NIDUNIDAD == value.iId){
+                            select      =   'selected';
+                            let option  =   `<div class="group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-12 text-center">
+                                                        <span class="text-dark"> ${ value.Description } </span>
+                                                    </div>
+                                                </div>
+                                            </div`;
+
+                            $('#list_unidad_administrativa').append(option);
+                            lstUnidad_Administrativa.push(value.Id);
+                            TRAM_AJX_TRAMITES(value.Id);
+                            TRAM_AJX_EDIFICIOS(value.Id);
+                        }
+                    });
+                    _lstUnidad_Administrativa = [];
+                    html += `<option ${select} value="${ value.Id }"> ${ value.Description } </option>`;
                 });
                 html += '</select>';
 
@@ -562,69 +566,55 @@
                     noneResultsText: 'No se encontraron resultados',
                 });
 
-                if (_lstUnidad_Administrativa.length > 0) {
-
-                    //Marcamos unidades en select
-                    var listUnidadesID = [];
-                    _lstUnidad_Administrativa.forEach(x => listUnidadesID.push(x.UNIDUP_NIDUNIDAD));
-                    $('#cmbUnidad_administrativa').selectpicker('val', listUnidadesID);
-
-                    for (var a = 0; a < _lstUnidad_Administrativa.length; a++) {
-
-                        var text = $("#cmbUnidad_administrativa option[value='" + _lstUnidad_Administrativa[a].UNIDUP_NIDUNIDAD + "']")[0].innerText;
-                        $('#list_unidad_administrativa').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-                        lstUnidad_Administrativa.push(_lstUnidad_Administrativa[a].UNIDUP_NIDUNIDAD);
-                        TRAM_AJX_TRAMITES(_lstUnidad_Administrativa[a].UNIDUP_NIDUNIDAD);
-                    }
-                    _lstUnidad_Administrativa = [];
-                }
-
                 $('#cmbUnidad_administrativa').on('change', function(e) {
-
                     var selected = $('#cmbUnidad_administrativa').val();
-
-                    //Limpiamos unidades
                     lstUnidad_Administrativa = [];
                     $('#list_unidad_administrativa').html('');
-
-                    //Limpiamos trámites
-                    lstTramites = [];
-                    $('#list_tramites').html('');
-
-                    //Limpiamos edificios
-                    lstEdificios = [];
-                    $('#list_edificios').html('');
-
-                    //Eliminamos opciones de select's trámites y edificios
-                    var cmbTramites = $('#cmbTramites');
-                    var cmbEdificios = $('#cmbEdificios');
-                    cmbTramites.find('option').remove();
-                    cmbEdificios.find('option').remove();
-                    $('#cmbTramites').selectpicker('refresh');
-                    $('#cmbEdificios').selectpicker('refresh');
-
-                    if (selected === null || !(selected.length > 0)) {
-                        return;
-                    }
-
                     TRAM_AJX_TRAMITES(selected);
-
                     $.each(selected, function(key, value) {
                         lstUnidad_Administrativa.push(value);
                         var text = $("#cmbUnidad_administrativa option[value='" + value + "']")[0].innerText;
-                        $('#list_unidad_administrativa').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
+                        $('#list_unidad_administrativa').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
                     });
+                    TRAM_AJX_EDIFICIOS(selected);
+                });
+                _lstUnidad_Administrativa = [];
+            });
+
+            // Callback handler that will be called on failure
+            unidad.fail(function (jqXHR, textStatus, errorThrown){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
                 });
             });
         };
 
         function TRAM_AJX_DEPENDENCIAS() {
-
-            $.get('/general/dependencias', function(data) {
+            $.get('/servidorespublicos/getDepencencias', function(data) {
 
                 var html = '<select id="cmbDependencias" class="selectpicker form-control" data-max-options="1" data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="' + value.ID_CENTRO + '">' + value.DESCRIPCION + '</option>';
+                    let select = '';
+                    _lstDependencias.forEach(element => {
+                        if(element.DEPUP_NIDDEPENCIA == value.iId){
+                            select      =   'selected';
+                            let option  =   `<div class="group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-12 text-center">
+                                                        <span class="text-dark"> ${ value.Description } </span>
+                                                    </div>
+                                                </div>
+                                            </div`;
+
+                            $('#list_dependencias').append(option);
+                            lstDependencias.push(value.Id);
+                            TRAM_AJX_UNIDAD_ADMINISTRATIVA(value.Id)
+                        }
+                    });
+
+                    html += `<option ${select} value="${ value.Id }"> ${ value.Description } </option>`;
                 });
                 html += '</select>';
 
@@ -634,30 +624,19 @@
                     noneResultsText: 'No se encontraron resultados',
                 });
 
-                if (_lstDependencias.length > 0) {
-
-                    //Marcamos dependencia en select
-                    var listDependenciasID = [];
-                    _lstDependencias.forEach(x => listDependenciasID.push(x.DEPUP_NIDDEPENCIA));
-                    $('#cmbDependencias').selectpicker('val', listDependenciasID);
-
-                    for (var a = 0; a < _lstDependencias.length; a++) {
-                        $('#list_dependencias').html('');
-                        var text = $("#cmbDependencias option[value='" + _lstDependencias[a].DEPUP_NIDDEPENCIA + "']")[0].innerText;
-                        $('#list_dependencias').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-                        lstDependencias.push(_lstDependencias[a].DEPUP_NIDDEPENCIA);
-                        TRAM_AJX_UNIDAD_ADMINISTRATIVA(_lstDependencias[a].DEPUP_NIDDEPENCIA);
-                    }
-                    _lstDependencias = [];
-                }
-
-                $('#cmbDependencias').on('change', function(e) {
-
+                $('#cmbDependencias').on('change', function(e) { console.log("entro");
                     var selected = $('#cmbDependencias').val();
-
-                    //Limpiamos dependencias
+                    TRAM_AJX_UNIDAD_ADMINISTRATIVA(selected);
+                    TRAM_AJX_DEPENDENCIAS_ACCESO(selected);
                     lstDependencias = [];
+
                     $('#list_dependencias').html('');
+                    $.each(selected, function(key, value) {
+                        lstDependencias.push(value);
+                        var text =  $("#cmbDependencias option[value='" + value + "']")[0].innerText;
+                        $('#list_dependencias').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
+                    });
+                    
 
                     //Limpiamos unidades
                     lstUnidad_Administrativa = [];
@@ -670,32 +649,6 @@
                     //Limpiamos edificios
                     lstEdificios = [];
                     $('#list_edificios').html('');
-
-                    //Eliminamos opciones de select's de unidades, trámites y edificios
-                    var cmbUnidad_administrativa = $('#cmbUnidad_administrativa');
-                    var cmbTramites = $('#cmbTramites');
-                    var cmbEdificios = $('#cmbEdificios');
-                    cmbUnidad_administrativa.find('option').remove();
-                    cmbTramites.find('option').remove();
-                    cmbEdificios.find('option').remove();
-                    $('#cmbUnidad_administrativa').selectpicker('refresh');
-                    $('#cmbTramites').selectpicker('refresh');
-                    $('#cmbEdificios').selectpicker('refresh');
-
-                    if (selected === null || !(selected.length > 0)) {
-                        return;
-                    }
-
-                    TRAM_AJX_UNIDAD_ADMINISTRATIVA(selected);
-                    // TRAM_AJX_DEPENDENCIAS_ACCESO(selected);
-
-                    $.each(selected, function(key, value) {
-                        lstDependencias.push(value);
-                        var text = $("#cmbDependencias option[value='" + value + "']")[0].innerText;
-                        $('#list_dependencias').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-                    });
-
-
                 });
             });
         }
@@ -703,18 +656,38 @@
         TRAM_AJX_DEPENDENCIAS();
 
         //acceso
-        function TRAM_AJX_EDIFICIOS_ACCESO(tramites = []) {
+        function TRAM_AJX_EDIFICIOS_ACCESO(id) {
+            edificio = $.ajax({
+                //Estos llaman al nuevo remapeo del retys
+                url: "/servidorespublicos/getEdificios",
+                type: "get",
+                data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
 
-            var myJSON = JSON.stringify(tramites);
+            });
 
-            $.get('/general/edificios?tramite_id=' + myJSON, function(data) {
-
+            edificio.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbEdificios_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
-
                 data.forEach(function(value) {
-                    html += '<option value="' + value.ID_EDIFICIO + '">' + value.EDIFICIO + '</option>';
-                    // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    let select = '';
+                    _lstEdificios_Acceso.forEach(element => {
+                        if(element.EDIFUA_NIDEDIFICIO == value.iId){
+                            select      =   'selected';
+                            let option  =   `<div class="group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-12 text-center">
+                                                        <span class="text-dark"> ${ value.Name } </span>
+                                                    </div>
+                                                </div>
+                                            </div`;
+
+                            $('#list_edificios_acceso').append(option);
+                            lstEdificios_Acceso.push(value.Id);
+                        }
+                    });
+                    html += `<option ${select} value="${ value.Id }"> ${ value.Name } </option>`;
                 });
+
+                _lstEdificios_Acceso = [];
                 html += '</select>';
 
                 $("#EdificiosAcceso").html(html);
@@ -723,110 +696,66 @@
                     noneResultsText: 'No se encontraron resultados',
                 });
 
-                if (_lstEdificios_Acceso.length > 0) {
-
-                    //Marcamos edificios en select
-                    var listEdificiosID = [];
-                    _lstEdificios_Acceso.forEach(x => listEdificiosID.push(x.EDIFUA_NIDEDIFICIO));
-                    $('#cmbEdificios_acceso').selectpicker('val', listEdificiosID);
-
-                    for (var a = 0; a < _lstEdificios_Acceso.length; a++) {
-
-                        var text = $("#cmbEdificios_acceso option[value='" + _lstEdificios_Acceso[a].EDIFUA_NIDEDIFICIO + "']")[0].innerText;
-                        $('#list_edificios_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-
-                        lstEdificios_Acceso.push(_lstEdificios_Acceso[a].EDIFUA_NIDEDIFICIO);
-                    }
-                    _lstEdificios_Acceso = [];
-                }
-
                 $('#cmbEdificios_acceso').on('change', function(e) {
-
                     var selected = $('#cmbEdificios_acceso').val();
-
-                    //Limpiamos edificios
                     lstEdificios_Acceso = [];
                     $('#list_edificios_acceso').html('');
-
-                    if (selected === null || !(selected.length > 0)) {
-                        return;
-                    }
-
                     $.each(selected, function(key, value) {
                         lstEdificios_Acceso.push(value);
                         var text = $("#cmbEdificios_acceso option[value='" + value + "']")[0].innerText;
-                        $('#list_edificios_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
+                        $('#list_edificios_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
                     });
                 });
             });
         }
 
         function TRAM_AJX_TRAMITES_ACCESO(id) {
+            tramite = $.ajax({
+                //Estos llaman al nuevo remapeo del retys
+                url: "/servidorespublicos/getTramites",
+                type: "get",
+                data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
+            });
 
-            $.get('/general/tramites?unidad_id=' + id.toString(), function(data) {
-
+            tramite.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbTramites_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="' + value.ID_TRAM + '">' + value.TRAMITE + '</option>';
+                    let select = '';
+                    _lstTramites_Acceso.forEach(element => {
+                        if(element.TRAMUA_NIDTRAMITE == value.iId){
+                            select      =   'selected';
+                            let option  =   `<div class="group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-12 text-center">
+                                                        <span class="text-dark"> ${ value.Key } </span>
+                                                    </div>
+                                                </div>
+                                            </div`;
+
+                            $('#list_tramites_acceso').append(option);
+                            lstTramites_Acceso.push(value.Id);
+                        }
+                    });
+                    html += `<option ${select} value="${ value.Id }"> ${ value.Key } </option>`;
                 });
                 html += '</select>';
-
+                _lstTramites_Acceso = [];
+                
                 $("#TramitesAcceso").html(html);
                 $('#cmbTramites_acceso').selectpicker({
                     noneSelectedText: 'Búsqueda de Trámites',
                     noneResultsText: 'No se encontraron resultados',
                 });
 
-                if (_lstTramites_Acceso.length > 0) {
-
-                    //Marcamos tramites en select
-                    var listTramitesID = [];
-                    _lstTramites_Acceso.forEach(x => listTramitesID.push(x.TRAMUA_NIDTRAMITE));
-                    $('#cmbTramites_acceso').selectpicker('val', listTramitesID);
-
-                    if (listTramitesID.length > 0) {
-                        TRAM_AJX_EDIFICIOS_ACCESO(listTramitesID);
-                    }
-
-                    for (var a = 0; a < _lstTramites_Acceso.length; a++) {
-
-                        // $("#cmbTramites_acceso option[value='" + _lstTramites_Acceso[a].TRAMUA_NIDTRAMITE + "']").prop("selected", true);
-                        // var sel = document.getElementById("cmbTramites_acceso");
-
-                        var text = $("#cmbTramites_acceso option[value='" + _lstTramites_Acceso[a].TRAMUA_NIDTRAMITE + "']")[0].innerText;
-                        $('#list_tramites_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-                        lstTramites_Acceso.push(_lstTramites_Acceso[a].TRAMUA_NIDTRAMITE);
-                    }
-                    _lstTramites_Acceso = [];
-                }
-
                 $('#cmbTramites_acceso').on('change', function(e) {
-
                     var selected = $('#cmbTramites_acceso').val();
-
-                    //Limpiamos trámites
-                    lstTramites_Acceso = [];
+                    lstTramites = [];
                     $('#list_tramites_acceso').html('');
-
-                    //Limpiamos edificios
-                    lstEdificios_Acceso = [];
-                    $('#list_edificios_acceso').html('');
-
-                    //Eliminamos opciones de select's de edificios
-                    var cmbEdificios = $('#cmbEdificios_acceso');
-                    cmbEdificios.find('option').remove();
-                    $('#cmbEdificios_acceso').selectpicker('refresh');
-
-                    if (selected === null || !(selected.length > 0)) {
-                        return;
-                    }
-
-                    TRAM_AJX_EDIFICIOS_ACCESO(selected);
-
+                    
                     $.each(selected, function(key, value) {
                         lstTramites_Acceso.push(value);
                         var text = $("#cmbTramites_acceso option[value='" + value + "']")[0].innerText;
-                        $('#list_tramites_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
+                        $('#list_tramites_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
                     });
                 });
             });
@@ -835,14 +764,37 @@
         var list_temporal_tramite_acceso = [];
 
         function TRAM_AJX_UNIDAD_ADMINISTRATIVA_ACCESO(id) {
+            unidad = $.ajax({
+                url: "/servidorespublicos/getUnity",
+                type: "get",
+                data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
+            });
 
-            $.get('/general/unidades_administrativas?tipo=multiple&&dependencia_id=' + id.toString(), function(data) {
-
-                var html = '<select id="cmbUnidad_administrativa_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
+            unidad.done(function (data, textStatus, jqXHR){
+                var html = '<select id="cmbUnidad_administrativa_acceso" class="selectpicker form-control"  data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="' + value.ID_UNIDAD + '">' + value.DESCRIPCION + '</option>';
-                    // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    let select = '';
+                    _lstUnidad_Administrativa_Acceso.forEach(element => {
+                        if(element.UNIDUA_NIDUNIDAD == value.iId){
+                            select      =   'selected';
+                            let option  =   `<div class="group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-12 text-center">
+                                                        <span class="text-dark"> ${ value.Description } </span>
+                                                    </div>
+                                                </div>
+                                            </div`;
+
+                            $('#list_unidad_administrativa_acceso').append(option);
+                            lstUnidad_Administrativa_Acceso.push(value.Id);
+                            TRAM_AJX_TRAMITES_ACCESO(value.Id);
+                            TRAM_AJX_EDIFICIOS_ACCESO(value.Id);
+                        }
+                    });
+
+                    html += `<option ${select} value="${ value.Id }"> ${ value.Description } </option>`;
                 });
+                _lstUnidad_Administrativa_Acceso = [];
                 html += '</select>';
 
                 $("#UnidadAdministrativaAcceso").html(html);
@@ -851,129 +803,67 @@
                     noneResultsText: 'No se encontraron resultados',
                 });
 
-                if (_lstUnidad_Administrativa_Acceso.length > 0) {
-
-                    //Marcamos unidades en select
-                    var listUnidadesID = [];
-                    _lstUnidad_Administrativa_Acceso.forEach(x => listUnidadesID.push(x.UNIDUA_NIDUNIDAD));
-                    $('#cmbUnidad_administrativa_acceso').selectpicker('val', listUnidadesID);
-
-                    if (listUnidadesID.length > 0) {
-                        TRAM_AJX_TRAMITES_ACCESO(listUnidadesID.join());
-                    }
-
-                    for (var a = 0; a < _lstUnidad_Administrativa_Acceso.length; a++) {
-
-                        var text = $("#cmbUnidad_administrativa_acceso option[value='" + _lstUnidad_Administrativa_Acceso[a].UNIDUA_NIDUNIDAD + "']")[0].innerText;
-                        $('#list_unidad_administrativa_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-                        lstUnidad_Administrativa_Acceso.push(_lstUnidad_Administrativa_Acceso[a].UNIDUA_NIDUNIDAD);
-                        //TRAM_AJX_TRAMITES_ACCESO(_lstUnidad_Administrativa_Acceso[a].UNIDUA_NIDUNIDAD);
-                    }
-                    _lstUnidad_Administrativa_Acceso = [];
-                }
-
                 $('#cmbUnidad_administrativa_acceso').on('change', function(e) {
-
                     var selected = $('#cmbUnidad_administrativa_acceso').val();
-
-                    //Limpiamos unidades
-                    lstUnidad_Administrativa_Acceso = [];
+                    _lstUnidad_Administrativa_Acceso = [];
                     $('#list_unidad_administrativa_acceso').html('');
-
-                    //Limpiamos trámites
-                    list_temporal_tramite_acceso = [];
-                    list_temporal_tramite_acceso = lstTramites_Acceso;
-                    lstTramites_Acceso = [];
-                    $('#list_tramites_acceso').html('');
-
-                    //Limpiamos edificios
-                    lstEdificios_Acceso = [];
-                    $('#list_edificios_acceso').html('');
-
-                    //Eliminamos opciones de select's de trámites y edificios
-                    var cmbTramites = $('#cmbTramites_acceso');
-                    var cmbEdificios = $('#cmbEdificios_acceso');
-                    cmbTramites.find('option').remove();
-                    cmbEdificios.find('option').remove();
-                    $('#cmbTramites_acceso').selectpicker('refresh');
-                    $('#cmbEdificios_acceso').selectpicker('refresh');
-
-                    if (selected === null || !(selected.length > 0)) {
-                        return;
-                    }
-
-                    TRAM_AJX_TRAMITES_ACCESO(selected.join());
-
+                    TRAM_AJX_TRAMITES_ACCESO(selected);
                     $.each(selected, function(key, value) {
                         lstUnidad_Administrativa_Acceso.push(value);
                         var text = $("#cmbUnidad_administrativa_acceso option[value='" + value + "']")[0].innerText;
-                        $('#list_unidad_administrativa_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
+                        $('#list_unidad_administrativa_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
                     });
+                    TRAM_AJX_EDIFICIOS_ACCESO(selected);
+                });
+                _lstUnidad_Administrativa = [];
+            });
+
+            // Callback handler that will be called on failure
+            unidad.fail(function (jqXHR, textStatus, errorThrown){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
                 });
             });
         }
 
         function TRAM_AJX_DEPENDENCIAS_ACCESO(select = null) {
-
-            $.get('/general/dependencias', function(data) {
+            $.get('/servidorespublicos/getDepencencias', function(data) {
 
                 var data_max = "";
-                //if(StrRol == "ENLOF" || StrRol == "ADMCT"){
                 data_max = 'data-max-options="1"';
-                //}
                 var html = '<select id="cmbDependencias_acceso" class="selectpicker form-control" ' + data_max + ' data-live-search="true" multiple>';
+
                 data.forEach(function(value) {
-                    html += '<option value="' + value.ID_CENTRO + '">' + value.DESCRIPCION + '</option>';
-                    // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    let select = '';
+                    _lstDependencias_Acceso.forEach(element => {
+                        if(element.DEPUA_NIDDEPENCIA == value.iId){
+                            select      =   'selected';
+                            let option  =   `<div class="group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-12 text-center">
+                                                        <span class="text-dark"> ${ value.Description } </span>
+                                                    </div>
+                                                </div>
+                                            </div`;
+
+                            $('#list_dependencias_acceso').append(option);
+                            lstDependencias_Acceso.push(value.Id);
+                            TRAM_AJX_UNIDAD_ADMINISTRATIVA_ACCESO(value.Id)
+                        }
+                    });
+
+                    html += `<option ${select} value="${ value.Id }"> ${ value.Description } </option>`;
                 });
                 html += '</select>';
+                _lstDependencias_Acceso = [];
 
                 $("#DependenciasAcceso").html(html);
                 $('#cmbDependencias_acceso').selectpicker({
                     noneSelectedText: 'Búsqueda de Dependencias',
                     noneResultsText: 'No se encontraron resultados',
                 });
-
-                //LLenar opciones del select
-                if (StrRol == "ENLOF" || StrRol == "ADMCT") {
-                    if (selected != null) {
-                        $("#cmbDependencias_acceso option[value='" + selected + "']").prop("selected", true);
-                        var sel = document.getElementById("cmbDependencias_acceso");
-                        var text = sel.options[0].text;
-                        lstDependencias_Acceso = [];
-                        $('#list_dependencias_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-                        lstDependencias_Acceso.push(selected);
-                    }
-                }
-
-                var id_dependencias_acceso = "";
-                if (_lstDependencias_Acceso.length > 0) {
-
-                    //Marcamos dependencia acceso en select
-                    var listDependenciasID_acceso = [];
-                    _lstDependencias_Acceso.forEach(x => listDependenciasID_acceso.push(x.DEPUA_NIDDEPENCIA));
-                    $('#cmbDependencias_acceso').selectpicker('val', listDependenciasID_acceso);
-
-                    for (var a = 0; a < _lstDependencias_Acceso.length; a++) {
-
-                        // $("#cmbDependencias_acceso option[value='" + _lstDependencias_Acceso[a].DEPUA_NIDDEPENCIA + "']").prop("selected", true);
-                        // var sel = document.getElementById("cmbDependencias_acceso");
-
-                        var text = $("#cmbDependencias_acceso option[value='" + _lstDependencias_Acceso[a].DEPUA_NIDDEPENCIA + "']")[0].innerText;
-                        $('#list_dependencias_acceso').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">' + text + '</span></div></div></div>');
-                        lstDependencias_Acceso.push(_lstDependencias_Acceso[a].DEPUA_NIDDEPENCIA);
-
-                        if (a === 0) {
-                            id_dependencias_acceso = _lstDependencias_Acceso[a].DEPUA_NIDDEPENCIA;
-                        } else {
-                            id_dependencias_acceso += "," + _lstDependencias_Acceso[a].DEPUA_NIDDEPENCIA;
-                        }
-                        // TRAM_AJX_UNIDAD_ADMINISTRATIVA_ACCESO(_lstDependencias_Acceso[a].DEPUA_NIDDEPENCIA);
-                    }
-                    _lstDependencias_Acceso = [];
-                }
-
-                TRAM_AJX_UNIDAD_ADMINISTRATIVA_ACCESO(id_dependencias_acceso);
 
                 $('#cmbDependencias_acceso').on('change', function(e) {
 
@@ -1559,19 +1449,6 @@
         });
     };
 
-    /* function TRAM_FN_ENABLED_INPUT(){
-        $("input").each(function() {
-            $(this).removeAttr('disabled');
-        });
-        $("select").each(function() {
-            $(this).removeAttr('disabled');
-        });
-    }; */
-
-
-
-
-
 
     //guardar
     function TRAM_AJX_CONFIRMAR() {
@@ -1584,24 +1461,23 @@
     function TRAM_AJX_GUARDAR() {
         //TRAM_FN_ENABLED_INPUT();
         var objData = {
-            txtIdUsuario: $("#txtIdUsuario").val(),
-            txtUsuario: $("#txtUsuario").val(),
-            cmbRol: $("#cmbRol").val(),
-            txtNombres: $("#txtNombres").val(),
-            txtPrimer_Apellido: $("#txtPrimer_Apellido").val(),
-            txtSegundo_Apellido: $("#txtSegundo_Apellido").val(),
-            txtTelefono: $("#txtTelefono").val(),
-            txtExtension: $("#txtExtension").val(),
-            txtCorreo_Electronico: $("#txtCorreo_Electronico").val(),
-            txtContrasenia: $("#txtContrasenia").val(),
-            lstDependenciaPertenece: lstDependencias,
-            lstUnidadPertence: lstUnidad_Administrativa,
-            lstTramitePertence: lstTramites,
-            lstEdificioPertence: lstEdificios,
-            lstDependenciaAcceso: lstDependencias_Acceso,
-            lstUnidadAcceso: lstUnidad_Administrativa_Acceso,
-            lstTramiteAcceso: lstTramites_Acceso,
-            lstEdificioAcceso: lstEdificios_Acceso
+            USUA_NIDUSUARIO : $("#txtIdUsuario").val(),
+            USUA_CUSUARIO   : $("#txtUsuario").val(),
+            USUA_NIDROL     : $("#cmbRol").val(),
+            USUA_CNOMBRES   : $("#txtNombres").val(),
+            USUA_NTELEFONO  : $("#txtTelefono").val(),
+            USUA_NEXTENSION : $("#txtExtension").val(),
+            USUA_CPRIMER_APELLIDO      : $("#txtPrimer_Apellido").val(),
+            USUA_CSEGUNDO_APELLIDO     : $("#txtSegundo_Apellido").val(),
+            USUA_CCORREO_ELECTRONICO   : $("#txtCorreo_Electronico").val(),
+            lstDependenciaPertenece : lstDependencias,
+            lstUnidadPertence       : lstUnidad_Administrativa,
+            lstTramitePertence      : lstTramites,
+            lstEdificioPertence     : lstEdificios,
+            lstDependenciaAcceso    : lstDependencias_Acceso,
+            lstUnidadAcceso         : lstUnidad_Administrativa_Acceso,
+            lstTramiteAcceso        : lstTramites_Acceso,
+            lstEdificioAcceso       : lstEdificios_Acceso
         };
 
         // $("#btnSubmit").prop("disabled", true);
