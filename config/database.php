@@ -68,7 +68,7 @@ return [
             'url'       => env('DATABASE_URL'),
             'host'      => env('DB_HOST2', 'esz-manuel.mysql.database.azure.com'),
             'port'      => env('DB_POR2', '3306'),
-            'database'  => env('DB_DATABASE2', 'retys-queretaro-qa'),
+            'database'  => env('DB_DATABASE2', 'retys-queretaro-qa-consultores-cargamasiva'),
             'username'  => env('DB_USERNAME2', 'angelica@esz-manuel'),
             'password'  => env('DB_PASSWORD2', 'Michoacan548.'),
             'unix_socket' => env('DB_SOCKET', ''),
