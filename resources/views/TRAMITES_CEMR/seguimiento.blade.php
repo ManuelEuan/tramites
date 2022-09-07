@@ -235,7 +235,9 @@
                                     </div>
                                     <br>
                                     <div class="row columna_2">
-                                        @if ($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) <div style="width:100%">
+                                     
+                                        @if ($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) 
+                                        <div style="width:100%">
                                             <div class="row" style="margin-bottom: 80px;">
                                                 <div class="col-md-12">
                                                     <h3 class="indicaciones">Notificación al solicitante</h3>
@@ -248,8 +250,16 @@
                                                 <div class="col-md-12">
                                                     <div class="col-md-12 mt-5 contenedorBtn">
                                                         <div class="text-right botones">
+                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
                                                             <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite</button>
                                                             <button onclick="TRAM_FN_APROBAR_CITA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
+                                                            @else
+                                                            
+                                                            <button  class="btn btn-danger border btnLetras" disabled title="No disponible">Rechazar trámite</button>
+                                                            <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar visita</button>
+                            
+                                                            @endif
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -333,10 +343,20 @@
                                     </div>
                                 </div>
                                 <br>
-                                @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) <div class="col-md-12 mt-5">
+                                @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) 
+                                <div class="col-md-12 mt-5">
                                     <div class="text-right botones">
+                                      
+                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
                                         <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite</button>
                                         <button onclick="TRAM_FN_APROBAR_VENTANILLA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar visita</button>
+                                        @else
+                                        
+                                        <button  class="btn btn-danger border btnLetras" disabled title="No disponible">Rechazar trámite</button>
+                                        <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar visita</button>
+        
+                                        @endif
+                                        
                                     </div>
 
                             </div>
@@ -396,7 +416,14 @@
                                 </table>
                                 </form>
                                 @if($seccion->SSEGTRA_PAGADO == 0)
+                                @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
                                 <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;">Guardar</button>
+                                @else
+                                
+                                <button type="submit" class="btn btn-success float-right" style="margin-right:10px;" disabled title="No disponible">Guardar</button>
+
+                                @endif
+                                {{-- <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;">Guardar</button> --}}
                                 @endif
                                 @endif
 
@@ -408,6 +435,9 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <label class="respuesta_cita" id="txtEstatus_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
+
+                                    {{-- <p>{{ Auth::user()->TRAM_CAT_ROL->ROL_NIDROL }}</p> --}}
+
                                             </div>
                                         </div>
                                         <div class="row columna">
@@ -463,12 +493,18 @@
 
                                 <br>
                                 <div class="row columna_2">
-                                    @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_PAGADO == 1) <div style="width:100%">
+                                    @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_PAGADO == 1) 
+                                    <div style="width:100%">
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="col-md-12 mt-5 contenedorBtn">
                                                     <div class="text-right botones">
+                                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
                                                         <button onclick="TRAM_FN_APROBAR_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
+                                                        @else
+                                                        <button  class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar</button>
+
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -516,10 +552,19 @@
                                 </div>
                             </div>
                             <br>
-                            @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) <div class="col-md-12 mt-5 contenedorBtn">
+                            @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) 
+                            <div class="col-md-12 mt-5 contenedorBtn">
                                 <div class="text-right botones">
-                                    <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite </button>
-                                    <button onclick="TRAM_FN_APROBAR_ANALISIS_INTERNO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Activar el siguiente módulo </button>
+                                    @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
+                                        <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite </button>
+                                        <button onclick="TRAM_FN_APROBAR_ANALISIS_INTERNO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Activar el siguiente módulo </button>
+                                        @else
+                                        
+                                        <button  class="btn btn-danger border btnLetras" disabled title="No disponible">Rechazar trámite</button>
+                                        <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar visita</button>
+        
+                                        @endif
+                                   
                                 </div>
                         </div>
                         @endif
@@ -557,7 +602,14 @@
                                 <label class="titulo_pequeno">Archivo Autogenerado</label>
                             </div>
                             <div class=" col-md-8">
+                                @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
                                 <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE  ])}}">Vista Previa</a>
+                                @else
+                                
+                                <a class="btn btn-success" target="_blank" @disabled(true) title="No disponible">Vista Previa</a>
+
+                                @endif
+                               
                             </div>
                         </div>
                         @endif
@@ -656,9 +708,18 @@
                                 <div class="col-md-12">
                                     <div class="col-md-12 mt-5 contenedorBtn">
                                         <div class="text-right botones">
+                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
                                             <button id="btnFormularioIncompleto" onclick="TRAM_FN_FORMULARIO_INCOMPLETO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-warning border btnLetras">Notificar información incompleta</button>
                                             <button id="btnFormularioRechazar" onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Notificar rechazo de trámite</button>
                                             <button id="btnFormularioAprobar" onclick="TRAM_FN_APROBAR_FORMULARIO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar documentación</button>
+                                            @else
+                                            <button  class="btn btn-warning border btnLetras" disabled title="No disponible">Notificar información incompleta</button>
+                                            <button class="btn btn-danger border btnLetras" disabled title="No disponible">Notificar rechazo de trámite</button>
+                                            <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar documentación</button>
+                                            
+            
+                                            @endif
+                                            
                                         </div>
                                     </div>
                                 </div>
