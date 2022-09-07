@@ -164,20 +164,22 @@ class ServidorPublicoController extends Controller
     }
 
     public function editar($id){
-        $Obj =  Cls_Usuario::TRAM_SP_OBTENER_USUARIO($id);
+        $objUsuario =  Cls_Usuario::TRAM_SP_OBTENER_USUARIO($id);
+
         //Areas pertenece
-        $Obj->lstDependenciaPertenece = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE($id);
-        $Obj->lstUnidadPertence = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE($id);
-        $Obj->lstTramitePertence = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE($id);
-        $Obj->lstEdificioPertence = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE($id);
+        $objUsuario->lstDependenciaPertenece    = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE($id);
+        $objUsuario->lstUnidadPertence          = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE($id);
+        $objUsuario->lstTramitePertence         = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE($id);
+        $objUsuario->lstEdificioPertence        = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE($id);
+
 
         //Areas acceso
-        $Obj->lstDependenciaAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id);
-        $Obj->lstUnidadAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id);
-        $Obj->lstTramiteAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_ACCESO($id);
-        $Obj->lstEdificioAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id);
-
-        return view('CAT_SERVIDOR_PUBLICO.editar', compact('Obj'));
+        $objUsuario->lstDependenciaAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id);
+        $objUsuario->lstUnidadAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id);
+        $objUsuario->lstTramiteAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_ACCESO($id);
+        $objUsuario->lstEdificioAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id);
+  
+        return view('CAT_SERVIDOR_PUBLICO.editar', compact('objUsuario'));
     }
 
     public function modificar(Request $request){
@@ -270,77 +272,20 @@ class ServidorPublicoController extends Controller
         return Response()->json($response);
     }
 
-    public function getDep(){
-        $objDep     = $this->servidoresService->getDependencias();
-
-        $dependencies = array();
-
-        foreach ($objDep as $key => $value) {
-            array_push($dependencies, [
-                    'ID_CENTRO' => $value->Id,
-                    '0' => $value->iId,
-                    'CLAVE' => $value->Acronym,
-                    '1' => $value->iId,
-                    'DESCRIPCION' => $value->Description,
-                    '2' => $value->Name,
-                    'TIPO' => $value->iId,
-                    '3' => $value->iId,
-                ]
-            );
-
-        }
-        
-
-        return $dependencies;
+    public function getDepencencias(){
+        return $this->servidoresService->getDependencias();
     }
 
     public function getUnity(Request $request){
-        $objUnidad    = $this->servidoresService->getUnidadesAdministrativas($request);
-
-        $unidades = array();
-
-        foreach ($objUnidad as $key => $value) {
-            array_push($unidades, [
-                    'ID_CENTRO' => $value->Id,
-                    '0' => $value->iId,
-                    'CLAVE' => $value->Acronym,
-                    '1' => $value->iId,
-                    'DESCRIPCION' => $value->Description,
-                    '2' => $value->Name,
-                    'TIPO' => $value->iId,
-                    '3' => $value->iId,
-                ]
-            );
-
-        }
-        
-
-        return $unidades;
+        return $this->servidoresService->getUnidadesAdministrativas($request);
     }
 
     public function getTramites(Request $request){
-        return $this->servidoresService->getTramites($request);;
+        return $this->servidoresService->getTramites($request);
     }
 
     public function getEdificios(Request $request){
-
-        $objUnidad    = $this->servidoresService->getEdificios($request);
-
-        $unidades = array();
-
-        foreach ($objUnidad as $key => $value) {
-            array_push($unidades, [
-                    'ID_EDIFICIO' => $value->Id,
-                    '0' => $value->Id,
-                    'EDIFICIO' => $value->Name,
-                    '1' => $value->Id,
-                ]
-            );
-
-        }
-        
-
-        return $unidades;
+        return $this->servidoresService->getEdificios($request);
     }
 
     public function detalle($id){

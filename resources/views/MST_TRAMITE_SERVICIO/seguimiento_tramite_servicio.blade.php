@@ -857,7 +857,7 @@
                                     <h6 style="font-size: 1rem; font-weight:bold;">Estatus de pago</h6>
 				    @if($confsec->SSEGTRA_PAGADO == 0)
                                     <div style="border: 1px dashed black; padding:15px; width:100%">
-                                        <p style="color: #000;"><b style="font-weight: 600;">ESTATUS:</b> <label
+                                        <p style="color: #000;"><b style="font-weight: 600;">ESTATUS: No Pagado</b> <label
                                                 id="txtEstatus_{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"></label></p>
                                         <p style="color: #000;"><b style="font-weight: 600;">REFERENCIA PAGO:</b> <label
                                                 id="txtReferencia_{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"></label></p>
@@ -922,6 +922,42 @@
                             <input type="hidden" name="claveTramites" value="3202;0" />
                             <input type="submit" value="Ir a la ventana de Pago" class="btn btn-primary"/>
                         </form>
+
+                        <br/>
+                        <br/>
+                        <h6 style="font-size: 1rem; font-weight:bold;">Si ya pagaste, captura tu referencia de pago</h6>
+                        <div class="row">
+                        
+                            <div class="col-md-2">
+                                <div class="form-group ">
+                                    <label for="pago_periodo">Periodo</label>
+                                    
+                                    <input type="text" class="form-control" name="pago_periodo" id="pago_periodo" placeholder="Periodo" value="" required="">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group ">
+                                    <label for="numero_transacion">Número de transacción</label>
+                                    
+                                    <input type="text" class="form-control" name="numero_transacion" id="numero_transacion" placeholder="Número de transacción" value="" required="">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3" style="margin-top: 1em;">
+                            <button
+                                        	onClick="actualizar_pago({{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }});"
+                                        	class="btn btn-primary">Validar Pago</button> 
+                           <!--  <input type="submit" value="Validar Pago" class="btn btn-primary" /> -->
+                            </div>
+
+
+                        </div>
+
+                        <div class="row" id="alertValidatePago">
+
+                        </div>
+
                        <!--  <iframe id="PagosIframe" name="PagosIframe" src="" width="100%" height="800"></iframe> -->
 					@endif
                                     <br>
@@ -1507,7 +1543,7 @@
 		
 		//actualizar pago
 		function actualizar_pago(id){
-
+/* 
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
             myHeaders.append("Cookie", "JSESSIONID=4cabe2513407b5f77dafcb905074");
@@ -1536,9 +1572,38 @@
             fetch("http://serviciosweb.queretaro.gob.mx:8080/derechosGEQ/liquidacionOpciones.jsp", requestOptions)
             .then(response => response.text())
             .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+            .catch(error => console.log('error', error)); */
 
-/* 			$.ajax({
+
+
+
+            var periodo = $("#pago_periodo").val();
+            var numeroTransacion = $("#numero_transacion").val();
+
+            if(periodo.length === 0){
+                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el periodo</div>');
+                return;
+            }
+
+            if(numeroTransacion.length === 0){
+                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el número de transacción</div>');
+                return;
+            }
+
+            if(isNaN(periodo)){
+                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El Periodo debe ser un número</div>');
+                return;
+
+            }
+
+            if(isNaN(numeroTransacion)){
+                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El número de transacción debe ser un número</div>');
+                return;
+
+            }
+
+
+ 			$.ajax({
                     		data: {},
                     		url: "/tramite_servicio_cemr/seccion_actualizar_pago/" + id,
                     		type: "GET",
@@ -1549,7 +1614,8 @@
                        			location.reload();
                     		},
                    		error: function(data) {}
-               			}); */
+                }); 
+
 		}
 
                 //Cuando se selecciona un edificio, busca... las disponibilidades

@@ -492,22 +492,18 @@
         }
 
         function TRAM_AJX_UNIDAD_ADMINISTRATIVA(id){
-            console.log(id.toString())
             unidad = $.ajax({
                 //Estos llaman al nuevo remapeo del retys
                 url: "/servidorespublicos/getUnity",
-                // url:"/general/unidades_administrativas",
                 type: "get",
                 data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
-
             });
 
             // Callback handler that will be called on success
             unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbUnidad_administrativa" class="selectpicker form-control"  data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_CENTRO +'">' + value.DESCRIPCION + '</option>';
-                    // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    html += '<option value="'+ value.Id +'">' + value.Description + '</option>';
                 });
                 html += '</select>';
 
@@ -543,14 +539,13 @@
 
         function TRAM_AJX_DEPENDENCIAS(){
             //Estos llaman al nuevo remapeo del retys
-            $.get('/servidorespublicos/getDep', function (data) {
+            $.get('/servidorespublicos/getDepencencias', function (data) {
                 // $.get('/general/dependencias', function (data) {
 
                 var html = '<select id="cmbDependencias" class="selectpicker form-control"  data-live-search="true" multiple>';
 
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_CENTRO +'">' + value.DESCRIPCION + '</option>';
-
+                    html += '<option value="'+ value.Id +'">' + value.Description + '</option>';
                 });
                 html += '</select>';
 
@@ -582,19 +577,17 @@
         function TRAM_AJX_EDIFICIOS(id){
             // var myJSON = JSON.stringify(tramites);
             unidad = $.ajax({
-                //Estos llaman al nuevo remapeo del retys
-                url: "/servidorespublicos/getEdificios",
-                // url:"/general/unidades_administrativas",
+                    //Estos llaman al nuevo remapeo del retys
+                    url: "/servidorespublicos/getEdificios",
                     type: "get",
-                    data: {"tipo":"multiple","tramite_id": id.toString() ?? '0' }
+                    data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
 
                 });
 
                 unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbEdificios" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_EDIFICIO +'">' + value.EDIFICIO + '</option>';
-                    // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    html += '<option value="'+ value.Id +'">' + value.Name + '</option>';
                 });
                 html += '</select>';
 
@@ -663,7 +656,6 @@
             unidad = $.ajax({
                 //Estos llaman al nuevo remapeo del retys
                 url: "/servidorespublicos/getUnity",
-                // url:"/general/unidades_administrativas",
                 type: "get",
                 data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
 
@@ -673,8 +665,7 @@
             unidad.done(function (data, textStatus, jqXHR){
                 var html = '<select id="cmbUnidad_administrativa_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_CENTRO +'">' + value.DESCRIPCION + '</option>';
-                    // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    html += '<option value="'+ value.Id +'">' + value.Description + '</option>';
                 });
                 html += '</select>';
 
@@ -700,7 +691,7 @@
 
         function TRAM_AJX_DEPENDENCIAS_ACCESO(selected){
             // $.get('/general/dependencias', function (data) {
-            $.get('/servidorespublicos/getDep', function (data) {
+            $.get('/servidorespublicos/getDepencencias', function (data) {
 
                 var data_max = "";
                 if(StrRol == "ENLOF" || StrRol == "ADMCT"){
@@ -708,8 +699,7 @@
                 }
                 var html = '<select id="cmbDependencias_acceso" class="selectpicker form-control" '+ data_max +' data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_CENTRO +'">' + value.DESCRIPCION + '</option>';
-                    // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    html += '<option value="'+ value.Id +'">' + value.Description + '</option>';
                 });
                 html += '</select>';
 
@@ -744,10 +734,9 @@
         function TRAM_AJX_EDIFICIOS_ACCESO(id){
             unidad = $.ajax({
                 //Estos llaman al nuevo remapeo del retys
-                url: "/servidorespublicos/getEdificios",
-                // url:"/general/unidades_administrativas",
+                    url: "/servidorespublicos/getEdificios",
                     type: "get",
-                    data: {"tipo":"multiple","tramite_id": id.toString() ?? '0' }
+                    data: {"tipo":"multiple","unidad_id": id.toString() ?? '0' }
 
                 });
 
@@ -755,8 +744,7 @@
 
                 var html = '<select id="cmbEdificios_acceso" class="selectpicker form-control" data-live-search="true" multiple>';
                 data.forEach(function(value) {
-                    html += '<option value="'+ value.ID_EDIFICIO +'">' + value.EDIFICIO + '</option>';
-                    // $("#cmbEdificios option[value='" + value + "']").prop("selected", true);
+                    html += '<option value="'+ value.Id +'">' + value.Name + '</option>';
                 });
                 html += '</select>';
 
