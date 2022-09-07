@@ -218,8 +218,9 @@ Route::group(['prefix' => 'servidorespublicos'], function () {
     Route::post('/modificar', array('uses' => 'ServidorPublicoController@modificar'));
     Route::get('/detalle/{id}', array('uses' => 'ServidorPublicoController@detalle'));
     Route::get('/validar_correo/{StrCorreo}', array('uses' => 'ServidorPublicoController@validar_correo'));
+    
     //Rutas Funcionarios
-    Route::get('/getDep', array('uses' => 'ServidorPublicoController@getDep'));
+    Route::get('/getDepencencias', array('uses' => 'ServidorPublicoController@getDepencencias'));
     Route::get('/getUnity', array('uses' => 'ServidorPublicoController@getUnity'));
     Route::get('/getTramites', array('uses' => 'ServidorPublicoController@getTramites'));
     Route::get('/getEdificios', array('uses' => 'ServidorPublicoController@getEdificios'));
