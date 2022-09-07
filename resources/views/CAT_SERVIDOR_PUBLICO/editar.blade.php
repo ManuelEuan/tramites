@@ -372,13 +372,13 @@
     _lstUnidad_Administrativa_Acceso = <?php echo json_encode($objUsuario->lstUnidadAcceso) ?>;
 
 
-    /* $(document).ajaxStart(function() {
+    $(document).ajaxStart(function() {
         $('#loading_').show();
     });
 
     $(document).ajaxStop(function() {
         $('#loading_').hide();
-    }); */
+    });
 
     $(document).ready(function() {
         $.ajaxSetup({
@@ -1461,16 +1461,15 @@
     function TRAM_AJX_GUARDAR() {
         //TRAM_FN_ENABLED_INPUT();
         var objData = {
-            txtIdUsuario    : $("#txtIdUsuario").val(),
-            txtUsuario      : $("#txtUsuario").val(),
-            cmbRol          : $("#cmbRol").val(),
-            txtNombres      : $("#txtNombres").val(),
-            txtTelefono     : $("#txtTelefono").val(),
-            txtExtension    : $("#txtExtension").val(),
-            txtContrasenia  : $("#txtContrasenia").val(),
-            txtPrimer_Apellido      : $("#txtPrimer_Apellido").val(),
-            txtSegundo_Apellido     : $("#txtSegundo_Apellido").val(),
-            txtCorreo_Electronico   : $("#txtCorreo_Electronico").val(),
+            USUA_NIDUSUARIO : $("#txtIdUsuario").val(),
+            USUA_CUSUARIO   : $("#txtUsuario").val(),
+            USUA_NIDROL     : $("#cmbRol").val(),
+            USUA_CNOMBRES   : $("#txtNombres").val(),
+            USUA_NTELEFONO  : $("#txtTelefono").val(),
+            USUA_NEXTENSION : $("#txtExtension").val(),
+            USUA_CPRIMER_APELLIDO      : $("#txtPrimer_Apellido").val(),
+            USUA_CSEGUNDO_APELLIDO     : $("#txtSegundo_Apellido").val(),
+            USUA_CCORREO_ELECTRONICO   : $("#txtCorreo_Electronico").val(),
             lstDependenciaPertenece : lstDependencias,
             lstUnidadPertence       : lstUnidad_Administrativa,
             lstTramitePertence      : lstTramites,

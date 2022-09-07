@@ -2,14 +2,9 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use App\Cls_Rol;
-use App\Cls_Bloqueo;
-use App\Cls_Sucursal;
 
 class Cls_Usuario extends Model
 {
