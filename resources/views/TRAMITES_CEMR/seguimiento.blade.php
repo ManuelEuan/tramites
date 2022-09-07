@@ -650,7 +650,14 @@
                             </div>
                             <div class="col-md-12 mt-5 contenedorBtn">
                                 <div class="text-right botones">
+                                    @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
                                     <button type="button" class="btn btn-success border btnLetras" onclick="TRAM_FN_EMITIR_RESOLUTIVO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Emitir resolutivo </button>
+                                    @else
+                                    
+                                    <button type="button" class="btn btn-success border btnLetras" disabled title="No disponible">Emitir resolutivo </button>
+    
+                                    @endif
+                                 
                                 </div>
                             </div>
                             </form>
