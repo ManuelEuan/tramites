@@ -1063,8 +1063,8 @@
             //     type: "GET",
             //     success: function(data) {
                     $("#UbicacioModulo").html(direc);
-                    var lat2 = lat == null || lat == "" ? 20.9800512 : lat;
-                    var lon2 = lon == null || lon == "" ? -89.7029587 : lon;
+                    var lat2 = lat == null || lat == "" ? 20.5887932 : lat;
+                    var lon2 = lon == null || lon == "" ? -100.3898881 : lon;
                     $("#txtLatitud").val(lat2);
                     $("#txtLongitud").val(lon2);
                     TRAM_FN_MAPA(lat2, lon2);
@@ -1083,8 +1083,8 @@
         //Cargar mapa y ubicacion de oficina
         function TRAM_FN_MAPA(latitud, longitud){
             setTimeout(function() {
-                var lat = latitud == null || latitud == 0 ? 28.6389324 : Number(latitud);
-                var long = longitud == null || longitud == 0 ? -106.075353 : Number(longitud);
+                var lat = latitud == null || latitud == 0 ? 20.5887932 : Number(latitud);
+                var long = longitud == null || longitud == 0 ? -100.3898881 : Number(longitud);
                 map = new google.maps.Map(document.getElementById('mapa'), {
                     center: {
                         lat: lat,
