@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <a class="navbar-brand  Texto-menu" href="/">
-                                <img src="{{ asset('assets/template/img/logoGray.svg') }}" style="width: 70px;"  class="d-inline-block align-top" alt="">
+                                <img src="{{ asset('assets/template/img/login.png') }}" style="width: 70px;"  class="d-inline-block align-top" alt="">
                             </a>
                         </div>
                         <div class="col-md-9 align-self-end">
