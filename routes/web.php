@@ -174,7 +174,6 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/', array('uses' => 'GestorController@index'))->name('gestor_index')->middleware("permiso");
     Route::post('/consultar', array('uses' => 'GestorController@consultar'))->name('gestor_consultar');
     Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@configurar_tramite'))->name("gestor_configurar_tramite");
-    Route::get('/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
     Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@consultar_tramite'))->name("gestor_consultar_tramite");
 
     Route::group(['prefix' => 'configuracion'], function () {
@@ -194,10 +193,8 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/implementar_tramite/{TRAM_NIDTRAMITE_CONFIG}/{TRAM_NIMPLEMENTADO}', array('uses' => 'GestorController@implementar_tramite'))->name("implementar_tramite");
     Route::get('/consultar_concepto_pago/{TRAM_NIDTRAMITE_ACCEDE}', array('uses' => 'GestorController@consultar_concepto_pago'))->name("consultar_concepto_pago");
     Route::get('/consultar_filtro', array('uses' => 'GestorController@obtener_filtro'))->name("consultar_filtro_gestores");
-    Route::get('/set_json_value_tramite', array('uses' => 'GestorController@set_json_value_tramite'))->name("set_json_value_tramite");
     Route::get('/consultar_resolutivo', array('uses' => 'GestorController@consultar_resolutivo'))->name("consultar_resolutivo");
     Route::get('/consultar_preguntas_formulario', array('uses' => 'GestorController@consultar_preguntas_formulario'))->name("consultar_preguntas_formulario");
-    Route::get('/unidad_administrativa/{id}', array('uses' => 'GestorController@unidad_administrativa'))->name("consultar_unidad_administrativa");
     Route::get('/formulario', array('uses' => 'GestorController@formulario'))->name("formulario_gestor");
 
     Route::get('/detalleTramite/{id}', 'GestorController@detalleTramite');

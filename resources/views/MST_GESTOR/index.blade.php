@@ -420,26 +420,6 @@
 
         //Consultar unidades
         $("#cmbUnidad").prop("disabled", true);
-        // $(document).on('change', '#cmbDependenciaEntidad', function(e) {
-        //     var id = $(this).val();
-        //     e.preventDefault();
-        //     var cmbUnidad = $("#cmbUnidad");
-        //     $.ajax({
-        //         url: "/gestores/unidad_administrativa/" + id,
-        //         type: "GET",
-        //         success: function(data) {
-        //             $("#cmbUnidad").prop("disabled", false);
-        //             //Limpiamos el select de clasificacion
-        //             cmbUnidad.find('option').remove();
-        //             //Opcion por defecto de select clasificacion
-        //             cmbUnidad.append('<option value="0" selected>Seleccione</option>');
-        //             //Llenamos select de clasificacion
-        //             $(data).each(function(i, v) {
-        //                 cmbUnidad.append('<option value="' + v.ID_UNIDAD + '">' + v.DESCRIPCION + '</option>');
-        //             });
-        //         }
-        //     });
-        // });
 
         //Funcion limpiar filtro
         function TRAM_FN_LIMPIAR(e) {
