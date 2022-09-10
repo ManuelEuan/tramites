@@ -6,7 +6,6 @@ use Exception;
 use App\Cls_Gestor;
 use App\Cls_Resolutivo;
 use Illuminate\Http\Request;
-use App\Cls_Tramite_Servicio;
 use App\Services\CitasService;
 use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
@@ -20,11 +19,6 @@ use  Illuminate\Pagination\LengthAwarePaginator;
 
 class GestorController extends Controller
 {
-    /**
-     * @var String
-     */
-    private $host = 'https://remtys-qro-qa.azurewebsites.net';
-
     /**
      * @var TramiteService
      */
@@ -40,7 +34,7 @@ class GestorController extends Controller
      */
     public function __construct()
     {
-        /* $this->middleware('auth'); */
+        $this->middleware('auth');
         $this->tramiteService   = new TramiteService();
         $this->citasService     = new CitasService();
     }
@@ -184,85 +178,6 @@ class GestorController extends Controller
         return view('DET_GESTOR_CONFIGURACION_TRAMITE.index',  compact('tramite', 'edificios'));
     }
 
-    //Vista detalle de configuración de trámite
-    public function detalle_configuracion_tramite($tramiteID, $tramiteIDConfig)
-    {
-        $tramites = new Cls_Gestor();
-        $tramites->TRAM_NIDTRAMITE = $tramiteID;
-        $tramites->TRAM_NIDTRAMITE_CONFIG = $tramiteIDConfig;
-        $registro = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION();
-        $tramite = [];
-
-        //Obtener tramite
-        $urlTramite = $this->host . '/api/Tramite/Detalle/' . $tramiteID;
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-
-        $objTramite = null;
-        $context = stream_context_create($options);
-        $result = @file_get_contents($urlTramite, false, $context);
-        if (strpos($http_response_header[0], "200")) {
-            $objTramite = json_decode($result, true);
-        }
-
-        //Obtener edificios
-        $edificios = [];
-        if ($objTramite != null) {
-            $horarios = "";
-            foreach ($objTramite['horarios'] as $objHorario) {
-                $horarios .= $objHorario . " <br/>";
-            }
-            $telefono = "";
-            foreach ($objTramite['telefonos'] as $objTelefono) {
-                $telefono .= $objTelefono . " <br/>";
-            }
-            $funcionarios = "";
-            foreach ($objTramite['funcionarios'] as $objFuncionarios) {
-                $funcionarios .= $objFuncionarios['nombre'] . "<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
-            }
-            $contEdi = 1;
-            foreach ($objTramite['listaDetallesEdificio'] as $objEdificio) {
-                $_objE = [
-                    "id" => $contEdi,
-                    "nombre" => $objEdificio['nombre'],
-                    "direccion" => $objEdificio['direccion'],
-                    "horario" => $horarios,
-                    "latitud" => $objEdificio['latitud'] ?? 0,
-                    "longitud" => $objEdificio['longitud'] ?? 0,
-                    "responsable" => $funcionarios,
-                    "contacto_telefono" => $telefono,
-                    "contacto_email" => "",
-                    "informacion_adicional" => ""
-                ];
-                array_push($edificios, $_objE);
-                $contEdi++;
-            }
-        }
-
-        if (count($registro) > 0) {
-            $tramite['VALIDO'] = true;
-            $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
-            $tramite['ACCE_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-            $tramite['ACCE_CLAVE_INTERNA'] = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-            $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['EDIFICIOS'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['TRAM_NIMPLEMENTADO'] = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
-            $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
-        } else {
-            $tramite['VALIDO'] = false;
-            $tramite['TRAM_ID_TRAMITE'] = NULL;
-            $tramite['ACCE_ID_TRAMITE'] = NULL;
-            $tramite['ACCE_CLAVE_INTERNA'] = "";
-            $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE. USTED ESPECIFICO UN TRÁMITE, PERO NO SE ENCONTRÓ.";
-            $tramite['TRAM_NIMPLEMENTADO'] = null;
-            $tramite['TRAM_NENLACEOFICIAL'] = null;
-        }
-
-        return view('DET_GESTOR_CONFIGURACION_TRAMITE.DET_CONFIGURACION_TRAMITE',  compact('tramite', 'edificios'));
-    }
 
     /************* Vistas parciales de la configuración de trámite *******************/
     public function view_formulario()
@@ -738,20 +653,6 @@ class GestorController extends Controller
     }
 
 
-    public function unidad_administrativa($id)
-    {
-        $url = $this->host . '/api/vw_accede_unidad_administrativa_centro_id/' . $id;
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-        $context  = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        $registros = json_decode($result, true);
-        return Response()->json($registros);
-    }
-
     //Funcion paginacion
     public function paginate($items, $perPage = 5, $page = null, $options = [])
     {
@@ -760,53 +661,6 @@ class GestorController extends Controller
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, [
             'path' => Paginator::resolveCurrentPath()
         ]);
-    }
-
-    public function set_json_value_tramite()
-    {
-
-        try {
-
-            $listTramites = Cls_Tramite_Servicio::get();
-
-            foreach ($listTramites as $key => $value) {
-
-                //Consultar tramite
-                $urlTramite = $this->host . '/api/vw_accede_tramite_id/' . $value['TRAM_NIDTRAMITE_ACCEDE'];
-                $options = array(
-                    'http' => array(
-                        'method'  => 'GET',
-                    )
-                );
-
-                $objTramite = null;
-                $context = stream_context_create($options);
-                $result = @file_get_contents($urlTramite, false, $context);
-                if (strpos($http_response_header[0], "200")) {
-                    $objTramite = json_decode($result, true);
-                }
-
-                //----- Creamos Json ------
-                $objJson = [];
-                if ($objTramite != null) {
-
-                    //Verificamos solo los atributos con nombre
-                    foreach ($objTramite as $keyt => $valuer) {
-                        if (is_int($keyt)) {
-                            continue;
-                        }
-                        $objJson[$keyt] = $valuer;
-                    }
-                }
-
-                //Actualiamos campo Json
-                Cls_Tramite_Servicio::where(['TRAM_NIDTRAMITE' => $value['TRAM_NIDTRAMITE']])->update(['TRAM_CTRAMITE_JSON' => json_encode($objJson, JSON_UNESCAPED_UNICODE)]);
-            }
-
-            return Response()->json(['ok' => 'si ok ok']);
-        } catch (\Throwable $th) {
-            return Response()->json(['ok' => $th->getMessage()]);
-        }
     }
 
     public function formulario()

@@ -2,42 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Cls_Notificacion_Tramite;
-use Illuminate\Http\Request;
-use App\Cls_Tramite_Servicio;
-use App\Cls_Seguimiento_Servidor_Publico;
-use App\Cls_Usuario_Tramite;
-use App\Cls_Usuario_Respuesta;
-use App\Cls_Usuario_Documento;
-use App\Cls_Usuario_Concepto;
-use App\Models\Cls_Citas_Calendario;
-use App\Services\VariosService;
-use App\Services\TramiteService;
-use  Illuminate\Pagination\LengthAwarePaginator;
-use  Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use App\Mail\MailService;
-use Illuminate\Support\Facades\Mail;
-use ZipArchive;
 use File;
+use ZipArchive;
 use Carbon\Carbon;
-use PDF;
 use Illuminate\Support\Str;
-
+use App\Cls_Usuario_Tramite;
+use Illuminate\Http\Request;
+use App\Cls_Usuario_Concepto;
+use App\Cls_Usuario_Documento;
+use App\Cls_Usuario_Respuesta;
+use App\Services\VariosService;
 use PhpOffice\PhpWord\Settings;
-
+use App\Services\TramiteService;
+use Illuminate\Support\Facades\DB;
+use App\Models\Cls_Citas_Calendario;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Cls_Seguimiento_Servidor_Publico;
 class TramitesController extends Controller
 {
     protected $variosService;
 
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->variosService    = new VariosService();
     }
 
-    protected $host = 'https://remtys-qro-qa.azurewebsites.net';
+    protected $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
 
     public function listado()
     {
@@ -60,8 +51,7 @@ class TramitesController extends Controller
         return view('TRAMITES_CEMR.listado', compact('tramites'));
     }
 
-    public function configurar_tramite()
-    {
+    public function configurar_tramite() {
         return view('TRAMITES_CEMR.index');
     }
 
@@ -162,8 +152,6 @@ class TramitesController extends Controller
     {
         //Marcar trámite del ciudadano como Recibido
         Cls_Seguimiento_Servidor_Publico::TRAM_MARCAR_ESTATUS_REVISION_TRAMITE($id);
-
-        //Tramite
         $result = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
         $tramite = $result[0];
         $ventanilla_sin_cita = $this->obtener_edificio_ventanilla($tramite->USTR_NIDUSUARIOTRAMITE, $tramite->USTR_NIDTRAMITE_ACCEDE);
@@ -246,7 +234,7 @@ class TramitesController extends Controller
         $template->setValue('title', 'Mr.');
         $template->setValue('firstname', 'Josue');
         $template->setValue('lastname', 'Lopez');
- */
+        */
         /*@ Save Temporary Word File With New Name */
         $saveDocPath = $rutaBase . 'new-result' . $nameFile[0] . '.docx';
         $template->saveAs($saveDocPath);
