@@ -30,23 +30,7 @@ class TramitesController extends Controller
 
     protected $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
 
-    public function listado()
-    {
-
-        /*$url =   $this->host . '/api/vw_accede_tramite';
-        //$dataForPost = array('UN_PARAMETRO' => UN_VALUE);
-        $options = array(
-            'http' => array(
-                // 'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'GET',
-                // 'content' => http_build_query($dataForPost),
-            )
-        );
-
-        $context  = stream_context_create($options);
-        set_time_limit(150);
-        $listTramites = file_get_contents($url, false, $context);
-        $tramites = json_decode($listTramites, true);*/
+    public function listado() {
         $tramites = [];
         return view('TRAMITES_CEMR.listado', compact('tramites'));
     }
