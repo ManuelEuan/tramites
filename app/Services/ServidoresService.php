@@ -13,7 +13,7 @@ class ServidoresService
      * @return array
      */
     public function getDependencias(){
-        return DB::connection('mysql2')->table('dependencies')->select()->get();    
+        return DB::connection('mysql2')->table('dependencies')->where(['IsDeleted' => 0])->select()->get();    
     }
 
     /**

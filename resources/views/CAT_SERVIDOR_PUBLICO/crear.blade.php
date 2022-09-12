@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
-                            <label for="dteFechaInicio">Rol <span class="text-danger">*</span></label>
+                            <label for="cmbRol">Rol <span class="text-danger">*</span></label>
                             <select class="combobox form-control" name="cmbRol" id="cmbRol" placeholder="Rol">
                                 <option value="0">Selecccionar</option>
                             </select>
@@ -42,31 +42,31 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="dteFechaInicio">Nombre (s) <span class="text-danger">*</span></label>
+                            <label for="txtNombres">Nombre (s) <span class="text-danger">*</span></label>
                             <input type="text" placeholder="Nombre (s)" class="form-control" name="txtNombres" id="txtNombres" required>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="txtNombre">Primer apellido <span class="text-danger">*</span></label>
+                            <label for="txtPrimer_Apellido">Primer apellido <span class="text-danger">*</span></label>
                             <input type="text" placeholder="Primer apellido" class="form-control" name="txtPrimer_Apellido" id="txtPrimer_Apellido" required>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="cmbDependenciaEntidad">Segundo apellido</label>
+                            <label for="txtSegundo_Apellido">Segundo apellido</label>
                             <input type="text" placeholder="Segundo apellido" class="form-control" name="txtSegundo_Apellido" id="txtSegundo_Apellido">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="dteFechaInicio">Teléfono</label>
+                            <label for="txtTelefono">Teléfono</label>
                             <input type="number" placeholder="Teléfono" class="form-control" name="txtTelefono" id="txtTelefono">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="dteFechaInicio">Extensión</label>
+                            <label for="txtExtension">Extensión</label>
                             <input type="number" placeholder="Extensión" class="form-control" name="txtExtension" id="txtExtension">
                         </div>
                     </div>
