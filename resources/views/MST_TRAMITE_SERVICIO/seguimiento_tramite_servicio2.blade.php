@@ -918,10 +918,10 @@
                                     <h6 style="font-size: 1rem; font-weight:bold;">Estatus de pago</h6>
 				    @if($confsec->SSEGTRA_PAGADO == 0)
                                     <div style="border: 1px dashed black; padding:15px; width:100%">
-                                        <p style="color: #000;"><b style="font-weight: 600;">ESTATUS:</b> <label
+                                        <p style="color: #000;"><b style="font-weight: 600;">ESTATUS: No Pagado</b> <label
                                                 id="txtEstatus_{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"></label></p>
-                                        <p style="color: #000;"><b style="font-weight: 600;">REFERENCIA PAGO:</b> <label
-                                                id="txtReferencia_{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"></label></p>
+                                       <!--  <p style="color: #000;"><b style="font-weight: 600;">REFERENCIA PAGO:</b> <label
+                                                id="txtReferencia_{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"></label></p> -->
                                        <!-- <p style="color: #000;"><b style="font-weight: 600;">REFERENCIA ACCEDE:</b> <label
                                                 id="txtIdReferencia_{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"></label></p>
                                        	     <p style="color: #000;"><b style="font-weight: 600;">MENSAJE:</b> <label
@@ -964,9 +964,70 @@
                                         id="linkPago_{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"
                                         class="btn btn-success float-right">Pagar</a> -->
 					@if($confsec->SSEGTRA_PAGADO == 0)
-						<a  rel="noopener noreferrer"
-                                        	onClick="actualizar_pago({{$confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO}})"
-                                        	class="btn btn-success float-right">Pagar</a>
+												<!-- <a  rel="noopener noreferrer"
+                                        	onClick="$PagosManaguer.mostarModal();"
+                                        	class="btn btn-success float-right">Pagar</a> -->
+
+                                            <form method="post" action="http://serviciosweb.queretaro.gob.mx:8080/derechosGEQ/liquidacionOpciones.jsp" target="_blank" enctype="application/x-www-form-urlencoded">
+                            <input type="hidden" name="usuario" value="SR682466" />
+                            <input type="hidden" name="password" value="sedesu" />
+                            <input type="hidden" name="rfc" value="{{ $tramite['rfcUser'] }}" />
+                            @if ($tramite['tipoPersona'] == 'FISICA')
+                            <input type="hidden" name="nombre" value="{{ $tramite['nombreUsuario'] }}" />
+                            <input type="hidden" name="apaterno" value="{{ $tramite['apellidoPUsuario'] }}" />
+                            <input type="hidden" name="amaterno" value="{{ $tramite['apellidoMUsuario'] }}" />
+                                
+                            @endif
+
+                            @if ($tramite['tipoPersona'] == 'MORAL')
+                            <input type="hidden" name="razon" value="{{ $tramite['razonSocioal'] }}" />
+                          
+                                
+                            @endif
+
+                            <input type="hidden" name="observaciones" value="" />
+                            <input type="hidden" name="email" value="{{ $tramite['correoUsuario'] }}" />
+                            <input type="hidden" name="usoCfdi" value="CP01" />
+                            <input type="hidden" name="idPeticionCliente" value="{{ $tramite['idTramitePago']+time() }}" />
+                            <input type="hidden" name="cliente" value="PRUEBA" />
+                            <input type="hidden" name="claveTramites" value="{{$tramite['clavePago']}};0" /> 
+                            <input type="submit" value="Ir a la ventana de Pago" class="btn btn-primary"/>
+                        </form>
+                        <br/>
+                        <br/>
+                        <h6 style="font-size: 1rem; font-weight:bold;">Si ya pagaste, captura tu referencia de pago</h6>
+                        <div class="row">
+                        
+                            <div class="col-md-2">
+                                <div class="form-group ">
+                                    <label for="pago_periodo">Periodo</label>
+                                    
+                                    <input type="text" class="form-control" name="pago_periodo" id="pago_periodo" placeholder="Periodo" value="" required="">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group ">
+                                    <label for="numero_transacion">Número de transacción</label>
+                                    
+                                    <input type="text" class="form-control" name="numero_transacion" id="numero_transacion" placeholder="Número de transacción" value="" required="">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3" style="margin-top: 1em;">
+                            <button
+                                        	onClick="actualizar_pago({{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }});"
+                                        	class="btn btn-primary">Validar Pago</button>  
+                           <!--  <input type="submit" value="Validar Pago" class="btn btn-primary" /> -->
+                            </div>
+
+
+                        </div>
+
+                        <div class="row" id="alertValidatePago">
+
+                        </div>
+                       <!--  <iframe id="PagosIframe" name="PagosIframe" src="" width="100%" height="800"></iframe> -->
 					@endif
                                     <br>
                                 @endif
@@ -1511,16 +1572,77 @@
 		
 		//actualizar pago
 		function actualizar_pago(id){
-			$.ajax({
-                data: {},
-                url: "/tramite_servicio_cemr/seccion_actualizar_pago/" + id,
-                type: "GET",
-                dataType: 'json',
-                success: function(data) {
-                	// location.reload();
-                },
-                error: function(data) {}
-            });
+            var periodo = $("#pago_periodo").val();
+            var numeroTransacion = $("#numero_transacion").val();
+
+            if(periodo.length === 0){
+                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el periodo</div>');
+                return;
+            }
+
+            if(numeroTransacion.length === 0){
+                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el número de transacción</div>');
+                return;
+            }
+
+            if(isNaN(periodo)){
+                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El Periodo debe ser un número</div>');
+                return;
+
+            }
+
+            if(isNaN(numeroTransacion)){
+                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El número de transacción debe ser un número</div>');
+                return;
+
+            }
+
+            /* 
+ 			$.ajax({
+                    data: {},
+                    url: "/tramite_servicio_cemr/seccion_actualizar_pago/" + id,
+                    type: "GET",
+                    dataType: 'json',
+                    success: function(data) {
+					console.log("resp");
+					console.log(data);
+                       			location.reload();
+                    		},
+                   		error: function(data) {}
+
+               		}); */
+
+            var jsonobject = {
+                    PERIODO: periodo,
+                    NUMERO_TRANSACCION:numeroTransacion,
+                    TRAMITE_ID: id
+            };        
+
+            $.ajax({
+                    data: JSON.stringify(jsonobject),
+                    url: "/validar_pago_queretaro",
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function(data) {
+                        console.log("resp");
+                        console.log(data);
+
+                        if(data.estatusPago == 1){
+                            $("#alertValidatePago").html('<div class="alert alert-success" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
+                            location.reload();
+
+                        }else{
+                            $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
+                            return;
+
+                        }
+
+                       	
+                    },
+                   		error: function(data) {}
+
+               	});
 		}
 
                 $(document).ready(function() {

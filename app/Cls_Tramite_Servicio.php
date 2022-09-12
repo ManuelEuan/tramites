@@ -81,6 +81,17 @@ class Cls_Tramite_Servicio extends Model
         return $response;
     }
 
+    public function TRAM_CONSULTAR_CONFIGURACION_TRAMITE_CONCEPTO($ID_TRAMITE_ACCEDE){
+        $response = DB::selectOne(
+            'SELECT a.Referencia, a.`ID del trámite en ACCEDE` FROM config_trámites_conceptos as a
+
+            WHERE a.`ID del trámite en ACCEDE` = ?',
+            array($ID_TRAMITE_ACCEDE)
+        );
+        return $response;
+    }
+
+
     public function TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($TRAM_NIDTRAMITE_CONFIG, $USTR_NIDUSUARIOTRAMITE = 0)
     {
         $response = [
