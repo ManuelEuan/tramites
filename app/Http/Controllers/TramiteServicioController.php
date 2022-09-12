@@ -1975,8 +1975,8 @@ class TramiteServicioController extends Controller
 
         $response = json_decode($res->getBody(), true);
         //echo $res->getBody();
-        $response["estatusPago"] = 1;
-        $response["mensajePago"] = "Pagado";
+        /* $response["estatusPago"] = 1;
+        $response["mensajePago"] = "Pagado"; */
 
         if($response["estatusPago"] == 1){
             Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $request->input('TRAMITE_ID')])->update(['SSEGTRA_PAGADO' => 1]);
