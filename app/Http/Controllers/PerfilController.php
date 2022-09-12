@@ -12,7 +12,7 @@ use App\Cls_Bitacora;
 use Exception;
 
 class PerfilController extends Controller
-{
+{ 
     public function index(Request $request)
     {
         $ObjAuth = Auth::user();
@@ -49,7 +49,9 @@ class PerfilController extends Controller
             );
         }
         $ObjAuth['documentos'] = $data;
-        return view('MST_PERFIL.index', compact('ObjAuth'));
+        // var_dump(($ObjAuth['documentos']));
+        // exit();
+        return view('MST_PERFIL.index', compact('ObjAuth')); 
     }
     public function listarDocs(){
         $ObjAuth = Auth::user();
@@ -57,7 +59,6 @@ class PerfilController extends Controller
         $docsUpdates = Cls_Usuario::getDocsUser($ObjAuth->USUA_NIDUSUARIO);
         $data = array();
         $hoy = date('Y-m-d');
-
         foreach ($docsUser as $key => $i) {
             $tiene = false;
             $peso = '';
@@ -134,6 +135,55 @@ class PerfilController extends Controller
                 </td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
                 <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>'
             );
+        }
+        $results = array(
+            "sEcho"=>1, //Información para el datatables
+            "iTotalRecords"=>count($data), //enviamos el total registros al datatable
+            "iTotalDisplayRecords"=>count($data), //enviamos el total registros a visualizar
+            "aaData"=>$data);
+
+        return json_encode($results);
+    }
+    /**
+     * 
+     */
+    public function listarResolutivos(){
+        $ObjAuth = Auth::user();
+        $docsUser = Cls_Usuario::getResolutivosUser($ObjAuth->USUA_NIDUSUARIO);
+        $data = array();
+        $hoy = date('Y-m-d');
+        $host = $_SERVER["HTTP_HOST"];
+        foreach ($docsUser as $key => $i) {
+            // $tiene = false;
+            $peso = '';
+            $estatus = '';
+            // $icono = '';
+            // $idDoc = '';
+            // $btnRemplazar = '';
+            // $vencido = '';
+            $peso = $i->USRE_NPESO / 8000;
+            $peso = number_format($peso, 2);
+            
+            $data[] = array(
+                '0' => date("d-m-Y", strtotime($i->created_at)),
+                '1' => '<p>'.$i->TRAM_CNOMBRE.'</p>',
+                '2' => $peso . ' MB ' ,
+                '3' => '<a title="Ver archivo" class="btn btn-primary" href="'.$i->USRE_CRUTADOC.'" target="_blank"><i class="fa fa-eye"></i></a>'
+                // '4' => 'sin vencimiento',
+                // '5' => '<p style="color: green;"> Vigente <i class="fa-solid fa-circle-check"></i></p>'
+
+            );
+            // $data[] = array(
+            //     '0' => $i->NOMBRE,
+            //     '1' => $peso,
+            //     '2' => $icono,
+            //     '3' => $vencido,
+            //     '4' => ($tiene) ? $btnRemplazar.' 
+            //     <button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button> 
+            //     <button '.$det_btn_click.' title="Eliminar documento" class="btn '.$det_btn_color.'"><i class="fa fa-times"></i></button>
+            //     </td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
+            //     <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>'
+            // );
         }
         $results = array(
             "sEcho"=>1, //Información para el datatables
