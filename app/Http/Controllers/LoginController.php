@@ -186,14 +186,12 @@ class LoginController extends Controller
 		$StrUrl = "";
 		
 		try {
-			
-			$IntIdUsuario = Cls_Usuario::TRAM_SP_VALIDAR_CORREO_OBTIENE_ID($request->txtCorreo_Electronico);
-			
+			$IntIdUsuario = Cls_Usuario::TRAM_SP_VALIDAR_CORREO_OBTIENE_ID($request->txtCorreo_Electronico);			
 			if($IntIdUsuario == null){
 				$response = [
 					'codigo' => 400, 
 					'status' => "error", 
-					'message' => "El usuario capturado no existe en el sistema, favor de verificar."
+					'message' => "El usuario no tiene un registro en el sistema, verifique la información"
 				];
 			}else {
 				$ObjBloqueo = Cls_Bloqueo::TRAM_SP_VALIDAR_BLOQUEO($IntIdUsuario->USUA_NIDUSUARIO);
@@ -235,14 +233,15 @@ class LoginController extends Controller
 					$ObjData['StrUsuario'] = $IntIdUsuario->USUA_NTIPO_PERSONA == "FISICA" ? $IntIdUsuario->USUA_CNOMBRES : $IntIdUsuario->USUA_CRAZON_SOCIAL;
 
 					Mail::send('MSTP_MAIL.recuperar_contrasena', $ObjData, function ($message) use($ObjData) {
-						$message->from('ldavalos@esz.com.mx', 'ldavalos');
+						$message->from(env('MAIL_USERNAME'), 'ObjData');
 						$message->to($ObjData['StrCorreo'], '')->subject('Recuperación de contraseña.');
 					});
 				}
+
 				$response = [
-					'codigo' => 400, 
+					'codigo' => 200, 
 					'status' => "success", 
-					'message' => "acción realizada con éxito."
+					'message' => "Es necesario revisar su correo para recuperar su contraseña."
 				];
 			}
 		}

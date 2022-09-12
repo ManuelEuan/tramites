@@ -164,8 +164,7 @@
                                 <div class="col-md-4 divCurpMoral">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">CURP <span class="text-danger">*</span>  <span class="text-primary">Se compone de 18 caracteres</span></label>
-                                        <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpMoral"
-                                            placeholder="CURP">
+                                        <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpMoral" placeholder="CURP">
                                         <span class="resultadoValidTextCurpMoral" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
@@ -175,8 +174,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Nombre (s) <span class="text-danger">*</span> </label>
-                                        <input type="text" class="form-control" name="txtNombres" id="txtNombres" 
-                                            placeholder="Nombre (s)" required >
+                                        <input type="text" class="form-control" name="txtNombres" id="txtNombres" placeholder="Nombre (s)" required >
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -208,332 +206,6 @@
                             </div>
 
                             <br>
-                            
-                            <!--
-                            <div class="row divCurp_Moral">
-                                <div class="col-md-5">
-                                    <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">CURP <span class="text-danger asterisco" id="asterisco">*</span><span class="text-primary">Se compone de 18 caracteres</span></label>
-                                        <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpMoral"
-                                            placeholder="CURP">
-                                        <span class="resultadoValidTextCurp" style="font-size: 12px;"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-1 row align-items-center">
-                                    <span class="circle-success iconCurp_Valido">
-                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>-->
-
-                            <!--
-                            <div class="row divDomicilio_Particular">
-                                <div class="col-md-12">
-                                    <br/>
-                                    <h5 class="font-weight-bold">Domicilio particular</h5>
-                                    <br/>
-                                </div>
-                            </div>
-                            
-                            <div class="row divDomicilio_Particular">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="cmbPais_Particular">País <span class="text-danger">*</span> </label>
-                                         <select class="combobox form-control" name="cmbPais_Particular"
-                                            id="cmbPais_Particular"  title="País">
-                                            <option value="">Seleccione...</option>
-                                            <option>México</option>
-                                        </select> 
-                                       <!-  <div id="selectcmbPais_Particular"></div>---
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="cmbEstado_Particular">Estado <span class="text-danger">*</span> </label>
-                                        <!- <select class="combobox form-control" name="cmbEstado_Particular"
-                                            id="cmbEstado_Particular" title="Estado">
-                                            <option value="">Seleccione...</option>
-                                            <option>Chihuahua</option>
-                                        </select> --
-                                        <div id="selectcmbEstado_Particular"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="cmbMunicipio_Particular">Municipio <span class="text-danger">*</span> </label>
-                                        <!-<select class="combobox form-control" name="cmbMunicipio_Particular"
-                                            id="cmbMunicipio_Particular" title="Municipio">
-                                            <option value="">Seleccione...</option>
-                                            <option>Chihuahua</option>
-                                            <option>Juárez</option>
-                                        </select>--
-
-                                        <div id="selectcmbMunicipio_Particular">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="cmbColonia_Particular">Colonia <span class="text-danger">*</span> </label>
-                                        <select class="combobox form-control optionsColoniaParticular" name="cmbColonia_Particular"
-                                            id="cmbColonia_Particular" title="Colonia">
-                                            <<option value="">Seleccione...</option>
-                                            <option>Zona Centro</option>
-                               
-                                        </select>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-
-                            <br/>
-
-                            <div class="row divDomicilio_Particular">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">Calle <span class="text-danger">*</span> </label>
-                                        <input type="text" class="form-control" name="txtCalle_Particular" id="txtCalle_Particular"
-                                            placeholder="Calle">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">Número interior</label>
-                                        <input type="number" class="form-control" name="txtNumero_Interior_Particular" id="txtNumero_Interior_Particular"
-                                            placeholder="Número interior">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">Número exterior <span class="text-danger">*</span> </label>
-                                        <input type="number" class="form-control" name="txtNumero_Exterior_Particular" id="txtNumero_Exterior_Particular"
-                                            placeholder="Número exterior">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">C.P. <span class="text-danger">*</span> </label>
-                                        <input type="number" class="form-control" name="txtCP_Particular" id="txtCP_Particular"
-                                            placeholder="C.P.">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <br/>
-
-                            <div class="row divDomicilio_Particular">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="chbDomicilio_Mismo" id="chbDomicilio_Mismo"
-                                                value="1">
-                                            <label class="form-check-label" for="chbDomicilio_Mismo"><span class="text-primary">¿El domicilio particular y el domicilio físcal es el mismo?</span></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                                -->
-
-                                <!--
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h5 class="font-weight-bold">Domicilio físcal</h5>
-                                </div>
-                            </div>
-                            <br/>
-                                    -->
-                                                                
-                                    <!--                            
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="cmbPais_Fiscal">País <span class="text-danger asterisco" id="asterisco">*</span></label>
-                                        <select class="combobox form-control" name="cmbPais_Fiscal"
-                                            id="cmbPais_Fiscal" title="País">
-                                            <option value="">Seleccione...</option>
-                                            <option>México</option>
-                                        </select> 
-
-                                       <!- <div id="selectcmbPais_Fiscal"></div>--
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="cmbEstado_Fiscal">Estado <span class="text-danger asterisco" id="asterisco">*</span></label>
-                                        <!- <select class="combobox form-control" name="cmbEstado_Fiscal"
-                                            id="cmbEstado_Fiscal" title="Estado">
-                                            <option value="">Seleccione...</option>
-                                            <option>Chihuahua</option>
-                                        </select> --
-                                        <div id="selectcmbEstado_Fiscal"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="cmbMunicipio_Fiscal">Municipio <span class="text-danger asterisco" id="asterisco">*</span></label>
-                                        <!-<select class="combobox form-control" name="cmbMunicipio_Fiscal"
-                                            id="cmbMunicipio_Fiscal" title="Municipio">
-                                            <option value="">Seleccione...</option>
-                                            <option>Chihuahua</option>
-                                            <option>Juárez</option>
-                                        </select>--
-                                        <div id="selectcmbMunicipio_Fiscal">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="cmbColonia_Fiscal">Colonia <span class="text-danger asterisco" id="asterisco">*</span></label>
-                                        <select class="combobox form-control optionsColoniaFiscal" name="cmbColonia_Fiscal"
-                                            id="cmbColonia_Fiscal" title="Colonia">
-                                            <option value="">Seleccione...</option>
-                                            <option>Zona Centro</option>
-                                
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <br/>
-                                    -->
-                                                                
-                                    <!--
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">Calle <span class="text-danger asterisco" id="asterisco">*</span> </label>
-                                        <input type="text" class="form-control" name="txtCalle_Fiscal" id="txtCalle_Fiscal"
-                                            placeholder="Calle">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">Número interior</label>
-                                        <input type="number" class="form-control" name="txtNumero_Interior_Fiscal" id="txtNumero_Interior_Fiscal"
-                                            placeholder="Número interior">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">Número exterior <span class="text-danger asterisco" id="asterisco">*</span></label>
-                                        <input type="number" class="form-control" name="txtNumero_Exterior_Fiscal" id="txtNumero_Exterior_Fiscal"
-                                            placeholder="Número exterior">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">C.P. <span class="text-danger asterisco" id="asterisco">*</span></label>
-                                        <input type="number" class="form-control" name="txtCP_Fiscal" id="txtCP_Fiscal"
-                                            placeholder="C.P.">
-                                    </div>
-                                </div>
-                            </div>
-                            <br/>
-                                -->
-                            
-                                <!--
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <br/>
-                                    <div class="repeater">
-                                        <h5 class="font-weight-bold">Agregar sucursal <span class="circle" data-repeater-create>+</span></h5>
-                                        <div data-repeater-list="lstSucursal">
-                                            <div data-repeater-item>
-                                                <div class="row">
-                                                    <div class="col-md-11">
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label for="cmbPais_Sucursal">País</label>
-                                                                    <select class="combobox form-control cmbPais_Sucursal optionsPaisesSucursal" name="cmbPais_Sucursal" title="País">
-                                                                      <!- <option value="">Seleccione...</option>
-                                                                        <option>México</option>  --
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label for="cmbEstado_Sucursal">Estado</label>
-                                                                    <select class="combobox form-control cmbEstado_Sucursal optionsEstadosSucursal" name="cmbEstado_Sucursal" title="Estado">
-                                                                        <!- <option value="">Seleccione...</option>
-                                                                        <option>Chihuahua</option> --
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label for="cmbMunicipio_Sucursal">Municipio</label>
-                                                                    <select class="combobox form-control cmbMunicipio_Sucursal optionsMunicipioSucursal" name="cmbMunicipio_Sucursal" title="Municipio">
-                                                                        <!- <option value="">Seleccione...</option>
-                                                                        <option>Chihuahua</option>
-                                                                        <option>Juárez</option>
-                                                                       --
-                                                                    </select> 
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label for="cmbColonia_Sucursal">Colonia</label>
-                                                                    <select class="combobox form-control cmbColonia_Sucursal optionscmbColonia_Sucursal" name="cmbColonia_Sucursal" title="Colonia">
-                                                                        <option value="">Seleccione...</option>
-                                                                        <option>Zona Centro</option>
-                                                                  
-
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <br/>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label for="bus-txt-centro-trabajo">Calle</label>
-                                                                    <input type="text" class="form-control txtCalle_Sucursal" name="txtCalle_Sucursal"
-                                                                        placeholder="Calle">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label for="bus-txt-centro-trabajo">Número interior</label>
-                                                                    <input type="number" class="form-control txtNumero_Interior_Sucursal" name="txtNumero_Interior_Sucursal"
-                                                                        placeholder="Número interior">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label for="bus-txt-centro-trabajo">Número exterior</label>
-                                                                    <input type="number" class="form-control txtNumero_Exterior_Sucursal" name="txtNumero_Exterior_Sucursal"
-                                                                        placeholder="Número exterior">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label for="bus-txt-centro-trabajo">C.P.</label>
-                                                                    <input type="number" class="form-control txtCP_Sucursal" name="txtCP_Sucursal"
-                                                                        placeholder="C.P.">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="col-md-1 row align-items-center">
-                                                        <div class="text-right">
-                                                            <span class="circle-error" data-repeater-delete>
-                                                                x
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                                <hr/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <br/>
-                                        -->
                             
                             <h5 class="font-weight-bold">Datos de Contacto</h5>
                             <div class="row">
@@ -574,11 +246,7 @@
                                     <div class="form-group">
                                         <input type="tel" class="form-control" id="txtNumeroTelefono" name="txtNumeroTelefono" placeholder="999999999" pattern="[0-9]{3}[0-9]{3}[0-9]{4}"  placeholder="No. de teléfono" required>
                                     </div>
-
                                 </div>
-
-
-
                             </div>
 
                             <br>
@@ -756,8 +424,8 @@
             );
 
             $.validator.addMethod("lettersonly", function(value, element)  {
-return this.optional(element) || /^[a-z\s]+$/i.test(value);
-}, "El nombre (s) solamente puede tener caracteres alfabéticos y espacios.");
+                return this.optional(element) || /^[a-z\s]+$/i.test(value);
+            }, "El nombre (s) solamente puede tener caracteres alfabéticos y espacios.");
     
             $("#frmForm").validate({
                 focusInvalid: false,
@@ -889,15 +557,15 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
                         required: ""
                     },
                     txtCorreo_Electronico: {
-                        email: "¡Error! El correo que se agregó no es válido, favor de verificar.",
+                        email: "El correo que se agregó no es válido, favor de verificar.",
                         required: ""
                     },
                     txtCorreo_Alternativo: {
-                        email: "¡Error! El correo que se agregó no es válido, favor de verificar.",
+                        email: "El correo que se agregó no es válido, favor de verificar.",
                         required: ""
                     },
                     txtContrasenia: {
-                        passwordcheck: "¡Error! La contraseña debe tener mínimo 6 y máximo 20 caracteres, incluir al menos un número, una letra mayúscula, una letra minúscula y un carácter especial. favor de verificar.",
+                        passwordcheck: "La contraseña debe tener mínimo 6 y máximo 20 caracteres, incluir al menos un número, una letra mayúscula, una letra minúscula y un carácter especial. favor de verificar.",
                         required: ""
                     },
                         cmbColonia_Particular: {
@@ -1120,7 +788,7 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
         $('#txtRfc').change(function(){
             var value = $( this ).val();
             TRAM_FN_VALIDAR_INPUT_RFC(value);
-            TRAM_AJX_VALIDAR_RFC(value);
+            TRAM_AJX_VALIDAR_RFC(value, 'rfc');
         });
         
         //CURP
@@ -1128,6 +796,7 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
             var value = $( this ).val();
             var tipo = "FISICA";
             TRAM_FN_VALIDAR_INPUNT_CURP(value, tipo);
+            TRAM_AJX_VALIDAR_RFC(value, 'curp');
         });
 
         //Correo
@@ -1142,25 +811,6 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
             var tipo = "MORAL";
             TRAM_FN_VALIDAR_INPUNT_CURP(value, tipo);
         });
-
-        //Validar si el Curp existe
-        function TRAM_AJX_VALIDAR_CURP(StrCurp){
-            $.get('/registrar/validar_curp/' + StrCurp, function (data) {
-                //Validamos si existe un usuario con el curp capturado
-                console.log("Resultado: ", data);
-                if(data != ''){
-                    $('#txtNombres').val(data[0].USUA_CNOMBRES)
-                    $('#txtPrimer_Apellido').val(data[0].USUA_CPRIMER_APELLIDO)
-                    $('#txtSegundo_Apellido').val(data[0].USUA_CSEGUNDO_APELLIDO)
-                }else {
-                    $('#txtNombres').val('')
-                    $('#txtPrimer_Apellido').val('')
-                    $('#txtSegundo_Apellido').val('')
-                    $(".resultadoValidTextCurpMoral").html("<span style='color: red;'>¡Error!</span> El Curp ingresado no cuenta con un registro actualmente, favor de intentar nuevamente..");
-                }
-            });
-        };
-
         
         //Mismo domicilio
         $("#chbDomicilio_Mismo").click(function(){
@@ -1184,39 +834,6 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
                 $('#cmbPais_Fiscal').prop('value', "");
             }  
         });
-
-
-
-
-       /* $('#selectcmbMunicipio_Particular').change(function(){
-            var value = $("#selectcmbMunicipio_Particular option:selected" ).text();
-            
-            $('#cmbColonia_Particular').empty();   
-            TRAM_AJX_CARGAR_LOCALIDADES(value);
-           
-
-        });*/
-
-
-        /*$('#selectcmbEstado_Particular').change(function(){
-            var value = $("#selectcmbEstado_Particular option:selected" ).val();
-            
-           $('#cmbMunicipio_Particular').empty();  
-
-           console.log(value);
-           TRAM_AJX_CARGAR_MUNICIPIOS_ESTADOS(value);
-        });*/
-
-
-        
-        /*$('#selectcmbMunicipio_Fiscal').change(function(){           
-            var value = $("#selectcmbMunicipio_Fiscal option:selected" ).text();    
-            $('#cmbColonia_Fiscal').empty();
-            TRAM_AJX_CARGAR_LOCALIDADES_FISCAL(value)
-        });*/
-
-       
-
 
         //Cancelar
         function TRAM_FN_CANCELAR(){
@@ -1332,7 +949,7 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
                                 $(".iconCurp_Valido").hide();
                                 Swal.fire({
                                     title: '¡Éxito!',
-                                    text: data.message,
+                                    text: "Su usuario se registró correctamente."
                                     icon: 'success',
                                     showCancelButton: false,
                                     confirmButtonColor: '#3085d6',
@@ -1438,14 +1055,12 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", false);
                     }, 1000);
-                    $("#iconRfc_Valido").show();
                     $("#resultadoValidText").html("");
                 } else {
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", true);
                     }, 1000);
-                    $("#iconRfc_Valido").hide();
-                    $("#resultadoValidText").html("<span style='color: red;'>¡Error!</span> El RFC no es válido, favor de verficar.");
+                    $("#resultadoValidText").html("<span style='color: red;'>El RFC no es válido, favor de verficar.</span>");
                 }
                 //toUpperCase
                 $("#txtRfc").val(rfc);
@@ -1469,7 +1084,6 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
                     console.log("La curp: " + curp + " no es valida, revisé el Digito Verificador (" + digito + ")");
                     return false;
                 } else {
-
                     return true;
                 }
     
@@ -1514,14 +1128,14 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
             if (input == null || input == undefined || input == "") {
             } else {
                 var curp = newValue.trim().toUpperCase();  
-                if (TRAM_FN_VALIDAR_CURP(curp)) { // Acá se comprueba
+                if (TRAM_FN_VALIDAR_CURP(curp)) {
+
                     if(tipo == "MORAL"){
-                        TRAM_AJX_VALIDAR_CURP(curp)
+                        TRAM_AJX_VALIDAR_RFC(curp, 'curp')
                     }
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", false);
                     }, 1000);
-                    $(".iconCurp_Valido").show();
                     $(".resultadoValidTextCurp").html("");
                     $(".resultadoValidTextCurpMoral").html("");
                 } else {
@@ -1531,33 +1145,53 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", false);
                     }, 1000);
-                    $(".iconCurp_Valido").hide();
+   
                     if(tipo == "MORAL"){
-                        $(".resultadoValidTextCurpMoral").html("<span style='color: red;'>¡Error!</span> El CURP no es válido, favor de verficar.");
+                        $(".resultadoValidTextCurpMoral").html("<span style='color: red;'>El CURP no es válido, favor de verficar.</span>");
                     }else{
-                        $(".resultadoValidTextCurp").html("<span style='color: red;'>¡Error!</span> El CURP no es válido, favor de verficar.");
+                        $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP no es válido, favor de verficar.</span>");
                     }
                 }    
                 $(".txtCurp").val(curp);
             }
         }
-        
+
         //Validar si el rfc existe
-        function TRAM_AJX_VALIDAR_RFC(StrRfc){
-            $.get('/registrar/validar_rfc/' + StrRfc, function (data) {
-                //Validamos si existe un usuario con el rfc capturado
-                if(data.status == "success"){
-                    setTimeout(function(){
-                        $(".btnSubmit").prop("disabled", true);
-                    }, 1000);
-                    $("#txtRfc").attr("aria-invalid", "true");
-                    $("#txtRfc").addClass("error");
-                    $("#resultadoExistRfc").html("<span style='color: red;'>"+ data.message +"</span>");
-                }else {
-                    $("#txtRfc").attr("aria-invalid", "false");
-                    $("#txtRfc").removeClass("error");
-                    $("#resultadoExistRfc").html("");
-                }
+        function TRAM_AJX_VALIDAR_RFC(value, tipo){
+            $.ajax({
+                data: {tipo: tipo, valor: value},
+                url: "/api/general/validaDuplicidad",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data.data);
+                    if(data.data != null){
+                        setTimeout(function(){
+                            $(".btnSubmit").prop("disabled", true);
+                        }, 1000);
+                        if(tipo == 'curp'){
+                            $(".iconCurp_Valido").hide();
+                            $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP ya existe en el sistema, por favor ingresa con tu usuario y contraseña.</span>");
+                        }
+                        else{
+                            $("#iconRfc_Valido").hide();
+                            $("#txtRfc").attr("aria-invalid", "true");
+                            $("#txtRfc").addClass("error");
+                            $("#resultadoExistRfc").html("<span style='color: red;'> El RFC ya existe en el sistema, por favor ingresa con tu usuario y contraseña.</span>");
+                        }
+                    }else {
+                        if(tipo == 'curp'){
+                            $(".iconCurp_Valido").show();
+                            $("#resultadoExistRfc").html("");
+                        }
+                        else{
+                            $("#iconRfc_Valido").show();
+                            $("#txtRfc").attr("aria-invalid", "false");
+                            $("#txtRfc").removeClass("error");
+                            $("#resultadoExistRfc").html("");
+                        }
+                    }
+                },
             });
         };
 
@@ -1617,18 +1251,8 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
 
         }
 
-
-     
-
-
         function TRAM_AJX_CARGAR_LOCALIDADES_SUCURSAL(municipio,nombredata){
-            console.log("localidadSucursal " + municipio);
-
-          
             $.get('/registrar/localidades/'+municipio, function (data) {          
-
-                    console.log(data);
-
                 var html = '';   
                 data.forEach(function(value) {
                     html += '<option value="'+ value.NOMBRE +'">' + value.NOMBRE + '</option>';
@@ -1637,15 +1261,7 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
                 console.log("agregando aaaa------> " + nombredata);
                 var element = document.getElementsByName(nombredata); 
                 $(element).append(html);
-
-             
-              
-                
             });
-      
-         
-            
-
         }
 
      
@@ -1679,11 +1295,7 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
                $("#selectcmbMunicipio_Fiscal").html(htmlFiscal);
                 
             });
-        
         }
-
-
-
 
         function TRAM_AJX_CARGAR_ESTADOS(){
             var host2 =  '/registrar/estados';
@@ -1814,8 +1426,8 @@ return this.optional(element) || /^[a-z\s]+$/i.test(value);
 
 
 
-        TRAM_AJX_CARGAR_MUNICIPIOS_ESTADOS();
-        TRAM_AJX_CARGAR_ESTADOS();
+        //TRAM_AJX_CARGAR_MUNICIPIOS_ESTADOS();
+        //TRAM_AJX_CARGAR_ESTADOS();
        // TRAM_AJX_CARGAR_PAISES();
       
     </script>
