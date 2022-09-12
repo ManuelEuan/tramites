@@ -1486,11 +1486,11 @@
                 var ubicacion_ventanilla_sin_cita = {};
 
                 //Unicamente se muestra el modal cuando el tramite esta finalizado y cuando el usuario no haya respondido la encuesta de satisfaccion
-                if (estatus_tram == 8) {
-                    if (encuesta_contestada == null || encuesta_contestada == 0) {
-                        $("#ModalEncuesta").modal("show");
-                    }
-                }
+                // if (estatus_tram == 8) {
+                //     if (encuesta_contestada == null || encuesta_contestada == 0) {
+                //         $("#ModalEncuesta").modal("show");
+                //     }
+                // }
                 var idtramiteAccede = "{{ $tramite['idtramiteaccede'] }}";
                 var selectedVentanilla = "{{ $tramite['ubicacion_ventanilla_sin_cita'] }}";
                 if(selectedVentanilla != 0){
