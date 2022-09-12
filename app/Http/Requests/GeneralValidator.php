@@ -65,4 +65,21 @@ class GeneralValidator extends FormRequest
 
         return true;
     }
+
+    /**
+     * Validadion usada para la valiudacion de curp y rfc
+     * @param Request $request
+     * @return bool|object
+     */
+    public function validaDuplicidad(Request $request){
+        $validator  = Validator::make($request->all(),[
+            'valor' => 'required|string|max:20', 
+            'tipo'  => 'required',Rule::in([ "rfc", "curp"])
+        ]);
+       
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+        return true;
+    }
 }

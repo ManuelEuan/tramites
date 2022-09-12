@@ -101,7 +101,7 @@
                                     <br/><br/>
                                 @endif
                             </div>
-                            <div class="g-recaptcha" data-sitekey="6LfWCPUZAAAAABCAtHf4MNujfOja4VwnypQYY8NW"></div>
+                            <div class="g-recaptcha" data-sitekey="6LcDyushAAAAABST2RiXMMksc4pwjP_nwJHD_Vib"></div>
                             @if ($errors->has('recaptcha'))
                                 <span class="error-constant">¡Error! </span> <span class="error-valid"> {{ $errors->first('recaptcha') }}</span>
                             @endif 
