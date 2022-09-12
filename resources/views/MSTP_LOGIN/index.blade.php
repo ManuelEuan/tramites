@@ -105,6 +105,11 @@
                             @if ($errors->has('recaptcha'))
                                 <span class="error-constant">¡Error! </span> <span class="error-valid"> {{ $errors->first('recaptcha') }}</span>
                             @endif 
+                            @if (Request::has('previous'))
+                                <input type="hidden" name="previous_url" value="{{ Request::get('previous_url') }}">
+                            @else
+                                <input type="hidden" name="previous_url" value="{{ URL::previous() }}">
+                            @endif
                             <div class="text-center mt-3">
                                 <button class="btn btn-primary" type="submit">Iniciar sesión</button>
                                 {{-- <div id="btnEntrar" type="submit" class="btn btn-primary">Iniciar sesión</div> --}}
