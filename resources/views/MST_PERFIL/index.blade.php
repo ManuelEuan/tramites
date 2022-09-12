@@ -20,9 +20,9 @@
                                 <a class="nav-link active" id="infoPersonal-tab" data-toggle="tab" href="#infoPersonal" role="tab" aria-controls="infoPersonal" aria-selected="true" onclick="hideSaveCancel(false)">INFORMACIÓN
                                     PERSONAL</a>
                             </li>
-                            <li class="nav-item">
+<!--                             <li class="nav-item">
                                 <a class="nav-link" id="predios-tab" data-toggle="tab" href="#predios" role="tab" aria-controls="predios" aria-selected="false" onclick="hideSaveCancel(false)">PREDIOS</a>
-                            </li>
+                            </li> -->
                             <li class="nav-item">
                                 <a class="nav-link" id="documentos-tab" data-toggle="tab" href="#documentos" onclick="hideSaveCancel(true)" role="tab" aria-controls="documentos" aria-selected="false">DOCUMENTOS</a>
                             </li>
@@ -644,7 +644,7 @@
                                     <!-- Aqui termina -->
                                 </div>
                                 <!-- Div Predios-->
-                                <div class="tab-pane fade" id="predios" role="tabpanel" aria-labelledby="predios-tab">
+                                <!-- <div class="tab-pane fade" id="predios" role="tabpanel" aria-labelledby="predios-tab">
 
                                     <div class="card mt-3">
                                         <div class="card-body text-body">
@@ -736,7 +736,7 @@
 
                                             <br>
 
-                                            <!--Collapse-->
+                                     
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-12" id="accordion">
@@ -1092,7 +1092,7 @@
 
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <!-- Div Documentos -->
                                 <div class="tab-pane fade" id="documentos" role="tabpanel" aria-labelledby="documentos-tab">
                                     <nav>
