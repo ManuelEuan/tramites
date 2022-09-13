@@ -25,6 +25,7 @@ use App\Models\Cls_Formulario_Pregunta;
 use App\Cls_Seguimiento_Servidor_Publico;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\Cls_Citas_Calendario;
+use GuzzleHttp\Client; 
 
 class TramiteServicioController extends Controller
 {
@@ -36,8 +37,9 @@ class TramiteServicioController extends Controller
 
     protected $atencion = 0;
     protected $seccion_active = 0;
-    protected $host = "http://tramitesqueretaro.eastus.cloudapp.azure.com";
+    protected $host ="https://remtys-qro-qa.azurewebsites.net"; 
     protected $host_pagos = "https://ipagostest.chihuahua.gob.mx/WSPagosDiversos/consultas/consultas1/obtieneEstatus";
+    protected $host_pagos_queretaro = "http://qroprodev.queretaro.gob.mx:8085/wsVerificaPago/ws/VerificaPagoSedCas";
 
     protected $tramiteService;
     protected $gestorService;
@@ -448,9 +450,11 @@ class TramiteServicioController extends Controller
             $tramite['nombreUsuario'] = $objUsuario->USUA_CNOMBRES;
             $tramite['rfcUser'] = $objUsuario->USUA_CRFC;
             $tramite['apellidoPUsuario'] = $objUsuario->USUA_CPRIMER_APELLIDO;
-            $tramite['apellidoMUsuario'] = $objUsuario->USUA_CSEGUNDO_APELLIDO;
+            $tramite['apellidoMUsuario'] = $objUsuario->USUA_CSEGUNDO_APELLIDO; 
             $tramite['correoUsuario'] = $objUsuario->USUA_CCORREO_ELECTRONICO;
-            $tramite['idTramitePago'] = time();
+            $tramite['tipoPersona'] = $objUsuario->USUA_NTIPO_PERSONA;
+            $tramite['razonSocioal'] = $objUsuario->USUA_CRAZON_SOCIAL;
+            $tramite['idTramitePago'] = time()+$detalle->TRAM_NIDTRAMITE;;
             $tramite['nombre'] = $detalle->TRAM_CNOMBRE;
             $tramite['folio'] = $detalle->TRAM_CFOLIO_SEGUIMIENTO;
             $tramite['fechaactualizacion'] = $detalle->updated_at;
@@ -465,6 +469,9 @@ class TramiteServicioController extends Controller
             } else {
                 $tramite['disabled'] = $detalle->TRAM_NESTATUS_PROCESO == 1 ? "" : "disabled";
             }
+
+            $claveTramitePago =  $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_CONCEPTO($tramite['idtramiteaccede']);
+            $tramite['clavePago'] = intval($claveTramitePago->Referencia);
 
             //consulta para obtener el nombre y direccion del modulo seleccionado para la ventanilla sin cita
             $tramite['ventanilla_sin_cita_lat'] = $detalle->USTR_NLATITUD == null ? 0 : $detalle->USTR_NLATITUD;
@@ -646,7 +653,7 @@ class TramiteServicioController extends Controller
             }
         }
         
-        // dd($tramite['cita']);
+         //dd($tramite);
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 
@@ -1949,4 +1956,39 @@ class TramiteServicioController extends Controller
 
         return response()->json($response);
     }
+
+    public function validarPagoQueretaro(Request $request){
+
+
+        /* echo $request->input('PERIODO');
+        echo $request->input('NUMERO_TRANSACCION');
+        echo $request->input('TRAMITE_ID');
+        exit; */
+
+        $client = new Client();
+        $headers = [
+        'usuario' => 'SR682466',
+        'password' => 'sedesu'
+        ];
+        $requestQueretaro = new \GuzzleHttp\Psr7\Request('GET', $this->host_pagos_queretaro.'?noPeriodo='.$request->input('PERIODO').'&noTransaccion='.$request->input('NUMERO_TRANSACCION'), $headers);
+        $res = $client->sendAsync($requestQueretaro)->wait();
+
+        $response = json_decode($res->getBody(), true);
+        //echo $res->getBody();
+        /* $response["estatusPago"] = 1;
+        $response["mensajePago"] = "Pagado"; */
+
+        if($response["estatusPago"] == 1){
+            Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $request->input('TRAMITE_ID')])->update(['SSEGTRA_PAGADO' => 1]);
+        }
+
+
+        $responseJson["estatusPago"] = $response["estatusPago"];
+        $responseJson["mensajePago"] = $response["mensajePago"];
+
+        return response()->json($responseJson);
+
+    }
+
+    
 }

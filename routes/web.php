@@ -42,6 +42,7 @@ Route::post('/perfil/eliminarDoc', array('uses' => 'PerfilController@eliminarDoc
 Route::get('/perfil/getHistory', array('uses' => 'PerfilController@getDocsHistory'));
 Route::get('/perfil/getDocsHistoryExpediente/{id}', array('uses' => 'PerfilController@getDocsHistoryExpediente'));
 Route::get('/perfil/listarDocs', array('uses' => 'PerfilController@listarDocs'));
+Route::get('/perfil/listarResolutivos', array('uses' => 'PerfilController@listarResolutivos'));
 Route::post('/perfil/setActual', array('uses' => 'PerfilController@setActual'));
 
 Route::get('/bitacora', array('uses' => 'BitacoraController@index'));
@@ -115,7 +116,7 @@ Route::group(['prefix' => 'tramite_servicio_cemr'], function () {
     Route::post('/seccion_ventanilla_aprobado', 'TramitesController@aprobar_seccion_ventanilla');
     Route::post('/seccion_pago_aprobado', 'TramitesController@aprobar_seccion_pago');
     Route::post('/seccion_analisis_interno_aprobado', 'TramitesController@aprobar_seccion_analisis_interno');
-    Route::post('/seccion_emitir_resolutivo', 'TramitesController@emitir_resolutivo')->name("seccion_emitir_resolutivo");
+    Route::post('/seccion_emitir_resolutivo', 'TramitesController@emitir_resolutivo')->name("seccion_emitir_resolutivo"); //!emitir resolutivo
     Route::post('/seccion_rechazar_tramite', 'TramitesController@rechazar_tramite')->name("rechazar_tramite");
     Route::post('/guardar_conceptos', 'TramitesController@guardar_conceptos')->name("guardar_conceptos");
     Route::get('/download_tramite/{id}', 'TramitesController@download_tramite')->name('download_tramite');
@@ -173,6 +174,7 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/', array('uses' => 'GestorController@index'))->name('gestor_index')->middleware("permiso");
     Route::post('/consultar', array('uses' => 'GestorController@consultar'))->name('gestor_consultar');
     Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@configurar_tramite'))->name("gestor_configurar_tramite");
+    Route::get('/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
     Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@consultar_tramite'))->name("gestor_consultar_tramite");
 
     Route::group(['prefix' => 'configuracion'], function () {
@@ -229,6 +231,7 @@ Route::get('/decrypt/{text}', array('uses' => 'DatosDurosController@decrypt'));
 Route::get('/reportes', 'GenerarReportes@index')->middleware("permiso");
 Route::get('/generar', 'GenerarReportes@gentreporte');
 
+Route::post('/validar_pago_queretaro', 'TramiteServicioController@validarPagoQueretaro');
 
 
 /**

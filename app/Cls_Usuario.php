@@ -55,6 +55,15 @@ class Cls_Usuario extends Model
         $docsUser = DB::select("SELECT * FROM `tram_mst_documentosbase` WHERE ID_USUARIO = $id AND isDelete != 1");
         return $docsUser;
     }
+    static function getResolutivosUser($id){
+        $resolutivosUser = DB::select("SELECT tmur.USRE_NIDUSUARIOTRAMITE, tmur.USRE_CRUTADOC, tmur.USRE_CEXTENSION, tmur.USRE_NPESO, tmur.created_at, tmt.TRAM_CNOMBRE FROM tram_mdv_usuariotramite AS tmut
+        INNER JOIN tram_mdv_usuario_resolutivo AS tmur
+        ON tmut.USTR_NIDTRAMITE = tmur.USRE_NIDUSUARIOTRAMITE
+        INNER JOIN tram_mst_tramite AS tmt
+        ON tmt.TRAM_NIDTRAMITE = tmur.USRE_NIDUSUARIOTRAMITE
+        WHERE tmut.USTR_NIDUSUARIO = $id");
+        return $resolutivosUser;
+    }
     static function TRAM_OBTENER_DOCS($idUser)
     {
         $docsUser = DB::select("SELECT * FROM `tram_mdv_usuariordocumento` WHERE created_at = (SELECT MAX(created_at) FROM tram_mdv_usuariordocumento) and USDO_NIDUSUARIOBASE = $idUser");

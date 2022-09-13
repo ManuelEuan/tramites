@@ -34,7 +34,7 @@ class LoginController extends Controller
 	//Login
 	public function login(Request $request)
     {
-		
+		//dd($request);
 		$validator = Validator::make($request->all(), [
 			'Usuario' => 'required',
 			'Contraseña' => 'required',
@@ -166,7 +166,11 @@ class LoginController extends Controller
 		}
 		switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
 			case "CDNS":
-				return redirect('/tramite_servicio');
+				if(str_ends_with($request->previous_url,"logout")){
+					return redirect('/tramite_servicio'); 
+				}else{
+					return redirect($request->previous_url);
+				}
 				break;
 			case "ADM":
 				return redirect('/gestores');

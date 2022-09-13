@@ -922,7 +922,6 @@
                             <input type="hidden" name="claveTramites" value="3202;0" />
                             <input type="submit" value="Ir a la ventana de Pago" class="btn btn-primary"/>
                         </form>
-
                         <br/>
                         <br/>
                         <h6 style="font-size: 1rem; font-weight:bold;">Si ya pagaste, captura tu referencia de pago</h6>
@@ -957,7 +956,6 @@
                         <div class="row" id="alertValidatePago">
 
                         </div>
-
                        <!--  <iframe id="PagosIframe" name="PagosIframe" src="" width="100%" height="800"></iframe> -->
 					@endif
                                     <br>
@@ -1543,39 +1541,6 @@
 		
 		//actualizar pago
 		function actualizar_pago(id){
-/* 
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-            myHeaders.append("Cookie", "JSESSIONID=4cabe2513407b5f77dafcb905074");
-
-            var urlencoded = new URLSearchParams();
-            urlencoded.append("apaterno", "lopez");
-            urlencoded.append("amaterno", "guzman");
-            urlencoded.append("nombre", "josue");
-            urlencoded.append("rfc", "logj910318f21");
-            urlencoded.append("observaciones", "prueba");
-            urlencoded.append("email", "yoel_jlg138@hotmail.com");
-            urlencoded.append("usuario", "SR265621");
-            urlencoded.append("password", "PRUEBAS2");
-            urlencoded.append("usoCfdi", "CP01");
-            urlencoded.append("idPeticionCliente", "234");
-            urlencoded.append("cliente", "Seidor");
-            urlencoded.append("claveTramites", "3433;95.20");
-
-            var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: urlencoded,
-            redirect: 'follow'
-            };
-
-            fetch("http://serviciosweb.queretaro.gob.mx:8080/derechosGEQ/liquidacionOpciones.jsp", requestOptions)
-            .then(response => response.text())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error)); */
-
-
-
 
             var periodo = $("#pago_periodo").val();
             var numeroTransacion = $("#numero_transacion").val();
@@ -1614,6 +1579,7 @@
                        			location.reload();
                     		},
                    		error: function(data) {}
+
                 }); 
 
 		}
