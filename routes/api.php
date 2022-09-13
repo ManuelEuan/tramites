@@ -31,6 +31,7 @@ Route::get('/obtener_modulo/{id}/{idaccede}', 'TramiteServicioController@obtener
 Route::post('/subir_documento', 'TramiteServicioController@subir_documento');
 Route::get('/getCitasAgendadas', 'TramitesController@getCitasAgendadas'); */
 
+Route::post('/tramite_servicio/consultar', 'TramiteServicioController@consultar');
 Route::post('/recuperar_contrasena','LoginController@recuperar_contrasena');
 
 Route::post('/citas/disponibilidad', 'CitasController@disponibilidad');
