@@ -85,7 +85,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">RFC <span class="text-danger">*</span> <span class="text-primary" id="lblRfc">Se compone de 13 caracteres</span></label>
-                                            <input type="text" class="form-control" id="txtRfc" name="txtRfc" placeholder="RFC" value="" required>
+                                            <input type="text" title="RFC" class="form-control" id="txtRfc" name="txtRfc" placeholder="RFC" value="" required>
                                             <span id="resultadoValidText" style="font-size: 12px;"></span>
                                             <span id="resultadoExistRfc" style="font-size: 12px;"></span>
                                     </div>
@@ -101,8 +101,7 @@
                                 <div class="col-md-5 divCurp">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">CURP <span class="text-danger">*</span>  <span class="text-primary">Se compone de 18 caracteres</span></label>
-                                        <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpFisica"
-                                            placeholder="CURP">
+                                        <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpFisica" placeholder="CURP">
                                         <span class="resultadoValidTextCurp" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
@@ -128,7 +127,7 @@
                                         <input type="date" id="fechaConstitucionMoral" name="fechaConstitucionMoral" value="">
                                     </div>
                                 </div>
-                                
+
                             </div>
 
                             <br>
@@ -180,15 +179,13 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Primer apellido <span class="text-danger">*</span> </label>
-                                        <input type="text" class="form-control" name="txtPrimer_Apellido" id="txtPrimer_Apellido"
-                                            placeholder="Primer apellido" required>
+                                        <input type="text" class="form-control" name="txtPrimer_Apellido" id="txtPrimer_Apellido" placeholder="Primer apellido" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Segundo apellido</label>
-                                        <input type="text" class="form-control" name="txtSegundo_Apellido" id="txtSegundo_Apellido"
-                                            placeholder="Segundo apellido">
+                                        <input type="text" class="form-control" name="txtSegundo_Apellido" id="txtSegundo_Apellido" placeholder="Segundo apellido">
                                     </div>
                                 </div>
                             </div>
@@ -206,45 +203,42 @@
                             </div>
 
                             <br>
-                            
+
                             <h5 class="font-weight-bold">Datos de Contacto</h5>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Correo electrónico <span class="text-danger">*</span></label>
-                                        <input type="email" class="form-control" name="txtCorreo_Electronico" id="txtCorreo_Electronico"
-                                            placeholder="Correo electrónico" required>
-                                        <span id="resultadoExistCorreo" style="font-size: 12px;"></span>
+                                        <input type="email" class="form-control" name="txtCorreo_Electronico" id="txtCorreo_Electronico" placeholder="Correo electrónico" required>
+                                            <span id="resultadoExistCorreo" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Correo electrónico alternativo</label>
-                                        <input type="email" class="form-control" name="txtCorreo_Alternativo" id="txtCorreo_Alternativo"
-                                            placeholder="Correo electrónico alternativo">
+                                        <input type="email" class="form-control" name="txtCorreo_Alternativo" id="txtCorreo_Alternativo" placeholder="Correo electrónico alternativo">
+                                        <span id="resultadoAlterno" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6">
-                            
+
                                     <label for="bus-txt-centro-trabajo">Teléfono <span class="text-danger">*</span> </label>
                                     <div class="form-group">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" value="LOCAL"
-                                                name="rdbTelefono" checked required>
+                                            <input class="form-check-input" type="radio" value="LOCAL" name="rdbTelefono" checked required>
                                             <label class="form-check-label">Local</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" value="CELULAR"
-                                                name="rdbTelefono" required>
+                                            <input class="form-check-input" type="radio" value="CELULAR" name="rdbTelefono" required>
                                             <label class="form-check-label">Celular</label>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <input type="tel" class="form-control" id="txtNumeroTelefono" name="txtNumeroTelefono" placeholder="999999999" pattern="[0-9]{3}[0-9]{3}[0-9]{4}"  placeholder="No. de teléfono" required>
+                                        <input type="tel" class="form-control" title="Teléfono" id="txtNumeroTelefono" name="txtNumeroTelefono" placeholder="999999999" placeholder="No. de teléfono" required>
                                     </div>
                                 </div>
                             </div>
@@ -254,7 +248,7 @@
                             <label for=""><b>Personas autorizadas para oír y recibir notificaciones</b></label>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label for="bus-txt-centro-trabajo">Nombre (s) <span class="text-danger">*</span> </label>
+                                    <label for="bus-txt-centro-trabajo">Nombre y Apellidos<span class="text-danger">*</span> </label>
                                     <div class="form-group">
                                         <input class="form-control" type="text" id="nombrePersonaAutorizada" name="nombrePersonaAutorizada" placeholder="Nombre (s)" required>
                                     </div>
@@ -263,7 +257,7 @@
                                 <div class="col-md-4">
                                     <label for="bus-txt-centro-trabajo">Teléfono <span class="text-danger">*</span> </label>
                                     <div class="form-group">
-                                    <input type="tel" class="form-control" id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" placeholder="999999999" pattern="[0-9]{3}[0-9]{3}[0-9]{4}"  placeholder="No. de teléfono" required>
+                                    <input type="tel" class="form-control" title='Teléfono'  id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" placeholder="999999999" placeholder="No. de teléfono" required>
                                     </div>
                                 </div>
 
@@ -282,19 +276,17 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Contraseña <span class="text-danger">*</span> <span class="text-primary">Debe tener mínimo 6 y máximo 20 caracteres</span></label>
-                                        <input type="password" class="form-control" name="txtContrasenia" id="txtContrasenia"
-                                            placeholder="Contraseña" required>
+                                        <input type="password" class="form-control" name="txtContrasenia" id="txtContrasenia" placeholder="Contraseña" required>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
-                                    
+
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Confirmar Contraseña <span class="text-danger">*</span></label>
-                                        <input type="password" class="form-control" name="txtContrasenia" id="txtContrasenia"
-                                            placeholder="Vuelva a escribir la contraseña" required>
+                                        <input type="password" class="form-control" name="txtConfirmacion" id="txtConfirmacion" placeholder="Vuelva a escribir la contraseña" required>
+                                        <span id="resultadoConfirmacion" style="font-size: 12px;"></span>
                                     </div>
-
                                 </div>
                             </div>
 
@@ -405,28 +397,28 @@
     <script src="{{ asset('assets/template/plugins/jquery.repeater/jquery.repeater.min.js') }}"></script>
     <script src="{{ asset('assets/template/js/bootstrap-combobox.js') }}"></script>
     <script src="{{ asset('assets/template/js/Moment.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.min.js"></script>
     {{-- <script src="plugins/date/js/bootstrap-datepicker.min.js"></script> --}}
     {{-- <script src="plugins/date/js/bootstrap-datetimepicker.min.js"></script> --}}
 
     <script>
         $(document).ready(function () {
-          
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-    
+
             $.validator.addMethod("passwordcheck", function(value) {
                 return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(value)// has a special character
-                },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."  
+                },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."
             );
 
             $.validator.addMethod("lettersonly", function(value, element)  {
                 return this.optional(element) || /^[a-z\s]+$/i.test(value);
             }, "El nombre (s) solamente puede tener caracteres alfabéticos y espacios.");
-    
+
             $("#frmForm").validate({
                 focusInvalid: false,
                 invalidHandler: function() {
@@ -444,11 +436,13 @@
                     },
                     txtPrimer_Apellido: {
                         minlength: 2,
-                        maxlength: 100
+                        maxlength: 100,
+                        lettersonly: true
                     },
                     txtSegundo_Apellido: {
                         minlength: 2,
-                        maxlength: 100
+                        maxlength: 100,
+                        lettersonly: true
                     },
                     txtCalle_Particular: {
                         minlength: 2,
@@ -482,17 +476,21 @@
                         minlength: 5,
                         maxlength: 5
                     },
-                    txtCorreo_Electronico: {
-                        email: true
-                    },
-                    txtCorreo_Alternativo: {
-                        email: true
-                    },
                     txtContrasenia: {
                         minlength: 6,
                         maxlength: 20,
                         passwordcheck:true
                     },
+                    nombrePersonaAutorizada: {
+                        minlength: 2,
+                        maxlength: 100,
+                        lettersonly: true
+                    },
+                    txtRazon_Social :{
+                        minlength: 2,
+                        maxlength: 100,
+                        lettersonly: true
+                    }
                 },
                 messages: {
                     txtRfc: {
@@ -509,12 +507,14 @@
                     txtPrimer_Apellido: {
                         minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                        required: ""
+                        required: "",
+                        lettersonly: "El primer apellido solamente puede tener caracteres alfabéticos y espacios."
                     },
                     txtSegundo_Apellido: {
                         minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                        required: ""
+                        required: "",
+                        lettersonly: "El segundo apellido solamente puede tener caracteres alfabéticos y espacios."
                     },
                     txtCalle_Particular: {
                         minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
@@ -557,15 +557,17 @@
                         required: ""
                     },
                     txtCorreo_Electronico: {
-                        email: "El correo que se agregó no es válido, favor de verificar.",
+                        email: "",
                         required: ""
                     },
                     txtCorreo_Alternativo: {
-                        email: "El correo que se agregó no es válido, favor de verificar.",
+                        email: "",
                         required: ""
                     },
                     txtContrasenia: {
-                        passwordcheck: "La contraseña debe tener mínimo 6 y máximo 20 caracteres, incluir al menos un número, una letra mayúscula, una letra minúscula y un carácter especial. favor de verificar.",
+                        minlength: "El tamaño del campo debe contener mínimo 5 dígitos.",
+                        maxlength: "El tamaño del campo debe contener máximo 20.",
+                        passwordcheck:"La contraseña requiere mínimo una letra mayúscula y un número para que sea válido",
                         required: ""
                     },
                         cmbColonia_Particular: {
@@ -596,14 +598,32 @@
                         required: ""
                     },
                     txtRazon_Social: {
-                        required: ""
+                        required: "",
+                        minlength: "El tamaño del campo debe contener mínimo 2 dígitos.",
+                        maxlength: "El tamaño del campo debe contener máximo 100.",
+                        lettersonly: "La razón social solamente puede tener caracteres alfabéticos y espacios."
                     },
                     txtCurp: {
                         required: ""
-                    }
+                    },
+                    txtNumeroTelefono:{
+                        required: ""
+                    },
+                    telefonoPersonaAutorizada:{
+                        required: ""
+                    },
+                    nombrePersonaAutorizada:{
+                        minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+                        maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+                        required: "",
+                        lettersonly: "El primer apellido solamente puede tener caracteres alfabéticos y espacios."
+                    },
+                    correoPersonaAutorizada: {
+                        required: ""
+                    },
                 }
             });
-    
+
             $('.repeater').repeater({
                 initEmpty: true,
                 show: function () {
@@ -660,33 +680,41 @@
                         });
                     });
 
-                    $('.optionsMunicipioSucursal').change(function(){           
-                        
-                
-                       //var value = $(".optionsMunicipioSucursal option:selected" ).text();    
+                    $('.optionsMunicipioSucursal').change(function(){
+
+
+                       //var value = $(".optionsMunicipioSucursal option:selected" ).text();
                        var value = $(this).val();
-    
+
                        var name = $(this).attr("name");
                        //console.log(name,value);
                         var resultado = name.split("]");
                         //console.log(resultado[0]+"]")
-                       
+
                         TRAM_AJX_CARGAR_LOCALIDADES_SUCURSAL(value,resultado[0]+"]"+"[cmbColonia_Sucursal]");
 
-                          
+
                     });
 
-                    
+
                 }
             });
-    
+
             $("#frmRegistro").hide();
             $("#iconRfc_Valido").hide();
             $(".iconCurp_Valido").hide();
         });
 
-    
-    
+        document.getElementById('txtNumeroTelefono').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+
+        document.getElementById('telefonoPersonaAutorizada').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+
         //Tipo de persona
         $('.rdbTipo_Persona').change(function(){
             var value = $( this ).val();
@@ -715,7 +743,7 @@
                 document.getElementById("txtPrimer_Apellido").placeholder = "Primer apellido";
                 document.getElementById("txtSegundo_Apellido").readOnly = false;
                 document.getElementById("txtSegundo_Apellido").placeholder = "Segundo apellido";
-    
+
                 $('#txtCalle_Particular').prop('required',true);
                 $('#txtNumero_Exterior_Particular').prop('required',true);
                 $('#txtCP_Particular').prop('required',true);
@@ -723,7 +751,7 @@
                 $('#cmbMunicipio_Particular').prop('required',true);
                 $('#cmbEstado_Particular').prop('required',true);
                 $('#cmbPais_Particular').prop('required',true);
-    
+
                 $('#txtCalle_Fiscal').prop('required',false);
                 $('#txtNumero_Exterior_Fiscal').prop('required',false);
                 $('#txtCP_Fiscal').prop('required',false);
@@ -731,15 +759,15 @@
                 $('#cmbMunicipio_Fiscal').prop('required',false);
                 $('#cmbEstado_Fiscal').prop('required',false);
                 $('#cmbPais_Fiscal').prop('required',false);
-    
+
                 $('#txtCurpFisica').prop('required',true);
                 $('#txtCurpMoral').prop('required',false);
-    
+
                 $('#txtRazon_Social').prop('required',false);
 
                 $('.asterisco').hide();
                 $('#lblRfc').html("Se compone de 13 caracteres");
-    
+
             }else {
                 $(".divRazon_Social").show();
                 $(".divCurp").hide();
@@ -747,10 +775,10 @@
                 $(".divDomicilio_Particular").hide();
                 $(".divCurp_Moral").show();
                 $(".divCurpMoral").show();
-                
+
                 $(".divFechaNacimiento").hide();
                 $(".divFechaConstitucionMoral").show();
-               
+
                 //TXT Datos de la persona
                 document.getElementById("txtNombres").readOnly = true;
                 document.getElementById("txtNombres").placeholder = "";
@@ -758,7 +786,7 @@
                 document.getElementById("txtPrimer_Apellido").placeholder = "";
                 document.getElementById("txtSegundo_Apellido").readOnly = true;
                 document.getElementById("txtSegundo_Apellido").placeholder = "";
-    
+
                 $('#txtCalle_Particular').prop('required',false);
                 $('#txtNumero_Exterior_Particular').prop('required',false);
                 $('#txtCP_Particular').prop('required',false);
@@ -766,7 +794,7 @@
                 $('#cmbMunicipio_Particular').prop('required',false);
                 $('#cmbEstado_Particular').prop('required',false);
                 $('#cmbPais_Particular').prop('required',false);
-    
+
                 $('#txtCalle_Fiscal').prop('required',true);
                 $('#txtNumero_Exterior_Fiscal').prop('required',true);
                 $('#txtCP_Fiscal').prop('required',true);
@@ -774,7 +802,7 @@
                 $('#cmbMunicipio_Fiscal').prop('required',true);
                 $('#cmbEstado_Fiscal').prop('required',true);
                 $('#cmbPais_Fiscal').prop('required',true);
-    
+
                 $('#txtCurpFisica').prop('required',false);
                 $('#txtCurpMoral').prop('required',true);
                 $('#txtRazon_Social').prop('required',true);
@@ -783,35 +811,70 @@
                 $('#lblRfc').html("Se compone de 12 caracteres");
             }
         });
-    
+
         //RFC
         $('#txtRfc').change(function(){
             var value = $( this ).val();
             TRAM_FN_VALIDAR_INPUT_RFC(value);
-            TRAM_AJX_VALIDAR_RFC(value, 'rfc');
+            if(rfcCorrecto ){
+                TRAM_AJX_VALIDAR_RFC(value, 'rfc');
+            }
         });
-        
+
         //CURP
         $(".txtCurp").change(function(){
             var value = $( this ).val();
             var tipo = "FISICA";
             TRAM_FN_VALIDAR_INPUNT_CURP(value, tipo);
-            TRAM_AJX_VALIDAR_RFC(value, 'curp');
+            if(curpValido){
+                TRAM_AJX_VALIDAR_RFC(value, 'curp');
+            }
         });
 
         //Correo
         $('#txtCorreo_Electronico').change(function(){
             var value = $( this ).val();
-            TRAM_AJX_VALIDAR_CORREO(value);
+            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            if(value != ""){
+                if (emailRegex.test(value)) {
+                    $("#resultadoExistCorreo").html('');
+                    TRAM_AJX_VALIDAR_CORREO(value);
+                } else {
+                    $("#resultadoExistCorreo").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+                }
+            }
         });
-        
+
+        $('#txtCorreo_Alternativo').change(function(){
+            var value = $( this ).val();
+            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            if(value != ""){
+                if (emailRegex.test(value)) {
+                    $("#resultadoAlterno").html('');
+                } else {
+                    $("#resultadoAlterno").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+                }
+            }
+        });
+
+        $('#txtConfirmacion').change(function(){
+            var value = $( this ).val();
+            console.log(value);
+            if(value == $('#txtContrasenia').val()){
+               $("#resultadoConfirmacion").html('');
+            }
+            else {
+                $("#resultadoConfirmacion").html("<span style='color: red;'> Las contraseñas que ingresó no coinciden, se requiere verificar.</span>");
+            }
+        });
+
 
         $('#txtCurpMoral').change(function(){
             var value = $( this ).val();
             var tipo = "MORAL";
             TRAM_FN_VALIDAR_INPUNT_CURP(value, tipo);
         });
-        
+
         //Mismo domicilio
         $("#chbDomicilio_Mismo").click(function(){
             if($(this).is(':checked')){
@@ -832,7 +895,7 @@
                 $('#cmbMunicipio_Fiscal').prop('value', "");
                 $('#cmbEstado_Fiscal').prop('value', "");
                 $('#cmbPais_Fiscal').prop('value', "");
-            }  
+            }
         });
 
         //Cancelar
@@ -852,7 +915,7 @@
                 }
             });
         };
-    
+
         //Confirmar
         function TRAM_AJX_CONFIRMAR(){
             // $('#modalConfirmar').modal('show');
@@ -871,7 +934,7 @@
                 }
             });
         };
-    
+
         //Guardar
         function TRAM_AJX_GUARDAR(){
             $("#btnSubmit").prop("disabled", true);
@@ -880,7 +943,8 @@
                 var validator = $('#frmForm').validate();
                 var htmlError = "<div class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Los siguientes datos son obligatorios:</strong> <br/>";
                 $.each(validator.errorList, function (index, value) {
-                    var campo = $("#"+ value.element.id).attr('placeholder') == undefined ? $("#"+ value.element.id).attr('title') : $("#"+ value.element.id).attr('placeholder');
+                    var campo = $("#"+ value.element.id).attr('title') == undefined ? $("#"+ value.element.id).attr('placeholder') : $("#"+ value.element.id).attr('title');
+
                     if(value.method == "required"){
                         $('.listError').show();
                         htmlError += 'El campo "' + campo + '" es requerido.<br/>';
@@ -920,7 +984,7 @@
                 $("#btnSubmit").prop("disabled", true);
                 return;
             }
-            
+
             Swal.fire({
                 title: '¡Confirmar!',
                 text: "Se enviará un correo con la información para iniciar sesión. ¿Desea continuar?",
@@ -932,7 +996,7 @@
                 confirmButtonText: 'Aceptar'
                 }).then((result) => {
                 if (result.isConfirmed) {
-                  
+
 
                     $.ajax({
                         data: $('#frmForm').serialize(),
@@ -949,7 +1013,7 @@
                                 $(".iconCurp_Valido").hide();
                                 Swal.fire({
                                     title: '¡Éxito!',
-                                    text: "Su usuario se registró correctamente."
+                                    text: "Su usuario se registró correctamente.",
                                     icon: 'success',
                                     showCancelButton: false,
                                     confirmButtonColor: '#3085d6',
@@ -990,15 +1054,15 @@
 
                 }
             });
-       
+
 
         }
-    
+
         //Redirige a login
         function TRAM_FN_LOGIN(){
             document.location.href = '/';
         };
-        
+
         //Función para validar un RFC
         // Devuelve el RFC sin espacios ni guiones si es correcto
         // Devuelve false si es inválido
@@ -1006,30 +1070,30 @@
         function TRAM_FN_VALIDAR_RFC (rfc, aceptarGenerico = true) {
             const re = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;
             var validado = rfc.match(re);
-    
+
             if (!validado)  //Coincide con el formato general del regex?
                 return false;
-    
+
             //Separar el dígito verificador del resto del RFC
             const digitoVerificador = validado.pop(),
                 rfcSinDigito = validado.slice(1).join(''),
                 len = rfcSinDigito.length,
-    
+
                 //Obtener el digito esperado
                 diccionario = "0123456789ABCDEFGHIJKLMN&OPQRSTUVWXYZ Ñ",
                 indice = len + 1;
             var suma,
                 digitoEsperado;
-    
+
             if (len == 12) suma = 0
             else suma = 481; //Ajuste para persona moral
-    
+
             for (var i = 0; i < len; i++)
                 suma += diccionario.indexOf(rfcSinDigito.charAt(i)) * (indice - i);
             digitoEsperado = 11 - suma % 11;
             if (digitoEsperado == 11) digitoEsperado = 0;
             else if (digitoEsperado == 10) digitoEsperado = "A";
-    
+
             //El dígito verificador coincide con el esperado?
             // o es un RFC Genérico (ventas a público general)?
             if ((digitoVerificador != digitoEsperado)
@@ -1039,10 +1103,11 @@
                 return false;
             return rfcSinDigito + digitoVerificador;
         };
-    
+
         //Handler para el evento cuando cambia el input
         // -Lleva la RFC a mayúsculas para validarlo
-        // -Elimina los espacios que pueda tener antes o después 
+        // -Elimina los espacios que pueda tener antes o después
+        var rfcCorrecto = false;
         function TRAM_FN_VALIDAR_INPUT_RFC (input) {
             //Validar valor
             if (input == null || input == undefined || input == "") {
@@ -1050,7 +1115,7 @@
             } else {
                 var newValue = input;
                 var rfc = newValue.trim().toUpperCase();
-                var rfcCorrecto = TRAM_FN_VALIDAR_RFC(rfc);   // Acá se comprueba
+                rfcCorrecto = TRAM_FN_VALIDAR_RFC(rfc);   // Acá se comprueba
                 if (rfcCorrecto) {
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", false);
@@ -1060,45 +1125,45 @@
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", true);
                     }, 1000);
-                    $("#resultadoValidText").html("<span style='color: red;'>El RFC no es válido, favor de verficar.</span>");
+                    $("#resultadoValidText").html("<span style='color: red;'>El RFC no es válido, se requiere verificar.</span>");
                 }
                 //toUpperCase
                 $("#txtRfc").val(rfc);
             }
         };
-    
+
         function TRAM_FN_VALIDAR_CURP (params) {
             var reg = "";
             var curp = params;
-    
+
             if (curp.length == 18) {
                 var digito = calculaDigito(curp);
                 reg = /^([A-Z]{4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[HM](AS|BC|BS|CC|CL|CM|CS|CH|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[A-Z]{3}[0-9A-Z]\d)$/i;
-    
+
                 if (curp.search(reg)) {
-                    console.log("La curp: " + curp + " no es valida, verifiqué ");
+                    console.log("La curp: " + curp + " no es valida, se requiere verificar. ");
                     return false;
                 }
-    
+
                 if (!(parseInt(digito) == parseInt(curp.substring(17, 18)))) {
                     console.log("La curp: " + curp + " no es valida, revisé el Digito Verificador (" + digito + ")");
                     return false;
                 } else {
                     return true;
                 }
-    
+
             } else {
                 return false;
             }
         }
-    
+
         function calculaDigito(curp) {
             var segRaiz = curp.substring(0, 17);
             var chrCaracter = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
             var intFactor = new Array(17);
             var lngSuma = 0.0;
             var lngDigito = 0.0;
-    
+
             for (var i = 0; i < 17; i++) {
                 for (var j = 0; j < 37; j++) {
                     if (segRaiz.substring(i, i + 1) == chrCaracter.substring(j, j + 1)) {
@@ -1106,29 +1171,31 @@
                     }
                 }
             }
-    
+
             for (var k = 0; k < 17; k++) {
                 lngSuma = lngSuma + ((intFactor[k]) * (18 - k));
             }
-    
+
             lngDigito = (10 - (lngSuma % 10));
-    
+
             if (lngDigito == 10) {
                 lngDigito = 0;
             }
-    
+
             return lngDigito;
         }
-        
+
         //Handler para el evento cuando cambia el input
         //Lleva la CURP a mayúsculas para validarlo
+        var curpValido= false;
         function TRAM_FN_VALIDAR_INPUNT_CURP
          (input, tipo) {
             var newValue = input;
             if (input == null || input == undefined || input == "") {
             } else {
-                var curp = newValue.trim().toUpperCase();  
-                if (TRAM_FN_VALIDAR_CURP(curp)) {
+                var curp = newValue.trim().toUpperCase();
+                curpValido = TRAM_FN_VALIDAR_CURP(curp);
+                if (curpValido) {
 
                     if(tipo == "MORAL"){
                         TRAM_AJX_VALIDAR_RFC(curp, 'curp')
@@ -1145,13 +1212,13 @@
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", false);
                     }, 1000);
-   
+
                     if(tipo == "MORAL"){
-                        $(".resultadoValidTextCurpMoral").html("<span style='color: red;'>El CURP no es válido, favor de verficar.</span>");
+                        $(".resultadoValidTextCurpMoral").html("<span style='color: red;'>El CURP no es válido, se requiere verificar.</span>");
                     }else{
-                        $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP no es válido, favor de verficar.</span>");
+                        $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP no es válido, se requiere verificar.</span>");
                     }
-                }    
+                }
                 $(".txtCurp").val(curp);
             }
         }
@@ -1185,6 +1252,7 @@
                             $("#resultadoExistRfc").html("");
                         }
                         else{
+                            if(rfcCorrecto){}
                             $("#iconRfc_Valido").show();
                             $("#txtRfc").attr("aria-invalid", "false");
                             $("#txtRfc").removeClass("error");
@@ -1220,13 +1288,13 @@
 
         var host = "https://retys-queretaro.azurewebsites.net";
         var listadoLocalidades     = [];
-        //localidad y pais option manual html no tiene 
+        //localidad y pais option manual html no tiene
 
 
         function TRAM_AJX_CARGAR_LOCALIDADES(municipio){
             console.log("cargando las localidades");
-            $.get('/registrar/localidades/'+municipio, function (data) {          
-                var html = '';   
+            $.get('/registrar/localidades/'+municipio, function (data) {
+                var html = '';
                 data.forEach(function(value) {
                     html += '<option value="'+ value.NOMBRE +'">' + value.NOMBRE + '</option>';
                 });
@@ -1239,9 +1307,9 @@
 
         function TRAM_AJX_CARGAR_LOCALIDADES_FISCAL(municipio){
             console.log("cargando las localidades");
-            $.get('/registrar/localidades/'+municipio, function (data) {          
-               
-                var html = '';  
+            $.get('/registrar/localidades/'+municipio, function (data) {
+
+                var html = '';
                 data.forEach(function(value) {
                      html += '<option value="'+ value.NOMBRE +'">' + value.NOMBRE + '</option>';
                  });
@@ -1252,19 +1320,19 @@
         }
 
         function TRAM_AJX_CARGAR_LOCALIDADES_SUCURSAL(municipio,nombredata){
-            $.get('/registrar/localidades/'+municipio, function (data) {          
-                var html = '';   
+            $.get('/registrar/localidades/'+municipio, function (data) {
+                var html = '';
                 data.forEach(function(value) {
                     html += '<option value="'+ value.NOMBRE +'">' + value.NOMBRE + '</option>';
                 });
 
                 console.log("agregando aaaa------> " + nombredata);
-                var element = document.getElementsByName(nombredata); 
+                var element = document.getElementsByName(nombredata);
                 $(element).append(html);
             });
         }
 
-     
+
 
 
         var listadoMunicipios = [];
@@ -1275,25 +1343,25 @@
             var host2 =  '/registrar/municipios';
             $.get(host2, function (data) {
                 listadoMunicipios = data;
-               
+
                 var html = '<select class="combobox form-control" name="cmbMunicipio_Particular" id="cmbMunicipio_Particular" title="Municipio">';
                var htmlFiscal = '<select class="combobox form-control" name="cmbMunicipio_Fiscal" id="cmbMunicipio_Fiscal" title="Municipio">';
                var htmlSucursal = '';
 
                     html        += '<option value="'+ 0 +'"> Seleccione</option>';
                     htmlFiscal  += '<option value="'+ 0 +'"> Seleccione</option>';
-                   
+
                data.forEach(function(value) {
                     html        += '<option value="'+ value.id +'">' + value.nombre + '</option>';
                     htmlFiscal  += '<option value="'+ value.id +'">' + value.nombre + '</option>';
-                   
+
                 });
                 html += '</select>';
                 htmlFiscal += '</select>';
 
                 $("#selectcmbMunicipio_Particular").html(html);
                $("#selectcmbMunicipio_Fiscal").html(htmlFiscal);
-                
+
             });
         }
 
@@ -1301,24 +1369,24 @@
             var host2 =  '/registrar/estados';
             $.get(host2, function (data) {
                 listadoEstados = data;
-               
+
                 var html = '<select class="combobox form-control" name="cmbEstado_Particular" id="cmbEstado_Particular" title="Estado">';
                 var htmlFiscal = '<select class="combobox form-control" name="cmbEstado_Fiscal" id="cmbEstado_Fiscal" title="Estado">';
 
                     html        += '<option value="'+ 0 +'"> Seleccione</option>';
                     htmlFiscal  += '<option value="'+ 0 +'"> Seleccione</option>';
-                   
+
                data.forEach(function(value) {
                     html        += '<option value="'+ value.id +'">' + value.nombre + '</option>';
                     htmlFiscal  += '<option value="'+ value.id +'">' + value.nombre + '</option>';
-                   
+
                 });
                 html += '</select>';
                 htmlFiscal += '</select>';
 
                 $("#selectcmbEstado_Particular").html(html);
                 $("#selectcmbEstado_Fiscal").html(htmlFiscal);
-                
+
             });
         }
 
@@ -1327,12 +1395,12 @@
             var host2 = host + '/api/vw_accede_paises ';
             var paisDefault = 'México';
             $.get(host2, function (data) {
-               
+
                 var html = '<select class="combobox form-control" name="cmbPais_Particular" id="cmbPais_Particular"  title="País">';
                 var htmlFiscal = '<select class="combobox form-control" name="cmbPais_Fiscal" id="cmbPais_Fiscal" title="País">';
 
                 listadoPaises = data;
-        
+
                if (data.length == 0){
                     html        += '<option value="'+ paisDefault +'">' + paisDefault + '</option>';
                     htmlFiscal  += '<option value="'+ paisDefault +'">' + paisDefault + '</option>';
@@ -1340,65 +1408,65 @@
                     data.forEach(function(value) {
                         html        += '<option value="'+ value.DESCRIPCION +'">' + value.DESCRIPCION + '</option>';
                         htmlFiscal  += '<option value="'+ value.DESCRIPCION +'">' + value.DESCRIPCION + '</option>';
-                    
+
                     });
                }
-              
+
                 html += '</select>';
                 htmlFiscal += '</select>';
 
                 $("#selectcmbPais_Particular").html(html);
                 $("#selectcmbPais_Fiscal").html(htmlFiscal);
-                
+
             });
          }
 
         function TRAM_AJX_CARGAR_MUNICIPIOS_SUCURSAL(){
-           
-            var htmlSucursal = '';   
+
+            var htmlSucursal = '';
             listadoMunicipios.forEach(function(value) {
-                
+
                     htmlSucursal += '<option value="'+ value.id +'">' + value.nombre + '</option>';
-                
+
                 });
-               
+
                 $(".optionsMunicipioSucursal").append(htmlSucursal);
         }
 
 
-        
+
         function TRAM_AJX_CARGAR_ESTADOS_SUCURSAL(){
             var host2 = host + '/api/Tramite/Estados';
            /* $.get(host2, function (data) {
-            
-                var htmlSucursal = '';   
+
+                var htmlSucursal = '';
                data.forEach(function(value) {
-                
+
                     htmlSucursal += '<option value="'+ value.NOMBRE +'">' + value.NOMBRE + '</option>';
-                
+
                 });
-               
+
                 $(".optionsEstadosSucursal").append(htmlSucursal);
-           
-           
+
+
             });*/
-            var htmlSucursal = '';   
+            var htmlSucursal = '';
             listadoEstados.forEach(function(value) {
-                
+
                     htmlSucursal += '<option value="'+ value.id +'">' + value.nombre + '</option>';
-                
+
                 });
-               
+
                 $(".optionsEstadosSucursal").append(htmlSucursal);
-           
+
         }
 
         function TRAM_AJX_CARGAR_PAISES_SUCURSAL(){
             var host2 = host + '/api/vw_accede_paises';
             var paisDefault = 'México';
             /*$.get(host2, function (data) {
-                var htmlSucursal = '';   
-                
+                var htmlSucursal = '';
+
                 if (data.length == 0){
                     htmlSucursal += '<option value="'+ paisDefault +'">' + paisDefault + '</option>';
                 }else{
@@ -1406,10 +1474,10 @@
                         htmlSucursal += '<option value="'+ value.NOMBRE +'">' + value.NOMBRE + '</option>';
                      });
                 }
-                
+
                 $(".optionsPaisesSucursal").append(htmlSucursal);
             });*/
-            var htmlSucursal = ''; 
+            var htmlSucursal = '';
             if(listadoPaises.length == 0){
                 htmlSucursal += '<option value="'+ paisDefault +'">' + paisDefault + '</option>';
             }else{
@@ -1422,14 +1490,14 @@
 
         }
 
-       
+
 
 
 
         //TRAM_AJX_CARGAR_MUNICIPIOS_ESTADOS();
         //TRAM_AJX_CARGAR_ESTADOS();
        // TRAM_AJX_CARGAR_PAISES();
-      
+
     </script>
     @yield('scripts')
 </body>

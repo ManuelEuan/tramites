@@ -33,13 +33,16 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="dteFechaInicio">Rol <span class="text-danger">*</span></label>
-                            <select class="combobox form-control" name="cmbRol" id="cmbRol" placeholder="Rol" disabled>
-                                <option value="1" {{$objUsuario->USUA_NIDROL == "1" ? "selected" : ""}}>Administrador</option>
-                                <option value="3" {{$objUsuario->USUA_NIDROL == "3" ? "selected" : ""}}>Enlace Oficial</option>
-                                <option value="4" {{$objUsuario->USUA_NIDROL == "4" ? "selected" : ""}}>Admin-CT</option>
-                                <option value="5" {{$objUsuario->USUA_NIDROL == "5" ? "selected" : ""}}>Servidor Público</option>
-                                <option value="6" {{$objUsuario->USUA_NIDROL == "6" ? "selected" : ""}}>Consultor</option>
+                            <label for="dteFechaInicio">Rol <span class="text-danger">*</span><span>&nbsp;&nbsp; <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('cmbRol', 1);"></i></span></label>
+                            <select name="cmbRol" id="cmbRol" placeholder="Rol" class="combobox form-control" readonly>
+                                <option value="0" selected>Seleccionar trámite</option>
+                                @foreach ($roles as $rol)
+                                        @if ($rol->ROL_NIDROL == $objUsuario->USUA_NIDROL)
+                                            <option selected value="{{$rol->ROL_NIDROL}}"> {{ $rol->ROL_CNOMBRE }}</option>
+                                        @else
+                                            <option value="{{$rol->ROL_NIDROL}}"> {{ $rol->ROL_CNOMBRE }}</option>
+                                        @endif
+                                @endforeach
                             </select>
                         </div>
                     </div>

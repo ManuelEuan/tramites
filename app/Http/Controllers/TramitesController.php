@@ -260,7 +260,7 @@ class TramitesController extends Controller
     private function obtener_edificio_ventanilla($USTR_NIDUSUARIOTRAMITE, $USTR_NIDTRAMITE_ACCEDE)
     {
         //Obtenemos el valor de ID del edificio
-        $consulta = Cls_Usuario_Tramite::select('USTR_CMODULO')->where('USTR_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->take(1)->get()->first();
+        $consulta = Cls_Usuario_Tramite::select('USTR_CMODULO')->where('USTR_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->first();
         $USTR_CMODULO = $consulta->USTR_CMODULO;
         $USTR_CMODULO_DATA = [
             'NAME' => "Pendiente",
