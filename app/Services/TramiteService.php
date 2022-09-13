@@ -70,7 +70,7 @@ class TramiteService
      */
     public function filtros(Request $data){
         $dependencias = DB::connection('mysql2')->table('dependencies')
-                            ->select('Id as id', 'Name as name', 'Description as description', 'Acronym as acronym')
+                            ->select('Id as id', 'Name as name', 'Description as description', 'Acronym as acronym','iId' )
                             ->where('IsDeleted', false)->get();
         return [ 'dependencias' => $dependencias];
     }

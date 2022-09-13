@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Cls_Bitacora;
+use GuzzleHttp\Client; 
 use App\Cls_Usuario_Tramite;
 use Illuminate\Http\Request;
 use App\Cls_Tramite_Concepto;
@@ -18,14 +19,13 @@ use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
 use App\Cls_Encuesta_Satisfaccion;
 use Illuminate\Support\Facades\DB;
+use App\Models\Cls_Citas_Calendario;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Cls_Seguimiento_Servidor_Publico;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\Cls_Citas_Calendario;
-use GuzzleHttp\Client; 
 
 class TramiteServicioController extends Controller
 {
@@ -55,16 +55,7 @@ class TramiteServicioController extends Controller
         $this->variosService    = new VariosService();
     }
 
-    public function index()
-    {
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-
-        $context  = stream_context_create($options);
-
+    public function index() {
         $tramites = new Cls_Tramite_Servicio();
         $tramites->StrTexto = "";
         $tramites->IntDependencia = 0;
@@ -76,96 +67,40 @@ class TramiteServicioController extends Controller
         $tramites->StrOrdenDir = "";
         $tramites->IntUsuarioId = Auth::user()->USUA_NIDUSUARIO;
 
-        $registros = $tramites->TRAM_SP_CONSULTAR_TRAMITE_PUBLICO();
-
-        $IntPaginaActual = (int)$registros['pagination'][0]->PaginaActual;
-        $IntTotalPaginas = (int)$registros['pagination'][0]->TotalPaginas;
-        $IntTotalRegistros = (int)$registros['pagination'][0]->TotalRegistros;
-        $data_tramite = new LengthAwarePaginator($registros['data'], $IntTotalRegistros, $tramites->IntCantidadRegistros, $IntPaginaActual, [
+        $registros          = $tramites->TRAM_SP_CONSULTAR_TRAMITE_PUBLICO();
+        $IntPaginaActual    = (int)$registros['pagination'][0]->PaginaActual;
+        $IntTotalPaginas    = (int)$registros['pagination'][0]->TotalPaginas;
+        $IntTotalRegistros  = (int)$registros['pagination'][0]->TotalRegistros;
+        $data_tramite       = new LengthAwarePaginator($registros['data'], $IntTotalRegistros, $tramites->IntCantidadRegistros, $IntPaginaActual, [
             'path' => Paginator::resolveCurrentPath()
         ]);
 
-        //Dependencias
-        $lstDependencias = [];
-        $urlDependencias = $this->host . '/api/Tramite/Dependencias';
-        $resultDependencias = file_get_contents($urlDependencias, false, $context);
-        $listDependenciasTemporal = json_decode($resultDependencias, true);
-
-        foreach ($listDependenciasTemporal as $dependencia) {
-            $dependenciaTEM = [];
-            $dependenciaTEM['ID_CENTRO'] = $dependencia['id'];
-            $dependenciaTEM['DESCRIPCION '] =  $dependencia['name'];
-            array_push($lstDependencias, $dependenciaTEM);
-        }
-
-        return view('MST_TRAMITE_SERVICIO.index', compact('data_tramite', 'lstDependencias'));
+        return view('MST_TRAMITE_SERVICIO.index', compact('data_tramite'));
     }
 
-    public function consultar(Request $request)
-    {
-        if ($request->ajax()) {
-
-            $tramites = new Cls_Tramite_Servicio();
-            $tramites->StrTexto = $request->StrTexto;
-            $tramites->IntDependencia = $request->IntDependencia;
-            $tramites->StrModalidad = $request->IntModalidad;
-            $tramites->IntClasificacion = $request->IntClasificacion;
-            $tramites->StrAudiencia = $request->StrAudiencia;
-            $tramites->IntNumPagina = $request->IntNumPagina;
-            $tramites->IntCantidadRegistros = $request->IntCantidadRegistros;
-            $tramites->StrOrdenColumna = $request->StrOrdenColumna;
-            $tramites->StrOrdenDir = $request->StrOrdenDir;
-            $tramites->IntUsuarioId = Auth::user()->USUA_NIDUSUARIO;
-            $registros = $tramites->TRAM_SP_CONSULTAR_TRAMITE_PUBLICO();
-
-            $IntPaginaActual = (int)$registros['pagination'][0]->PaginaActual;
-            $IntTotalPaginas = (int)$registros['pagination'][0]->TotalPaginas;
-            $IntTotalRegistros = (int)$registros['pagination'][0]->TotalRegistros;
-
-            $data_tramite = new LengthAwarePaginator($registros['data'], $IntTotalRegistros, $request->IntCantidadRegistros, $IntPaginaActual);
-            return response()->json(view('MST_TRAMITE_SERVICIO.index_partial', compact('data_tramite'))->render());
-        }
-
-        $tramites = new Cls_Tramite_Servicio();
-        $tramites->StrTexto = "";
-        $tramites->IntDependencia = 0;
-        $tramites->StrModalidad = "";
-        $tramites->IntClasificacion = 0;
-        $tramites->StrAudiencia = 0;
-        $tramites->IntNumPagina = 1;
-        $tramites->IntCantidadRegistros = 10;
-        $tramites->StrOrdenColumna = "";
-        $tramites->StrOrdenDir = "";
-        $tramites->IntUsuarioId = Auth::user()->USUA_NIDUSUARIO;
-        $registros = $tramites->TRAM_SP_CONSULTAR_TRAMITE_PUBLICO();
-
-        $IntPaginaActual = (int)$registros['pagination'][0]->PaginaActual;
-        $IntTotalPaginas = (int)$registros['pagination'][0]->TotalPaginas;
-        $IntTotalRegistros = (int)$registros['pagination'][0]->TotalRegistros;
-
-        $data_tramite = new LengthAwarePaginator($registros['data'], $IntTotalRegistros, $request->IntCantidadRegistros, $IntPaginaActual);
-        // return view('MST_TRAMITE_SERVICIO.index', compact('data_tramite'));
-        return response()->json($data_tramite);
+    public function consultar(Request $request) {
+        $objDependencia             = $this->tramiteService->getRetys('dependencies',$request->IntDependencia);
+        $tramites                   = new Cls_Tramite_Servicio();
+        $tramites->StrTexto         = $request->ajax() ? $request->StrTexto : "";
+        $tramites->IntDependencia   = $request->ajax() ? $objDependencia->iId : 0;
+        $tramites->StrModalidad     = $request->ajax() ? $request->IntModalidad : "";
+        $tramites->IntClasificacion = $request->ajax() ? $request->IntClasificacion  :0;
+        $tramites->StrAudiencia     = $request->ajax() ? $request->StrAudiencia : 0;
+        $tramites->IntNumPagina     = $request->ajax() ? $request->IntNumPagina : 1;
+        $tramites->IntCantidadRegistros = $request->ajax() ? $request->IntCantidadRegistros : 10;
+        $tramites->StrOrdenColumna  = $request->ajax() ? $request->StrOrdenColumna : "";
+        $tramites->StrOrdenDir      = $request->ajax() ? $request->StrOrdenDir : "";
+        $tramites->IntUsuarioId     = 3; //Auth::user()->USUA_NIDUSUARIO;
+        $registros                  = $tramites->TRAM_SP_CONSULTAR_TRAMITE_PUBLICO();
+        $IntPaginaActual            = (int)$registros['pagination'][0]->PaginaActual;
+        $IntTotalPaginas            = (int)$registros['pagination'][0]->TotalPaginas;
+        $IntTotalRegistros          = (int)$registros['pagination'][0]->TotalRegistros;
+        $data_tramite               = new LengthAwarePaginator($registros['data'], $IntTotalRegistros, $request->IntCantidadRegistros, $IntPaginaActual);
+        return $request->ajax() ? response()->json(view('MST_TRAMITE_SERVICIO.index_partial', compact('data_tramite'))->render()) : response()->json($data_tramite);
     }
 
     public function getTramites(Request $request)
     {
-        /*$estatus = 2; //No seleccionado ningun estatus
-        $url =   $this->host . '/api/Tramite/Filter';
-
-        $dataForPost = array('search' => $request->search, 'dependencies' => $request->dependenci, 'unidadesadmin' => [], 'skipe' => 0, 'take' => 10, 'usuarioID' => Auth::user()->USUA_NIDUSUARIO, 'unidad' => 0, 'estatus' => $estatus);
-        $options2 = array(
-            'http' => array(
-                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'POST',
-                'content' => http_build_query($dataForPost),
-            )
-        );
-
-        $context2  = stream_context_create($options2);
-        $result = file_get_contents($url, false, $context2);
-        $arrayTramites = json_decode($result);*/
-
         $resultTram = Cls_Tramite_Servicio::TRAM_OBTENER_TRAMITES();
         $html = '';
         foreach ($resultTram as $i) {
@@ -476,17 +411,6 @@ class TramiteServicioController extends Controller
             //consulta para obtener el nombre y direccion del modulo seleccionado para la ventanilla sin cita
             $tramite['ventanilla_sin_cita_lat'] = $detalle->USTR_NLATITUD == null ? 0 : $detalle->USTR_NLATITUD;
             $tramite['ventanilla_sin_cita_lon'] = $detalle->USTR_NLONGITUD == NULL ? 0 : $detalle->USTR_NLONGITUD;
-            // if($detalle->USTR_CMODULO != 0){
-            //     $options = array(
-            //         'http' => array(
-            //             'method'  => 'GET',
-            //         )
-            //     );
-            //     $urlEdificio = $this->host.'/api/vw_accede_edificios_id/'.$detalle->USTR_CMODULO;
-            //     $context = stream_context_create($options);
-            //     $result = @file_get_contents($urlEdificio, false, $context);
-            //     if (strpos($http_response_header[0], "200")) {
-            //         $objEdificio = json_decode($result, true);
             $tramite['ubicacion_ventanilla_sin_cita'] = $detalle->USTR_CMODULO;
             //     }
             // }
@@ -575,33 +499,6 @@ class TramiteServicioController extends Controller
                     }
                 }
             }
-
-            //dd($configaracion);
-            //documentos ----
-            // $documentos = Cls_Usuario_Documento::where('USDO_NIDUSUARIOTRAMITE', $exist->USTR_NIDUSUARIOTRAMITE)
-            //         ->select('*')
-            //         ->get()->toArray();
-            // //Econtrar---------
-            // foreach($configaracion['documentos'] as $doc){
-            //     $doc->TRAD_CEXTENSION = "";
-            //     $doc->TRAD_CRUTADOC = "";
-            //     $doc->TRAD_NPESO = 0;
-            //     $doc->TRAD_NESTATUS = 0;
-            //     $doc->TRAD_COBSERVACION = "";
-            //     $doc->id = 0;
-            //     foreach($documentos as $_doc){
-            //         if($doc->TRAD_NIDTRAMITEDOCUMENTO != $_doc['USDO_NIDTRAMITEDOCUMENTO']){
-            //             $doc->TRAD_CEXTENSION = $_doc['USDO_CEXTENSION'];
-            //             $doc->TRAD_CRUTADOC = $_doc['USDO_CRUTADOC'];
-            //             $doc->TRAD_NPESO = $_doc['USDO_NPESO'];
-            //             $doc->TRAD_NESTATUS = $_doc['USDO_NESTATUS'];
-            //             $doc->TRAD_COBSERVACION = $_doc['USDO_COBSERVACION'];
-            //             $doc->id = $_doc['USDO_NIDUSUARIORESP'];
-            //             break;
-            //         }
-            //     }
-            // }
-
         } catch (\Throwable $th) {
             dd($th);
         }

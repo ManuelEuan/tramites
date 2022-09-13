@@ -77,7 +77,7 @@
 <body>
     <table class="cont-60">
         <tr>
-            <td class="text-center"><h4>ACCEDE MÉRIDA</h4> </td>
+            <td class="text-center"><h4> Tramites Digitales Queretaro </h4> </td>
         </tr>
         <tr>
         <!--
@@ -95,7 +95,7 @@
                 <b>Estimado(a) {{$StrUsuario}}</b>
               </p>
                 <p>
-                    Recientemente se solicitó el restablecimiento de su contraseña para acceder al Sistema de Gestión de Trámites y Servicios.
+                    Recientemente se solicitó el restablecimiento de su contraseña para acceder al Sistema de Tramites Digitales Queretaro.
                 </p>
             </td>
         </tr>
@@ -127,7 +127,7 @@
         </tr>
         <tr>
             <td class="text-center"><br />
-              <br/><b>Atentamente</b><br />Sistema de Gestión de Trámites y Servicios (MÉRIDA)
+              <br/><b>Atentamente</b><br />Sistema de Tramites Digitales Queretaro
             </td>
         </tr>
     </table>
