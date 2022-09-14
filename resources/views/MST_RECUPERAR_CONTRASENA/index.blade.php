@@ -7,7 +7,7 @@
     <title>Recuperar contraseña</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link href="{{ asset('assets/template/img/icon-edo.png') }}" rel="shortcut icon">
+    <link href="{{ asset('assets/template/img/favicon_queretaro/android-chrome.png') }}" rel="shortcut icon">
     <link href="{{ asset('assets/template/css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/fonts.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/login.css') }}" rel="stylesheet">
