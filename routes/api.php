@@ -41,10 +41,11 @@ Route::post('/general/validaDuplicidad', 'GeneralController@validaDuplicidad');
 
 
 Route::group(['prefix' => 'giro'], function () {
-    Route::get('/', 'GiroController@index');
     Route::get('/find', 'GiroController@find');
-    Route::post('/', 'GiroController@status');
+    Route::get('/{id}', 'GiroController@get');
     Route::post('/', 'GiroController@store');
+    Route::post('/estatus', 'GiroController@cambiaEstatus');
+    Route::put('/', 'GiroController@update');
 });
 ###################### Manuel Euan ######################
 

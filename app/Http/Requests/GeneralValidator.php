@@ -100,4 +100,16 @@ class GeneralValidator extends FormRequest
 
         return true;
     }
+
+    public function giroEstatus(Request $request){
+        $validator  = Validator::make($request->all(),[
+            'id'        => 'required|integer|exists:tram_cat_giros,id', 
+        ]);
+       
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+        return true;
+    }
+    
 }
