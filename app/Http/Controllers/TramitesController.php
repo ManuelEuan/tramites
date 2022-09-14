@@ -817,7 +817,7 @@ class TramitesController extends Controller
             $ObjData['_fecha_maxima'] = now();
 
             Mail::send('MSTP_MAIL.notificacion_aprobacion', $ObjData, function ($message) use ($ObjData) {
-                $message->from('ldavalos@esz.com.mx', 'ldavalos');
+                $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
                 $message->to($ObjData['_correo'], '')->subject('Aviso de trámite');
             });
 
