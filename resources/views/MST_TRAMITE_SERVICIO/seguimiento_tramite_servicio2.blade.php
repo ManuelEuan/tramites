@@ -968,9 +968,9 @@
                                         	onClick="$PagosManaguer.mostarModal();"
                                         	class="btn btn-success float-right">Pagar</a> -->
 
-                                            <form method="post" action="http://serviciosweb.queretaro.gob.mx:8080/derechosGEQ/liquidacionOpciones.jsp" target="_blank" enctype="application/x-www-form-urlencoded">
-                            <input type="hidden" name="usuario" value="SR682466" />
-                            <input type="hidden" name="password" value="sedesu" />
+                                            <form method="post" action="https://www.recaudanet.gob.mx/derechosGEQ/liquidacionOpciones.jsp" target="_blank" enctype="application/x-www-form-urlencoded">
+                            <input type="hidden" name="usuario" value="SR799556" />
+                            <input type="hidden" name="password" value="Uk114@" />
                             <input type="hidden" name="rfc" value="{{ $tramite['rfcUser'] }}" />
                             @if ($tramite['tipoPersona'] == 'FISICA')
                             <input type="hidden" name="nombre" value="{{ $tramite['nombreUsuario'] }}" />
@@ -989,7 +989,7 @@
                             <input type="hidden" name="email" value="{{ $tramite['correoUsuario'] }}" />
                             <input type="hidden" name="usoCfdi" value="CP01" />
                             <input type="hidden" name="idPeticionCliente" value="{{ $tramite['idTramitePago']+time() }}" />
-                            <input type="hidden" name="cliente" value="PRUEBA" />
+                            <input type="hidden" name="cliente" value="SR_GOBDIG_TRA" />
                             <input type="hidden" name="claveTramites" value="{{$tramite['clavePago']}};0" /> 
                             <input type="submit" value="Ir a la ventana de Pago" class="btn btn-primary"/>
                         </form>

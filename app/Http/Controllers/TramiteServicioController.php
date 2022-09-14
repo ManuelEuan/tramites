@@ -39,7 +39,7 @@ class TramiteServicioController extends Controller
     protected $seccion_active = 0;
     protected $host ="https://remtys-qro-qa.azurewebsites.net"; 
     protected $host_pagos = "https://ipagostest.chihuahua.gob.mx/WSPagosDiversos/consultas/consultas1/obtieneEstatus";
-    protected $host_pagos_queretaro = "http://qroprodev.queretaro.gob.mx:8085/wsVerificaPago/ws/VerificaPagoSedCas";
+    protected $host_pagos_queretaro = "http://servicios.queretaro.gob.mx:8080/verificaPago/ws/VerificaPagoSedCas";
 
     protected $tramiteService;
     protected $gestorService;
@@ -1864,8 +1864,8 @@ class TramiteServicioController extends Controller
 
         $client = new Client();
         $headers = [
-        'usuario' => 'SR682466',
-        'password' => 'sedesu'
+        'usuario' => 'SR799556',
+        'password' => 'Uk114@'
         ];
         $requestQueretaro = new \GuzzleHttp\Psr7\Request('GET', $this->host_pagos_queretaro.'?noPeriodo='.$request->input('PERIODO').'&noTransaccion='.$request->input('NUMERO_TRANSACCION'), $headers);
         $res = $client->sendAsync($requestQueretaro)->wait();
