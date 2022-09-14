@@ -1205,14 +1205,11 @@
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", false);
                     }, 1000);
-
-                    if(tipo == "MORAL"){
-                        $(".resultadoValidTextCurpMoral").html("<span style='color: red;'>El CURP no es válido, se requiere verificar.</span>");
-                    }else{
-                        $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP no es válido, se requiere verificar.</span>");
-                    }
+                    tipo == "MORAL" ? $(".resultadoValidTextCurpMoral").html("<span style='color: red;'>El CURP no es válido, se requiere verificar.</span>") 
+                                    : $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP no es válido, se requiere verificar.</span>");
                 }
-                $(".txtCurp").val(curp);
+
+                tipo == "MORAL" ? $("#txtCurpMoral").val(curp) : $("#txtCurpFisica").val(curp);
             }
         }
 
