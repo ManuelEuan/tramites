@@ -819,7 +819,7 @@
         });
 
         //CURP
-        $(".txtCurp").change(function(){
+        $("#txtCurpFisica").change(function(){
             var value = $( this ).val();
             var tipo = "FISICA";
             TRAM_FN_VALIDAR_INPUNT_CURP(value, tipo);
@@ -1182,8 +1182,7 @@
         //Handler para el evento cuando cambia el input
         //Lleva la CURP a mayúsculas para validarlo
         var curpValido= false;
-        function TRAM_FN_VALIDAR_INPUNT_CURP
-         (input, tipo) {
+        function TRAM_FN_VALIDAR_INPUNT_CURP(input, tipo) {
             var newValue = input;
             if (input == null || input == undefined || input == "") {
             } else {
@@ -1192,7 +1191,7 @@
                 if (curpValido) {
 
                     if(tipo == "MORAL"){
-                        TRAM_AJX_VALIDAR_RFC(curp, 'curp')
+                        TRAM_AJX_VALIDAR_RFC(curp, 'curp',tipo)
                     }
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", false);
@@ -1218,7 +1217,7 @@
         }
 
         //Validar si el rfc existe
-        function TRAM_AJX_VALIDAR_RFC(value, tipo){
+        function TRAM_AJX_VALIDAR_RFC(value, tipo, persona = 'fisica'){
             $.ajax({
                 data: {tipo: tipo, valor: value},
                 url: "/api/general/validaDuplicidad",
@@ -1230,8 +1229,16 @@
                             $(".btnSubmit").prop("disabled", true);
                         }, 1000);
                         if(tipo == 'curp'){
-                            $(".iconCurp_Valido").hide();
-                            $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP ya existe en el sistema, por favor ingresa con tu usuario y contraseña.</span>");
+                            if(persona == 'fisica'){
+                                $(".iconCurp_Valido").hide();
+                                $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP ya existe en el sistema, por favor ingresa con tu usuario y contraseña.</span>");
+                            }
+                            else{
+                                $("#txtNombres").val(data.data.USUA_CNOMBRES);
+                                $("#txtPrimer_Apellido").val(data.data.USUA_CPRIMER_APELLIDO);
+                                $("#txtSegundo_Apellido").val(data.data.USUA_CSEGUNDO_APELLIDO);
+
+                            }
                         }
                         else{
                             $("#iconRfc_Valido").hide();
@@ -1241,8 +1248,13 @@
                         }
                     }else {
                         if(tipo == 'curp'){
-                            $(".iconCurp_Valido").show();
-                            $("#resultadoExistRfc").html("");
+                            if(persona == 'fisica'){
+                                $(".iconCurp_Valido").show();
+                                $("#resultadoExistRfc").html("");
+                            }
+                            else{
+                                $(".resultadoValidTextCurpMoral").html("<span style='color: red;'> El CURP no esta dado de alta en el sistema.</span>");
+                            }
                         }
                         else{
                             if(rfcCorrecto){}
