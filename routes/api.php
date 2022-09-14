@@ -38,15 +38,6 @@ Route::post('/citas/disponibilidad', 'CitasController@disponibilidad');
 Route::post('/citas/update', 'CitasController@update');
 Route::post('/general/validaDuplicidad', 'GeneralController@validaDuplicidad');
 
-
-
-Route::group(['prefix' => 'giro'], function () {
-    Route::get('/find', 'GiroController@find');
-    Route::get('/{id}', 'GiroController@get');
-    Route::post('/', 'GiroController@store');
-    Route::post('/estatus', 'GiroController@cambiaEstatus');
-    Route::put('/', 'GiroController@update');
-});
 ###################### Manuel Euan ######################
 
 

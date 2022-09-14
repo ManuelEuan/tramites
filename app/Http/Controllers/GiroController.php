@@ -12,8 +12,17 @@ class GiroController extends Controller
 {
 
     public function __construct() {
+        $this->middleware('auth');
         $this->validator    = new GeneralValidator();
         $this->giroService  = new GiroService();     
+    }
+
+    /**
+     * Retorna la vista principal de giros
+     * @return View
+     */
+    public function index() {
+        return view('CAT_GIRO.index');
     }
 
     /**
@@ -98,22 +107,25 @@ class GiroController extends Controller
      * @return Response
      */
     public function find(Request $request){
-        $query = DB::table('tram_cat_giros')->where("activo", true);
+        $query = DB::table('tram_cat_giros');
 
         if(!is_null($request->clave))
             $query->where('clave', $request->clave);
         if(!is_null($request->nombre))
             $query->where('nombre', 'like','%'.$request->nombre.'%');
         if(!is_null($request->descripcion))
-                $query->where('descripcion', 'like','%'.$request->descripcion.'%');
-
+            $query->where('descripcion', 'like','%'.$request->descripcion.'%');
+        if(!is_null($request->activo)){
+            $activo = $request->activo === 'true'? true: false;
+            $query->where("activo","=", $activo);
+        }
 
         ############ Orden y paginacion ############
-        $order      = !is_null($request->order) ? $request->order : "desc";
-        $orderBy    = !is_null($request->orderBy) ? $request->orderBy : "id";
-        $itemsShow  = !is_null($request->itemsShow) ? $request->itemsShow : 10;
+        $order      = !is_null($request->order)     ? $request->order : "desc";
+        $order_by    = !is_null($request->order_by)  ? $request->order_by : "id";
+        $itemsShow  = !is_null($request->items_to_show) ? $request->items_to_show : 10;
 
-        $query->orderBy("id", $order);
+        $query->orderBy($order_by, $order);
         if(!is_null($request->paginate) || $request->paginate == true) {
             $items = $query->paginate($itemsShow);
             return response()->json($items, 200);
