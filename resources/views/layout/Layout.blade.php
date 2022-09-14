@@ -7,7 +7,7 @@
     <title>Queretaro</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link href="{{ asset('assets/template/img/icon-edo.png') }}" rel="shortcut icon">
+    <link href="{{ asset('assets/template/img/favicon_queretaro/android-chrome.png') }}" rel="shortcut icon">
     <link href="{{ asset('assets/template/css/bootstrap.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('assets/template/plugins/Datepicker/css/bootstrap-datepicker.standalone.css') }}" />

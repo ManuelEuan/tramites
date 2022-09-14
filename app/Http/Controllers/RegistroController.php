@@ -57,7 +57,7 @@ class RegistroController extends Controller
 		$ObjData['StrCorreoElectronico'] = $request->txtCorreo_Electronico;
 		$ObjData['StrRFC'] = $request->txtRfc;
 		Mail::send('MSTP_MAIL.registro', $ObjData, function ($message) use($ObjData) {
-			$message->from('ldavalos@esz.com.mx', 'ldavalos');
+			$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
 			$message->to($ObjData['StrCorreoElectronico'], '')->subject('Registro.');
         });
         
