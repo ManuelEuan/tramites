@@ -687,9 +687,7 @@
                        var value = $(this).val();
 
                        var name = $(this).attr("name");
-                       //console.log(name,value);
                         var resultado = name.split("]");
-                        //console.log(resultado[0]+"]")
 
                         TRAM_AJX_CARGAR_LOCALIDADES_SUCURSAL(value,resultado[0]+"]"+"[cmbColonia_Sucursal]");
 
@@ -720,7 +718,6 @@
             var value = $( this ).val();
             $("#frmRegistro").show();
             if(value == "FISICA"){
-                console.log('soy fisica');
                 $(".divRazon_Social").hide();
                 $(".divCurp").show();
                 $("#divTxtRepresentante").hide();
@@ -822,7 +819,7 @@
         });
 
         //CURP
-        $(".txtCurp").change(function(){
+        $("#txtCurpFisica").change(function(){
             var value = $( this ).val();
             var tipo = "FISICA";
             TRAM_FN_VALIDAR_INPUNT_CURP(value, tipo);
@@ -859,7 +856,6 @@
 
         $('#txtConfirmacion').change(function(){
             var value = $( this ).val();
-            console.log(value);
             if(value == $('#txtContrasenia').val()){
                $("#resultadoConfirmacion").html('');
             }
@@ -1141,12 +1137,10 @@
                 reg = /^([A-Z]{4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[HM](AS|BC|BS|CC|CL|CM|CS|CH|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[A-Z]{3}[0-9A-Z]\d)$/i;
 
                 if (curp.search(reg)) {
-                    console.log("La curp: " + curp + " no es valida, se requiere verificar. ");
                     return false;
                 }
 
                 if (!(parseInt(digito) == parseInt(curp.substring(17, 18)))) {
-                    console.log("La curp: " + curp + " no es valida, revisé el Digito Verificador (" + digito + ")");
                     return false;
                 } else {
                     return true;
@@ -1188,8 +1182,7 @@
         //Handler para el evento cuando cambia el input
         //Lleva la CURP a mayúsculas para validarlo
         var curpValido= false;
-        function TRAM_FN_VALIDAR_INPUNT_CURP
-         (input, tipo) {
+        function TRAM_FN_VALIDAR_INPUNT_CURP(input, tipo) {
             var newValue = input;
             if (input == null || input == undefined || input == "") {
             } else {
@@ -1198,7 +1191,7 @@
                 if (curpValido) {
 
                     if(tipo == "MORAL"){
-                        TRAM_AJX_VALIDAR_RFC(curp, 'curp')
+                        TRAM_AJX_VALIDAR_RFC(curp, 'curp',tipo)
                     }
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", false);
@@ -1224,21 +1217,28 @@
         }
 
         //Validar si el rfc existe
-        function TRAM_AJX_VALIDAR_RFC(value, tipo){
+        function TRAM_AJX_VALIDAR_RFC(value, tipo, persona = 'fisica'){
             $.ajax({
                 data: {tipo: tipo, valor: value},
                 url: "/api/general/validaDuplicidad",
                 type: "POST",
                 dataType: 'json',
                 success: function(data) {
-                    console.log(data.data);
                     if(data.data != null){
                         setTimeout(function(){
                             $(".btnSubmit").prop("disabled", true);
                         }, 1000);
                         if(tipo == 'curp'){
-                            $(".iconCurp_Valido").hide();
-                            $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP ya existe en el sistema, por favor ingresa con tu usuario y contraseña.</span>");
+                            if(persona == 'fisica'){
+                                $(".iconCurp_Valido").hide();
+                                $(".resultadoValidTextCurp").html("<span style='color: red;'> El CURP ya existe en el sistema, por favor ingresa con tu usuario y contraseña.</span>");
+                            }
+                            else{
+                                $("#txtNombres").val(data.data.USUA_CNOMBRES);
+                                $("#txtPrimer_Apellido").val(data.data.USUA_CPRIMER_APELLIDO);
+                                $("#txtSegundo_Apellido").val(data.data.USUA_CSEGUNDO_APELLIDO);
+
+                            }
                         }
                         else{
                             $("#iconRfc_Valido").hide();
@@ -1248,8 +1248,13 @@
                         }
                     }else {
                         if(tipo == 'curp'){
-                            $(".iconCurp_Valido").show();
-                            $("#resultadoExistRfc").html("");
+                            if(persona == 'fisica'){
+                                $(".iconCurp_Valido").show();
+                                $("#resultadoExistRfc").html("");
+                            }
+                            else{
+                                $(".resultadoValidTextCurpMoral").html("<span style='color: red;'> El CURP no esta dado de alta en el sistema.</span>");
+                            }
                         }
                         else{
                             if(rfcCorrecto){}
@@ -1292,7 +1297,6 @@
 
 
         function TRAM_AJX_CARGAR_LOCALIDADES(municipio){
-            console.log("cargando las localidades");
             $.get('/registrar/localidades/'+municipio, function (data) {
                 var html = '';
                 data.forEach(function(value) {
@@ -1306,7 +1310,6 @@
 
 
         function TRAM_AJX_CARGAR_LOCALIDADES_FISCAL(municipio){
-            console.log("cargando las localidades");
             $.get('/registrar/localidades/'+municipio, function (data) {
 
                 var html = '';
@@ -1326,7 +1329,6 @@
                     html += '<option value="'+ value.NOMBRE +'">' + value.NOMBRE + '</option>';
                 });
 
-                console.log("agregando aaaa------> " + nombredata);
                 var element = document.getElementsByName(nombredata);
                 $(element).append(html);
             });
