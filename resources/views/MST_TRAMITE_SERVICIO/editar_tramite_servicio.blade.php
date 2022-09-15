@@ -303,7 +303,7 @@
                                             </td>
                                             <td class="text-center">Pendiente revisión</td>
                                             <td class="text-center"><img src="{{ asset('assets/template/img/warning.png') }}" width="20" height="20"></td>
-                                            <td style="width: 100px;"><input type="hidden" name="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="{{$doc->TRAD_CRUTADOC}}_{{$doc->TRAD_CEXTENSION}}_{{$doc->TRAD_NPESO}}"><input class="file-select documentos" name="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file"></td>
+                                            <td style="width: 100px;"><input type="hidden" name="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="{{$doc->TRAD_CRUTADOC}}_{{$doc->TRAD_CEXTENSION}}_{{$doc->TRAD_NPESO}}"><input class="file-select documentos" name="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file" accept="application/pdf"></td>
                                         </tr>
                                     @endforeach
                                 @endif
