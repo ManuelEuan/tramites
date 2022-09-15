@@ -37,6 +37,7 @@ Route::post('/recuperar_contrasena','LoginController@recuperar_contrasena');
 Route::post('/citas/disponibilidad', 'CitasController@disponibilidad');
 Route::post('/citas/update', 'CitasController@update');
 Route::post('/general/validaDuplicidad', 'GeneralController@validaDuplicidad');
+
 ###################### Manuel Euan ######################
 
 
