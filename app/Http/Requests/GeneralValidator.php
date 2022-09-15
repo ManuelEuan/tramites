@@ -82,4 +82,34 @@ class GeneralValidator extends FormRequest
 
         return true;
     }
+
+    public function giros(Request $request, $accion ='add'){
+        $params = [
+            'clave'         => 'required|string|max:20',
+            'nombre'        => 'required|string|max:200',
+            'descripcion'   => 'required|string',
+            'activo'        => 'nullable|boolean'
+        ];
+
+        if($accion != 'add')
+            $params = array_merge($params, ['id' => 'required|integer|exists:tram_cat_giros,id']);
+
+        $validator = Validator::make($request->all(),$params);
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+        return true;
+    }
+
+    public function giroEstatus(Request $request){
+        $validator  = Validator::make($request->all(),[
+            'id'        => 'required|integer|exists:tram_cat_giros,id', 
+        ]);
+       
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+        return true;
+    }
+    
 }
