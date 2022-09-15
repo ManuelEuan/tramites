@@ -15,34 +15,33 @@
         <div class="card-body text-body">
             <div class="row">
                 <div class="col-md-12">
-                    <h2>Registrar</h2>
+                    <h2>Datos de búsqueda</h2>
                 </div>
             </div>
-            <form>
-                {{-- <div class="row">
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="txtClave">Clave</label>
-                            <input type="text" placeholder="Clave" class="form-control" name="txtClave" id="txtClave">
-                        </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="txtClave">Clave</label>
+                        <input type="text" placeholder="Clave" class="form-control" name="txtClaveBus" id="txtClaveBus">
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="txtNombre">Nombre</label>
-                            <input type="text" placeholder="Nombre" class="form-control" name="txtNombre" id="txtNombre">
-                        </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="txtNombre">Nombre</label>
+                        <input type="text" placeholder="Nombre" class="form-control" name="txtNombreBus" id="txtNombreBus">
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="txtNombre">Descripción</label>
-                            <input type="text" placeholder="Nombre" class="form-control" name="txtNombre" id="txtNombre">
-                        </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="txtDescripcionBus">Descripción</label>
+                        <input type="text" class="form-control" name="txtDescripcionBus" id="txtDescripcionBus">
                     </div>
-                </div> --}}
-            </form>
+                </div>
+            </div>
             <div class="row justify-content-between">
                 <div class="col-md-12 text-right">
-                    <button class="btn btn-sm btn-primary" id="btn_search" type="button" data-toggle="modal" data-target="#exampleModal">Agregar</button>
+                    <button class="btn btn-sm btn-primary" id="btnAgregar" type="button" data-toggle="modal" data-target="#exampleModal">Agregar</button>
+                    <button class="btn btn-sm btn-primary" id="btnBuscar" type="button" onclick="buscar()" >Buscar</button>
                 </div>
             </div>
         </div>
@@ -96,7 +95,7 @@
         <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Registrar Giro</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -172,24 +171,17 @@
     });
 
     
-    /* function buscar(){
-
+    function buscar(){
         varPaginacion = {
-            "nombre"        : $("#txtNombre").val(),
-            "primer_Ap"     : $("#txtPaterno").val(),
-            "segundo_AP"    : $("#txtMaterno").val(),
-            "rol"           : $("#cmbRol option:selected").val(),
-            "correo"        : $("#txtCorreo").val(),
-            "estatus"       : $("#cmbEstatus option:selected").val(),
-            "dep_pertenece" : $("#cmbDepPertenece option:selected").val(),
-            "uni_pertenece" : $("#cmbPertenece option:selected").val(),
-            "dep_acceso"    : $("#cmbDepPuedeTenerAcceso option:selected").val(),
-            "uni_acceso"    : $("#cmbPuedeTenerAcceso option:selected").val(),
-            "page"           : 1
+            "nombre"        : $("#txtNombreBus").val(),
+            "clave"         : $("#txtClaveBus").val(),
+            "descripcion"   : $("#txtDescripcionBus").val(),
+            "paginate"      : true,
+            "page"          : 1
         };
 
         listar();
-    }} */
+    }
 
     function limpiar(all= true){
         $("#txtId").val("");
@@ -219,6 +211,7 @@
 
         if(id != 0){
             accion = 'update';
+            $("#exampleModalLabel").text("Actualizar Giro");
             arrayGiros.forEach(element => {
                 if(element.id == id){
                     $("#txtId").val(element.id);
