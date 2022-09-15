@@ -178,8 +178,8 @@
                 type: "GET",
                 success: function(data) {
 
-                    console.log("Data");
-                    console.log(data);
+                    /*console.log("Data");
+                    console.log(data);*/
 
                     //Limpiamos el select de clasificacion
                     cmbClasificacion.find('option').remove();
@@ -213,12 +213,7 @@
 
                 },
                 error: function(data) {
-                    Swal.fire({
-                        icon: data.status,
-                        title: '',
-                        text: data.message,
-                        footer: ''
-                    });
+
                 }
             });
         }
@@ -332,12 +327,7 @@
                     });
                 },
                 error: function(data) {
-                    Swal.fire({
-                        icon: data.status,
-                        title: '',
-                        text: data.message,
-                        footer: ''
-                    });
+  
                 }
             });
         }
@@ -387,12 +377,7 @@
 
             },
             error: function(data) {
-                Swal.fire({
-                    icon: data.status,
-                    title: '',
-                    text: data.message,
-                    footer: ''
-                });
+
             }
         });
     }

@@ -9,7 +9,7 @@
     <title>Queretaro</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
      <!-- Font Awesome -->
-     <link href="{{ asset('assets/template/img/icon-edo.png') }}" rel="shortcut icon">
+     <link href="{{ asset('assets/template/img/favicon_queretaro/android-chrome.png') }}" rel="shortcut icon">
      <link href="{{ asset('assets/template/plugins/mdb/css/mdb.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/login.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/fonts.css') }}" rel="stylesheet">

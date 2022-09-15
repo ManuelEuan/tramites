@@ -106,7 +106,7 @@ class TramiteServicioController extends Controller
         foreach ($resultTram as $i) {
             $html .= '<div class="card text-left" style="margin-bottom: 2rem;">
                 <div class="card-header text-primary titleCard">
-                    ' . $i->TRAM_CNOMBRE . ' <span class="badge badge-warning">' . $i->TRAM_CNOMBRE . '</span>
+                    ' . $i->TRAM_CNOMBRE . ' <span class="badge badge-warning">' . $i->TRAM_CCENTRO . '</span>
                 </div>
                 <div class="card-body">
                     <h6 class="card-text" style="color: #212529;">
@@ -115,7 +115,7 @@ class TramiteServicioController extends Controller
                 </div>
                 <div class="card-footer text-muted" style="background-color: transparent; border-top: none; border-bottom: none;">
                     <span class="text-left" style="margin-right: 30px;">Creado: ' . date("d/m/Y", strtotime($i->created_at)) . '</span>
-                    <span class="text-left">Ultima Modificación: ' . date("d/m/Y", strtotime($i->created_at)) . '</span>
+                    <span class="text-left">Ultima Modificación: ' . date("d/m/Y", strtotime($i->updated_at)) . '</span>
                     <a href="' . route('detalle_tramite', ['id' => $i->TRAM_NIDTRAMITE]) . '" class="btn btn-primary" style="float: right;">Ver trámite</a>
                 </div>
             </div>';
@@ -1397,7 +1397,7 @@ class TramiteServicioController extends Controller
         $ObjData['_fecha_maxima'] = now();
 
         Mail::send('MSTP_MAIL.notificacion_subsanar', $ObjData, function ($message) use ($ObjData) {
-            $message->from('ldavalos@esz.com.mx', 'ldavalos');
+            $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
             $message->to($ObjData['_correo'], '')->subject('Corrección de información sobre trámite con folio ' . $ObjData['_folio_tramite']);
         });
 

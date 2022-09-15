@@ -147,6 +147,7 @@
                 url: "/gestores/consultar_filtro",
                 type: "GET",
                 success: function(data) {
+
                     //Limpiamos el select de clasificacion
                     cmbClasificacion.find('option').remove();
                     //Opcion por defecto de select clasificacion
@@ -176,12 +177,6 @@
                     })
                 },
                 error: function(data) {
-                    Swal.fire({
-                        icon: data.status,
-                        title: '',
-                        text: data.message,
-                        footer: ''
-                    });
                 }
             });
         }
@@ -238,9 +233,6 @@
             "StrOrdenDir": "",
             "IntUsuarioId": 3,
         };
-
-        console.log("Filtros");
-        console.log(filtro);
 
         $.ajax({
             data: filtro,
