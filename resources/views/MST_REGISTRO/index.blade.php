@@ -163,7 +163,7 @@
                                 <div class="col-md-4 divCurpMoral">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">CURP <span class="text-danger">*</span>  <span class="text-primary">Se compone de 18 caracteres</span></label>
-                                        <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpMoral" placeholder="CURP">
+                                        <input type="text" class="form-control txtCurp" name="txtCurpMoral" id="txtCurpMoral" placeholder="CURP">
                                         <span class="resultadoValidTextCurpMoral" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
