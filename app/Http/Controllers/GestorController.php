@@ -178,6 +178,39 @@ class GestorController extends Controller
         return view('DET_GESTOR_CONFIGURACION_TRAMITE.index',  compact('tramite', 'edificios'));
     }
 
+    //Vista detalle de configuración de trámite
+    public function detalle_configuracion_tramite($tramiteID, $tramiteIDConfig) {
+        $tramites = new Cls_Gestor();
+        $tramites->TRAM_NIDTRAMITE = $tramiteID;
+        $tramites->TRAM_NIDTRAMITE_CONFIG = $tramiteIDConfig;
+        $registro = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
+        $tramite = [];
+        $objTramite     = $this->tramiteService->getTramite($tramiteID);
+        $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
+        $datosGenerales = $this->tramiteService->valoresDefaulTramite($arrayDetalle, $objTramite);
+        $edificios      = $datosGenerales['oficinas'];
+
+        if (count($registro) > 0) {
+            $tramite['VALIDO'] = true;
+            $tramite['TRAM_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE;
+            $tramite['ACCE_ID_TRAMITE'] = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['ACCE_CLAVE_INTERNA'] = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
+            $tramite['EDIFICIOS'] = $registro[0]->TRAM_CNOMBRE;
+            $tramite['TRAM_NIMPLEMENTADO'] = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
+            $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
+        } else {
+            $tramite['VALIDO'] = false;
+            $tramite['TRAM_ID_TRAMITE'] = NULL;
+            $tramite['ACCE_ID_TRAMITE'] = NULL;
+            $tramite['ACCE_CLAVE_INTERNA'] = "";
+            $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE. USTED ESPECIFICO UN TRÁMITE, PERO NO SE ENCONTRÓ.";
+            $tramite['TRAM_NIMPLEMENTADO'] = null;
+            $tramite['TRAM_NENLACEOFICIAL'] = null;
+        }
+
+        return view('DET_GESTOR_CONFIGURACION_TRAMITE.DET_CONFIGURACION_TRAMITE',  compact('tramite', 'edificios'));
+    }
 
     /************* Vistas parciales de la configuración de trámite *******************/
     public function view_formulario()
