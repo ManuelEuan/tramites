@@ -100,7 +100,7 @@
                             </div>
                             <div class="col-md-7 btnBuscar">
                                 <button onclick="filter();" class="btn btn-primary btnLetras" type="button">Buscar</button>
-                                <button onclick="clean_filter();" class="btn btn-warning btnNaranja btnLetras" type="button">Limpiar</button>
+                                <button onclick="clean_filter();" class="btn btn-warning btnLimpiar btnLetras" type="button">Limpiar</button>
                             </div>
                         </div>
                     </form>
@@ -493,9 +493,9 @@
         margin-left: 20px;
     }
 
-    .btnNaranja {
-        background-color: #ffa000;
-        border-color: #ffa000;
+    .btnLimpiar {
+        background-color: #01b3e8;
+        border-color: #01b3e8;
         color: #ffffff;
         margin-left: 20px;
     }
@@ -545,6 +545,10 @@
     .container-1 input#search:active {
         outline: none;
         background: #ffffff;
+    }
+
+    .buttons-html5{
+        background-color: #01b3e8 !important;
     }
 </style>
 @endsection

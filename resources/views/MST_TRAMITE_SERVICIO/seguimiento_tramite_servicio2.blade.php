@@ -148,11 +148,16 @@
                                                                 <?php
                                                                 $estatus_tab = 0;
                                                                 $total_sec_form++;
+                                                                $estatusGuardado = 0;
                                                                 ?>
                                                                 @foreach ($sec->preguntas as $preg)
                                                                     @if ($preg->estatus == 1)
                                                                         <?php $estatus_tab++; ?>
                                                                         <?php $cont_error++; ?>
+                                                                    @endif
+
+                                                                    @if ($preg->estatus == 9)
+                                                                        <?php $estatusGuardado++; ?>
                                                                     @endif
                                                                 @endforeach
                                                                 @if ($_cont == 0)
@@ -166,7 +171,8 @@
                                                                                 <span><img
                                                                                         src="{{ asset('assets/template/img/error.png') }}"
                                                                                         width="20" height="20"></span>
-                                                                            @else
+                                                                            @endif
+                                                                            @if($estatusGuardado <= 0)
                                                                                 <span><img
                                                                                         src="{{ asset('assets/template/img/check.png') }}"
                                                                                         width="20" height="20"></span>
@@ -185,7 +191,8 @@
                                                                                     <span><img
                                                                                             src="{{ asset('assets/template/img/error.png') }}"
                                                                                             width="20" height="20"></span>
-                                                                                @else
+                                                                                @endif
+                                                                                @if($estatusGuardado <= 0)
                                                                                     <span><img
                                                                                             src="{{ asset('assets/template/img/check.png') }}"
                                                                                             width="20" height="20"></span>
@@ -202,7 +209,8 @@
                                                                                     <span><img
                                                                                             src="{{ asset('assets/template/img/error.png') }}"
                                                                                             width="20" height="20"></span>
-                                                                                @else
+                                                                                @endif
+                                                                                @if($estatusGuardado <= 0)
                                                                                     <span><img
                                                                                             src="{{ asset('assets/template/img/check.png') }}"
                                                                                             width="20" height="20"></span>

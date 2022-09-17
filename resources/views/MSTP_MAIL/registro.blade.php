@@ -132,7 +132,7 @@
             <td class="text-center"><a href="{{$StrHost}}">{{$StrHost}}</a></td>
         </tr>
         <tr>
-            <td class="text-center"><br /><b>Atentamente</b><br />Sistema de Tramites Digitales Queretaro</td>
+            <td class="text-center"><br /><b>Atentamente</b><br />Sistema de Tramites Digitales Querétaro</td>
         </tr>
     </table>
 </body>

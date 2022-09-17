@@ -68,7 +68,7 @@
                                     <button class="btn btn-primary bntGeneral btnLetras" type="button" onclick="buscar()">Buscar</button>
                                     <button class="btn btn-primary bntGeneral btnLetras" onclick="abreModal()" type="button" data-toggle="modal" data-target="#exampleModalCenter">Crear nuevo</button>
                                     <button style="display: none;" id='btnModal' type="button" data-toggle="modal" data-target="#exampleModalCenter"></button>
-                                    <button class="btn btn-warning bntGeneral btnNaranja btnLimpiar btnLetras" type="button" onclick="limpiaCampos('btnLimpiar')">Limpiar</button>
+                                    <button class="btn btn-warning bntGeneral btnLetras btnLimpiar" type="button" onclick="limpiaCampos('btnLimpiar')">Limpiar</button>
                                 </div>
                             </div>
                         </form>
@@ -1619,18 +1619,19 @@
     }
     .btnLimpiar{
         float: right;
+        background-color: #01b3e8 !important;
+        border-color: #01b3e8 !important;
+        color: #ffffff;
     }
-    .btnNaranja {
-        background-color: #e0a800;
-        border-color: #e0a800;
+    .btnLimpiar:hover{
+        background-color: #33B5FF !important;
+        border-color: #33B5FF !important;
         color: #ffffff;
         margin-left: 20px;
     }
-    .btnNaranja:hover{
-        background-color: #ffa000;
-        border-color: #ffa000;
-        color: #ffffff;
-        margin-left: 20px;
+    
+    .buttons-html5{
+        background-color: #01b3e8 !important;
     }
     .btnModal {
         min-width: 115px;

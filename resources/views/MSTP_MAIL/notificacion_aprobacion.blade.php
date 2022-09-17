@@ -71,7 +71,7 @@
 <body>
     <table class="cont-60">
         <tr>
-            <td class="text-center"><h4>Sistema de Tramites Digitales Queretaro</h4> </td>
+            <td class="text-center"><h4>Sistema de Tramites Digitales Querétaro</h4> </td>
         </tr>
         <tr>
             {{-- <td class="text-center">
@@ -142,7 +142,7 @@
     <table class="cont-60">
         <tr>
             <td class="text-center"><br />
-              <br/><b>Atentamente</b><br />Sistema de Tramites Digitales Queretaro
+              <br/><b>Atentamente</b><br />Sistema de Tramites Digitales Querétaro
             </td>
         </tr>
     </table>
