@@ -81,6 +81,8 @@ class GestoresController extends Controller
 
     public function delete(Request $request){
         try {
+            $idges = DB::table('tram_mdv_gestores')->where('GES_NID',$request->id)->pluck('GES_NGESTORID');
+            DB::table('tram_his_notificacion')->where('NOTI_NIDRECEPTOR',$idges[0])->delete();
             DB::table('tram_mdv_gestores')->where('GES_NID',$request->id)->delete();
             return response()->json(['message'=> 'Operación exitosa'], 200);
         } catch (Exception $ex) {

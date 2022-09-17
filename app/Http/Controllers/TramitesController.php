@@ -19,16 +19,15 @@ use App\Models\Cls_Citas_Calendario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Cls_Seguimiento_Servidor_Publico;
+
 class TramitesController extends Controller
 {
     protected $variosService;
-
-
+    protected $tramiteService;
     public function __construct() {
         $this->variosService    = new VariosService();
+        $this->tramiteService   = new TramiteService();
     }
-
-    protected $host = 'http://tramitesqueretaro.eastus.cloudapp.azure.com';
 
     public function listado() {
         $tramites = [];
@@ -124,8 +123,7 @@ class TramitesController extends Controller
     }
 
     //Vista detalle
-    public function detalle($id)
-    {
+    public function detalle($id) {
         $result = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
         $tramite = $result[0];
         return view('TRAMITES_CEMR.detalles', compact('tramite'));
@@ -138,10 +136,6 @@ class TramitesController extends Controller
         Cls_Seguimiento_Servidor_Publico::TRAM_MARCAR_ESTATUS_REVISION_TRAMITE($id);
         $result = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
         $tramite = $result[0];
-        $ventanilla_sin_cita = $this->obtener_edificio_ventanilla($tramite->USTR_NIDUSUARIOTRAMITE, $tramite->USTR_NIDTRAMITE_ACCEDE);
-        $tramite->EDF_VENTANILLA_SIN_CITA = $ventanilla_sin_cita['NAME'];
-        $tramite->EDF_VENTANILLA_SIN_CITA_LAT = $ventanilla_sin_cita['LAT'];
-        $tramite->EDF_VENTANILLA_SIN_CITA_LON = $ventanilla_sin_cita['LON'];
 
         //Secciones
         $secciones = DB::select(
@@ -155,19 +149,21 @@ class TramitesController extends Controller
             array($id)
         );
 
-        $resolutivos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
+        $resolutivos= Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
+        $objTramite = $this->tramiteService->getTramite($tramite->USTR_NIDTRAMITE_ACCEDE);
+        $result     = $this->tramiteService->getDetalle($objTramite->Id);
+        $tramite->infoModulo                    = (array) $result['oficinas'][0];
 
-        //Obtener detalles del tramite
-        $tramiteService = new TramiteService();
-        $objTramite     = $tramiteService->getTramite($tramite->USTR_NIDTRAMITE_ACCEDE);
-        $result = $tramiteService->getDetalle($objTramite->Id);
+        $tramite->EDF_VENTANILLA_SIN_CITA       = $result['oficinas'][0]->Name;
+        $tramite->EDF_VENTANILLA_SIN_CITA_LAT   = $result['oficinas'][0]->Latitude;
+        $tramite->EDF_VENTANILLA_SIN_CITA_LON   = $result['oficinas'][0]->Longitude;
 
-        $tramite->infoModulo = (array) $result['oficinas'][0];
         $cita = Cls_Citas_Calendario::where([
                 ["CITA_IDUSUARIO", $tramite->USTR_NIDUSUARIO],
                 ["CITA_IDTRAMITE", $tramite->USTR_NIDTRAMITE],
                 ["CITA_IDMODULO", $tramite->infoModulo['iId']],
             ])->orderBy('idcitas_tramites_calendario', 'DESC');
+
         $tramite->cita = ($cita->count() > 0 
             ? array(
                     "ID" => $cita->first()->idcitas_tramites_calendario,
@@ -181,7 +177,6 @@ class TramitesController extends Controller
                 )
             : array());
 
-        //dd($resolutivos);
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
     }
 
@@ -253,65 +248,6 @@ class TramitesController extends Controller
         return redirect('/docts/resolutivos/new-result' . $nameFile[0] . '.pdf');
 
         //return response()->file($savePdfPath, ['Content-Type' => 'application/pdf']);
-    }
-
-
-    //Obtener el nombre del modulo para asistir a ventanilla
-    private function obtener_edificio_ventanilla($USTR_NIDUSUARIOTRAMITE, $USTR_NIDTRAMITE_ACCEDE)
-    {
-        //Obtenemos el valor de ID del edificio
-        $consulta = Cls_Usuario_Tramite::select('USTR_CMODULO')->where('USTR_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->take(1)->get()->first();
-        $USTR_CMODULO = $consulta->USTR_CMODULO;
-        $USTR_CMODULO_DATA = [
-            'NAME' => "Pendiente",
-            'LAT' => 0,
-            'LON' => 0
-        ];
-
-        //Consultar tramite
-        $urlTramite = $this->host . '/api/Tramite/Detalle/' . $USTR_NIDTRAMITE_ACCEDE;
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-
-        $objTramite = null;
-        $context = stream_context_create($options);
-        $result = @file_get_contents($urlTramite, false, $context);
-        if (strpos($http_response_header[0], "200")) {
-            $objTramite = json_decode($result, true);
-        }
-
-
-        if ($USTR_CMODULO != 0) {
-            $lstOficinas = [];
-            if ($objTramite != null) {
-                $horarios = "";
-                foreach ($objTramite['horarios'] as $objHorario) {
-                    $horarios .= $objHorario . " <br/>";
-                }
-                $telefono = "";
-                foreach ($objTramite['telefonos'] as $objTelefono) {
-                    $telefono .= $objTelefono . " <br/>";
-                }
-                $funcionarios = "";
-                foreach ($objTramite['funcionarios'] as $objFuncionarios) {
-                    $funcionarios .= $objFuncionarios['nombre'] . "<br/> correo: " . $objFuncionarios['correo'] . "<br/><hr>";
-                }
-                $contEdi = 1;
-                foreach ($objTramite['listaDetallesEdificio'] as $objEdificio) {
-                    if ($contEdi == $USTR_CMODULO) {
-                        $USTR_CMODULO_DATA['NAME'] = $objEdificio['nombre'] . ". \n(" . $objEdificio['direccion'] . " - " . $objEdificio['latitud'];
-                        $USTR_CMODULO_DATA['LAT'] = $objEdificio['latitud'];
-                        $USTR_CMODULO_DATA['LON'] = $objEdificio['longitud'];
-                    }
-                    $contEdi++;
-                }
-            }
-        }
-
-        return $USTR_CMODULO_DATA;
     }
 
     //Obtener trámite en seguimiento
@@ -881,7 +817,7 @@ class TramitesController extends Controller
             $ObjData['_fecha_maxima'] = now();
 
             Mail::send('MSTP_MAIL.notificacion_aprobacion', $ObjData, function ($message) use ($ObjData) {
-                $message->from('ldavalos@esz.com.mx', 'ldavalos');
+                $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
                 $message->to($ObjData['_correo'], '')->subject('Aviso de trámite');
             });
 

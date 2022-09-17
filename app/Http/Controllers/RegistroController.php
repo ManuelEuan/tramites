@@ -8,9 +8,7 @@ use App\Cls_Sucursal;
 use App\Cls_Bitacora;
 use Exception;
 use Illuminate\Http\Request;
-use App\Mail\MailService;
 use Illuminate\Support\Facades\Mail;
-use Mockery\Undefined;
 
 class RegistroController extends Controller
 {
@@ -18,14 +16,16 @@ class RegistroController extends Controller
         $response = [];
         $IntUsuarioId = 0;
         try {
-            $request->txtRol = Cls_Rol::TRAM_SP_OBTENERROLPORCLAVE("CDNS");
-            $request->txtTelefono = "";
-            $request->txtExtension = "";
-            $request->txtUsuario = "";
-            $IntUsuarioId = Cls_Usuario::TRAM_SP_AGREGARUSUARIO($request);
+            $request->txtRol        = Cls_Rol::TRAM_SP_OBTENERROLPORCLAVE("CDNS");
+            $request->txtTelefono   = "";
+            $request->txtExtension  = "";
+            $request->txtUsuario    = "";
+            $request->txtCurp       = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCurpMoral : $request->txtCurp;
+            $IntUsuarioId           = Cls_Usuario::TRAM_SP_AGREGARUSUARIO($request);
+            $sucursales             = is_null($request->lstSucursal) ? [] : $request->lstSucursal;
             
             //Agregar sucursales
-            foreach ($request->lstSucursal as $value) {
+            foreach ($sucursales as $value) {
                 $ObjSucursal = array(
                     'txtUsuario' => $IntUsuarioId,
                     'txtCalle' => '0',
@@ -39,9 +39,8 @@ class RegistroController extends Controller
                 );
                 Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
             }
-            
         }
-        catch(Exception $e) {
+        catch(Exception $e) { dd($e);
             $response = [
                 'codigo' => 400, 
                 'status' => "error", 
@@ -57,7 +56,7 @@ class RegistroController extends Controller
 		$ObjData['StrCorreoElectronico'] = $request->txtCorreo_Electronico;
 		$ObjData['StrRFC'] = $request->txtRfc;
 		Mail::send('MSTP_MAIL.registro', $ObjData, function ($message) use($ObjData) {
-			$message->from('ldavalos@esz.com.mx', 'ldavalos');
+			$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
 			$message->to($ObjData['StrCorreoElectronico'], '')->subject('Registro.');
         });
         

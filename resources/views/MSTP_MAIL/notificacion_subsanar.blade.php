@@ -71,7 +71,7 @@
 <body>
     <table class="cont-60">
         <tr>
-            <td class="text-center"><h4>MÉRIDA</h4> </td>
+            <td class="text-center"><h4>Sistema de Tramites Digitales Queretaro</h4> </td>
         </tr>
         <tr>
         <!--
@@ -134,7 +134,7 @@
     <table class="cont-60">
         <tr>
             <td class="text-center"><br />
-              <br/><b>Atentamente</b><br />Sistema de Gestión de Trámites y Servicios (sMÉRIDA)
+              <br/><b>Atentamente</b><br />Sistema de Tramites Digitales Queretaro
             </td>
         </tr>
     </table>

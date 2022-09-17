@@ -330,7 +330,7 @@ class Cls_Tramite_Servicio extends Model
     }
 
     static function TRAM_OBTENER_TRAMITES(){
-        $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->get();
+        $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
 
         return $resp;
     }

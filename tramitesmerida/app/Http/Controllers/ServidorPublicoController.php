@@ -133,7 +133,7 @@ class ServidorPublicoController extends Controller
 		$ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
 		$ObjData['StrCorreoElectronico'] = $request->txtCorreo_Electronico;
 		Mail::send('MSTP_MAIL.registro_funcionario', $ObjData, function ($message) use($ObjData) {
-			$message->from('ldavalos@esz.com.mx', 'ldavalos');
+			$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
 			$message->to($ObjData['StrCorreoElectronico'], '')->subject('Registro.');
         });
 

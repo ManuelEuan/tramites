@@ -241,5 +241,13 @@ Route::group(['prefix' => 'citas'], function () {
     Route::get('/calendario', 'CitasController@calendario');
     Route::get('/agenda', 'CitasController@agenda');
     Route::get('/listado', 'CitasController@getListado');
-    // Route::post('/descargar', 'CitasController@descargaPDFCita');
+});
+
+Route::group(['prefix' => 'giro'], function () {
+    Route::get('/find', 'GiroController@find');
+    Route::get('/get', 'GiroController@get');
+    Route::get('/', 'GiroController@index');
+    Route::post('/', 'GiroController@store');
+    Route::post('/estatus', 'GiroController@cambiaEstatus');
+    Route::put('/', 'GiroController@update');
 });

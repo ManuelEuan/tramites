@@ -218,7 +218,7 @@ class LoginController extends Controller
 						$ObjData['StrUsuario'] = $IntIdUsuario->USUA_NTIPO_PERSONA == "FISICA" ? $IntIdUsuario->USUA_CNOMBRES : $IntIdUsuario->USUA_CRAZON_SOCIAL;
 						
 						Mail::send('MSTP_MAIL.recuperar_contrasena', $ObjData, function ($message) use($ObjData) {
-							$message->from('ldavalos@esz.com.mx', 'ldavalos');
+							$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
 							$message->to($ObjData['StrCorreo'], '')->subject('Recuperación de contraseña.');
 						});
 					}else {
@@ -231,7 +231,7 @@ class LoginController extends Controller
 						$ObjData['StrUsuario'] = $IntIdUsuario->USUA_NTIPO_PERSONA == "FISICA" ? $IntIdUsuario->USUA_CNOMBRES : $IntIdUsuario->USUA_CRAZON_SOCIAL;
 						
 						Mail::send('MSTP_MAIL.recuperar_contrasena', $ObjData, function ($message) use($ObjData) {
-							$message->from('ldavalos@esz.com.mx', 'ldavalos');
+							$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
 							$message->to($ObjData['StrCorreo'], '')->subject('Recuperación de contraseña.');
 						});
 					}
@@ -245,7 +245,7 @@ class LoginController extends Controller
 					$ObjData['StrUsuario'] = $IntIdUsuario->USUA_NTIPO_PERSONA == "FISICA" ? $IntIdUsuario->USUA_CNOMBRES : $IntIdUsuario->USUA_CRAZON_SOCIAL;
 
 					Mail::send('MSTP_MAIL.recuperar_contrasena', $ObjData, function ($message) use($ObjData) {
-						$message->from('ldavalos@esz.com.mx', 'ldavalos');
+						$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
 						$message->to($ObjData['StrCorreo'], '')->subject('Recuperación de contraseña.');
 					});
 				}

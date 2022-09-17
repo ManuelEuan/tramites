@@ -9,11 +9,11 @@
     <title>Queretaro</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
      <!-- Font Awesome -->
-    <link href="{{ asset('assets/template/img/login.png') }}" rel="shortcut icon">
+     <link href="{{ asset('assets/template/img/favicon_queretaro/android-chrome.png') }}" rel="shortcut icon">
      <link href="{{ asset('assets/template/plugins/mdb/css/mdb.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/login.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/fonts.css') }}" rel="stylesheet">
-    
+
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -68,7 +68,7 @@
                                 <img src="assets/template/img/login.png" height="80px" /><br>
                                 <span class="pt-3">Trámites en Línea</span>
                             </p>
-                            
+
                             @if($errors->has('bloqueado'))
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                     {{ $errors->first('bloqueado') }}
@@ -90,7 +90,7 @@
                                 @if ($errors->has('credenciales'))
                                     <span class="error-constant">¡Error! </span> <span class="error-valid"> {{ $errors->first('credenciales') }}</span>
                                     <br/><br/>
-                                @endif    
+                                @endif
                             </div>
                             <div class="md-form">
                                 <i class="fa fa-lock prefix grey-text "></i>
@@ -104,11 +104,13 @@
                             <div class="g-recaptcha" data-sitekey="6LcDyushAAAAABST2RiXMMksc4pwjP_nwJHD_Vib"></div>
                             @if ($errors->has('recaptcha'))
                                 <span class="error-constant">¡Error! </span> <span class="error-valid"> {{ $errors->first('recaptcha') }}</span>
+
                             @endif 
                             @if (Request::has('previous'))
                                 <input type="hidden" name="previous_url" value="{{ Request::get('previous_url') }}">
                             @else
                                 <input type="hidden" name="previous_url" value="{{ URL::previous() }}">
+
                             @endif
                             <div class="text-center mt-3">
                                 <button class="btn btn-primary" type="submit">Iniciar sesión</button>
@@ -194,9 +196,9 @@
 
             $.validator.addMethod("passwordcheck", function(value) {
                 return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(value)// has a special character
-                },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."  
+                },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."
             );
-                
+
             $("#frmLogin").validate({
                 focusInvalid: false,
                 invalidHandler: function() {

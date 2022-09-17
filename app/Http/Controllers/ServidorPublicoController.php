@@ -130,7 +130,7 @@ class ServidorPublicoController extends Controller
             $ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
             $ObjData['StrCorreoElectronico'] = $request->txtCorreo_Electronico;
             Mail::send('MSTP_MAIL.registro_funcionario', $ObjData, function ($message) use($ObjData) {
-                $message->from('ldavalos@esz.com.mx', 'ldavalos');
+                $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
                 $message->to($ObjData['StrCorreoElectronico'], '')->subject('Registro.');
             });
 
@@ -167,7 +167,8 @@ class ServidorPublicoController extends Controller
 
     public function editar($id){
         $objUsuario =  Cls_Usuario::TRAM_SP_OBTENER_USUARIO($id);
-      
+        $roles      = DB::table('tram_cat_rol')->get();
+
         //Areas pertenece
         $objUsuario->lstDependenciaPertenece    = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE($id);
         $objUsuario->lstUnidadPertence          = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE($id);
@@ -179,8 +180,8 @@ class ServidorPublicoController extends Controller
         $objUsuario->lstUnidadAcceso        = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id);
         $objUsuario->lstTramiteAcceso       = Cls_Usuario::CONSULTAR_TRAMITE_USUARIO_ACCESO($id);
         $objUsuario->lstEdificioAcceso      = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id);
-  
-        return view('CAT_SERVIDOR_PUBLICO.editar', compact('objUsuario'));
+
+        return view('CAT_SERVIDOR_PUBLICO.editar', compact('objUsuario','roles'));
     }
 
     public function modificar(Request $request){

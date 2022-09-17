@@ -32,36 +32,7 @@
                             </select>
                         </div>
                     </div>
-                    {{-- <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="cmbModalidad">Modalidad</label>
-                            <select class="combobox form-control" name="cmbModalidad" id="cmbModalidad">
-                                <option value="Todos">Seleccione</option>
-                                <option value="Presencial">Presencial</option>
-                                <option value="Línea">Línea</option>
-                                <option value="Teléfono">Teléfono</option>
-                            </select>
-                        </div>
-                    </div> --}}
                 </div>
-                {{-- <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="cmbClasificacion">Clasificación</label>
-                            <select class="combobox form-control" name="cmbClasificacion" id="cmbClasificacion">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="cmbAudiencia">Audiencia</label>
-                            <select class="combobox form-control" name="cmbAudiencia" id="cmbAudiencia">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-                </div> --}}
             </form>
             <div class="row justify-content-between">
                 <div class="col-md-6">
@@ -177,16 +148,13 @@
                 type: "GET",
                 success: function(data) {
 
-                    console.log("Data");
-                    console.log(data);
-
                     //Limpiamos el select de clasificacion
                     cmbClasificacion.find('option').remove();
                     //Opcion por defecto de select clasificacion
                     cmbClasificacion.append('<option value="0" selected>Seleccione</option>');
                     //Llenamos select de clasificacion
-                    $(data.clasificacion).each(function(i, v) {
-                        cmbClasificacion.append('<option value="' + v.id + '">' + v.name + '</option>');
+                    $(data.clasificacion).each(function(value) {
+                        cmbClasificacion.append('<option value="' + value.iId + '">' + value.name + '</option>');
                     })
 
 
@@ -195,29 +163,20 @@
                     //Opcion por defecto de select audiencia
                     cmbAudiencia.append('<option selected>Seleccione</option>');
                     //Llenamos select de audiencia
-                    $(data.audiencia).each(function(i, v) {
-                        cmbAudiencia.append('<option value="' + v.id + '">' + v.name + '</option>');
+                    $(data.audiencia).each(function(value) {
+                        cmbAudiencia.append('<option value="' + value.iId + '">' + value.name + '</option>');
                     })
 
 
                     //Limpiamos el select de dependencias
                     cmbDependenciaEntidad.find('option').remove();
                     //Opcion por defecto de select dependencias
-                    cmbDependenciaEntidad.append('<option selected>Seleccione</option>');
-                    //Llenamos select de dependencias
-                    $(data.dependencias).each(function(i, v) {
-                        cmbDependenciaEntidad.append('<option value="' + v.id + '">' + v.name + '</option>');
+                    cmbDependenciaEntidad.append('<option value="0" selected>Seleccione</option>');
+                    $(data.dependencias).each(function(i,value) {
+                        cmbDependenciaEntidad.append(`<option value="${value.id}"> ${value.name} </option>`);
                     })
-
-
                 },
                 error: function(data) {
-                    Swal.fire({
-                        icon: data.status,
-                        title: '',
-                        text: data.message,
-                        footer: ''
-                    });
                 }
             });
         }
@@ -262,10 +221,9 @@
 
     //Funcion para obtener tramites
     function TRAM_AJX_CONSULTARTRAMITES(page) {
-
         var filtro = {
             "StrTexto": $('#txtPalabraClave').val(),
-            "IntDependencia": $('#cmbDependenciaEntidad').val() > 0 ? $('#cmbDependenciaEntidad').val() : 0,
+            "IntDependencia": $('#cmbDependenciaEntidad').val(),
             "StrModalidad": "",
             "IntClasificacion": 0,
             "StrAudiencia": "",
@@ -275,9 +233,6 @@
             "StrOrdenDir": "",
             "IntUsuarioId": 3,
         };
-
-        console.log("Filtros");
-        console.log(filtro);
 
         $.ajax({
             data: filtro,
