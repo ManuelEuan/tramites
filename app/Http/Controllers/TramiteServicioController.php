@@ -864,7 +864,11 @@ class TramiteServicioController extends Controller
                 ->select('*')
                 ->first()->FORM_CNOMBRE;
             $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
-            $resp->USRE_NESTATUS = 0;
+            if($value == null){
+                $resp->USRE_NESTATUS = 9;
+            }else{
+                $resp->USRE_NESTATUS = 0;
+            }
             $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
             $resp->save();
         }
@@ -887,7 +891,11 @@ class TramiteServicioController extends Controller
                 ->first()->FORM_CNOMBRE;
             $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
             $resp->USRE_NIDPREGUNTARESPUESTA = $arr[2];
-            $resp->USRE_NESTATUS = 0;
+            if($value == null){
+                $resp->USRE_NESTATUS = 9;
+            }else{
+                $resp->USRE_NESTATUS = 0;
+            }
             $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
             $resp->save();
         }
