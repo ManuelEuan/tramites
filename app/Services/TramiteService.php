@@ -85,9 +85,16 @@ class TramiteService
                     ->join('administrativeunits as a', 'p.IdAdministrativeUnit', '=', 'a.Id')
                     ->join('dependencies as d', 'a.IdDependency', '=', 'd.Id')
                     ->join('instruments as i', 'p.IdInstrument', '=', 'i.Id')
+                    ->join('procedurecommunities as prc', 'p.Id', '=', 'prc.ProcedureId')
+                    ->join('communities as c', 'prc.CommunityId', '=', 'c.Id')
+                    ->join('procedurecategories as prcat', 'p.Id', '=', 'prcat.ProcedureId')
+                    ->join('categories as cat', 'prcat.CategoryId', '=', 'cat.Id')
+                    ->join('requesttypes as retyp', 'p.IdRequestType', '=', 'retyp.Id')
+                    ->join('targettypes as tartyp', 'p.IdTargetType', '=', 'tartyp.Id')
                     ->leftJoin('daysrange as v','p.idVigencyRange', '=', 'v.id')
                     ->select('p.*', 'p.iId as remtisId','d.name as nameDependencia', 'p.CitizenDescription' ,'d.iId as dependenciaId' 
-                    ,'i.Name as nameInstrumento', 'v.Name as tipoVigencia')
+                    ,'i.Name as nameInstrumento', 'v.Name as tipoVigencia', 'c.Name as community', 'cat.Name as categories'
+                    , 'retyp.Name as requesttypes', 'tartyp.Name as targettypes')
                     ->where('p.iId', $tramiteID)->first();
         return $query;
     }
@@ -130,7 +137,7 @@ class TramiteService
                                             ->orWhere("pc.property", "like","%Tienda%");
                                 })->get();
 
-        return ["documentos" => $documentos, "oficinas" => $oficinas, "horario" => $horarios, "funcionarios" => $funcionarios, "lugaresPago" => $lugaresPago ];
+        return ["documentos" => $documentos, "oficinas" => $oficinas, "horario" => $horarios, "funcionarios" => $funcionarios, "lugaresPago" => $lugaresPago];
     }
 
     /**
@@ -204,12 +211,6 @@ class TramiteService
                 "descripcion"   => "$".number_format(round($monto, 2, PHP_ROUND_HALF_UP), 2, ".", ""),
                 "opciones"      => [],
                 "documentos"    => []
-            ],
-            [
-                "titulo"        => "Oficinas donde se puede realizar el pago:",
-                "descripcion"   =>  $lugares,
-                "opciones"      => [],
-                "documentos"    => []
             ]
         ];
 
@@ -242,35 +243,41 @@ class TramiteService
 
         $vigencia   = $objTramite->VigencyNumber == 0 || is_null($objTramite->VigencyNumber) ? "" : $objTramite->VigencyNumber;
         $rango      = $objTramite->VigencyNumber == 1 ? substr($objTramite->tipoVigencia, 0, -1)  : $objTramite->tipoVigencia;
+        
         $tramite['informacion_general'] = [
             [
+                "titulo"        => "Homoclave:",
+                "descripcion"   => $objTramite->Key,
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Palabras clave:",
+                "descripcion"   => $objTramite->KeyWords,
+                "opciones"      => [],
+            ],
+            [
+                "titulo"        => "Tipo de trámite o servicio:",
+                "descripcion"   => $objTramite->requesttypes,
+                "opciones"      => [],
+            ],
+            [
                 "titulo"        => "Usuario a quien está dirigido el trámite:",
-                "descripcion"   => "dirigidoA", //$objTramite['dirigidoA'] ?? "",
+                "descripcion"   => $objTramite->community, //"dirigidoA", //$objTramite['dirigidoA'] ?? "",
                 "opciones"      => [],
             ],
             [
-                "titulo"        => "Tipo de persona:",
-                "descripcion"   => "tipoPersonas", //$tipoPersonas,
+                "titulo"        => "Quien puede realizar el trámite:",
+                "descripcion"   => $objTramite->targettypes, //"dirigidoA", //$objTramite['dirigidoA'] ?? "",
                 "opciones"      => [],
             ],
             [
-                "titulo"        => "Tiempo hábil promedio de resolución:",
-                "descripcion"   =>  $vigencia." ".$rango,
-                "opciones"      => [],
-            ],
-            [
-                "titulo"        => "Audiencia",
-                "descripcion"   => "",
+                "titulo"        => "Categoria:",
+                "descripcion"   => $objTramite->categories,
                 "opciones"      => [],
             ],
             [
                 "titulo"        => "Beneficio del usuario:",
                 "descripcion"   => $objTramite->Benefit,
-                "opciones"      => [],
-            ],
-            [
-                "titulo"        => "Derechos del usuario:",
-                "descripcion"   => "",
                 "opciones"      => [],
             ]
         ];
@@ -301,6 +308,25 @@ class TramiteService
                 "documentos"    => []
             ]
         ];
+
+        $tramite['fundamento_legal'] = [
+            [
+                "titulo" => "Nombre del Fundamento Jurídico", 
+                "opciones" => [], 
+                "adicional" => [], 
+                "descripcion" => $objTramite->LegalBasisOriginName
+            ],
+            [
+                "titulo" => "Artículo", 
+                "opciones" => [], 
+                "adicional" => [], 
+                "descripcion" => $objTramite->LegalBasisOriginArticle
+            ],
+           
+        ];
+       
+
+        
 
         return $tramite;
     }
