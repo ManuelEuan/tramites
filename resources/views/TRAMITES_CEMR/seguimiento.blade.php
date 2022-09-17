@@ -715,17 +715,15 @@
                                 <div class="col-md-12">
                                     <div class="col-md-12 mt-5 contenedorBtn">
                                         <div class="text-right botones">
-                                           
+                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
                                             <button id="btnFormularioIncompleto" onclick="TRAM_FN_FORMULARIO_INCOMPLETO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-warning border btnLetras">Notificar información incompleta</button>
                                             <button id="btnFormularioRechazar" onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Notificar rechazo de trámite</button>
                                             <button id="btnFormularioAprobar" onclick="TRAM_FN_APROBAR_FORMULARIO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar documentación</button>
-                                            
+                                            @else
                                             <button  class="btn btn-warning border btnLetras" disabled title="No disponible">Notificar información incompleta</button>
                                             <button class="btn btn-danger border btnLetras" disabled title="No disponible">Notificar rechazo de trámite</button>
                                             <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar documentación</button>
-                                            
-            
-                                           
+                                            @endif       
                                             
                                         </div>
                                     </div>
@@ -2149,7 +2147,7 @@
                     return;
                 }
                 console.log(seccion_formulario)
-                /*$.ajax({
+                $.ajax({
                     data: seccion_formulario,
                     dataType: 'json',
                     url: '/tramite_servicio_cemr/seccion_formulario_incompleta',
@@ -2204,7 +2202,7 @@
                         var ruta = "{{route('seguimiento_tramite_servidor', ['id' => request()->route('id')  ])}}";
                         load_page_seguimiento(ruta);
                     }
-                });*/
+                });
             }
         });
     }
