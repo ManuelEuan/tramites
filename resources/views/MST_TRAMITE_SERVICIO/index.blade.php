@@ -135,54 +135,53 @@
         var host = "http://vucapacita.chihuahua.gob.mx";
 
         getTramites()
-
-        function TRAM_AJX_CONSULTAR_FILTRO() {
-            var cmbClasificacion = $("#cmbClasificacion");
-            var cmbAudiencia = $("#cmbAudiencia");
-            var cmbDependenciaEntidad = $("#cmbDependenciaEntidad");
-
-            $.ajax({
-                //data: $('#frmForm').serialize(),
-                //dataType: 'json',
-                url: "/gestores/consultar_filtro",
-                type: "GET",
-                success: function(data) {
-
-                    //Limpiamos el select de clasificacion
-                    cmbClasificacion.find('option').remove();
-                    //Opcion por defecto de select clasificacion
-                    cmbClasificacion.append('<option value="0" selected>Seleccione</option>');
-                    //Llenamos select de clasificacion
-                    $(data.clasificacion).each(function(value) {
-                        cmbClasificacion.append('<option value="' + value.iId + '">' + value.name + '</option>');
-                    })
-
-
-                    //Limpiamos el select de audiencia
-                    cmbAudiencia.find('option').remove();
-                    //Opcion por defecto de select audiencia
-                    cmbAudiencia.append('<option selected>Seleccione</option>');
-                    //Llenamos select de audiencia
-                    $(data.audiencia).each(function(value) {
-                        cmbAudiencia.append('<option value="' + value.iId + '">' + value.name + '</option>');
-                    })
-
-
-                    //Limpiamos el select de dependencias
-                    cmbDependenciaEntidad.find('option').remove();
-                    //Opcion por defecto de select dependencias
-                    cmbDependenciaEntidad.append('<option value="0" selected>Seleccione</option>');
-                    $(data.dependencias).each(function(i,value) {
-                        cmbDependenciaEntidad.append(`<option value="${value.id}"> ${value.name} </option>`);
-                    })
-                },
-                error: function(data) {
-                }
-            });
-        }
-
         TRAM_AJX_CONSULTAR_FILTRO();
     });
+
+    function TRAM_AJX_CONSULTAR_FILTRO() {
+        var cmbClasificacion = $("#cmbClasificacion");
+        var cmbAudiencia = $("#cmbAudiencia");
+        var cmbDependenciaEntidad = $("#cmbDependenciaEntidad");
+
+        $.ajax({
+            //data: $('#frmForm').serialize(),
+            //dataType: 'json',
+            url: "/gestores/consultar_filtro",
+            type: "GET",
+            success: function(data) {
+
+                //Limpiamos el select de clasificacion
+                cmbClasificacion.find('option').remove();
+                //Opcion por defecto de select clasificacion
+                cmbClasificacion.append('<option value="0" selected>Seleccione</option>');
+                //Llenamos select de clasificacion
+                $(data.clasificacion).each(function(value) {
+                    cmbClasificacion.append('<option value="' + value.iId + '">' + value.name + '</option>');
+                })
+
+
+                //Limpiamos el select de audiencia
+                cmbAudiencia.find('option').remove();
+                //Opcion por defecto de select audiencia
+                cmbAudiencia.append('<option selected>Seleccione</option>');
+                //Llenamos select de audiencia
+                $(data.audiencia).each(function(value) {
+                    cmbAudiencia.append('<option value="' + value.iId + '">' + value.name + '</option>');
+                })
+
+
+                //Limpiamos el select de dependencias
+                cmbDependenciaEntidad.find('option').remove();
+                //Opcion por defecto de select dependencias
+                cmbDependenciaEntidad.append('<option value="0" selected>Seleccione</option>');
+                $(data.dependencias).each(function(i,value) {
+                    cmbDependenciaEntidad.append(`<option value="${value.id}"> ${value.name} </option>`);
+                })
+            },
+            error: function(data) {
+            }
+        });
+    }
 
     //Cambiar páginado
     $(document).on('click', '.pagination a', function(e) {
@@ -206,6 +205,8 @@
         e.preventDefault();
         $('#txtPalabraClave').val('');
         $('#cmbDependenciaEntidad').prop('selectedIndex', 0);
+        $('#loading').show();
+        TRAM_AJX_CONSULTARTRAMITES(1);
         // $('#cmbModalidad').prop('selectedIndex', 0);
         // $('#cmbClasificacion').prop('selectedIndex', 0);
         // $('#cmbAudiencia').prop('selectedIndex', 0);

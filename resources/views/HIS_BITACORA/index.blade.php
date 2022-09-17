@@ -13,6 +13,9 @@
     div.dt-buttons {
         float: left;
     }
+    .buttons-html5{
+        background-color: #01b3e8 !important;
+    }
 </style>
     <div class="container-fluid">
         <br/>

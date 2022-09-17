@@ -80,7 +80,7 @@
                                 <div class="col-md-12 btnContenedor">
                                     <button class="btn btn-primary bntGeneral btnLetras" type="button" onclick="buscar()">Buscar</button>
                                     <button style="display: none;" id='btnModal' type="button" data-toggle="modal" data-target="#exampleModalCenter"></button>
-                                    <button class="btn btn-warning bntGeneral btnNaranja btnLimpiar btnLetras" type="button" onclick="limpiaCampos('btnLimpiar')">Limpiar Filtros</button>
+                                    <button class="btn btn-warning bntGeneral btnLimpiar btnLetras" type="button" onclick="limpiaCampos('btnLimpiar')">Limpiar Filtros</button>
                                 </div>
                             </div>
                         </form>
@@ -911,21 +911,22 @@
         min-width: 120px;
         margin-right: 30px;
     }
+    
     .btnLimpiar{
         float: right;
-    }
-    .btnNaranja {
-        background-color: #e0a800;
-        border-color: #e0a800;
+        background-color: #01b3e8 !important;;
+        border-color: #01b3e8 !important;;
         color: #ffffff;
         margin-left: 20px;
     }
-    .btnNaranja:hover{
-        background-color: #ffa000;
-        border-color: #ffa000;
+
+    .btnLimpiar:hover{
+        background-color: #33B5FF !important;;
+        border-color: #33B5FF !important;;
         color: #ffffff;
         margin-left: 20px;
     }
+   
     .btnModal {
         min-width: 115px;
         max-height: 37px;
@@ -1191,6 +1192,10 @@
     .container-1 input#search:hover, .container-1 input#search:focus, .container-1 input#search:active{
         outline:none;
         background: #ffffff;
+    }
+
+    .buttons-html5{
+        background-color: #01b3e8 !important;
     }
 
 </style>

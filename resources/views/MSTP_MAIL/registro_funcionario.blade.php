@@ -86,7 +86,7 @@
             <td class="text-left">
                 <br />
                 <p>
-                    Le informamos que se le ha generado un perfil para acceder al Sistema de Tramites Digitales Queretaro.
+                    Le informamos que se le ha generado un perfil para acceder al Sistema de Tramites Digitales Querétaro.
                     Al respecto, los datos registrados son los que se muestran a continuación:
 
                 </p>
@@ -127,7 +127,7 @@
             <td class="text-center"><a href="{{$StrHost}}">{{$StrHost}}</a></td>
         </tr>
         <tr>
-            <td class="text-center"><br /><b>Atentamente</b><br />Sistema de Tramites Digitales Queretaro</td>
+            <td class="text-center"><br /><b>Atentamente</b><br />Sistema de Tramites Digitales Querétaro</td>
         </tr>
     </table>
 </body>
