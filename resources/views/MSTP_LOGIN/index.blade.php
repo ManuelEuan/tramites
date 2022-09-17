@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>Queretaro</title>
+    <title>Querétaro</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
      <!-- Font Awesome -->
      <link href="{{ asset('assets/template/img/favicon_queretaro/android-chrome.png') }}" rel="shortcut icon">
