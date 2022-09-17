@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -64,41 +66,45 @@ Route::post('/rol/eliminar', array('uses' => 'RolController@eliminar'));
 
 Route::get('/permisorol/consultar/{id}', array('uses' => 'PermisoRolController@consultar'));
 Route::get('/categoria_permiso/consultar/', array('uses' => 'CategoriaPermisoController@consultar'));
-
-Route::get('/tramite_servicio', array('uses' => 'TramiteServicioController@index'))->middleware("permiso");
-Route::post('/tramite_servicio/getTramites', array('uses' => 'TramiteServicioController@getTramites'));
-Route::post('/tramite_servicio/consultar', array('uses' => 'TramiteServicioController@consultar'))->name('consultar_tramites');;
-Route::get('/tramite_servicio/obtener_dependencias_unidad', array('uses' => 'TramiteServicioController@obtener_dependencias_unidad'));
-Route::get('/tramite_servicio/obtener_modalidad', array('uses' => 'TramiteServicioController@obtener_modalidad'));
-Route::get('/tramite_servicio/obtener_clasificacion', array('uses' => 'TramiteServicioController@obtener_clasificacion'));
-Route::get('/tramite_servicio/obtener_audiencia', array('uses' => 'TramiteServicioController@obtener_audiencia'));
-Route::get('/tramite_servicio/detalle_tramite/{id}', array('uses' => 'TramiteServicioController@obtener_detalle_tramite'))->name('detalle_tramite');
-Route::get('/tramite_servicio/iniciar_tramite_servicio/{id}', array('uses' => 'TramiteServicioController@iniciar_tramite_servicio'));
-Route::get('/tramite_servicio/obtener_municipio/{id}', array('uses' => 'TramiteServicioController@obtener_municipio'))->name('//');
-Route::get('/tramite_servicio/obtener_modulo/{id}/{idaccede}', array('uses' => 'TramiteServicioController@obtener_modulo'))->name('iniciar_tramite_obtener_modulo');
-Route::get('/tramite_servicio/obtener_modulo_detalle/{id}', array('uses' => 'TramiteServicioController@obtener_modulo_detalle'))->name('obtener_modulo_detalle');
-Route::post('/tramite_servicio/guardar', array('uses' => 'TramiteServicioController@guardar'))->name('guardar_tramites');
-Route::post('/tramite_servicio/enviar', array('uses' => 'TramiteServicioController@enviar'))->name('enviar_tramites');
-Route::post('/tramite_servicio/subir_documento', array('uses' => 'TramiteServicioController@subir_documento'))->name('subir_documento');
-Route::post('/tramite_servicio/enviar_documentos', array('uses' => 'TramiteServicioController@enviar_documentos'))->name('enviar_documentos');
-Route::post('/tramite_servicio/reenviar', array('uses' => 'TramiteServicioController@reenviar'))->name('reenviar_tramites');
-Route::get('/tramite_servicio/consultar_detalle_notificacion/{id}', array('uses' => 'TramiteServicioController@consultar_detalle_notificacion'))->name('consultar_detalle_notificacion');
-Route::get('/tramite_servicio/atencion_notificacion_seguimiento/{id}/{noti}', array('uses' => 'TramiteServicioController@atencion_notificacion_seguimiento'))->name('atencion_notificacion_seguimiento');
-Route::post('/tramite_servicio/enviar_encuesta', array('uses' => 'TramiteServicioController@enviar_encuesta'))->name('enviar_encuesta');
 Route::get('/download_tramite_detalle/{id}', 'TramiteServicioController@download_tramite_detalle')->name('download_tramite_detalle');
 Route::get('/consultar_pago/{id}', 'TramiteServicioController@consultar_pago')->name('consultar_pago');
 
+Route::group(['prefix' => 'tramite_servicio'], function () {
+    Route::get('/', array('uses' => 'TramiteServicioController@index'))->middleware("permiso");
+    Route::post('/getTramites', 'TramiteServicioController@getTramites');
+    Route::post('/consultar', 'TramiteServicioController@consultar')->name('consultar_tramites');;
+    Route::get('/obtener_dependencias_unidad', 'TramiteServicioController@obtener_dependencias_unidad');
+    Route::get('/obtener_modalidad', 'TramiteServicioController@obtener_modalidad');
+    Route::get('/obtener_clasificacion', 'TramiteServicioController@obtener_clasificacion');
+    Route::get('/obtener_audiencia', 'TramiteServicioController@obtener_audiencia');
+    Route::get('/detalle_tramite/{id}','TramiteServicioController@obtener_detalle_tramite')->name('detalle_tramite');
+    Route::get('/iniciar_tramite_servicio/{id}','TramiteServicioController@iniciar_tramite_servicio');
+    Route::get('/obtener_municipio/{id}', 'TramiteServicioController@obtener_municipio')->name('//');
+    Route::get('/obtener_modulo/{id}/{idaccede}', 'TramiteServicioController@obtener_modulo')->name('iniciar_tramite_obtener_modulo');
+    Route::get('/obtener_modulo_detalle/{id}', 'TramiteServicioController@obtener_modulo_detalle')->name('obtener_modulo_detalle');
+    Route::post('/guardar', 'TramiteServicioController@guardar')->name('guardar_tramites');
+    Route::post('/enviar','TramiteServicioController@enviar')->name('enviar_tramites');
+    Route::post('/subir_documento','TramiteServicioController@subir_documento')->name('subir_documento');
+    Route::post('/enviar_documentos', 'TramiteServicioController@enviar_documentos')->name('enviar_documentos');
+    Route::post('/reenviar', 'TramiteServicioController@reenviar')->name('reenviar_tramites');
+    Route::get('/consultar_detalle_notificacion/{id}', 'TramiteServicioController@consultar_detalle_notificacion')->name('consultar_detalle_notificacion');
+    Route::get('/atencion_notificacion_seguimiento/{id}/{noti}', 'TramiteServicioController@atencion_notificacion_seguimiento')->name('atencion_notificacion_seguimiento');
+    Route::post('/enviar_encuesta', 'TramiteServicioController@enviar_encuesta')->name('enviar_encuesta');
+    Route::get('/seguimiento_tramite/{id}', 'TramiteServicioController@seguimiento_tramite_servicio')->name('seguimiento_tramite');
+    Route::put('/ubicacion_ventanilla', 'TramiteServicioController@ubicacion_ventanilla_sin_cita')->name('ubicacion_ventanilla_sin_cita');
+});
 
-Route::get('/seguimiento_solicitud', array('uses' => 'SeguimientoSolicitudController@index'))->middleware("permiso");
-Route::post('/seguimiento/consultar', array('uses' => 'SeguimientoSolicitudController@consultar'));
-Route::get('/seguimiento/obtener_dependencias_unidad', array('uses' => 'SeguimientoSolicitudController@obtener_dependencias_unidad'));
-Route::get('/seguimiento/detalle_seguimiento/{id}', array('uses' => 'SeguimientoSolicitudController@obtener_detalle_seguimiento'))->name('detalle_seguimiento');
-Route::get('/seguimiento/detalle_notificacion/{id}', array('uses' => 'SeguimientoSolicitudController@detalle_notificacion'))->name("detalle_notificacion");
-Route::get('/seguimiento/consultar_ventanilla/{id}', array('uses' => 'SeguimientoSolicitudController@consultar_ventanilla'))->name("consultar_ventanilla");
-Route::get('/seguimiento/consultar_cita/{id}', array('uses' => 'SeguimientoSolicitudController@consultar_cita'))->name("consultar_cita");
-Route::get('/seguimiento/conexion', array('uses' => 'SeguimientoSolicitudController@conexion'))->name("conexion");
-Route::get('/tramite_servicio/seguimiento_tramite/{id}', array('uses' => 'TramiteServicioController@seguimiento_tramite_servicio'))->name('seguimiento_tramite');
-Route::put('/tramite_servicio/ubicacion_ventanilla', array('uses' => 'TramiteServicioController@ubicacion_ventanilla_sin_cita'))->name('ubicacion_ventanilla_sin_cita');
+
+Route::get('/seguimiento_solicitud', 'SeguimientoSolicitudController@index')->middleware("permiso");
+Route::group(['prefix' => 'seguimiento'], function () {
+    Route::post('/consultar', 'SeguimientoSolicitudController@consultar');
+    Route::get('/obtener_dependencias_unidad', 'SeguimientoSolicitudController@obtener_dependencias_unidad');
+    Route::get('/detalle_seguimiento/{id}', 'SeguimientoSolicitudController@obtener_detalle_seguimiento')->name('detalle_seguimiento');
+    Route::get('/detalle_notificacion/{id}', 'SeguimientoSolicitudController@detalle_notificacion')->name("detalle_notificacion");
+    Route::get('/consultar_ventanilla/{id}', 'SeguimientoSolicitudController@consultar_ventanilla')->name("consultar_ventanilla");
+    Route::get('/consultar_cita/{id}', 'SeguimientoSolicitudController@consultar_cita')->name("consultar_cita");
+    Route::get('/conexion', 'SeguimientoSolicitudController@conexion')->name("conexion");
+});
 
 Route::group(['prefix' => 'tramite_servicio_cemr'], function () {
     Route::get('/', 'TramitesController@listado');

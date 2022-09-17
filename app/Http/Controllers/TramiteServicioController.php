@@ -47,8 +47,7 @@ class TramiteServicioController extends Controller
     /**
      * Construct Gestor
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth');
         $this->tramiteService   = new TramiteService();
         $this->gestorService    = new GestorService();
@@ -80,9 +79,10 @@ class TramiteServicioController extends Controller
 
     public function consultar(Request $request) {
         $objDependencia             = $this->tramiteService->getRetys('dependencies',$request->IntDependencia);
+        $dependenciaID              = is_null($objDependencia) ? 0 : $objDependencia->iId;
         $tramites                   = new Cls_Tramite_Servicio();
         $tramites->StrTexto         = $request->ajax() ? $request->StrTexto : "";
-        $tramites->IntDependencia   = $request->ajax() ? $objDependencia->iId : 0;
+        $tramites->IntDependencia   = $request->ajax() ? $dependenciaID : 0;
         $tramites->StrModalidad     = $request->ajax() ? $request->IntModalidad : "";
         $tramites->IntClasificacion = $request->ajax() ? $request->IntClasificacion  :0;
         $tramites->StrAudiencia     = $request->ajax() ? $request->StrAudiencia : 0;
@@ -90,7 +90,7 @@ class TramiteServicioController extends Controller
         $tramites->IntCantidadRegistros = $request->ajax() ? $request->IntCantidadRegistros : 10;
         $tramites->StrOrdenColumna  = $request->ajax() ? $request->StrOrdenColumna : "";
         $tramites->StrOrdenDir      = $request->ajax() ? $request->StrOrdenDir : "";
-        $tramites->IntUsuarioId     = 3; //Auth::user()->USUA_NIDUSUARIO;
+        $tramites->IntUsuarioId     = 3;//Auth::user()->USUA_NIDUSUARIO;
         $registros                  = $tramites->TRAM_SP_CONSULTAR_TRAMITE_PUBLICO();
         $IntPaginaActual            = (int)$registros['pagination'][0]->PaginaActual;
         $IntTotalPaginas            = (int)$registros['pagination'][0]->TotalPaginas;
