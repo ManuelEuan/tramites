@@ -77,7 +77,7 @@
 <body>
     <table class="cont-60">
         <tr>
-            <td class="text-center"><h4> Tramites Digitales Querétaro </h4> </td>
+            <td class="text-center"><h4> Trámites Digitales Querétaro </h4> </td>
         </tr>
         <tr>
         <!--
@@ -95,7 +95,7 @@
                 <b>Estimado(a) {{$StrUsuario}}</b>
               </p>
                 <p>
-                    Recientemente se solicitó el restablecimiento de su contraseña para acceder al Sistema de Tramites Digitales Querétaro.
+                    Recientemente se solicitó el restablecimiento de su contraseña para acceder al Sistema de Trámites Digitales Querétaro.
                 </p>
             </td>
         </tr>
@@ -114,7 +114,7 @@
     <table class="cont-60">
         <tr>
             <td class="text-center" style="text-align:center">
-                <a href="{{$StrUrl}}" class="recuperarbtn" style="border:15px solid #23468c;background-color:#23468c;color:#FFF;font-size:14px; font-family:Arial;text-decoration:none">Recuperar contraseña</a>  
+                <a href="{{$StrUrl}}" class="recuperarbtn" style="border:15px solid #23468c;background-color:#23468c;color:#FFF;font-size:14px; font-family:Arial;text-decoration:none" target="_blank">Recuperar contraseña</a>  
             </td>
         </tr>
         <tr>
@@ -127,7 +127,7 @@
         </tr>
         <tr>
             <td class="text-center"><br />
-              <br/><b>Atentamente</b><br />Sistema de Tramites Digitales Querétaro
+              <br/><b>Atentamente</b><br />Sistema de Trámites Digitales Querétaro
             </td>
         </tr>
     </table>
