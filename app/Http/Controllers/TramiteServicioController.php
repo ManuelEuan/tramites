@@ -1274,7 +1274,8 @@ class TramiteServicioController extends Controller
         //Editar bandera del tramite
         $tram = Cls_Usuario_Tramite::where('USTR_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)
             ->update([
-                'USTR_NBANDERA_PROCESO' => 2
+                'USTR_NBANDERA_PROCESO' => 2,
+                'USTR_NESTATUS' => 2
             ]);
 
         //Insertar bitacora

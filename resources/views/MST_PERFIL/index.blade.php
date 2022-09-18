@@ -1141,8 +1141,8 @@
 
                                 <!-- Div Resolutivos -->
                                 <div class="tab-pane fade" id="resolutivos" role="tabpanel" aria-labelledby="resolutivos-tab">
-
-                                    <table class="table table-striped" id="tbl_resolutivos">
+                                    <br>
+                                    <table class="table table-striped" id="tbl_resolutivos" style="width: 100%">
                                         <thead>
                                             <tr>
                                                 <th scope="col">OTORGADO EL</th>
@@ -1153,27 +1153,6 @@
                                                 <th scope="col">ESTATUS</th> -->
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <!-- <tr>
-                                                            <th>30/09/21</th>
-                                                            <td><i class="fa-solid fa-file-pdf"
-                                                                    style="color: red;"></i>LICENCIA DE FUN...</td>
-                                                            <td>1.3 MB</td>
-                                                            <td>30/09/21</td>
-                                                            <td style="color: orange;">VENCIDO <i
-                                                                    class="fa-solid fa-triangle-exclamation"></i></td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <th>30/09/21</th>
-                                                            <td><i class="fa-solid fa-file-pdf"
-                                                                    style="color: red;"></i>LICENCIA DE CONS...</td>
-                                                            <td>78 KB</td>
-                                                            <td>30/09/21</td>
-                                                            <td style="color: green;">VIGENTE <i
-                                                                    class="fa-solid fa-circle-check"></i></td>
-                                                        </tr> -->
-                                        </tbody>
                                     </table>
 
                                 </div>

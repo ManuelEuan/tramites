@@ -1242,6 +1242,7 @@
                 type: "GET",
                 success: function(data) {
                     var tramite = data.tramite[0];
+                    // console.log(data);
                     objTramite = data.tramite[0];
                     list_secciones_estatus = data.configuracion.secciones_estatus;
 
@@ -1259,7 +1260,12 @@
                         $("#btnRevision").text("Ir a revisón");
                         $("#btnRevision").prop("disabled", false);
                     }
+                    if(tramite.USTR_NESTATUS == 4){
+                        $("#btnFormularioIncompleto").attr("disabled", true);
+                        $("#btnFormularioRechazar").attr("disabled", true);
+                        $("#btnFormularioAprobar").attr("disabled", true);
 
+                    }
                     var secciones_formularios = data.configuracion.formularios[0].secciones;
 
                     //Guardamos secciones y formulario con sus secciones
