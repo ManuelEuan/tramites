@@ -149,7 +149,8 @@
                                                                 $estatus_tab = 0;
                                                                 $total_sec_form++;
                                                                 $estatusGuardado = 0;
-                                                                $check = 'asd';
+                                                                $check = 0;
+                                                                $tipo = '';
                                                                 ?>
                                                                 @foreach ($sec->preguntas as $preg)
                                                                     @if ($preg->estatus == 1)
@@ -159,6 +160,16 @@
 
                                                                     @if ($preg->estatus == 9)
                                                                         <?php $estatusGuardado++; ?>
+                                                                    @endif
+                                                                    @if($preg->FORM_NID == 571)
+                                                                        @if($preg->FORM_CTIPORESPUESTA == 'multiple')
+                                                                            <?php $tipo = 'multiple' ?>
+                                                                            @foreach($preg->respuestas as $resp)
+                                                                                @if($resp->FORM_CVALOR_RESPUESTA == 'checked')
+                                                                                    <?php $check++; ?>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        @endif
                                                                     @endif
                                                                 @endforeach
                                                                 @if ($_cont == 0)
@@ -208,6 +219,7 @@
                                                                                             src="{{ asset('assets/template/img/error.png') }}"
                                                                                             width="20" height="20"></span>
                                                                                 @endif
+                                                                                
                                                                             </span>
                                                                         </div>
                                                                     @else
@@ -216,20 +228,32 @@
                                                                             data-seccion="{{ $sec->FORM_NID }}">
                                                                             <span>{{ $sec->FORM_CNOMBRE }}</span>
                                                                             <span id="form_seccion_{{ $sec->FORM_NID }}">
-                                                                                @if ($estatus_tab > 0)
-                                                                                    <span><img
+                                                                                @if($tipo != '' && $tipo == 'multiple')
+                                                                                    @if($check <= 0)
+                                                                                        <span><img
                                                                                             src="{{ asset('assets/template/img/error.png') }}"
                                                                                             width="20" height="20"></span>
-                                                                                @endif
-                                                                                @if($estatusGuardado <= 0)
-                                                                                    <span><img
+                                                                                    @else
+                                                                                        <span><img
                                                                                             src="{{ asset('assets/template/img/check.png') }}"
                                                                                             width="20" height="20"></span>
-                                                                                @endif
-                                                                                @if($estatusGuardado > 0)
-                                                                                    <span><img
-                                                                                            src="{{ asset('assets/template/img/error.png') }}"
-                                                                                            width="20" height="20"></span>
+                                                                                    @endif
+                                                                                @else
+                                                                                    @if ($estatus_tab > 0)
+                                                                                        <span><img
+                                                                                                src="{{ asset('assets/template/img/error.png') }}"
+                                                                                                width="20" height="20"></span>
+                                                                                    @endif
+                                                                                    @if($estatusGuardado <= 0)
+                                                                                        <span><img
+                                                                                                src="{{ asset('assets/template/img/check.png') }}"
+                                                                                                width="20" height="20"></span>
+                                                                                    @endif
+                                                                                    @if($estatusGuardado > 0)
+                                                                                        <span><img
+                                                                                                src="{{ asset('assets/template/img/error.png') }}"
+                                                                                                width="20" height="20"></span>
+                                                                                    @endif
                                                                                 @endif
                                                                             </span>
                                                                         </div>
@@ -344,10 +368,12 @@
                                                                                                     {{ $resp->FORM_CVALOR_RESPUESTA }}
                                                                                                     {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
                                                                                                     required>
-                                                                                                <label class="custom-control-label"
-                                                                                                    for="resp_{{ $preg->FORM_NID }}_{{ $resp->FORM_NID }}">
-                                                                                                    {{ $resp->FORM_CVALOR }}
-                                                                                                </label>
+                                                                                                    <br>
+                                                                                                    <label class="custom-control-label"
+                                                                                                        for="resp_{{ $preg->FORM_NID }}_{{ $resp->FORM_NID }}">
+                                                                                                        {{ $resp->FORM_CVALOR }}
+                                                                                                    </label>
+                                                                                                
                                                                                             </div>
                                                                                         @endforeach
                                                                                     @endif
@@ -371,11 +397,6 @@
                                                                                             $cont_chk == 0 ? 'required' : ''; ?>
                                                                                             <div
                                                                                                 class="custom-control custom-checkbox">
-                                                                                                <label class="custom-control-label"
-                                                                                                    for="resp_{{ $preg->FORM_NID }}_{{ $resp->FORM_NID }}">
-                                                                                                    {{ $resp->FORM_CVALOR }}
-                                                                                                </label>
-                                                                                                <br>
                                                                                                 <input class="custom-control-input"
                                                                                                     type="checkbox"
                                                                                                     name="resp_{{ $preg->FORM_NID }}_{{ $resp->FORM_NID }}_{{ $resp->id }}"
@@ -386,7 +407,11 @@
                                                                                                     {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
                                                                                                     {{ $required_chk }}>
                                                                                                     <br>
-                                                                                                
+                                                                                                    <label class="custom-control-label"
+                                                                                                        for="resp_{{ $preg->FORM_NID }}_{{ $resp->FORM_NID }}">
+                                                                                                        {{ $resp->FORM_CVALOR }}
+                                                                                                    </label>
+                                                                                               
                                                                                             </div>
                                                                                             <?php $cont_chk++; ?>
                                                                                         @endforeach
