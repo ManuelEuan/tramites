@@ -417,7 +417,7 @@
                                 </form>
                                 @if($seccion->SSEGTRA_PAGADO == 0)
                                 @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
-                                <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;">Guardar</button>
+                                <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;" {{($tramite->USTR_NESTATUS != 5)? "disabled" : ""}}>Guardar</button>
                                 @else
                                 
                                 <button type="submit" class="btn btn-success float-right" style="margin-right:10px;" disabled title="No disponible">Guardar</button>
