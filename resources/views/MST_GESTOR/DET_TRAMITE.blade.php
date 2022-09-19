@@ -29,7 +29,7 @@
                     <div class="card-header" id="headingOne">
                         <h5 class="mb-0">
                             <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <i class="fa" aria-hidden="true"></i> Información General
+                                <i class="fa" aria-hidden="true"></i> Acerca del Trámite
                             </button>
                         </h5>
                     </div>
@@ -51,7 +51,7 @@
                     <div class="card-header" id="headingTwo">
                         <h4 class="mb-0">
                             <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                <i class="fa" aria-hidden="true"></i> ¿Qué necesito para realizarlo?
+                                <i class="fa" aria-hidden="true"></i> Requisitos
                             </button>
                         </h4>
                     </div>
@@ -59,10 +59,10 @@
                         <div class="card-body">
                             @foreach($tramite['requerimientos'] as $informacion)
                             <div class="row">
-                                <div class="col-md-12">
+                                <!--<div class="col-md-12">
                                     <label class="lblDatos">{{$informacion['titulo']}}</label>
                                     <p class="pDatos">{!! $informacion['descripcion'] !!}</p>
-                                </div>
+                                </div>-->
                                 @if(count($informacion['opciones'])> 0)
                                 <div class="col-md-12">
                                     @foreach($informacion['opciones'] as $opcion)
@@ -92,54 +92,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header" id="headingThree">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                <i class="fa" aria-hidden="true"></i> ¿Qué puedo encontrar en línea?
-                            </button>
-                        </h5>
-                    </div>
-                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                        <div class="card-body">
-                            @foreach($tramite['en_linea'] as $linea)
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label class="lblDatos">{{$linea['titulo']}}</label>
-                                    <p class="pDatos">{{$linea['descripcion']}}</p>
-                                </div>
-                                @if(count($linea['opciones'])> 0)
-                                <div class="col-md-12">
-                                    @foreach($linea['opciones'] as $opcion)
-                                    <p class="pDatos">{{$opcion}}</p>
-                                    @endforeach
-                                </div>
-                                @endif
-                                @if(count($linea['documentos'])> 0)
-                                @foreach($linea['documentos'] as $documento)
-                                <div class="col-md-12">
-                                    <div class="documentTitle">
-                                        <span class="spanBorder">.</span>
-                                        <span class="spanTitle">{{$documento['nombre']}}</span>
-                                        <div class="documentInfo">
-                                            <span style="width: 100%;">Presentación: {{$documento['presentacion']}}</span>
-                                            <span style="width: 100%;">Observaciones: {{$documento['observaciones']}}</span>
-                                        </div>
-                                    </div>
-                                    <br>
-                                </div>
-                                @endforeach
-                                @endif
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+                
                 <div class="card">
                     <div class="card-header" id="headingFour">
                         <h5 class="mb-0">
                             <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                <i class="fa" aria-hidden="true"></i> ¿El trámite tiene algún costo?
+                                <i class="fa" aria-hidden="true"></i> Costos
                             </button>
                         </h5>
                     </div>
@@ -262,6 +220,7 @@
             </div>
         </div>
     </div>
+    
 </div>
 <br />
 <style>
@@ -509,3 +468,4 @@
     }
 </script>
 @endsection
+

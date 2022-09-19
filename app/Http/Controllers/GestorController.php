@@ -120,7 +120,7 @@ class GestorController extends Controller
         $tramite['costo']       = $datosGenerales['costo'];
         $tramite['requerimientos']      = $datosGenerales['requerimientos'];
         $tramite['informacion_general'] = $datosGenerales['informacion_general'];
-        $tramite['fundamento_legal']    = array(["titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento]);
+        $tramite['fundamento_legal']    = $datosGenerales['fundamento_legal'];
 
         return view('MST_GESTOR.DET_TRAMITE', compact('tramite'));
     }
