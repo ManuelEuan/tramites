@@ -58,9 +58,9 @@ class Cls_Usuario extends Model
     static function getResolutivosUser($id){
         $resolutivosUser = DB::select("SELECT tmur.USRE_NIDUSUARIOTRAMITE, tmur.USRE_CRUTADOC, tmur.USRE_CEXTENSION, tmur.USRE_NPESO, tmur.created_at, tmt.TRAM_CNOMBRE FROM tram_mdv_usuariotramite AS tmut
         INNER JOIN tram_mdv_usuario_resolutivo AS tmur
-        ON tmut.USTR_NIDTRAMITE = tmur.USRE_NIDUSUARIOTRAMITE
+        ON tmut.USTR_NIDUSUARIOTRAMITE = tmur.USRE_NIDUSUARIOTRAMITE
         INNER JOIN tram_mst_tramite AS tmt
-        ON tmt.TRAM_NIDTRAMITE = tmur.USRE_NIDUSUARIOTRAMITE
+        ON tmt.TRAM_NIDTRAMITE = tmut.USTR_NIDTRAMITE
         WHERE tmut.USTR_NIDUSUARIO = $id");
         return $resolutivosUser;
     }

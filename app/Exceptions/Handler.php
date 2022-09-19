@@ -48,8 +48,21 @@ class Handler extends ExceptionHandler
      *
      * @throws \Exception
      */
-    public function render($request, Exception $exception)
+    public function render($request, Exception $e)
     {
-        return parent::render($request, $exception);
+        // Si la pagina obtiene un error 404 se regresa a inicio (para no poder ingresar links directos)
+        if ($e instanceof ModelNotFoundException) {
+            return redirect('/');
+        }
+
+        // Si la pagina obtiene un error 500 se regresa a inicio (para no poder ingresar links con ids manuales)
+        if ($e instanceof \ErrorException) {
+            return redirect('/');
+        } else {
+            return parent::render($request, $e);
+        }
+
+        return parent::render($request, $e);
+        
     }
 }

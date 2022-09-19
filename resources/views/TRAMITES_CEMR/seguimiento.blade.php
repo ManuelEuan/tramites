@@ -427,7 +427,7 @@
                                 </form>
                                 @if($seccion->SSEGTRA_PAGADO == 0)
                                 @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
-                                <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;">Guardar</button>
+                                <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;" {{($tramite->USTR_NESTATUS != 5)? "disabled" : ""}}>Guardar</button>
                                 @else
                                 
                                 <button type="submit" class="btn btn-success float-right" style="margin-right:10px;" disabled title="No disponible">Guardar</button>
@@ -1250,6 +1250,7 @@
                 type: "GET",
                 success: function(data) {
                     var tramite = data.tramite[0];
+                    // console.log(data);
                     objTramite = data.tramite[0];
                     list_secciones_estatus = data.configuracion.secciones_estatus;
 
@@ -1267,7 +1268,12 @@
                         $("#btnRevision").text("Ir a revisón");
                         $("#btnRevision").prop("disabled", false);
                     }
+                    if(tramite.USTR_NESTATUS == 4){
+                        $("#btnFormularioIncompleto").attr("disabled", true);
+                        $("#btnFormularioRechazar").attr("disabled", true);
+                        $("#btnFormularioAprobar").attr("disabled", true);
 
+                    }
                     var secciones_formularios = data.configuracion.formularios[0].secciones;
 
                     //Guardamos secciones y formulario con sus secciones

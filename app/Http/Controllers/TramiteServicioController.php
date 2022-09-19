@@ -347,7 +347,7 @@ class TramiteServicioController extends Controller
 
 
         $nmbres='';$P_NESTATUS='';$TXT_STAT=$arrTst;$docs_base;
-
+ 
         return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'ARR_DOC_CON', 'nmbres', 'P_NESTATUS', 'TXT_STAT', 'docs_base'));
     }
 
@@ -1282,7 +1282,8 @@ class TramiteServicioController extends Controller
         //Editar bandera del tramite
         $tram = Cls_Usuario_Tramite::where('USTR_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)
             ->update([
-                'USTR_NBANDERA_PROCESO' => 2
+                'USTR_NBANDERA_PROCESO' => 2,
+                'USTR_NESTATUS' => 2
             ]);
 
         //Insertar bitacora
