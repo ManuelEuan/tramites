@@ -103,7 +103,7 @@
                     <a class="btn btn-sm btn-primary" href="{{ url('servidorespublicos/crear') }}">Agregar</a>
                 </div>
                 <div class="col-md-6 text-right">
-                    <button class="btn btn-sm btnExport waves-effect waves-light" onclick="limpiar()">Limpiar</button>
+                    <button class="btn btn-sm btnLimpiar waves-effect waves-light" onclick="limpiar()">Limpiar</button>
                 </div>
             </div>
         </div>
@@ -149,15 +149,20 @@
 </div>
 <br />
 <style>
-    .btnExport {
-        background-color: #ffa000;
-        border-color: #ffa000;
+    .btnLimpiar{
+        float: right;
+        background-color: #01b3e8 !important;;
+        border-color: #01b3e8 !important;;
         color: #ffffff;
-        margin-right: 4px;
+        margin-left: 20px;
     }
 
-    .btnExport:hover {
+    .btnLimpiar:hover{
+        background-color: #33B5FF !important;;
+        border-color: #33B5FF !important;;
         color: #ffffff;
+        margin-left: 20px;
+    }color: #ffffff;
     }
 </style>
 @endsection

@@ -67,7 +67,7 @@
                     <button class="btn btn-sm btn-primary" onclick="TRAM_AJX_CONSULTAR(event)">Buscar</button>
                 </div>
                 <div class="col-md-6 text-right">
-                    <button class="btn btn-sm btnExport waves-effect waves-light" onclick="TRAM_FN_LIMPIAR(event);">Limpiar</button>
+                    <button class="btn btn-sm btnLimpiar waves-effect waves-light" onclick="TRAM_FN_LIMPIAR(event);">Limpiar</button>
                 </div>
             </div>
         </div>
@@ -104,15 +104,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.min.js"></script>
 <style>
-    .btnExport {
-        background-color: #ffa000;
-        border-color: #ffa000;
+    .btnLimpiar{
+        float: right;
+        background-color: #01b3e8 !important;;
+        border-color: #01b3e8 !important;;
         color: #ffffff;
-        margin-right: 4px;
+        margin-left: 20px;
     }
 
-    .btnExport:hover {
+    .btnLimpiar:hover{
+        background-color: #33B5FF !important;;
+        border-color: #33B5FF !important;;
         color: #ffffff;
+        margin-left: 20px;
     }
 </style>
 <script>

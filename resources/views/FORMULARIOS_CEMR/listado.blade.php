@@ -1623,6 +1623,7 @@
         border-color: #01b3e8 !important;
         color: #ffffff;
     }
+    
     .btnLimpiar:hover{
         background-color: #33B5FF !important;
         border-color: #33B5FF !important;
