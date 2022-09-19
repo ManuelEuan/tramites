@@ -84,13 +84,18 @@
                 @break
 
                 @case('Pago en línea')
-                <li>
-                    <a class="nav-link" data-toggle="tab" href="#tab_pago_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Pago en línea
-                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
-                        @endif
-                    </a>
-                </li>
+                @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "ANTA")
+
+                    <li>
+                        <a class="nav-link" data-toggle="tab" href="#tab_pago_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Pago en línea
+                            @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                            <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                            @endif
+                        </a>
+                    </li>
+                    
+                @endif
+
                 @break
 
                 @case('Módulo de análisis interno del área')
@@ -104,13 +109,18 @@
                 @break
 
                 @case('Resolutivo electrónico')
-                <li>
-                    <a class="nav-link" data-toggle="tab" href="#tab_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_RESOLUTIVO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Resolutivo electrónico
-                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
-                        @endif
-                    </a>
-                </li>
+                @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "ANTA")
+
+                    <li>
+                        <a class="nav-link" data-toggle="tab" href="#tab_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_RESOLUTIVO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Resolutivo electrónico
+                            @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                            <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                            @endif
+                        </a>
+                    </li>
+
+                @endif
+
                 @break
 
                 @default
