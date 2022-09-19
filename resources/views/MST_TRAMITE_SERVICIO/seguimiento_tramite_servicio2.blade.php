@@ -181,19 +181,17 @@
                                                                         <span id="form_seccion_{{ $sec->FORM_NID }}">
                                                                             @if ($estatus_tab > 0)
                                                                                 <span><img
+                                                                                    src="{{ asset('assets/template/img/error.png') }}"
+                                                                                    width="20" height="20"></span>
+                                                                            @elseif($estatusGuardado > 0)
+                                                                                <span><img
                                                                                         src="{{ asset('assets/template/img/error.png') }}"
                                                                                         width="20" height="20"></span>
-                                                                            @endif
-                                                                            @if($estatusGuardado <= 0)
+                                                                            @else
                                                                                 <span><img
-                                                                                        src="{{ asset('assets/template/img/check.png') }}"
-                                                                                        width="20" height="20"></span>
+                                                                                    src="{{ asset('assets/template/img/check.png') }}"
+                                                                                    width="20" height="20"></span>
                                                                             @endif
-                                                                            @if($estatusGuardado > 0)
-                                                                                    <span><img
-                                                                                            src="{{ asset('assets/template/img/error.png') }}"
-                                                                                            width="20" height="20"></span>
-                                                                                @endif
                                                                         </span>
                                                                     </div>
                                                                 @elseif($_cont == $total_sec_form - 1)
@@ -206,18 +204,16 @@
                                                                             <span id="form_seccion_{{ $sec->FORM_NID }}">
                                                                                 @if ($estatus_tab > 0)
                                                                                     <span><img
-                                                                                            src="{{ asset('assets/template/img/error.png') }}"
-                                                                                            width="20" height="20"></span>
-                                                                                @endif
-                                                                                @if($estatusGuardado <= 0)
-                                                                                    <span><img
-                                                                                            src="{{ asset('assets/template/img/check.png') }}"
-                                                                                            width="20" height="20"></span>
-                                                                                @endif
-                                                                                @if($estatusGuardado > 0)
+                                                                                        src="{{ asset('assets/template/img/error.png') }}"
+                                                                                        width="20" height="20"></span>
+                                                                                @elseif($estatusGuardado > 0)
                                                                                     <span><img
                                                                                             src="{{ asset('assets/template/img/error.png') }}"
                                                                                             width="20" height="20"></span>
+                                                                                @else
+                                                                                    <span><img
+                                                                                        src="{{ asset('assets/template/img/check.png') }}"
+                                                                                        width="20" height="20"></span>
                                                                                 @endif
                                                                                 
                                                                             </span>
@@ -241,18 +237,16 @@
                                                                                 @else
                                                                                     @if ($estatus_tab > 0)
                                                                                         <span><img
-                                                                                                src="{{ asset('assets/template/img/error.png') }}"
-                                                                                                width="20" height="20"></span>
-                                                                                    @endif
-                                                                                    @if($estatusGuardado <= 0)
-                                                                                        <span><img
-                                                                                                src="{{ asset('assets/template/img/check.png') }}"
-                                                                                                width="20" height="20"></span>
-                                                                                    @endif
-                                                                                    @if($estatusGuardado > 0)
+                                                                                            src="{{ asset('assets/template/img/error.png') }}"
+                                                                                            width="20" height="20"></span>
+                                                                                    @elseif($estatusGuardado > 0)
                                                                                         <span><img
                                                                                                 src="{{ asset('assets/template/img/error.png') }}"
                                                                                                 width="20" height="20"></span>
+                                                                                    @else
+                                                                                        <span><img
+                                                                                            src="{{ asset('assets/template/img/check.png') }}"
+                                                                                            width="20" height="20"></span>
                                                                                     @endif
                                                                                 @endif
                                                                             </span>
