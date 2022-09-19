@@ -461,17 +461,23 @@
                                             @foreach($tramite['repositorio'] as $rep)
                                                 @if($rep->USDO_CDOCNOMBRE == $nmbres)
                                                     <div class="custom-control custom-checkbox">
-                                                        <input class="form-check-input chckdfiles" type="checkbox" 
+                                                        
+                                                        <div class="row">
+                                                            <div class="md-6">   
+                                                            <input class="form-check-input chckdfiles" type="checkbox" 
                                                         onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}',
                                                         '{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}',
                                                         'file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" 
                                                         value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                        title="Elegir archivo existente" checked>
-                                                        <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" 
+                                                        title="Elegir archivo existente" checked>                                                     <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" 
                                                             target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  >
                                                             <i title='Descargar documento' class='fas fa-download'></i>
-                                                        </a>
+                                                        </a></div>
+                                                            <div class="md-6 ml-2" ><a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank"><i class="fa fa-eye p-0 m-0" ></i></a></div>
+                                                        </div>
+
                                                     </div>
+                                                    
                                                     @break;
                                                 @endif
                                             @endforeach

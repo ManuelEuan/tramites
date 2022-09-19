@@ -176,7 +176,7 @@ class TramitesController extends Controller
                     "FOLIO" => $cita->first()->CITA_FOLIO,
                 )
             : array());
-
+ 
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
     }
 

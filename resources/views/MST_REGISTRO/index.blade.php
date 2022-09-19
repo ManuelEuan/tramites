@@ -60,6 +60,7 @@
                                 <h5 class="font-weight-bold">Tipo de persona</h5>
                             </div>
                         </div>
+                        <!-- <label for="bus-txt-centro-trabajo" style="color: red;">PARA LA CREACION  DE UNA PERSONA MORAL ES IMPORTANTE QUE EL REPRESENTANTE LEGAL ESTÉ REGISTRADO COMO PERSONA FISICA <span class="text-danger">*</span></label> -->
                         <div class="row">
                             <div class="col-md-4">
                                 <p class="text-dark">Por favor, selecciona una opción</p>
@@ -161,8 +162,10 @@
 
                             <div class="row">
                                 <div class="col-md-4 divCurpMoral">
+                                <!-- <label for="bus-txt-centro-trabajo" style="color: red;">EL REPRESENTANTE LEGAL DEBE DE ESTAR REGISTRADO COMO PERSONA FISICA <span class="text-danger">*</span></label> -->
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">CURP <span class="text-danger">*</span>  <span class="text-primary">Se compone de 18 caracteres</span></label>
+                                        <span class="text-primary">Ingresa la curp del representante legal para buscar su información</span>
                                         <input type="text" class="form-control txtCurp" name="txtCurpMoral" id="txtCurpMoral" placeholder="CURP">
                                         <span class="resultadoValidTextCurpMoral" style="font-size: 12px;"></span>
                                     </div>
@@ -238,7 +241,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <input type="tel" class="form-control" title="Teléfono" id="txtNumeroTelefono" name="txtNumeroTelefono" placeholder="999999999" placeholder="No. de teléfono" required>
+                                        <input type="number" class="form-control" title="Teléfono" id="txtNumeroTelefono" name="txtNumeroTelefono" placeholder="999999999" placeholder="No. de teléfono"  required>
                                     </div>
                                 </div>
                             </div>
@@ -257,7 +260,7 @@
                                 <div class="col-md-4">
                                     <label for="bus-txt-centro-trabajo">Teléfono <span class="text-danger">*</span> </label>
                                     <div class="form-group">
-                                    <input type="tel" class="form-control" title='Teléfono'  id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" placeholder="999999999" placeholder="No. de teléfono" required>
+                                    <input type="number" class="form-control" title='Teléfono'  id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" placeholder="999999999" placeholder="No. de teléfono" required >
                                     </div>
                                 </div>
 
@@ -403,7 +406,13 @@
 
     <script>
         $(document).ready(function () {
-
+            // $.validator.addMethod("soloLetras", function (value, element) {
+            //     var pattern = /^[a-zA-Z]+$/i;
+            //     return this.optional(element) || pattern.test(value);
+            // }, "El primer apellido solamente puede tener caracteres alfabéticos y espacios.");
+            $.validator.addMethod("soloLetras", function(value, element) {
+                return this.optional(element) || /^\D+$/gi.test(value);
+            }, "no valido");
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -484,13 +493,21 @@
                     nombrePersonaAutorizada: {
                         minlength: 2,
                         maxlength: 100,
-                        lettersonly: true
+                        soloLetras: ""
                     },
                     txtRazon_Social :{
                         minlength: 2,
                         maxlength: 100,
                         lettersonly: true
-                    }
+                    },
+                    txtNumeroTelefono : {
+                        minlength : 10,
+                        maxlength : 10
+                    },
+                    telefonoPersonaAutorizada : {
+                        minlength : 10,
+                        maxlength : 10
+                    },
                 },
                 messages: {
                     txtRfc: {
@@ -607,16 +624,20 @@
                         required: ""
                     },
                     txtNumeroTelefono:{
+                        minlength: "El tamaño del campo debe contener mínimo 10 dígitos.",
+                        maxlength: "El tamaño del campo debe contener máximo 10 dígitos.",
                         required: ""
                     },
                     telefonoPersonaAutorizada:{
+                        minlength: "El tamaño del campo debe contener mínimo 10 dígitos.",
+                        maxlength: "El tamaño del campo debe contener máximo 10 dígitos.",
                         required: ""
                     },
                     nombrePersonaAutorizada:{
                         minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         required: "",
-                        lettersonly: "El primer apellido solamente puede tener caracteres alfabéticos y espacios."
+                        soloLetras: "La campo solamente puede tener caracteres alfabéticos y espacios."
                     },
                     correoPersonaAutorizada: {
                         required: ""
@@ -703,15 +724,16 @@
             $(".iconCurp_Valido").hide();
         });
 
-        document.getElementById('txtNumeroTelefono').addEventListener('input', function (e) {
-            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-        });
+        // document.getElementById('txtNumeroTelefono').addEventListener('input', function (e) {
+        //     var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+        //     e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        // });
 
-        document.getElementById('telefonoPersonaAutorizada').addEventListener('input', function (e) {
-            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-        });
+        // document.getElementById('telefonoPersonaAutorizada').addEventListener('input', function (e) {
+        //     var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+        //     e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        // });
+        
 
         //Tipo de persona
         $('.rdbTipo_Persona').change(function(){
