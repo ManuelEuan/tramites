@@ -17,10 +17,12 @@
             <br>
             <div>
                 <a href="{{route('gestor_index')}}" id="btn_impirmir" class="btn btn-sm btn-danger" style="margin: 2px;">Cancelar</a>
-                @if(request()->route('tramiteIDConfig') !== null && request()->route('tramiteIDConfig') > 0)
-                <a href="{{route('gestor_configurar_tramite', ['tramiteID' => request()->route('tramiteID'), 'tramiteIDConfig' => request()->route('tramiteIDConfig')])}}" id="btn_iniciar_tramite" class="btn btn-sm btn-primary" style="margin: 2px;">Iniciar configuración de trámite</a>
-                @else
-                <a href="{{route('gestor_configurar_tramite', ['tramiteID' => request()->route('tramiteID'), 'tramiteIDConfig' => 0])}}" id="btn_iniciar_tramite" class="btn btn-sm btn-primary" style="margin: 2px;">Iniciar configuración de trámite</a>
+                @if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != 'ANTA' )
+                    @if(request()->route('tramiteIDConfig') !== null && request()->route('tramiteIDConfig') > 0)
+                    <a href="{{route('gestor_configurar_tramite', ['tramiteID' => request()->route('tramiteID'), 'tramiteIDConfig' => request()->route('tramiteIDConfig')])}}" id="btn_iniciar_tramite" class="btn btn-sm btn-primary" style="margin: 2px;">Iniciar configuración de trámite</a>
+                    @else
+                    <a href="{{route('gestor_configurar_tramite', ['tramiteID' => request()->route('tramiteID'), 'tramiteIDConfig' => 0])}}" id="btn_iniciar_tramite" class="btn btn-sm btn-primary" style="margin: 2px;">Iniciar configuración de trámite</a>
+                    @endif
                 @endif
             </div>
             <br>
