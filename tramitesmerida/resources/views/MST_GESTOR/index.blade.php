@@ -78,7 +78,7 @@
                     <button class="btn btn-sm btn-primary" onclick="TRAM_FN_BUSCAR(event);">Buscar</button>
                 </div>
                 <div class="col-md-6 text-right">
-                    <button class="btn btn-sm btn-warning" onclick="TRAM_FN_LIMPIAR(event);">Limpiar</button>
+                    <button class="btn btn-sm btn-warning btnLimpiar" onclick="TRAM_FN_LIMPIAR(event);">Limpiar</button>
                     <button class="btn btn-sm btn-primary">Exportar</button>
                 </div>
             </div>
@@ -305,6 +305,21 @@
     .loadingFrame .inner p {
         color: #fff;
         font-size: 22px;
+    }
+
+    .btnLimpiar{
+        float: right;
+        background-color: #01b3e8 !important;;
+        border-color: #01b3e8 !important;;
+        color: #ffffff;
+        margin-left: 20px;
+    }
+
+    .btnLimpiar:hover{
+        background-color: #33B5FF !important;;
+        border-color: #33B5FF !important;;
+        color: #ffffff;
+        margin-left: 20px;
     }
 </style>
 <script>

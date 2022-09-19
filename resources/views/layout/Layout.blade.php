@@ -69,7 +69,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" style="max-width: 480px; min-width: 480px; padding: 0;">
                                 <div style="max-height: 420px; overflow: auto;">
-                                    <div id="seccionNotificacion" style="margin-top: 50px; margin-bottom:50px;;text-align: center"> Sin Notificaciones </div>
+                                    <div id="seccionNotificacion" style="margin-top: 50px; margin-bottom:50px;text-align: center"> Sin Notificaciones </div>
                                 </div>
                             </div>
                         </li>
@@ -327,7 +327,7 @@
                             <div class="row">
                                 <div class="col-8" style="font-size: 16px;">${element.HNOTI_CITUTLO}</div>
                                 <div class="col-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <small>${ fecha } </small><i class="fas fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
+                                    <small>${ fecha } </small><i class="far fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
                                 </div>
                             </div>
                         </div>
@@ -349,7 +349,7 @@
                             <div class="row">
                                 <div class="col-8" style="font-size: 16px;">${element.NOTI_CTITULO}</div>
                                 <div class="col-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <small>${ fecha } </small><i class="fas fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
+                                    <small>${ fecha } </small><i class="far fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
                                 </div>
                             </div>
                         </div>

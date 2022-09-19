@@ -424,9 +424,6 @@
                 },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."
             );
 
-            $.validator.addMethod("lettersonly", function(value, element)  {
-                return this.optional(element) || /^[a-z\s]+$/i.test(value);
-            }, "El nombre (s) solamente puede tener caracteres alfabéticos y espacios.");
 
             $("#frmForm").validate({
                 focusInvalid: false,
@@ -441,17 +438,14 @@
                     txtNombres: {
                         minlength: 2,
                         maxlength: 100,
-                        lettersonly: true
                     },
                     txtPrimer_Apellido: {
                         minlength: 2,
                         maxlength: 100,
-                        lettersonly: true
                     },
                     txtSegundo_Apellido: {
                         minlength: 2,
                         maxlength: 100,
-                        lettersonly: true
                     },
                     txtCalle_Particular: {
                         minlength: 2,
@@ -498,7 +492,6 @@
                     txtRazon_Social :{
                         minlength: 2,
                         maxlength: 100,
-                        lettersonly: true
                     },
                     txtNumeroTelefono : {
                         minlength : 10,
@@ -519,19 +512,16 @@
                         minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         required: "",
-                        lettersonly: "El nombre (s) solamente puede tener caracteres alfabéticos y espacios."
                     },
                     txtPrimer_Apellido: {
                         minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         required: "",
-                        lettersonly: "El primer apellido solamente puede tener caracteres alfabéticos y espacios."
                     },
                     txtSegundo_Apellido: {
                         minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         required: "",
-                        lettersonly: "El segundo apellido solamente puede tener caracteres alfabéticos y espacios."
                     },
                     txtCalle_Particular: {
                         minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
@@ -618,7 +608,6 @@
                         required: "",
                         minlength: "El tamaño del campo debe contener mínimo 2 dígitos.",
                         maxlength: "El tamaño del campo debe contener máximo 100.",
-                        lettersonly: "La razón social solamente puede tener caracteres alfabéticos y espacios."
                     },
                     txtCurp: {
                         required: ""
@@ -642,6 +631,9 @@
                     correoPersonaAutorizada: {
                         required: ""
                     },
+                    txtConfirmacion: {
+                        required: ""
+                    }
                 }
             });
 
