@@ -117,8 +117,10 @@
                                             <div style="float: right; color:#212529;">
                                                 <a href="{{ route('detalle_configuracion_tramite', ['tramiteID' => $data->TRAM_NIDTRAMITE, 'tramiteIDConfig' => $data->TRAM_NIDTRAMITE_CONFIG]) }}"
                                                     title="Ver Configuración"><i class="fas fa-eye sizeBtnIcon"></i></a>
-                                                <a href="{{ route('gestor_configurar_tramite', ['tramiteID' => $data->TRAM_NIDTRAMITE, 'tramiteIDConfig' => $data->TRAM_NIDTRAMITE_CONFIG]) }}"
-                                                    title="Configurar Trámite"><i class="fas fa-edit sizeBtnIcon"></i></a>
+                                                @if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != 'ANTA' )
+                                                    <a href="{{ route('gestor_configurar_tramite', ['tramiteID' => $data->TRAM_NIDTRAMITE, 'tramiteIDConfig' => $data->TRAM_NIDTRAMITE_CONFIG]) }}"
+                                                        title="Configurar Trámite"><i class="fas fa-edit sizeBtnIcon"></i></a>
+                                                @endif
 
                                                 @if (Gate::allows('isAdministradorOrEnlace'))
                                                     @if ($data->TRAM_NIMPLEMENTADO > 0)
@@ -482,6 +484,7 @@
                 type: "POST",
                 success: function(data) {
                     $('#loading').hide();
+                    console.log(data);
                     $('#tramite_servicio').html(data);
                     $("html, body").animate({
                         scrollTop: 0
