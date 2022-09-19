@@ -241,7 +241,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <input type="number" class="form-control" title="Teléfono" id="txtNumeroTelefono" name="txtNumeroTelefono" placeholder="999999999" placeholder="No. de teléfono"  required>
+                                        <input type="text" class="form-control" title="Teléfono" id="txtNumeroTelefono" name="txtNumeroTelefono" placeholder="999999999" placeholder="No. de teléfono"  required>
                                     </div>
                                 </div>
                             </div>
@@ -260,7 +260,7 @@
                                 <div class="col-md-4">
                                     <label for="bus-txt-centro-trabajo">Teléfono <span class="text-danger">*</span> </label>
                                     <div class="form-group">
-                                    <input type="number" class="form-control" title='Teléfono'  id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" placeholder="999999999" placeholder="No. de teléfono" required >
+                                    <input type="text" class="form-control" title='Teléfono'  id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" placeholder="999999999" placeholder="No. de teléfono" required >
                                     </div>
                                 </div>
 
@@ -494,12 +494,10 @@
                         maxlength: 100,
                     },
                     txtNumeroTelefono : {
-                        minlength : 10,
-                        maxlength : 10
+                        minlength : 10
                     },
                     telefonoPersonaAutorizada : {
-                        minlength : 10,
-                        maxlength : 10
+                        minlength : 10
                     },
                 },
                 messages: {
@@ -614,12 +612,10 @@
                     },
                     txtNumeroTelefono:{
                         minlength: "El tamaño del campo debe contener mínimo 10 dígitos.",
-                        maxlength: "El tamaño del campo debe contener máximo 10 dígitos.",
                         required: ""
                     },
                     telefonoPersonaAutorizada:{
                         minlength: "El tamaño del campo debe contener mínimo 10 dígitos.",
-                        maxlength: "El tamaño del campo debe contener máximo 10 dígitos.",
                         required: ""
                     },
                     nombrePersonaAutorizada:{
@@ -716,15 +712,15 @@
             $(".iconCurp_Valido").hide();
         });
 
-        // document.getElementById('txtNumeroTelefono').addEventListener('input', function (e) {
-        //     var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-        //     e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-        // });
+        document.getElementById('txtNumeroTelefono').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
 
-        // document.getElementById('telefonoPersonaAutorizada').addEventListener('input', function (e) {
-        //     var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-        //     e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-        // });
+        document.getElementById('telefonoPersonaAutorizada').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
         
 
         //Tipo de persona
