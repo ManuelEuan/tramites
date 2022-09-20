@@ -249,8 +249,11 @@
     </div>
 
 
-    <script src="{{ asset('assets/template/js/jquery.js') }}"></script>
-    <script src="{{ asset('assets/template/js/jquery-ui.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/template/js/jquery.js') }}"></script>
+    <script src="{{ asset('assets/template/js/jquery-ui.min.js') }}"></script> --}}
+    <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
     <script type="text/javascript" src="{{ asset('assets/template/js/popper.min.js') }}"></script>
     <!-- <script src="{{ asset('assets/template/plugins/bootstrap-select/js/popper.min.js') }}"></script> -->
 
