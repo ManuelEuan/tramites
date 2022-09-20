@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +20,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 ###################### Manuel Euan ######################
+
+Route::group(['prefix' => 'catalogos'], function () {
+    Route::get('/find', 'CatalogoController@find');
+    Route::get('/get', 'CatalogoController@get');
+    /* Route::get('/', 'CatalogoController@index');
+    Route::post('/', 'CatalogoController@store');
+    Route::post('/estatus', 'CatalogoController@cambiaEstatus');
+    Route::put('/', 'CatalogoController@update'); */
+});
 /* Route::get('/getFiltros', 'GestorController@obtener_filtro');
-Route::get('/getTramite/{id}/{configuracionID}', 'GestorController@consultar_tramite');
+
 Route::get('/configurarTramite/{tramiteID}/{tramiteIDConfig}','GestorController@configurar_tramite');
 Route::get('/tramite_servicio/{id}','TramiteServicioController@obtener_detalle_tramite');
 Route::get('/tramite_servicio/iniciar_tramite_servicio/{id}', 'TramiteServicioController@iniciar_tramite_servicio');
@@ -33,7 +43,6 @@ Route::get('/getCitasAgendadas', 'TramitesController@getCitasAgendadas'); */
 
 Route::post('/tramite_servicio/consultar', 'TramiteServicioController@consultar');
 Route::post('/recuperar_contrasena','LoginController@recuperar_contrasena');
-
 Route::post('/citas/disponibilidad', 'CitasController@disponibilidad');
 Route::post('/citas/update', 'CitasController@update');
 Route::post('/general/validaDuplicidad', 'GeneralController@validaDuplicidad');

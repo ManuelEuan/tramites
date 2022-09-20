@@ -257,3 +257,12 @@ Route::group(['prefix' => 'giro'], function () {
     Route::post('/estatus', 'GiroController@cambiaEstatus');
     Route::put('/', 'GiroController@update');
 });
+
+Route::group(['prefix' => 'catalogos'], function () {
+    Route::get('/find', 'CatalogoController@find');
+    Route::get('/get', 'CatalogoController@get');
+    /* Route::get('/', 'CatalogoController@index');
+    Route::post('/', 'CatalogoController@store');
+    Route::post('/estatus', 'CatalogoController@cambiaEstatus');
+    Route::put('/', 'CatalogoController@update'); */
+});
