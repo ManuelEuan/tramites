@@ -1305,21 +1305,17 @@
                     `);
                     break;
                 case "catalogo":
-                    let id = `respuestaTipoCatalogo_${pregunta}_${respuesta_id}`;
+                    let id = `respuesta_${pregunta}_${respuesta_id}`;
                     let html = ` <div class="form-group row" id="contenedorRespuestas_${id}" style="width: 70%; margin-left: -1%;">
                                     <div class="col-md-6">
-                                    <select name="${id}" id="tipoCatalogo_${pregunta}_${respuesta_id}"" class="form-control" onchange="cambiaCatalogo(this);">
-                                        <option value="0">Seleccionar</option>`;
-                                        catalogos.forEach(element => {
-                                            html+= `<option value="${element.tabla}" >${element.nombre}</option>`;
-                                        });
-                                html+=`</select></div>
-                                <div class="col-md-6">
-                                    <select name="respuesta_${id}" id="respuesta__${pregunta}_${respuesta_id}"" class="form-control">
-                                        <option value="0">Seleccionar</option>
-                                    </select>
-                                </div></div>`;
-
+                                        <select name="${id}" id="${id}" class="form-control" required>
+                                            <option value="0">Seleccionar</option>`;
+                                            catalogos.forEach(element => {
+                                                html+= `<option value="${element.tabla}" >${element.nombre}</option>`;
+                                            });
+                                    html+=`</select>
+                                    </div>
+                                </div>`;
                     $("#contenedorRespuestas_" + pregunta).replaceWith(html);
                     break;
                 default:
@@ -1595,7 +1591,7 @@
                 $reslu = $('#resolutivo').val();
                 let preguntas = JSON.stringify(completo);
                 let data    = {"formulario_id": formulario_id, "seccion_id": seccion_id, "preguntas": preguntas, "eliminados":  JSON.stringify(eliminados), "resolutivo":$reslu };
-
+                console.log(data);
                 request = $.ajax({
                     type: 'POST',
                     url: '/formulario/preguntas',

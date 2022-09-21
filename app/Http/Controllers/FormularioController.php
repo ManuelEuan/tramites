@@ -17,7 +17,7 @@ class FormularioController extends Controller
 {
     public $open_modal = 0;
     public function __construct(){
-       $this->middleware('auth');
+       /* $this->middleware('auth'); */
     }
 
     public function list(){
@@ -191,7 +191,8 @@ class FormularioController extends Controller
             $respuesta  = null; 
             $tiRes      = "";
             $tipEsp     = "";
-            
+            //DB::beginTransaction();
+
             $eliminados = json_decode($request->eliminados);
             foreach ($eliminados as $eliminar) {
                 if($eliminar->tipo == 'pregunta')
@@ -203,38 +204,32 @@ class FormularioController extends Controller
             }
            
             $array = json_decode($request->preguntas);
-           
-                $res = null;
             foreach ($array as $datos) { 
-                $valP   = strpos($datos->name,  'pregunta_');
-                $valTR  = strpos($datos->name,  'tipoRespuesta_');
-                $valR   = strpos($datos->name,  'respuesta_');
-                $valTE  = strpos($datos->name,  'select_');
-                $valCh  = strpos($datos->name,  'bloqueo_');
-                $valEO  = strpos($datos->name,  'opcionEspecial_');
-                $valEO  = strpos($datos->name,  'opcionEspecial_');
-                $valRes  = strpos($datos->name,  'update_resolutivo_');
-                $valResol  = strpos($datos->name,  'resolutivo_');
-                
+                $valP       = strpos($datos->name,  'pregunta_');
+                $valTR      = strpos($datos->name,  'tipoRespuesta_');
+                $valR       = strpos($datos->name,  'respuesta_');
+                $valTE      = strpos($datos->name,  'select_');
+                $valCh      = strpos($datos->name,  'bloqueo_');
+                $valEO      = strpos($datos->name,  'opcionEspecial_');
+                $valEO      = strpos($datos->name,  'opcionEspecial_');
+                $valCat     = strpos($datos->name,  'tipoCatalogo_');
+                $valRes     = strpos($datos->name,  'update_resolutivo_');
+                $valResol   = strpos($datos->name,  'resolutivo_');
                 $resolutivo = $datos->id;
-               
-                    if($valResol !== FALSE) {
 
-                        if($resolutivo == 0){
-                            $res =$datos->value;
-
-                        }else{
-
-                            $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->select('*')->first('FORM_NID');
-                            Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->update(['FORM_BRESOLUTIVO' => $datos->value]);
-                        }
-                        
+                if($valResol !== FALSE) {
+                    if($resolutivo == 0)
+                        $res =$datos->value;
+                    else{
+                        $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->select('*')->first('FORM_NID');
+                        Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->update(['FORM_BRESOLUTIVO' => $datos->value]);
                     }
-                // }
+                    
+                }
+
                 if($valP !== FALSE) {
                     // $resolutivo =$datos->id;
                     if($datos->id == 0){
-                       
                         $pregunta = new Cls_Formulario_Pregunta();
                         $pregunta->FORM_NFORMULARIOID   = $request->formulario_id;
                         $pregunta->FORM_NSECCIONID      = $request->seccion_id;
@@ -243,17 +238,14 @@ class FormularioController extends Controller
                         $pregunta->save();
                     }
                     else{
-                       
                         $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->select('*')->first('FORM_NID');
                         Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->update(['FORM_CPREGUNTA' => $datos->value]);
                     }
                 }
-                
-              
-    
+
                 if($valTR !== FALSE)
                     $tiRes = $datos->value;
-    
+
                 if($valR !== FALSE){
                     if($datos->id == 0){
                         if (str_contains($datos->name,'respuesta_update_')) {
@@ -285,7 +277,6 @@ class FormularioController extends Controller
                 if($valEO !== FALSE)
                     $tipEsp = $datos->value;
                 
-
                 if(($tiRes == "especial" && $valTE !== false) || ($tiRes == "especial" && $valEO !== false)){
                     $anterior = Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->first();
                     if($anterior != null){
