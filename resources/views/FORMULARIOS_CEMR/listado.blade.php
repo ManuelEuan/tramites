@@ -327,7 +327,6 @@
 
         $('#txtFechaInicio').change(function() {
             var date = $(this).val();
-            //console.log(date, 'change')
             $('#txtFechaFin').attr('min' , date);
         });
 
@@ -362,7 +361,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            console.log("entro");
+
             table = $('#tblFormularios').DataTable({
                 "language": {
                     url: "/assets/template/plugins/DataTables/language/Spanish.json",
@@ -919,7 +918,6 @@
                             let tipo_respuesta  =  element.respuestas.length > 0 ? element.respuestas[0].FORM_CTIPORESPUESTA : "abierta";
                             let nom_pregunta    = element.FORM_CPREGUNTA;
                             let resol    = element.FORM_BRESOLUTIVO;
-                            
                             let preguntas = `<div class="form-row contenedorPregunta" id="div_pregunta_update${element.FORM_NID}">
                                 <div class=" col-md-4 mb-3">
                                     <label for="update_pregunta_${element.FORM_NID}">Pregunta</label>
@@ -1094,7 +1092,23 @@
                                             <div class="btnContenedor">
                                                 <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('especial', '${element.FORM_NID}')"> Agregar respuesta</button>
                                             </div>`; 
-                                        }                                  
+                                        }
+                                        else if(tipo_respuesta == 'catalogo'){
+                                            element.respuestas.forEach(res => {
+                                                let id      = `update_respuesta_${res.FORM_NPREGUNTAID}_${res.FORM_NID}`;
+                                                let select  = '';
+                                                preguntas +=    `<div class="col-md-4">
+                                                                    <label> Catálogo</label>
+                                                                    <select name="${id}" id="${id}" class="form-control" required>
+                                                                        <option value="0">Seleccionar</option>`;
+                                                                        catalogos.forEach(element => {
+                                                                            select  = element.tabla == res.FORM_CVALOR ? 'selected' : '';
+                                                                            preguntas+= `<option value="${element.tabla}" ${select}>${element.nombre}</option>`;
+                                                                        });
+                                                                    preguntas+=`</select>
+                                                                </div>`;
+                                            });
+                                        }                               
                                     
                                     preguntas+=`</div>
                                 </div>
@@ -1308,6 +1322,7 @@
                     let id = `respuesta_${pregunta}_${respuesta_id}`;
                     let html = ` <div class="form-group row" id="contenedorRespuestas_${id}" style="width: 70%; margin-left: -1%;">
                                     <div class="col-md-6">
+                                        <label> Catálogo</label>
                                         <select name="${id}" id="${id}" class="form-control" required>
                                             <option value="0">Seleccionar</option>`;
                                             catalogos.forEach(element => {
@@ -1477,29 +1492,6 @@
             $("#"+data).remove();
         }
 
-        function cambiaCatalogo(data){
-            console.log(data);
-            request = $.ajax({
-                url: "/"+ data.value +"/find",
-                type: "get",
-                data: {paginate: false, activo:true}
-            });
-        
-            // Callback handler that will be called on success
-            request.done(function (response, textStatus, jqXHR){
-               console.log(response);
-            });
-
-            // Callback handler that will be called on failure
-            request.fail(function (jqXHR, textStatus, errorThrown){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'se presento el siguiente error: ' + errorThrown
-                });
-            });
-        }
-
         function agregaMasEspecial(pre,resp){ 
             opcion_especial++;
             let pregunta = pregunda_id;
@@ -1591,7 +1583,6 @@
                 $reslu = $('#resolutivo').val();
                 let preguntas = JSON.stringify(completo);
                 let data    = {"formulario_id": formulario_id, "seccion_id": seccion_id, "preguntas": preguntas, "eliminados":  JSON.stringify(eliminados), "resolutivo":$reslu };
-                console.log(data);
                 request = $.ajax({
                     type: 'POST',
                     url: '/formulario/preguntas',
