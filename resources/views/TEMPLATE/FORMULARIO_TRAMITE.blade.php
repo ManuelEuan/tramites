@@ -8,7 +8,6 @@
     <title>Formulario</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ asset('assets/template/img/favicon_queretaro/android-chrome.png') }}" rel="shortcut icon">
     <link href="{{ asset('assets/template/css/bootstrap.css') }}" rel="stylesheet">
 
@@ -21,8 +20,7 @@
     <link href="{{ asset('assets/template/css/bootstrap-combobox.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/fonts.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/style.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/template/fonts/fontawesome-5.0.6/css/fontawesome-all.css') }}" rel="stylesheet">
-    <script src="https://cdn.ckeditor.com/4.15.1/standard/ckeditor.js"></script>
+    {{-- <link href="{{ asset('assets/template/fonts/fontawesome-5.0.6/css/fontawesome-all.css') }}" rel="stylesheet"> --}}
 
     <style>
         /* CSS Manuel Euan */
@@ -165,103 +163,111 @@
     <h3 style="width: 100%; text-align:center;">FORMULARIO</h3>
 
     @foreach($formularios->secciones as $seccion)
-    @if(count($seccion->preguntas) > 0)
-    <div style="padding: 15px; padding-top:5px; padding-bottom:0px;">
-        <h4 style="padding:5px; margin:0px; width: 100%; text-align:left; background-color:#e0e0e0; ">{{$seccion->FORM_CNOMBRE}}</h5>
-    </div>
-    @foreach($seccion->preguntas as $pregunta)
-    <div style="padding: 15px; padding-top:10px; padding-bottom:0px;">
-        <h4 style="padding:5px; margin:0px; width: 100%; text-align:left; ">{{$pregunta->FORM_CPREGUNTA}}</h5>
-    </div>
-    <!-- Verificacion el tipo de pregunta -->
-    @switch($pregunta->FORM_CTIPORESPUESTA)
-    @case('abierta')
-    <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
-        <p>
-            @if(count($pregunta->respuestas)>0)
-            {{ $pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA }}
-            @else
-            @endif
-        </p>
-    </div>
-    @break
-    @case('unica')
-    <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
-        @foreach($pregunta->respuestas as $respuesta)
-        <input {{$respuesta->FORM_CVALOR_RESPUESTA}} style="width: 20px; height: 20px;" class="form-check-input" type="radio">
-        <label style="padding-top: 4px; padding-left: 8px; font-size: 14px;" class="form-check-label">{{$respuesta->FORM_CVALOR}}</label>
-        <br>
-        @endforeach
-    </div>
-    @break
-    @case('especial')
-    <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
-        <table style="border-collapse: collapse; width: 100%;">
-            <tr style="background-color: rgb(0, 0, 0, 0.05);">
-                @foreach($pregunta->respuestas as $respuesta)
-                <th style="padding: 5px; border: 1px solid #dee2e6;">{{$respuesta->FORM_CVALOR}}</th>
-                @endforeach
-            </tr>
-            <tr>
-                @foreach($pregunta->respuestas as $respuesta)
-                @switch($respuesta->FORM_CTIPORESPUESTAESPECIAL)
+        @if(count($seccion->preguntas) > 0)
+            <div style="padding: 15px; padding-top:5px; padding-bottom:0px;">
+                <h4 style="padding:5px; margin:0px; width: 100%; text-align:left; background-color:#e0e0e0; ">{{$seccion->FORM_CNOMBRE}}</h5>
+            </div>
+            @foreach($seccion->preguntas as $pregunta)
+                <div style="padding: 15px; padding-top:10px; padding-bottom:0px;">
+                    <h4 style="padding:5px; margin:0px; width: 100%; text-align:left; ">{{$pregunta->FORM_CPREGUNTA}}</h5>
+                </div>
+                <!-- Verificacion el tipo de pregunta -->
+                @switch($pregunta->FORM_CTIPORESPUESTA)
+                    @case('abierta')
+                        <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
+                            <p>
+                                @if(count($pregunta->respuestas)>0)
+                                    {{ $pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA }}
+                                @endif
+                            </p>
+                        </div>
+                        @break
+                    @case('unica')
+                        <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
+                            @foreach($pregunta->respuestas as $respuesta)
+                                <input {{$respuesta->FORM_CVALOR_RESPUESTA}} style="width: 20px; height: 20px;" class="form-check-input" type="radio">
+                                    <label style="padding-top: 4px; padding-left: 8px; font-size: 14px;" class="form-check-label">{{$respuesta->FORM_CVALOR}}</label>
+                                <br>
+                            @endforeach
+                        </div>
+                        @break
+                    @case('especial')
+                        <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
+                            <table style="border-collapse: collapse; width: 100%;">
+                                <tr style="background-color: rgb(0, 0, 0, 0.05);">
+                                    @foreach($pregunta->respuestas as $respuesta)
+                                        <th style="padding: 5px; border: 1px solid #dee2e6;">{{$respuesta->FORM_CVALOR}}</th>
+                                    @endforeach
+                                </tr>
+                                <tr>
+                                    @foreach($pregunta->respuestas as $respuesta)
+                                        @switch($respuesta->FORM_CTIPORESPUESTAESPECIAL)
+                                            @case('numerico')
+                                                @if(count($respuesta->respuestas_especial)>0)
+                                                    <td style="padding: 5px; border: 1px solid #dee2e6;">{{$respuesta->respuestas_especial[0]->FORM_CVALOR_RESPUESTA}}</td>
+                                                @else
+                                                    <td style="padding: 5px; border: 1px solid #dee2e6;"></td>
+                                                @endif
+                                            @break
 
-                @case('numerico')
-                @if(count($respuesta->respuestas_especial)>0)
-                <td style="padding: 5px; border: 1px solid #dee2e6;">{{$respuesta->respuestas_especial[0]->FORM_CVALOR_RESPUESTA}}</td>
-                @else
-                <td style="padding: 5px; border: 1px solid #dee2e6;"></td>
-                @endif
-                @break
+                                            @case('opciones')
+                                                @if(count($respuesta->respuestas_especial)>0)
+                                                    @foreach($respuesta->respuestas_especial as $opciones)
+                                                        @if($opciones->FORM_CVALOR_RESPUESTA == 'selected')
+                                                            <td style="padding: 5px; border: 1px solid #dee2e6;">{{$opciones->FORM_CVALOR}}</td>
+                                                        @break
+                                                        @endif
+                                                    @endforeach
+                                                @else
+                                                    <td style="padding: 5px; border: 1px solid #dee2e6;"></td>
+                                                @endif
+                                            @break
 
-                @case('opciones')
-                @if(count($respuesta->respuestas_especial)>0)
-                @foreach($respuesta->respuestas_especial as $opciones)
-                @if($opciones->FORM_CVALOR_RESPUESTA == 'selected')
-                <td style="padding: 5px; border: 1px solid #dee2e6;">{{$opciones->FORM_CVALOR}}</td>
-                @break
-                @endif
-                @endforeach
-                @else
-                <td style="padding: 5px; border: 1px solid #dee2e6;"></td>
-                @endif
-                @break
-
-                @default
-                @if(count($respuesta->respuestas_especial)>0)
-                <td style="padding: 5px; border: 1px solid #dee2e6;">{{$respuesta->respuestas_especial[0]->FORM_CVALOR_RESPUESTA}}</td>
-                @else
-                <td style="padding: 5px; border: 1px solid #dee2e6;"></td>
-                @endif
-
+                                            @default
+                                                @if(count($respuesta->respuestas_especial)>0)
+                                                    <td style="padding: 5px; border: 1px solid #dee2e6;">{{$respuesta->respuestas_especial[0]->FORM_CVALOR_RESPUESTA}}</td>
+                                                @else
+                                                    <td style="padding: 5px; border: 1px solid #dee2e6;"></td>
+                                                @endif
+                                        @endswitch
+                                    @endforeach
+                                </tr>
+                            </table>
+                        </div>
+                        @break
+                    @case('enriquecido')
+                        <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
+                            @if(count($pregunta->respuestas)>0)
+                                {!! $pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA !!}
+                            @else
+                            @endif
+                        </div>
+                        @break
+                    @case('multiple')
+                        <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
+                            @foreach($pregunta->respuestas as $respuesta)
+                                <input {{$respuesta->FORM_CVALOR_RESPUESTA}} style="width: 20px; height: 20px;" type="checkbox">
+                                <label style="padding-left: 8px; font-size: 14px;" class="form-check-label">{{$respuesta->FORM_CVALOR}}</label>
+                                <br>
+                            @endforeach
+                        </div>
+                        @break
+                    @case('catalogo')
+                        <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
+                            @foreach($pregunta->respuestas as $respuesta)
+                                <p>
+                                    @if(count($pregunta->respuestas)>0)
+                                        {{ $pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA }}
+                                    @endif
+                                </p>
+                            @endforeach
+                        </div>
+                        @break
+                    @default
                 @endswitch
-                @endforeach
-            </tr>
-        </table>
-    </div>
-    @break
-    @case('enriquecido')
-    <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
-        @if(count($pregunta->respuestas)>0)
-        {!! $pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA !!}
-        @else
+                <!-- Fin Verificamos el tipo de pregunta -->
+            @endforeach
         @endif
-    </div>
-    @break
-    @case('multiple')
-    <div style="padding: 15px; padding-left:25px; padding-top:0px; padding-bottom:0px;">
-        @foreach($pregunta->respuestas as $respuesta)
-        <input {{$respuesta->FORM_CVALOR_RESPUESTA}} style="width: 20px; height: 20px;" type="checkbox">
-        <label style="padding-left: 8px; font-size: 14px;" class="form-check-label">{{$respuesta->FORM_CVALOR}}</label>
-        <br>
-        @endforeach
-    </div>
-    @break
-    @default
-    @endswitch
-    <!-- Fin Verificamos el tipo de pregunta -->
-    @endforeach
-    @endif
     @endforeach
 
 
@@ -290,32 +296,18 @@
     <script src="{{ asset('assets/template/plugins/Fullcalendar/locales-all.min.js') }}"></script>
     <script src="{{ asset('assets/template/plugins/bootstrap-select/js/bootstrap-select.min.js') }}"></script>
 
-
-    <script type="text/javascript">
-        var list_documentos = [];
-        $(document).ready(function() {
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-        });
-    </script>
-
     {{-- Here's the magic. This MUST be inside body tag. Page count / total, centered at bottom of page --}}
-<script type="text/php">
-    if(isset($pdf)) {
-        $text = "Página {PAGE_NUM} de {PAGE_COUNT}";
-        $size = 10;
-        $font = $fontMetrics->getFont("Verdana");
-        $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
-        $x = ($pdf->get_width() - $width) / 2;
-        $y = $pdf->get_height() - 35;
-        $pdf->page_text($x, $y, $text, $font, $size);
-    }
-</script>
+    <script type="text/php">
+        if(isset($pdf)) {
+            $text = "Página {PAGE_NUM} de {PAGE_COUNT}";
+            $size = 10;
+            $font = $fontMetrics->getFont("Verdana");
+            $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
+            $x = ($pdf->get_width() - $width) / 2;
+            $y = $pdf->get_height() - 35;
+            $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    </script>
 
 </body>
 
