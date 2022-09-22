@@ -126,7 +126,7 @@ class GiroController extends Controller
         $itemsShow  = !is_null($request->items_to_show) ? $request->items_to_show : 10;
 
         $query->orderBy($order_by, $order);
-        if(!is_null($request->paginate) || $request->paginate == true) {
+        if(!is_null($request->paginate) && $request->paginate == "true") {
             $items = $query->paginate($itemsShow);
             return response()->json($items, 200);
         }

@@ -36,12 +36,12 @@ class FormularioController extends Controller
 
         if($request->start != 0)
             $page =  $request->length/ $request->start;
-        
+
         $request->merge(['page' => $page]);
 
 
         $totalRecords = DB::table('tram_form_formulario')->where('FORM_BACTIVO', true)->count();
-        
+
 
 
         //Comienza el Query
@@ -52,13 +52,13 @@ class FormularioController extends Controller
             $query->where('FORM_CNOMBRE','like','%'. $request->nombre .'%');
             $totalFiltered->where('FORM_CNOMBRE','like','%'. $request->nombre .'%');
         }
-        
+
         if(!is_null($request->estatus) && $request->estatus != "" &&  $request->estatus != "Seleccionar"){
             $estatus = $request->estatus == 'Activos' ? true : false;
             $query->where('FORM_BACTIVO', $estatus);
             $totalFiltered->where('FORM_BACTIVO', $estatus);
         }
-        
+
         if(!is_null($request->fecha_inicio)  && $request->fecha_inicio != ""){
             $query->where('FORM_DFECHA',">=", $request->fecha_inicio);
             $totalFiltered->where('FORM_DFECHA',">=", $request->fecha_inicio);
@@ -68,13 +68,13 @@ class FormularioController extends Controller
             $query->where('FORM_DFECHA',"<=", $request->fecha_final);
             $totalFiltered->where('FORM_DFECHA',"<=", $request->fecha_final);
         }
-         
+
         $totalFilteredCount = $totalFiltered->count();
-        
+
         //Parametros de paginacion y orden
         if(!is_null($request->order)){
             $order = $request->order[0]['dir'];
-        
+
             if($request->order[0]['column'] == 0)
                 $order_by = "FORM_DFECHA";
             elseif($request->order[0]['column'] == 1)
@@ -84,7 +84,7 @@ class FormularioController extends Controller
             elseif($request->order[0]['column'] == 3)
                 $order_by = "FORM_BACTIVO";
         }
-        
+
         $query->orderBy($order_by, $order);
         if(is_null($request->paginate) || $request->paginate == "true" ){
             if(!is_null($request->length)){
@@ -92,7 +92,7 @@ class FormularioController extends Controller
                 if($request->length == "-1")
                     $resultados = 1000000000;
             }
-             
+
             $items = $query->skip($start)->take($resultados)->get();
         }
         else{
@@ -100,13 +100,13 @@ class FormularioController extends Controller
             return response()->json(["data" => $items], 200);
         }
 
-        $final      = (object)[          
+        $final      = (object)[
             "data"              => $items,
             "recordsFiltered"   => $totalFilteredCount,
             "recordsTotal"      => $totalRecords,
             "draw" => intval($draw)
         ];
-        
+
         return response()->json($final, 200);
     }
 
@@ -115,7 +115,7 @@ class FormularioController extends Controller
         return response()->json($items);
     }
 
-    public function store(Request $request){        
+    public function store(Request $request){
         $item = new Cls_Formulario();
         $item->FORM_CNOMBRE         = $request->nombre;
         $item->FORM_DFECHA          = new DateTime('now');
@@ -124,7 +124,7 @@ class FormularioController extends Controller
 
         if($request->copia_id != 0){
             $preguntas = Cls_Formulario_Pregunta::where('FORM_NFORMULARIOID', $request->copia_id)->get();
-            
+
             foreach ($preguntas as $pregunta) {
                 $np = new Cls_Formulario_Pregunta();
                 $np->FORM_NFORMULARIOID   = $item->FORM_NID;
@@ -188,10 +188,11 @@ class FormularioController extends Controller
     public function preguntas(Request $request){
         try {
             $pregunta   = null;
-            $respuesta  = null; 
+            $respuesta  = null;
             $tiRes      = "";
             $tipEsp     = "";
-            
+            //DB::beginTransaction();
+
             $eliminados = json_decode($request->eliminados);
             foreach ($eliminados as $eliminar) {
                 if($eliminar->tipo == 'pregunta')
@@ -201,40 +202,34 @@ class FormularioController extends Controller
                 elseif($eliminar->tipo == 'especial')
                     Cls_Formulario_Respuesta_Especial::where('FORM_NID', $eliminar->id)->delete();
             }
-           
+
             $array = json_decode($request->preguntas);
-           
-                $res = null;
-            foreach ($array as $datos) { 
-                $valP   = strpos($datos->name,  'pregunta_');
-                $valTR  = strpos($datos->name,  'tipoRespuesta_');
-                $valR   = strpos($datos->name,  'respuesta_');
-                $valTE  = strpos($datos->name,  'select_');
-                $valCh  = strpos($datos->name,  'bloqueo_');
-                $valEO  = strpos($datos->name,  'opcionEspecial_');
-                $valEO  = strpos($datos->name,  'opcionEspecial_');
-                $valRes  = strpos($datos->name,  'update_resolutivo_');
-                $valResol  = strpos($datos->name,  'resolutivo_');
-                
+            foreach ($array as $datos) {
+                $valP       = strpos($datos->name,  'pregunta_');
+                $valTR      = strpos($datos->name,  'tipoRespuesta_');
+                $valR       = strpos($datos->name,  'respuesta_');
+                $valTE      = strpos($datos->name,  'select_');
+                $valCh      = strpos($datos->name,  'bloqueo_');
+                $valEO      = strpos($datos->name,  'opcionEspecial_');
+                $valEO      = strpos($datos->name,  'opcionEspecial_');
+                $valCat     = strpos($datos->name,  'tipoCatalogo_');
+                $valRes     = strpos($datos->name,  'update_resolutivo_');
+                $valResol   = strpos($datos->name,  'resolutivo_');
                 $resolutivo = $datos->id;
-               
-                    if($valResol !== FALSE) {
 
-                        if($resolutivo == 0){
-                            $res =$datos->value;
-
-                        }else{
-
-                            $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->select('*')->first('FORM_NID');
-                            Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->update(['FORM_BRESOLUTIVO' => $datos->value]);
-                        }
-                        
+                if($valResol !== FALSE) {
+                    if($resolutivo == 0)
+                        $res =$datos->value;
+                    else{
+                        $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->select('*')->first('FORM_NID');
+                        Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->update(['FORM_BRESOLUTIVO' => $datos->value]);
                     }
-                // }
+
+                }
+
                 if($valP !== FALSE) {
                     // $resolutivo =$datos->id;
                     if($datos->id == 0){
-                       
                         $pregunta = new Cls_Formulario_Pregunta();
                         $pregunta->FORM_NFORMULARIOID   = $request->formulario_id;
                         $pregunta->FORM_NSECCIONID      = $request->seccion_id;
@@ -243,17 +238,14 @@ class FormularioController extends Controller
                         $pregunta->save();
                     }
                     else{
-                       
                         $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->select('*')->first('FORM_NID');
                         Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->update(['FORM_CPREGUNTA' => $datos->value]);
                     }
                 }
-                
-              
-    
+
                 if($valTR !== FALSE)
                     $tiRes = $datos->value;
-    
+
                 if($valR !== FALSE){
                     if($datos->id == 0){
                         if (str_contains($datos->name,'respuesta_update_')) {
@@ -275,16 +267,15 @@ class FormularioController extends Controller
                         Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$datos->id)->update(['FORM_NPREGUNTAID' => $pregunta->FORM_NID, 'FORM_CTIPORESPUESTA' => $tiRes, 'FORM_CVALOR' =>  $datos->value, "FORM_BBLOQUEAR" => null]);
                     }
                 }
-               
+
                 if($valCh !== false)
                     Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$respuesta->FORM_NID)->update(['FORM_BBLOQUEAR' => true ]);
 
                 if($valTE !== FALSE)
                     $tipEsp = $datos->value;
-                
+
                 if($valEO !== FALSE)
                     $tipEsp = $datos->value;
-                
 
                 if(($tiRes == "especial" && $valTE !== false) || ($tiRes == "especial" && $valEO !== false)){
                     $anterior = Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->first();
@@ -292,7 +283,7 @@ class FormularioController extends Controller
                         if($anterior->FORM_CTIPORESPUESTA != $datos->value){
                             if($datos->value != "opciones"){
                                 Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->update(['FORM_CTIPORESPUESTA' => $datos->value, 'FORM_CVALOR' => $datos->value]);
-                                
+
                                 if($anterior->FORM_CTIPORESPUESTA == "opciones"){
                                     $primero = Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->first();
                                     Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->where('FORM_NID', '!=', $primero->FORM_NID)->delete();
@@ -307,7 +298,7 @@ class FormularioController extends Controller
                         if($datos->id == 0){
                             $especiales = new Cls_Formulario_Respuesta_Especial();
                             $especiales->FORM_NPREGUNTARESPUESTAID  = $respuesta->FORM_NID;
-                            
+
                             if($datos->value != "simple" && $datos->value != "numerico"){
                                 $tipEsp= 'opciones';
                             }
@@ -320,7 +311,7 @@ class FormularioController extends Controller
                             if($datos->value != "simple" && $datos->value != "numerico"){
                                 $tipEsp= 'opciones';
                             }
-                          
+
                             Cls_Formulario_Respuesta_Especial::where('FORM_NID',$datos->id)->update(['FORM_CTIPORESPUESTA' => $tipEsp, 'FORM_CVALOR' => trim($datos->value) ]);
                         }
                     }
@@ -352,12 +343,12 @@ class FormularioController extends Controller
     public function detalle(Request $request){
         $response= [];
         $preguntas = Cls_Formulario_Pregunta::where('FORM_NFORMULARIOID', $request->formulario_id)->where('FORM_NSECCIONID', $request->seccion_id)->get()->toArray();
-        
+
         try {
             foreach ($preguntas as $pregunta) {
                 $pregunta['respuestas'] = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID', $pregunta['FORM_NID'])->get()->toArray();
                 $especiales = [];
-    
+
                 foreach ($pregunta['respuestas']  as $index => $respuesta) {
                     if($respuesta['FORM_CTIPORESPUESTA'] == "especial"){
                         $pregunta['respuestas'][$index]['especial'] = Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID', $respuesta['FORM_NID'])->get();
@@ -365,7 +356,7 @@ class FormularioController extends Controller
                 }
                 array_push($response, $pregunta);
             }
-     
+
             return response()->json($response, 200);
         } catch (Exception $ex) {
             return response()->json($ex, 403);
