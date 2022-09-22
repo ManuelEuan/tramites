@@ -383,8 +383,9 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('assets/template/js/jquery.js') }}"></script>
+    {{-- <script src="{{ asset('assets/template/js/jquery.js') }}"></script> --}}
     {{-- <script type="text/javascript" src="js/popper.min.js"></script> --}}
+    <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
     <script src="{{ asset('assets/template/js/bootstrap.min.js') }}"></script>
     {{-- <script type="text/javascript" src="plugins/mdb/js/mdb.min.js"></script> --}}
     <script src="{{ asset('assets/template/plugins/DataTables/datatables.min.js') }}"></script>
