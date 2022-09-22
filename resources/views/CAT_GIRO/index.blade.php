@@ -236,7 +236,7 @@
         $("#btnGuardar").prop('disabled', true);
         let tipo = accion == 'add' ? 'post' : 'put';
         $.ajax({
-            url: "/giro",
+            url: "/giros",
             type: tipo,
             data: obj,
             success: function(response) {
@@ -294,7 +294,7 @@
                 if (result.isConfirmed){
 
                     request = $.ajax({
-                        url: "/giro/estatus",
+                        url: "/giros/estatus",
                         type: "post",
                         data: {"id": id}
                     });
@@ -333,7 +333,7 @@
         }
 
         request = $.ajax({
-            url: "/giro/find",
+            url: "/giros/find",
             type: "get",
             data: varPaginacion
         });
@@ -506,7 +506,7 @@
             if (result.isConfirmed){
                 
                 request = $.ajax({
-                    url: '/giro/estatus',
+                    url: '/giros/estatus',
                     type: "post",
                     data: {"id": id}
                 });
