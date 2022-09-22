@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use File;
+use Exception;
 use ZipArchive;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -884,151 +885,147 @@ class TramitesController extends Controller
     public function download_tramite($id)
     {
         //Se trámite y formulario
-        $tramite_ = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
-        $configuracion =  $tramite_;
-        $USTR_NIDUSUARIOTRAMITE = $tramite_['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
+        try {
+            $tramite_ = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
+            $configuracion =  $tramite_;
+            $USTR_NIDUSUARIOTRAMITE = $tramite_['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
 
-        //Respuestas
-        $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)
-            ->select('*')
-            ->get()->toArray();
-
-        foreach ($configuracion['formularios'] as $form) {
-
-            foreach ($form->secciones as $sec) {
-
-                foreach ($sec->preguntas as $preg) {
-
-                    foreach ($preg->respuestas as $resp) {
-
-                        $resp->FORM_CVALOR_RESPUESTA = "";
-
-                        foreach ($respuestas as $_resp) {
-
-                            if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
-                                $preg->estatus = $_resp['USRE_NESTATUS'];
-                                $preg->observaciones = $_resp['USRE_COBSERVACION'];
-                            }
-
-                            switch ($preg->FORM_CTIPORESPUESTA) {
-                                case "multiple":
-                                    if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
-                                        $resp->FORM_CVALOR_RESPUESTA = "checked";
+            //Respuestas
+            $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->orderBy('USRE_NIDUSUARIORESP','DESC')->get();
+            foreach ($configuracion['formularios'] as $form) {
+                foreach ($form->secciones as $sec) {
+                    foreach ($sec->preguntas as $preg) {
+                        foreach ($preg->respuestas as $resp) {
+                            $resp->FORM_CVALOR_RESPUESTA = "";
+    
+                            foreach ($respuestas as $_resp) {
+                                if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
+                                    $preg->estatus = $_resp['USRE_NESTATUS'];
+                                    $preg->observaciones = $_resp['USRE_COBSERVACION'];
+                                }
+    
+                                switch ($preg->FORM_CTIPORESPUESTA) {
+                                    case "multiple":
+                                        if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                            $resp->FORM_CVALOR_RESPUESTA = "checked";
+                                            break;
+                                        }
                                         break;
-                                    }
-                                    break;
-                                case "unica":
-                                    if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
-                                        $resp->FORM_CVALOR_RESPUESTA = "checked";
+                                    case "unica":
+                                        if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                            $resp->FORM_CVALOR_RESPUESTA = "checked";
+                                            break;
+                                        }
                                         break;
-                                    }
-                                    break;
-                                case "especial":
-                                    foreach ($resp->respuestas_especial as $esp) {
-                                        switch ($resp->FORM_CTIPORESPUESTAESPECIAL) {
-                                            case "opciones":
-
-                                                if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
-                                                    if ($esp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
-                                                        $esp->FORM_CVALOR_RESPUESTA = "selected";
+                                    case "especial":
+                                        foreach ($resp->respuestas_especial as $esp) {
+                                            switch ($resp->FORM_CTIPORESPUESTAESPECIAL) {
+                                                case "opciones":
+    
+                                                    if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
+                                                        if ($esp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                                            $esp->FORM_CVALOR_RESPUESTA = "selected";
+                                                            break;
+                                                        }
+                                                    }
+                                                    break;
+                                                default:
+                                                    if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
+                                                        $esp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
                                                         break;
                                                     }
-                                                }
-                                                break;
-                                            default:
-                                                if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
-                                                    $esp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
                                                     break;
-                                                }
-                                                break;
+                                            }
                                         }
-                                    }
-                                    break;
-                                default:
-
-                                    if ($resp->FORM_NPREGUNTAID === $_resp['USRE_NIDPREGUNTA']) {
-                                        $resp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
                                         break;
-                                    }
-                                    break;
+                                    case "catalogo":
+                                        if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']){
+                                            $valorRespuesta = DB::table($resp->FORM_CVALOR)->where('id', $_resp->USRE_CRESPUESTA)->first();
+                                            $resp->FORM_CVALOR_RESPUESTA = $valorRespuesta->nombre;
+                                        }
+                                        break;
+                                    default:
+                                        if ($resp->FORM_NPREGUNTAID === $_resp['USRE_NIDPREGUNTA']) {
+                                            $resp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
+                                            break;
+                                        }
+                                        break;
+                                }
                             }
                         }
                     }
                 }
             }
-        }
+    
+            $tramite        = $configuracion['tramite'][0];
+            $formularios    =  $configuracion['formularios'][0];
 
-        $tramite = $configuracion['tramite'][0];
-        $formularios =  $configuracion['formularios'][0];
+            //Creacion de pdf
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->setPaper("letter", "portrait");
+            $pdf->loadView('TEMPLATE.FORMULARIO_TRAMITE', compact('tramite', 'formularios'));
+            //return $pdf->download('Formulario.pdf');
 
-        // return view('TEMPLATE.FORMULARIO_TRAMITE', compact('tramite', 'formularios'));
-        // $pdf = \PDF::loadView('TEMPLATE.FORMULARIO_TRAMITE', compact('tramite'));
-        // return $pdf->download('pruebapdf.pdf');
-
-        //Creacion de pdf
-        $pdf = app('dompdf.wrapper');
-        $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->setPaper("letter", "portrait");
-        $pdf->loadView('TEMPLATE.FORMULARIO_TRAMITE', compact('tramite', 'formularios'));
-        //return $pdf->download('Formulario.pdf');
-
-        //Se guardar el pdf
-        $pathPdf = public_path();
-        $fileNamePdf =   Str::random(8) . '.pdf';
-        $pdf->save($pathPdf . '/' . $fileNamePdf);
-        // File::delete($pathPdf . '/' . $fileNamePdf);
-        // return $pdf->download($fileNamePdf);
-
-        //Creación y descarga de archivo zip
-        $zip = new ZipArchive();
-        $fecha = Carbon::now();
-        $fecha = $fecha->toArray();
-        $fecha = $fecha['timestamp'];
-        $folio = explode('/', $tramite->USTR_CFOLIO);
-        $folio = $folio[0] . '_' . $folio[1];
-        $fileName = 'TRAM_' . $folio  . '.zip';
-
-        //Eliminamos el archivo zip en caso de que exista
-        File::delete($pathPdf . '/' . $fileName);
-
-        //Obtenemos documentos del trámite
-        $listDocumentos = DB::select('SELECT * FROM tram_mdv_usuariordocumento WHERE USDO_NIDUSUARIOTRAMITE = ?', array($id));
-        $listResolutivos = DB::select('SELECT * FROM tram_mdv_usuario_resolutivo WHERE USRE_NIDUSUARIOTRAMITE = ?', array($id));
-
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) == TRUE) {
-
-            //Agregamos formulario
-            $zip->addFile(public_path($fileNamePdf), 'FORMULARIO_' . $folio . '.pdf');
-
-            //Agregar documentos al zip
-            foreach ($listDocumentos as $key => $value) {
-
-                if ($value->USDO_CRUTADOC != null && $value->USDO_CRUTADOC != "") {
-                    if (file_exists(public_path($value->USDO_CRUTADOC))) {
-                        $fileNameDocumento = $value->USDO_CDOCNOMBRE . '.' . $value->USDO_CEXTENSION;
-                        $zip->addFile(public_path($value->USDO_CRUTADOC), $fileNameDocumento);
-                    }
-                }
+            //Se guardar el pdf
+            $pathPdf        = public_path('tramites');
+            $fileNamePdf    = Str::random(8) . '.pdf';
+            if(!File::isDirectory($pathPdf)) {
+                if(!File::makeDirectory($pathPdf, $mode = 0777, true, true))
+                    $response = false;
             }
 
-            //Agregar resolutivos
-            foreach ($listResolutivos as $key => $value) {
-                if ($value->USRE_CRUTADOC != null && $value->USRE_CRUTADOC != "") {
-                    if (file_exists(public_path($value->USRE_CRUTADOC))) {
-                        $fileNameDocumento = "R-" . $value->USRE_NIDUSUARIO_RESOLUTIVO . '.' . $value->USRE_CEXTENSION;
-                        $zip->addFile(public_path($value->USRE_CRUTADOC), $fileNameDocumento);
+            $pdf->save($pathPdf . '/' . $fileNamePdf);
+            //Creación y descarga de archivo zip
+            $zip = new ZipArchive();
+            $fecha = Carbon::now();
+            $fecha = $fecha->toArray();
+            $fecha = $fecha['timestamp'];
+            $folio = explode('/', $tramite->USTR_CFOLIO);
+            $folio = $folio[0] . '_' . $folio[1];
+            $fileName = 'TRAM_' . $folio  . '.zip';
+    
+
+            //Obtenemos documentos del trámite
+            $listDocumentos = DB::select('SELECT * FROM tram_mdv_usuariordocumento WHERE USDO_NIDUSUARIOTRAMITE = ?', array($id));
+            $listResolutivos = DB::select('SELECT * FROM tram_mdv_usuario_resolutivo WHERE USRE_NIDUSUARIOTRAMITE = ?', array($id));
+    
+            if ($zip->open($pathPdf."/".$fileName, ZipArchive::CREATE) == TRUE) {
+    
+                //Agregamos formulario
+                $zip->addFile($pathPdf."/".$fileNamePdf, 'FORMULARIO_' . $folio . '.pdf');
+    
+                //Agregar documentos al zip
+                foreach ($listDocumentos as $key => $value) {
+    
+                    if ($value->USDO_CRUTADOC != null && $value->USDO_CRUTADOC != "") {
+                        if (file_exists(public_path($value->USDO_CRUTADOC))) {
+                            $fileNameDocumento = $value->USDO_CDOCNOMBRE . '.' . $value->USDO_CEXTENSION;
+                            $zip->addFile(public_path($value->USDO_CRUTADOC), $fileNameDocumento);
+                        }
                     }
                 }
+    
+                //Agregar resolutivos
+                foreach ($listResolutivos as $key => $value) {
+                    if ($value->USRE_CRUTADOC != null && $value->USRE_CRUTADOC != "") {
+                        if (file_exists(public_path($value->USRE_CRUTADOC))) {
+                            $fileNameDocumento = "R-" . $value->USRE_NIDUSUARIO_RESOLUTIVO . '.' . $value->USRE_CEXTENSION;
+                            $zip->addFile(public_path($value->USRE_CRUTADOC), $fileNameDocumento);
+                        }
+                    }
+                }
+                $zip->close();
             }
-            $zip->close();
+    
+            //Eliminamos los archivos
+            File::delete($pathPdf . '/' . $fileNamePdf);
+            //File::delete($pathPdf . '/' . $fileName);
+    
+            $response = [ 'name' => 'tramites/'.$fileName ];
+        } catch (Exception $ex) {
+            dd($ex->getMessage());
         }
-
-        //Eliminamos el pdf
-        File::delete($pathPdf . '/' . $fileNamePdf);
-
-        $response = [
-            'name' => $fileName,
-        ];
 
         //return response()->download(public_path($fileName))->deleteFileAfterSend(true);
         return response()->json($response);
