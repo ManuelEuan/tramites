@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Cls_Giro extends Model
+class Cls_Catalogo extends Model
 {
-    protected $table    = 'tram_cat_giros';
+    protected $table    = 'catalogos';
     public $timestamps  = false;
     protected $fillable = [
-        'clave',
         'nombre',
+        'tabla',
         'descripcion',
         'activo'
     ];

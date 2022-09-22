@@ -289,9 +289,7 @@
         var tipo                = 'nuevo';
         var validateFormulario  = false;
         var open_modal          = "{{$open}}";
-
-        console.log('ver open mdoal');
-        console.log(open_modal);
+        var catalogos           = [];
         
         var formulario_id       = 0;
         var seccion_id          = 0;
@@ -313,6 +311,7 @@
             listaFormularios();
             getCuestionarios();
             getSecciones();
+            getCatalogos();
 
             $("#descripcion").keyup(function() {
                 if($(this).val() != undefined && $(this).val() != null){
@@ -328,7 +327,6 @@
 
         $('#txtFechaInicio').change(function() {
             var date = $(this).val();
-            //console.log(date, 'change')
             $('#txtFechaFin').attr('min' , date);
         });
 
@@ -363,7 +361,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            console.log("entro");
+
             table = $('#tblFormularios').DataTable({
                 "language": {
                     url: "/assets/template/plugins/DataTables/language/Spanish.json",
@@ -632,7 +630,6 @@
         }
 
         function getCuestionarios(){
-
             request = $.ajax({
                 url: "/formulario/find",
                 type: "get",
@@ -642,6 +639,28 @@
             // Callback handler that will be called on success
             request.done(function (response, textStatus, jqXHR){
                 cuestionarios = response.data;
+            });
+
+            // Callback handler that will be called on failure
+            request.fail(function (jqXHR, textStatus, errorThrown){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
+                });
+            });
+        }
+
+        function getCatalogos(){
+            request = $.ajax({
+                url: "/catalogos/find",
+                type: "get",
+                data: {paginate: false, activo:true}
+            });
+        
+            // Callback handler that will be called on success
+            request.done(function (response, textStatus, jqXHR){
+                catalogos = response.data;
             });
 
             // Callback handler that will be called on failure
@@ -855,7 +874,7 @@
                     if(response.length == 0){
                         $("#contenedorPreguntas").append(
                             `<div class="form-row contenedorPregunta" id="div_pregunta_${pregunda_id}">
-                                <div class=" col-md-7 mb-3">
+                                <div class=" col-md-4 mb-3">
                                     <label for="pregunta_${pregunda_id}">Pregunta</label>
                                     <div class="input-group">
                                         <input type="text" minlength="2" maxlength="100" class="form-control" name="pregunta_${pregunda_id}" id="pregunta_${pregunda_id}" placeholder="Pregunta" aria-describedby="inputGroupPrepend2" required>
@@ -870,6 +889,7 @@
                                         <option value= 'multiple'>Seleccción múltiple</option>
                                         <option value= 'enriquecido'>Texto enriquecido</option>
                                         <option value= 'especial'>Especial</option>
+                                        <option value= 'catalogo'>Catalogo</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3 mb-3">
@@ -898,9 +918,8 @@
                             let tipo_respuesta  =  element.respuestas.length > 0 ? element.respuestas[0].FORM_CTIPORESPUESTA : "abierta";
                             let nom_pregunta    = element.FORM_CPREGUNTA;
                             let resol    = element.FORM_BRESOLUTIVO;
-                            
                             let preguntas = `<div class="form-row contenedorPregunta" id="div_pregunta_update${element.FORM_NID}">
-                                <div class=" col-md-5 mb-3">
+                                <div class=" col-md-4 mb-3">
                                     <label for="update_pregunta_${element.FORM_NID}">Pregunta</label>
                                     <div class="input-group">
                                         <input type="text" minlength="2" maxlength="100" value='${nom_pregunta}' class="form-control" name="update_pregunta_${element.FORM_NID}" id="pregunta_${element.FORM_NID}" placeholder="Pregunta" aria-describedby="inputGroupPrepend2" required>
@@ -916,6 +935,7 @@
                                         <option value= 'multiple'    ${tipo_respuesta   == 'multiple' ? 'selected': ''}>Seleccción múltiple</option>
                                         <option value= 'enriquecido' ${tipo_respuesta   == 'enriquecido' ? 'selected': ''}>Texto enriquecido</option>
                                         <option value= 'especial'    ${tipo_respuesta   == 'especial' ? 'selected': ''}>Especial</option>
+                                        <option value= 'catalogo'    ${tipo_respuesta   == 'catalogo' ? 'selected': ''}>Catalogo</option>
                                     </select>
                                 </div>
                                 
@@ -1072,7 +1092,23 @@
                                             <div class="btnContenedor">
                                                 <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('especial', '${element.FORM_NID}')"> Agregar respuesta</button>
                                             </div>`; 
-                                        }                                  
+                                        }
+                                        else if(tipo_respuesta == 'catalogo'){
+                                            element.respuestas.forEach(res => {
+                                                let id      = `update_respuesta_${res.FORM_NPREGUNTAID}_${res.FORM_NID}`;
+                                                let select  = '';
+                                                preguntas +=    `<div class="col-md-4">
+                                                                    <label> Catálogo</label>
+                                                                    <select name="${id}" id="${id}" class="form-control" required>
+                                                                        <option value="0">Seleccionar</option>`;
+                                                                        catalogos.forEach(element => {
+                                                                            select  = element.tabla == res.FORM_CVALOR ? 'selected' : '';
+                                                                            preguntas+= `<option value="${element.tabla}" ${select}>${element.nombre}</option>`;
+                                                                        });
+                                                                    preguntas+=`</select>
+                                                                </div>`;
+                                            });
+                                        }                               
                                     
                                     preguntas+=`</div>
                                 </div>
@@ -1102,7 +1138,7 @@
             opcion_especial =1;
             $("#contenedorPreguntas").append(
             `<div class="form-row contenedorPregunta" id="div_pregunta_${pregunda_id}">
-                    <div class=" col-md-7 mb-3">
+                    <div class=" col-md-4 mb-3">
                         <label for="pregunta_${pregunda_id}">Pregunta</label>
                         <div class="input-group">
                             <input type="text" minlength="2" minlength="100" class="form-control" name="pregunta_${pregunda_id}" id="pregunta_${pregunda_id}" placeholder="Pregunta" aria-describedby="inputGroupPrepend2" required>
@@ -1117,6 +1153,7 @@
                             <option value= 'multiple'>Seleccción múltiple</option>
                             <option value= 'enriquecido'>Texto enriquecido</option>
                             <option value= 'especial'>Especial</option>
+                            <option value= 'catalogo'>Catalogo</option>
                         </select>
                     </div>
                     <div class="col-md-3 mb-3">
@@ -1280,6 +1317,21 @@
                             </div>
                         </div>
                     `);
+                    break;
+                case "catalogo":
+                    let id = `respuesta_${pregunta}_${respuesta_id}`;
+                    let html = ` <div class="form-group row" id="contenedorRespuestas_${id}" style="width: 70%; margin-left: -1%;">
+                                    <div class="col-md-6">
+                                        <label> Catálogo</label>
+                                        <select name="${id}" id="${id}" class="form-control" required>
+                                            <option value="0">Seleccionar</option>`;
+                                            catalogos.forEach(element => {
+                                                html+= `<option value="${element.tabla}" >${element.nombre}</option>`;
+                                            });
+                                    html+=`</select>
+                                    </div>
+                                </div>`;
+                    $("#contenedorRespuestas_" + pregunta).replaceWith(html);
                     break;
                 default:
                     break;
@@ -1531,7 +1583,6 @@
                 $reslu = $('#resolutivo').val();
                 let preguntas = JSON.stringify(completo);
                 let data    = {"formulario_id": formulario_id, "seccion_id": seccion_id, "preguntas": preguntas, "eliminados":  JSON.stringify(eliminados), "resolutivo":$reslu };
-
                 request = $.ajax({
                     type: 'POST',
                     url: '/formulario/preguntas',

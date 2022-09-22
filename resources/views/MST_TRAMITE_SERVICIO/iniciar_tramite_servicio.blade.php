@@ -368,6 +368,21 @@
                                                             </div>
                                                         </div>
                                                         @break
+                                                    @case('catalogo')
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
+                                                                <select name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0" class="form-control" required>
+                                                                    <option value="0">Seleccionar</option>;
+                                                                    @foreach ($preg->respuestas as $resp)
+                                                                        @foreach ($resp->catalogos as $cat)
+                                                                            <option value="{{$cat->id}}">{{$cat->clave}} - {{$cat->nombre}}</option>;
+                                                                        @endforeach
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        @break
                                                 @endswitch
                                             @endforeach
                                         </div>
@@ -892,9 +907,11 @@
 
 @section('scripts')
 <script>
-    var id_accede = "{{$tramite['idtramiteaccede']}}";
-    var es_gestor = "{{$tramite['es_gestor']}}";
-    var id_usuario = "{{$tramite['idsuario']}}";//Usuario logeado
+    var id_accede   = "{{$tramite['idtramiteaccede']}}";
+    var es_gestor   = "{{$tramite['es_gestor']}}";
+    var id_usuario  = "{{$tramite['idsuario']}}";//Usuario logeado
+    var catalogos   = [];
+
     //0 no es gestor
     if(es_gestor == 0){
         $(".seccion-tramite").toggle('show');
@@ -989,6 +1006,28 @@
                             $("#icon_" + id).html('<img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">');
                             break;
             }
+    }
+
+    function getCatalogos(url){
+        request = $.ajax({
+            url: "/"+ url +"/find",
+            type: "get",
+            data: {paginate: false, activo:true}
+        });
+
+        // Callback handler that will be called on success
+        request.done(function (response, textStatus, jqXHR){
+            console.log(response);
+        });
+
+        // Callback handler that will be called on failure
+        request.fail(function (jqXHR, textStatus, errorThrown){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
     }
 
     $(document).ready(function() {
@@ -1368,30 +1407,30 @@
     }
 
     function TRAM_FN_AGREGAR_ROW(name){
-    var iddata = TRAM_FN_GENERATE(8);
-            $("#documentosP4").append('<tr>'+
-            '<td> '+ "<div  class='form-check'> <input class='form-check-input' type='checkbox' value='' id=defaultCheck2' disabled> </div>"+'</td>' +
-            '<td>'+
-                " <div id='icon_file_"+iddata+"'>"+
-                " <img src='{{ asset('assets/template/img/doc.png') }}'' width='20' height='20'>"+
-                "</div>"
-            +'</td>' +
-            '<td>'+" <input type='text' class='form-control'  value='"+name+"' id='txt_"+iddata+"'    onchange='TRAM_FN_CAMBIAR_NOMBRE(\""+iddata+"\",\""+iddata+"\")'>"+'</td>' +
-            '<td> '+
-            " <div id='size_file_"+iddata+"'> 0 Bytes</div>"
-            +'</td>' +
-            '<td> Pendiente revisión</td>' +
-            '<td>'+
-                " <img src='{{ asset('assets/template/img/warning.png') }}'' width='20' height='20'>"
-            +'</td>' +
-            '<td>'+
-                " <input type='hidden' name='docs_file_"+iddata+"' id='docs_file_"+iddata+"' value='0_0_0_"+name+"'>"+
-                "<input class='file-select documentos nuevo' name='file_"+iddata+"' id='file_"+iddata+"' data-docname='"+name+"' type='file' onchange='TRAM_FN_SUBIR_DOCUMENTO_MULTIPLE(\""+iddata+"\")'>"
+        var iddata = TRAM_FN_GENERATE(8);
+        $("#documentosP4").append('<tr>'+
+        '<td> '+ "<div  class='form-check'> <input class='form-check-input' type='checkbox' value='' id=defaultCheck2' disabled> </div>"+'</td>' +
+        '<td>'+
+            " <div id='icon_file_"+iddata+"'>"+
+            " <img src='{{ asset('assets/template/img/doc.png') }}'' width='20' height='20'>"+
+            "</div>"
+        +'</td>' +
+        '<td>'+" <input type='text' class='form-control'  value='"+name+"' id='txt_"+iddata+"'    onchange='TRAM_FN_CAMBIAR_NOMBRE(\""+iddata+"\",\""+iddata+"\")'>"+'</td>' +
+        '<td> '+
+        " <div id='size_file_"+iddata+"'> 0 Bytes</div>"
+        +'</td>' +
+        '<td> Pendiente revisión</td>' +
+        '<td>'+
+            " <img src='{{ asset('assets/template/img/warning.png') }}'' width='20' height='20'>"
+        +'</td>' +
+        '<td>'+
+            " <input type='hidden' name='docs_file_"+iddata+"' id='docs_file_"+iddata+"' value='0_0_0_"+name+"'>"+
+            "<input class='file-select documentos nuevo' name='file_"+iddata+"' id='file_"+iddata+"' data-docname='"+name+"' type='file' onchange='TRAM_FN_SUBIR_DOCUMENTO_MULTIPLE(\""+iddata+"\")'>"
 
 
-            +'</td><td></td>' +
-            '<td>'+ "<h5 class='font-weight-bold'><span class='circle-error-multi'  onclick='TRAM_FN_LIMPIARROW_DOCUMENTO(\""+iddata+"\",\""+name+"\")' >X</span></h5>"+'</td>' +
-            +'</tr>');
+        +'</td><td></td>' +
+        '<td>'+ "<h5 class='font-weight-bold'><span class='circle-error-multi'  onclick='TRAM_FN_LIMPIARROW_DOCUMENTO(\""+iddata+"\",\""+name+"\")' >X</span></h5>"+'</td>' +
+        +'</tr>');
     }
 
     function TRAM_FN_LIMPIARROW_DOCUMENTO(id,nombre){
@@ -1439,7 +1478,7 @@
         $("#loading-text").html("Guardando...");
         $('#loading_save').show();
         $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
-        //$('#frmForm').append("");
+
         $.ajax({
             data: $('#frmForm').serialize(),
             url: "/tramite_servicio/guardar",
@@ -1457,7 +1496,6 @@
                         }).then((result) => {
                         if (result.isConfirmed) {
                             document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
-                            //location.reload();
                         }
                     });
                 }else {
