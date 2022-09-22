@@ -410,15 +410,9 @@
             confirmButtonText: 'Aceptar'
         }).then((result) => {
             if (result.isConfirmed) {
-                console.log("descargando...");
-                // var data = '';
                 $.ajax({
                     type: 'GET',
                     url: '/tramite_servicio_cemr/download_tramite/' + id,
-                    // data: data,
-                    // xhrFields: {
-                    //     responseType: 'json'
-                    // },
                     success: function(response) {
                         window.location = response.name;
                     },
