@@ -2,10 +2,11 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\DB;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
 use App\Cls_Notificacion_Tramite;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 
 class Cls_Tramite_Servicio extends Model
 {
@@ -213,6 +214,16 @@ class Cls_Tramite_Servicio extends Model
                         );
                         foreach($preg->respuestas as $resp){
                             $resp->respuestas_especial =  DB::select('SELECT * FROM tram_form_pregunta_respuestas_especial where FORM_NPREGUNTARESPUESTAID = ?', [$resp->FORM_NID]);
+
+                            if($preg->FORM_CTIPORESPUESTA == 'catalogo'){
+                                $resp->catalogos = [];
+                                try{
+                                    $resp->catalogos = DB::table($resp->FORM_CVALOR)->where('activo', true)->get();
+                                }
+                                catch(Exception $ex){
+                                    //Preguntar como marcar el error
+                                }
+                            }
                         }
                     }
 

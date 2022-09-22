@@ -249,11 +249,20 @@ Route::group(['prefix' => 'citas'], function () {
     Route::get('/listado', 'CitasController@getListado');
 });
 
-Route::group(['prefix' => 'giro'], function () {
+Route::group(['prefix' => 'giros'], function () {
     Route::get('/find', 'GiroController@find');
     Route::get('/get', 'GiroController@get');
     Route::get('/', 'GiroController@index');
     Route::post('/', 'GiroController@store');
     Route::post('/estatus', 'GiroController@cambiaEstatus');
     Route::put('/', 'GiroController@update');
+});
+
+Route::group(['prefix' => 'catalogos'], function () {
+    Route::get('/find', 'CatalogoController@find');
+    Route::get('/get', 'CatalogoController@get');
+    /* Route::get('/', 'CatalogoController@index');
+    Route::post('/', 'CatalogoController@store');
+    Route::post('/estatus', 'CatalogoController@cambiaEstatus');
+    Route::put('/', 'CatalogoController@update'); */
 });
