@@ -372,7 +372,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
-                                                                <select name="${id}" id="${id}" class="form-control" required>
+                                                                <select name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0" class="form-control" required>
                                                                     <option value="0">Seleccionar</option>;
                                                                     @foreach ($preg->respuestas as $resp)
                                                                         @foreach ($resp->catalogos as $cat)
@@ -1478,9 +1478,7 @@
         $("#loading-text").html("Guardando...");
         $('#loading_save').show();
         $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
-        //$('#frmForm').append("");
-        console.log(data);
-        return;
+
         $.ajax({
             data: $('#frmForm').serialize(),
             url: "/tramite_servicio/guardar",
@@ -1498,7 +1496,6 @@
                         }).then((result) => {
                         if (result.isConfirmed) {
                             document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
-                            //location.reload();
                         }
                     });
                 }else {
