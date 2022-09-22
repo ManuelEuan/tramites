@@ -21,15 +21,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 ###################### Manuel Euan ######################
 
+Route::get('/tramite_servicio_cemr/download_tramite/{id}', 'TramitesController@download_tramite'); 
+/* Route::get('/getFiltros', 'GestorController@obtener_filtro');
 Route::group(['prefix' => 'catalogos'], function () {
     Route::get('/find', 'CatalogoController@find');
     Route::get('/get', 'CatalogoController@get');
-    /* Route::get('/', 'CatalogoController@index');
+    Route::get('/', 'CatalogoController@index');
     Route::post('/', 'CatalogoController@store');
     Route::post('/estatus', 'CatalogoController@cambiaEstatus');
-    Route::put('/', 'CatalogoController@update'); */
+    Route::put('/', 'CatalogoController@update');
 });
-/* Route::get('/getFiltros', 'GestorController@obtener_filtro');
 
 Route::get('/configurarTramite/{tramiteID}/{tramiteIDConfig}','GestorController@configurar_tramite');
 Route::get('/tramite_servicio/{id}','TramiteServicioController@obtener_detalle_tramite');
