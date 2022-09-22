@@ -538,6 +538,22 @@
                                                                                 </div>
                                                                             </div>
                                                                         @break
+                                                                        @case('catalogo')
+                                                                            <div class="col-md-4">
+                                                                                <div class="form-group">
+                                                                                    <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
+                                                                                    <select name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0" class="form-control" required>
+                                                                                        <option value="0">Seleccionar</option>;
+                                                                                        @foreach ($preg->respuestas as $resp)
+                                                                                            @foreach ($resp->catalogos as $cat)
+                                                                                                <?php $selected = $resp->FORM_CVALOR_RESPUESTA == $cat->id ? "selected" : "" ?> 
+                                                                                                <option {{$selected}} value="{{$cat->id}}">{{$cat->clave}} - {{$cat->nombre}}</option>;
+                                                                                            @endforeach
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        @break
                                                                     @endswitch
                                                                 @endforeach
                                                             </div>

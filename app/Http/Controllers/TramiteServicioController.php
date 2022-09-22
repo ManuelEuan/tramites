@@ -324,13 +324,10 @@ class TramiteServicioController extends Controller
         return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'ARR_DOC_CON', 'nmbres', 'P_NESTATUS', 'TXT_STAT', 'docs_base'));
     }
 
-    public function seguimiento_tramite_servicio($id)
-    {
+    public function seguimiento_tramite_servicio($id) {
         try {
-
             $objUsuario = Auth::user();
-            //dd($objUsuario);
-
+       
             $tramites       = new Cls_Tramite_Servicio();
             $detalle        = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE_SEGUIMIENTO($id);
             $configaracion  = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($detalle->TRAM_NIDTRAMITE, $detalle->USTR_NIDUSUARIOTRAMITE);
@@ -350,36 +347,36 @@ class TramiteServicioController extends Controller
             }
 
             $tramite = [];
-            $tramite['id'] = $detalle->TRAM_NIDTRAMITE;
-            $tramite['idusuariotramite'] = $id;
-            $tramite['idtramiteaccede'] = $detalle->TRAM_NIDTRAMITE_ACCEDE;
-            $tramite['idsuario'] = $detalle->USTR_NIDUSUARIO;
-            $tramite['modulo'] = intval($detalle->USTR_CMODULO);
-            $tramite['nombreUsuario'] = $objUsuario->USUA_CNOMBRES;
-            $tramite['rfcUser'] = $objUsuario->USUA_CRFC;
-            $tramite['apellidoPUsuario'] = $objUsuario->USUA_CPRIMER_APELLIDO;
-            $tramite['apellidoMUsuario'] = $objUsuario->USUA_CSEGUNDO_APELLIDO;
-            $tramite['correoUsuario'] = $objUsuario->USUA_CCORREO_ELECTRONICO;
-            $tramite['tipoPersona'] = $objUsuario->USUA_NTIPO_PERSONA;
-            $tramite['razonSocioal'] = $objUsuario->USUA_CRAZON_SOCIAL;
-            $tramite['idTramitePago'] = time()+$detalle->TRAM_NIDTRAMITE;;
-            $tramite['nombre'] = $detalle->TRAM_CNOMBRE;
-            $tramite['folio'] = $detalle->TRAM_CFOLIO_SEGUIMIENTO;
-            $tramite['fechaactualizacion'] = $detalle->updated_at;
-            $tramite['responsable'] = $detalle->TRAM_CCENTRO;
-            $tramite['descripcion'] = $detalle->TRAM_CDESCRIPCION;
-            $tramite['estatus'] = $detalle->TRAM_NESTATUS_PROCESO == null ? 1 : $detalle->TRAM_NESTATUS_PROCESO;
+            $tramite['id']                  = $detalle->TRAM_NIDTRAMITE;
+            $tramite['idusuariotramite']    = $id;
+            $tramite['idtramiteaccede']     = $detalle->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['idsuario']            = $detalle->USTR_NIDUSUARIO;
+            $tramite['modulo']              = intval($detalle->USTR_CMODULO);
+            $tramite['nombreUsuario']       = $objUsuario->USUA_CNOMBRES;
+            $tramite['rfcUser']             = $objUsuario->USUA_CRFC;
+            $tramite['apellidoPUsuario']    = $objUsuario->USUA_CPRIMER_APELLIDO;
+            $tramite['apellidoMUsuario']    = $objUsuario->USUA_CSEGUNDO_APELLIDO;
+            $tramite['correoUsuario']       = $objUsuario->USUA_CCORREO_ELECTRONICO;
+            $tramite['tipoPersona']         = $objUsuario->USUA_NTIPO_PERSONA;
+            $tramite['razonSocioal']        = $objUsuario->USUA_CRAZON_SOCIAL;
+            $tramite['idTramitePago']       = time()+$detalle->TRAM_NIDTRAMITE;;
+            $tramite['nombre']              = $detalle->TRAM_CNOMBRE;
+            $tramite['folio']               = $detalle->TRAM_CFOLIO_SEGUIMIENTO;
+            $tramite['fechaactualizacion']  = $detalle->updated_at;
+            $tramite['responsable']         = $detalle->TRAM_CCENTRO;
+            $tramite['descripcion']         = $detalle->TRAM_CDESCRIPCION;
+            $tramite['estatus']             = $detalle->TRAM_NESTATUS_PROCESO == null ? 1 : $detalle->TRAM_NESTATUS_PROCESO;
             $tramite['atencion_formulario'] = $this->atencion;
             $tramite['encuesta_contestada'] = $detalle->USTR_NENCUESTA_CONTESTADA;
-            $tramite['seccion_active'] = $this->seccion_active;
-            if ($detalle->TRAM_NESTATUS_PROCESO == null || $detalle->TRAM_NESTATUS_PROCESO == 0) {
+            $tramite['seccion_active']      = $this->seccion_active;
+
+            if ($detalle->TRAM_NESTATUS_PROCESO == null || $detalle->TRAM_NESTATUS_PROCESO == 0)
                 $tramite['disabled'] = "";
-            } else {
+            else
                 $tramite['disabled'] = $detalle->TRAM_NESTATUS_PROCESO == 1 ? "" : "disabled";
-            }
 
             $claveTramitePago =  $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_CONCEPTO($tramite['idtramiteaccede']);
-            $tramite['clavePago'] = intval($claveTramitePago->Referencia);
+            $tramite['clavePago'] = is_null($claveTramitePago ) ? "0" : intval($claveTramitePago->Referencia);
 
             //consulta para obtener el nombre y direccion del modulo seleccionado para la ventanilla sin cita
             $tramite['ventanilla_sin_cita_lat'] = $detalle->USTR_NLATITUD == null ? 0 : $detalle->USTR_NLATITUD;
@@ -523,7 +520,7 @@ class TramiteServicioController extends Controller
             }
         }
 
-         //dd($tramite);
+        /* dd($tramite['configuracion']['formularios'][0]->secciones); */
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 
@@ -734,248 +731,243 @@ class TramiteServicioController extends Controller
     }
 
     public function guardar(Request $request) {
-        // try{
         $respuestas = array();
-        $respuestas_especial = array();
+        $especiales = array();
         $documentos = array();
-        $secciones = array();
-        foreach ($request->all() as $key => $value) {
-            $k = substr($key, 0, 5);
-            $f = substr($key, 0, 10);
-            $e = substr($key, 0, 9);
-            $s = substr($key, 0, 5);
+        $secciones  = array();
 
-            //resp_ "respuestas", resp_especial_ "respuestas de pregunta especial" y docs_ "documentos"
-            if ($k == 'resp_') {
-                $respuestas[$key] = $value;
+        try {
+            DB::beginTransaction();
+
+            foreach ($request->all() as $key => $value) {
+                $k = substr($key, 0, 5);
+                $f = substr($key, 0, 10);
+                $e = substr($key, 0, 9);
+                $s = substr($key, 0, 5);
+    
+                //resp_ "respuestas", resp_especial_ "respuestas de pregunta especial" y docs_ "documentos"
+                if ($k == 'resp_')
+                    $respuestas[$key] = $value;
+                if ($f == 'docs_file_')
+                    $documentos[$key] = $value;
+                if ($e == 'especial_')
+                    $especiales[$key] = $value;
+                if ($s == 'secc_')
+                    $secciones[$key] = $value;
             }
-            if ($f == 'docs_file_') {
-                $documentos[$key] = $value;
-            }
-            if ($e == 'especial_') {
-                $respuestas_especial[$key] = $value;
-            }
-            if ($s == 'secc_') {
-                $secciones[$key] = $value;
-            }
-        }
-
-        $exist = Cls_Usuario_Tramite::where('USTR_NIDUSUARIO', $request->txtIdUsuario)
-            ->where('USTR_NIDTRAMITE', $request->txtIdTramite)
-            ->where('USTR_CFOLIO', $request->txtFolio)
-            ->select('*')
-            ->first();
-
-        $IntIdUsuarioTramite = null;
-        $TxtFolio = null;
-        $tram = new Cls_Usuario_Tramite();
-        if ($exist == null) {
-            $num = 1;
-            $getUltimoFolio = Cls_Usuario_Tramite::get()->last();
-
-            if ($getUltimoFolio != null) {
-                $num = $getUltimoFolio->USTR_NNUMERO + 1;
-            }
-            //Guardar inicio de tramite
-            $tram->USTR_NESTATUS = 1;
-            $tram->USTR_NIDUSUARIO = $request->txtIdUsuario;
-            $tram->USTR_NIDTRAMITE = $request->txtIdTramite;
-            $tram->USTR_NBANDERA_PROCESO = 0;
-            $tram->USTR_NPAGADO = 0;
-            $tram->USTR_CFOLIO = $request->txtFolio . "/00000" . $num;
-            $tram->USTR_NNUMERO = $num;
-            $tram->USTR_CMUNICIPIO = $request->txtMunicipio;
-            $tram->USTR_CMODULO = $request->txtModulo;
-            $tram->USTR_NLATITUD = $request->txtLatitud;
-            $tram->USTR_NLONGITUD = $request->txtLongitud;
-            $tram->save();
-
-            $IntIdUsuarioTramite = $tram->id;
-            $TxtFolio = $tram->USTR_CFOLIO;
-
-            //Insertar bitacora
-            $ObjBitacora = new Cls_Bitacora();
-            $ObjBitacora->BITA_NIDUSUARIO = $request->txtIdUsuario;
-            $ObjBitacora->BITA_CMOVIMIENTO = "Captura inicial trámite";
-            $ObjBitacora->BITA_CTABLA = "tram_mdv_usuariotramite";
-            $ObjBitacora->BITA_CIP = $request->ip();
-            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-        } else {
-            $IntIdUsuarioTramite = $exist->USTR_NIDUSUARIOTRAMITE;
-            $TxtFolio = $exist->USTR_CFOLIO;
-            //Insertar bitacora
-            $ObjBitacora = new Cls_Bitacora();
-            $ObjBitacora->BITA_NIDUSUARIO = $request->txtIdUsuario;
-            $ObjBitacora->BITA_CMOVIMIENTO = "Edición inicial trámite";
-            $ObjBitacora->BITA_CTABLA = "tram_mdv_usuariotramite";
-            $ObjBitacora->BITA_CIP = $request->ip();
-            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-
-            //Eliminar respuesta del usuario
-            Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)->delete();
-            //Eliminar documentos del usuario
-            if (count($documentos) > 0) {
-                Cls_Usuario_Documento::where('USDO_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)->delete();
-            }
-        }
-
-        //Guardar respuestas
-        foreach ($respuestas as $key => $value) {
-            $arr = explode("_", $key);
-            $obj_p = Cls_Formulario_Pregunta::where('FORM_NID', $arr[1])
-                ->select('*')
-                ->first();
-
-            $resp = new Cls_Usuario_Respuesta();
-            $resp->USRE_NIDPREGUNTA = $obj_p->FORM_NID;
-            $resp->USRE_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
-            $resp->USRE_CRESPUESTA = $value;
-            $resp->USRE_CNOMBRE_PREGUNTA = $obj_p->FORM_CPREGUNTA;
-            $resp->USRE_NIDSECCION = $obj_p->FORM_NSECCIONID;
-            $resp->USRE_CNOMBRE_SECCION = Cls_Cat_Seccion::where('FORM_NID', $obj_p->FORM_NSECCIONID)
-                ->select('*')
-                ->first()->FORM_CNOMBRE;
-            $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
-            if($value == null){
-                $resp->USRE_NESTATUS = 9;
-            }else{
-                $resp->USRE_NESTATUS = 0;
-            }
-            $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
-            $resp->save();
-        }
-
-        //Guardar respuestas especial
-        foreach ($respuestas_especial as $key => $value) {
-            $arr = explode("_", $key);
-            $obj_p = Cls_Formulario_Pregunta::where('FORM_NID', $arr[1])
-                ->select('*')
-                ->first();
-
-            $resp = new Cls_Usuario_Respuesta();
-            $resp->USRE_NIDPREGUNTA = $obj_p->FORM_NID;
-            $resp->USRE_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
-            $resp->USRE_CRESPUESTA = $value;
-            $resp->USRE_CNOMBRE_PREGUNTA = $obj_p->FORM_CPREGUNTA;
-            $resp->USRE_NIDSECCION = $obj_p->FORM_NSECCIONID;
-            $resp->USRE_CNOMBRE_SECCION = Cls_Cat_Seccion::where('FORM_NID', $obj_p->FORM_NSECCIONID)
-                ->select('*')
-                ->first()->FORM_CNOMBRE;
-            $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
-            $resp->USRE_NIDPREGUNTARESPUESTA = $arr[2];
-            if($value == null){
-                $resp->USRE_NESTATUS = 9;
-            }else{
-                $resp->USRE_NESTATUS = 0;
-            }
-            $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
-            $resp->save();
-        }
-
-
-
-        //CREO ARRAY CON LOS TIPOS DE DOCUMENTOS
-        $arrTst='';$ARR_DOC_CON = [];;
-        $tramite['USDO_NIDUSUARIORESP'] = [];
-        $tramite['USDO_NESTATUS'] = [];
-        $Cls_documento_config = new Cls_Tramite_Servicio();
-        $result = $Cls_documento_config->getConfigDocArr();
-        foreach ($result as $_dtsc) {
-            $id_arr = $_dtsc->id;
-            $NOMBRE_arr = $_dtsc->NOMBRE;
-            $ARR_DOC_CON[$id_arr] = $NOMBRE_arr;
-        };
-
-
-
-        //Guardar documentos
-        $test = '';
-        foreach ($documentos as $key => $value) {
-            //if($value != null){
-
-            $pos = strpos($value, "_");
-
-            //if ($pos === true) {
-                $arr_key = explode("_", $key);
-                $arr_value = explode("_", $value);
-
-                if($arr_value[2]>0){
-
-                    $doc = new Cls_Usuario_Documento();
-                    $doc->USDO_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
-                    $doc->USDO_CRUTADOC = $arr_value[0];
-                    $doc->USDO_CEXTENSION = $arr_value[1];
-                    $doc->USDO_NPESO = $arr_value[2];
-                    $doc->USDO_NESTATUS = 0;
-                    $doc->USDO_NIDTRAMITEDOCUMENTO = $arr_key[2];
-                    $doc->USDO_CDOCNOMBRE = $arr_value[3];
-                    $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
-                    $doc->idDocExpediente = 0;
-                    $doc->VIGENCIA_INICIO = date("Y-m-d");
-
-                    $key_ARR_DOC_CON = array_search($arr_value[3], $ARR_DOC_CON);
-                    if($key_ARR_DOC_CON>0){
-                        $doc->idDocExpediente = $key_ARR_DOC_CON;
-                    };
-
-                    $test=$test.$doc->USDO_CRUTADOC.'_'.$doc->USDO_CEXTENSION.'_'.$doc->USDO_NPESO.'_'.$doc->idDocExpediente.'*';
-
-                    $doc->save(); //
+    
+            
+            $exist = Cls_Usuario_Tramite::where('USTR_NIDUSUARIO', $request->txtIdUsuario)
+                        ->where('USTR_NIDTRAMITE', $request->txtIdTramite)
+                        ->where('USTR_CFOLIO', $request->txtFolio)->first();
+    
+            $IntIdUsuarioTramite = null;
+            $TxtFolio = null;
+            $tram = new Cls_Usuario_Tramite();
+    
+            if ($exist == null) {
+                $num = 1;
+                $getUltimoFolio = Cls_Usuario_Tramite::get()->last();
+    
+                if ($getUltimoFolio != null) {
+                    $num = $getUltimoFolio->USTR_NNUMERO + 1;
                 }
-           // }
-        }
-
-        //Guardar seccion
-        //Se valida si existe
-        $exist_seccion = Cls_Seccion_Seguimiento::where('SSEGTRA_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)
-            ->select('*')
-            ->get()->toArray();
-        if (count($exist_seccion) == 0) {
-            foreach ($secciones as $key => $value) {
-                $arr_key = explode("_", $key);
-                $csecc = new Cls_Seccion_Seguimiento();
-                $csecc->SSEGTRA_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
-                $csecc->SSEGTRA_NIDCONFIGURACION = $arr_key[1];
-                $csecc->SSEGTRA_CNOMBRE_SECCION = $value;
-                $csecc->SSEGTRA_NIDESTATUS = $value == "Formulario" ? 0 : 1;
-                $csecc->save();
-
-                //Isertar conceptos de pago
-                $tram_conceptos = Cls_Tramite_Concepto::where('CONC_NIDTRAMITE', $request->txtIdTramite)
-                    ->where('CONC_NIDSECCION', $arr_key[1])
+                //Guardar inicio de tramite
+                $tram->USTR_NESTATUS = 1;
+                $tram->USTR_NIDUSUARIO = $request->txtIdUsuario;
+                $tram->USTR_NIDTRAMITE = $request->txtIdTramite;
+                $tram->USTR_NBANDERA_PROCESO = 0;
+                $tram->USTR_NPAGADO = 0;
+                $tram->USTR_CFOLIO = $request->txtFolio . "/00000" . $num;
+                $tram->USTR_NNUMERO = $num;
+                $tram->USTR_CMUNICIPIO = $request->txtMunicipio;
+                $tram->USTR_CMODULO = $request->txtModulo;
+                $tram->USTR_NLATITUD = $request->txtLatitud;
+                $tram->USTR_NLONGITUD = $request->txtLongitud;
+                $tram->save();
+    
+                $IntIdUsuarioTramite = $tram->id;
+                $TxtFolio = $tram->USTR_CFOLIO;
+    
+                //Insertar bitacora
+                $ObjBitacora = new Cls_Bitacora();
+                $ObjBitacora->BITA_NIDUSUARIO = $request->txtIdUsuario;
+                $ObjBitacora->BITA_CMOVIMIENTO = "Captura inicial trámite";
+                $ObjBitacora->BITA_CTABLA = "tram_mdv_usuariotramite";
+                $ObjBitacora->BITA_CIP = $request->ip();
+                Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+            } else {
+                $IntIdUsuarioTramite = $exist->USTR_NIDUSUARIOTRAMITE;
+                $TxtFolio = $exist->USTR_CFOLIO;
+                //Insertar bitacora
+                $ObjBitacora = new Cls_Bitacora();
+                $ObjBitacora->BITA_NIDUSUARIO = $request->txtIdUsuario;
+                $ObjBitacora->BITA_CMOVIMIENTO = "Edición inicial trámite";
+                $ObjBitacora->BITA_CTABLA = "tram_mdv_usuariotramite";
+                $ObjBitacora->BITA_CIP = $request->ip();
+                Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+    
+                //Eliminar respuesta del usuario
+                Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)->delete();
+                //Eliminar documentos del usuario
+                if (count($documentos) > 0) {
+                    Cls_Usuario_Documento::where('USDO_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)->delete();
+                }
+            }
+    
+            //Guardar respuestas
+            foreach ($respuestas as $key => $value) {
+                $arr = explode("_", $key);
+                $obj_p = Cls_Formulario_Pregunta::where('FORM_NID', $arr[1])->first();
+                $resp = new Cls_Usuario_Respuesta();
+                $resp->USRE_NIDPREGUNTA = $obj_p->FORM_NID;
+                $resp->USRE_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
+                $resp->USRE_CRESPUESTA = $value;
+                $resp->USRE_CNOMBRE_PREGUNTA = $obj_p->FORM_CPREGUNTA;
+                $resp->USRE_NIDSECCION = $obj_p->FORM_NSECCIONID;
+                $resp->USRE_CNOMBRE_SECCION = Cls_Cat_Seccion::where('FORM_NID', $obj_p->FORM_NSECCIONID)->first()->FORM_CNOMBRE;
+                $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
+                if($value == null){
+                    $resp->USRE_NESTATUS = 9;
+                }else{
+                    $resp->USRE_NESTATUS = 0;
+                }
+                $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
+                $resp->save();
+            }
+    
+            //Guardar respuestas especial
+            foreach ($especiales as $key => $value) {
+                $arr = explode("_", $key);
+                $obj_p = Cls_Formulario_Pregunta::where('FORM_NID', $arr[1])
                     ->select('*')
-                    ->get()->toArray();
-                foreach ($tram_conceptos as $value) {
-                    $usc = new Cls_Usuario_Concepto();
-                    $usc->USCON_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
-                    $usc->USCON_NREFERENCIA = $value['CONC_NREFERENCIA'];
-                    $usc->USCON_NIDCONCEPTO = $value['CONC_NIDCONCEPTO'];
-                    $usc->USCON_CONCEPTO = $value['CONC_CONCEPTO'];
-                    $usc->USCON_CTRAMITE = $value['CONC_CTRAMITE'];
-                    $usc->USCON_CENTE_PUBLICO = $value['CONC_CENTE_PUBLICO'];
-                    $usc->USCON_CENTE = $value['CONC_CENTE'];
-                    $usc->USCON_NIDSECCION = $csecc->id;
-                    $usc->USCON_NCANTIDAD = null;
-                    $usc->USCON_NACTIVO = 0;
-                    $usc->save();
+                    ->first();
+    
+                $resp = new Cls_Usuario_Respuesta();
+                $resp->USRE_NIDPREGUNTA = $obj_p->FORM_NID;
+                $resp->USRE_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
+                $resp->USRE_CRESPUESTA = $value;
+                $resp->USRE_CNOMBRE_PREGUNTA = $obj_p->FORM_CPREGUNTA;
+                $resp->USRE_NIDSECCION = $obj_p->FORM_NSECCIONID;
+                $resp->USRE_CNOMBRE_SECCION = Cls_Cat_Seccion::where('FORM_NID', $obj_p->FORM_NSECCIONID)
+                    ->select('*')
+                    ->first()->FORM_CNOMBRE;
+                $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
+                $resp->USRE_NIDPREGUNTARESPUESTA = $arr[2];
+                if($value == null){
+                    $resp->USRE_NESTATUS = 9;
+                }else{
+                    $resp->USRE_NESTATUS = 0;
+                }
+                $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
+                $resp->save();
+            }
+    
+    
+    
+            //CREO ARRAY CON LOS TIPOS DE DOCUMENTOS
+            $arrTst='';$ARR_DOC_CON = [];;
+            $tramite['USDO_NIDUSUARIORESP'] = [];
+            $tramite['USDO_NESTATUS'] = [];
+            $Cls_documento_config = new Cls_Tramite_Servicio();
+            $result = $Cls_documento_config->getConfigDocArr();
+            foreach ($result as $_dtsc) {
+                $id_arr = $_dtsc->id;
+                $NOMBRE_arr = $_dtsc->NOMBRE;
+                $ARR_DOC_CON[$id_arr] = $NOMBRE_arr;
+            };
+    
+    
+    
+            //Guardar documentos
+            $test = '';
+            foreach ($documentos as $key => $value) {
+                //if($value != null){
+    
+                $pos = strpos($value, "_");
+    
+                //if ($pos === true) {
+                    $arr_key = explode("_", $key);
+                    $arr_value = explode("_", $value);
+    
+                    if($arr_value[2]>0){
+    
+                        $doc = new Cls_Usuario_Documento();
+                        $doc->USDO_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
+                        $doc->USDO_CRUTADOC = $arr_value[0];
+                        $doc->USDO_CEXTENSION = $arr_value[1];
+                        $doc->USDO_NPESO = $arr_value[2];
+                        $doc->USDO_NESTATUS = 0;
+                        $doc->USDO_NIDTRAMITEDOCUMENTO = $arr_key[2];
+                        $doc->USDO_CDOCNOMBRE = $arr_value[3];
+                        $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
+                        $doc->idDocExpediente = 0;
+                        $doc->VIGENCIA_INICIO = date("Y-m-d");
+    
+                        $key_ARR_DOC_CON = array_search($arr_value[3], $ARR_DOC_CON);
+                        if($key_ARR_DOC_CON>0){
+                            $doc->idDocExpediente = $key_ARR_DOC_CON;
+                        };
+    
+                        $test=$test.$doc->USDO_CRUTADOC.'_'.$doc->USDO_CEXTENSION.'_'.$doc->USDO_NPESO.'_'.$doc->idDocExpediente.'*';
+    
+                        $doc->save(); //
+                    }
+               // }
+            }
+    
+            //Guardar seccion
+            //Se valida si existe
+            $exist_seccion = Cls_Seccion_Seguimiento::where('SSEGTRA_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)
+                ->select('*')
+                ->get()->toArray();
+            if (count($exist_seccion) == 0) {
+                foreach ($secciones as $key => $value) {
+                    $arr_key = explode("_", $key);
+                    $csecc = new Cls_Seccion_Seguimiento();
+                    $csecc->SSEGTRA_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
+                    $csecc->SSEGTRA_NIDCONFIGURACION = $arr_key[1];
+                    $csecc->SSEGTRA_CNOMBRE_SECCION = $value;
+                    $csecc->SSEGTRA_NIDESTATUS = $value == "Formulario" ? 0 : 1;
+                    $csecc->save();
+    
+                    //Isertar conceptos de pago
+                    $tram_conceptos = Cls_Tramite_Concepto::where('CONC_NIDTRAMITE', $request->txtIdTramite)
+                        ->where('CONC_NIDSECCION', $arr_key[1])
+                        ->select('*')
+                        ->get()->toArray();
+                    foreach ($tram_conceptos as $value) {
+                        $usc = new Cls_Usuario_Concepto();
+                        $usc->USCON_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
+                        $usc->USCON_NREFERENCIA = $value['CONC_NREFERENCIA'];
+                        $usc->USCON_NIDCONCEPTO = $value['CONC_NIDCONCEPTO'];
+                        $usc->USCON_CONCEPTO = $value['CONC_CONCEPTO'];
+                        $usc->USCON_CTRAMITE = $value['CONC_CTRAMITE'];
+                        $usc->USCON_CENTE_PUBLICO = $value['CONC_CENTE_PUBLICO'];
+                        $usc->USCON_CENTE = $value['CONC_CENTE'];
+                        $usc->USCON_NIDSECCION = $csecc->id;
+                        $usc->USCON_NCANTIDAD = null;
+                        $usc->USCON_NACTIVO = 0;
+                        $usc->save();
+                    }
                 }
             }
+            DB::commit();
+            $response = [
+                'codigo' => 200,
+                'status' => "success",
+                'message' => 'Los datos se han guardado correctamente.',
+                'data' => $IntIdUsuarioTramite
+            ];
+        } catch (Exception $ex) {
+            DB::rollBack();
+            $response = [
+                'codigo' => 403,
+                'status' => "error",
+                'message' => 'Se presento un problema contactar al administrador.',
+                'data' => $ex->getMessage()
+            ];
         }
-        // }
-        // catch (\Throwable $e) {
-        //     $response = [
-        //         'codigo' => 400,
-        //         'status' => "error",
-        //         'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->message
-        //     ];
-        // }
-
-        $response = [
-            'codigo' => 200,
-            'status' => "success",
-            'message' => 'Los datos se han guardado correctamente.',
-            'data' => $IntIdUsuarioTramite
-        ];
 
         return Response()->json($response);
     }
