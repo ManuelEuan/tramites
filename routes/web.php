@@ -249,7 +249,7 @@ Route::group(['prefix' => 'citas'], function () {
     Route::get('/listado', 'CitasController@getListado');
 });
 
-Route::group(['prefix' => 'giro'], function () {
+Route::group(['prefix' => 'giros'], function () {
     Route::get('/find', 'GiroController@find');
     Route::get('/get', 'GiroController@get');
     Route::get('/', 'GiroController@index');
