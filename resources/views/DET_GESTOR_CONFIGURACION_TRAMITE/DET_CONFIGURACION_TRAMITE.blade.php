@@ -514,7 +514,7 @@
         });
 
         //Funcion para reordenar lista de secciones
-        $('.sortable-list').sortable({
+        /* $('.sortable-list').sortable({
             connectWith: '.sortable-list',
             update: function(event, ui) {
 
@@ -536,7 +536,7 @@
                     TRAM_FN_RENDERSECCIONES();
                 });
             }
-        });
+        }); */
 
         //Funcion para llenar select de secciones
         function TRAM_FN_LLENARSELECTSECTION() {
