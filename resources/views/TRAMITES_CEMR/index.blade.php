@@ -551,7 +551,7 @@
             }
         });
 
-        $('.sortable-list').sortable({
+        /* $('.sortable-list').sortable({
             connectWith: '.sortable-list',
             update: function(event, ui) {
 
@@ -571,7 +571,7 @@
                     TRAM_FN_RENDERSECCIONES();
                 });
             }
-        });
+        }); */
 
         function TRAM_FN_LLENARSELECTSECTION() {
 
