@@ -20,9 +20,9 @@
                                 <a class="nav-link active" id="infoPersonal-tab" data-toggle="tab" href="#infoPersonal" role="tab" aria-controls="infoPersonal" aria-selected="true" onclick="hideSaveCancel(false)">INFORMACIÓN
                                     PERSONAL</a>
                             </li>
-<!--                             <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link" id="predios-tab" data-toggle="tab" href="#predios" role="tab" aria-controls="predios" aria-selected="false" onclick="hideSaveCancel(false)">PREDIOS</a>
-                            </li> -->
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="documentos-tab" data-toggle="tab" href="#documentos" onclick="hideSaveCancel(true)" role="tab" aria-controls="documentos" aria-selected="false">DOCUMENTOS</a>
                             </li>
@@ -644,12 +644,12 @@
                                     <!-- Aqui termina -->
                                 </div>
                                 <!-- Div Predios-->
-                                <!-- <div class="tab-pane fade" id="predios" role="tabpanel" aria-labelledby="predios-tab">
+                                <div class="tab-pane fade" id="predios" role="tabpanel" aria-labelledby="predios-tab">
 
                                     <div class="card mt-3">
                                         <div class="card-body text-body">
 
-                                            <div class="row justify-content-md-center">
+                                            <!-- <div class="row justify-content-md-center">
                                                 <div class="col-md-6">
                                                     <dvi class="row">
                                                         <div class="col-md-4">
@@ -672,9 +672,9 @@
                                                         </div>
                                                     </dvi>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
-                                            <br>
+                                            <!-- <br>
 
                                             <div class="row justify-content-md-center">
 
@@ -691,9 +691,9 @@
                                                     </form>
                                                 </div>
 
-                                            </div>
+                                            </div> -->
 
-                                            <br>
+                                            <!-- <br>
 
                                             <div class="row">
                                                 <div class="col-md-12">
@@ -732,7 +732,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                             <br>
 
@@ -1092,7 +1092,7 @@
 
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                                 <!-- Div Documentos -->
                                 <div class="tab-pane fade" id="documentos" role="tabpanel" aria-labelledby="documentos-tab">
                                     <nav>
@@ -1507,167 +1507,167 @@
 
 
         //Validate form registro
-        $("#frmForm").validate({
-            focusInvalid: false,
-            invalidHandler: function() {
-                $(this).find(":input.error:first").focus();
-            },
-            rules: {
-                txtRfc: {
-                    minlength: 13,
-                    maxlength: 13
-                },
-                txtNombres: {
-                    minlength: 2,
-                    maxlength: 100,
-                    lettersonly: true
-                },
-                txtPrimer_Apellido: {
-                    minlength: 2,
-                    maxlength: 100
-                },
-                txtSegundo_Apellido: {
-                    minlength: 2,
-                    maxlength: 100
-                },
-                txtCalleParticular: {
-                    minlength: 2,
-                    maxlength: 100
-                },
-                txtCalleFiscal: {
-                    minlength: 2,
-                    maxlength: 100
-                },
-                txtNumeroInteriorParticular: {
-                    minlength: 1,
-                    maxlength: 10
-                },
-                txtNumeroExteriorParticular: {
-                    minlength: 1,
-                    maxlength: 10
-                },
-                txtNumeroInteriorFiscal: {
-                    minlength: 1,
-                    maxlength: 10
+        // $("#frmForm").validate({
+        //     focusInvalid: false,
+        //     invalidHandler: function() {
+        //         $(this).find(":input.error:first").focus();
+        //     },
+        //     rules: {
+        //         txtRfc: {
+        //             minlength: 13,
+        //             maxlength: 13
+        //         },
+        //         txtNombres: {
+        //             minlength: 2,
+        //             maxlength: 100,
+        //             lettersonly: true
+        //         },
+        //         txtPrimer_Apellido: {
+        //             minlength: 2,
+        //             maxlength: 100
+        //         },
+        //         txtSegundo_Apellido: {
+        //             minlength: 2,
+        //             maxlength: 100
+        //         },
+        //         txtCalleParticular: {
+        //             minlength: 2,
+        //             maxlength: 100
+        //         },
+        //         txtCalleFiscal: {
+        //             minlength: 2,
+        //             maxlength: 100
+        //         },
+        //         txtNumeroInteriorParticular: {
+        //             minlength: 1,
+        //             maxlength: 10
+        //         },
+        //         txtNumeroExteriorParticular: {
+        //             minlength: 1,
+        //             maxlength: 10
+        //         },
+        //         txtNumeroInteriorFiscal: {
+        //             minlength: 1,
+        //             maxlength: 10
 
 
-                },
-                txtNumeroExteriorFiscal: {
-                    minlength: 1,
-                    maxlength: 10
+        //         },
+        //         txtNumeroExteriorFiscal: {
+        //             minlength: 1,
+        //             maxlength: 10
 
-                },
-                txtCPParticular: {
-                    minlength: 5,
-                    maxlength: 5
-                },
-                txtCPFiscal: {
-                    minlength: 5,
-                    maxlength: 5
-                },
-                txtCorreo_Electronico: {
-                    email: true
-                },
-                txtCorreo_Alternativo: {
-                    email: true
-                }
-            },
-            messages: {
-                txtRfc: {
-                    minlength: "",
-                    maxlength: "",
-                    required: ""
-                },
-                txtNombres: {
-                    minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    required: "",
-                    lettersonly: "El nombre (s) solamente puede tener caracteres alfabéticos y espacios."
-                },
-                txtPrimer_Apellido: {
-                    minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    required: ""
-                },
-                txtSegundo_Apellido: {
-                    minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    required: ""
-                },
-                txtCalleParticular: {
-                    minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    required: ""
-                },
-                txtCalleFiscal: {
-                    minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    required: ""
-                },
-                txtNumeroInteriorParticular: {
-                    minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    required: ""
-                },
-                txtNumeroExteriorParticular: {
-                    minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    required: ""
-                },
-                txtNumeroInteriorFiscal: {
-                    minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    required: ""
-                },
-                txtNumeroExteriorFiscal: {
-                    minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    required: ""
-                },
-                txtCPParticular: {
-                    minlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-                    maxlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-                    required: ""
-                },
-                txtCPFiscal: {
-                    minlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-                    maxlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-                    required: ""
-                },
-                txtCorreo_Electronico: {
-                    email: "¡Error! El correo que se agregó no es válido, favor de verificar.",
-                    required: ""
-                },
-                txtCorreo_Alternativo: {
-                    email: "¡Error! El correo que se agregó no es válido, favor de verificar.",
-                    required: ""
-                },
-                cmbColoniaParticular: {
-                    required: ""
-                },
-                cmbMunicipioParticular: {
-                    required: ""
-                },
-                cmbEstadoParticular: {
-                    required: ""
-                },
-                cmbPaisParticular: {
-                    required: ""
-                },
-                cmbColoniaFiscal: {
-                    required: ""
-                },
-                cmbMunicipioFiscal: {
-                    required: ""
-                },
-                cmbEstadoFiscal: {
-                    required: ""
-                },
-                cmbPaisFiscal: {
-                    required: ""
-                }
-            }
-        });
+        //         },
+        //         txtCPParticular: {
+        //             minlength: 5,
+        //             maxlength: 5
+        //         },
+        //         txtCPFiscal: {
+        //             minlength: 5,
+        //             maxlength: 5
+        //         },
+        //         txtCorreo_Electronico: {
+        //             email: true
+        //         },
+        //         txtCorreo_Alternativo: {
+        //             email: true
+        //         }
+        //     },
+        //     messages: {
+        //         txtRfc: {
+        //             minlength: "",
+        //             maxlength: "",
+        //             required: ""
+        //         },
+        //         txtNombres: {
+        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             required: "",
+        //             lettersonly: "El nombre (s) solamente puede tener caracteres alfabéticos y espacios."
+        //         },
+        //         txtPrimer_Apellido: {
+        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             required: ""
+        //         },
+        //         txtSegundo_Apellido: {
+        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             required: ""
+        //         },
+        //         txtCalleParticular: {
+        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             required: ""
+        //         },
+        //         txtCalleFiscal: {
+        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+        //             required: ""
+        //         },
+        //         txtNumeroInteriorParticular: {
+        //             minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
+        //             maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
+        //             required: ""
+        //         },
+        //         txtNumeroExteriorParticular: {
+        //             minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
+        //             maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
+        //             required: ""
+        //         },
+        //         txtNumeroInteriorFiscal: {
+        //             minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
+        //             maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
+        //             required: ""
+        //         },
+        //         txtNumeroExteriorFiscal: {
+        //             minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
+        //             maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
+        //             required: ""
+        //         },
+        //         txtCPParticular: {
+        //             minlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
+        //             maxlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
+        //             required: ""
+        //         },
+        //         txtCPFiscal: {
+        //             minlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
+        //             maxlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
+        //             required: ""
+        //         },
+        //         txtCorreo_Electronico: {
+        //             email: "¡Error! El correo que se agregó no es válido, favor de verificar.",
+        //             required: ""
+        //         },
+        //         txtCorreo_Alternativo: {
+        //             email: "¡Error! El correo que se agregó no es válido, favor de verificar.",
+        //             required: ""
+        //         },
+        //         cmbColoniaParticular: {
+        //             required: ""
+        //         },
+        //         cmbMunicipioParticular: {
+        //             required: ""
+        //         },
+        //         cmbEstadoParticular: {
+        //             required: ""
+        //         },
+        //         cmbPaisParticular: {
+        //             required: ""
+        //         },
+        //         cmbColoniaFiscal: {
+        //             required: ""
+        //         },
+        //         cmbMunicipioFiscal: {
+        //             required: ""
+        //         },
+        //         cmbEstadoFiscal: {
+        //             required: ""
+        //         },
+        //         cmbPaisFiscal: {
+        //             required: ""
+        //         }
+        //     }
+        // });
 
         setTimeout(function() {
             $(".txtCalle_Sucursal").each(function() {
@@ -2145,17 +2145,27 @@
             TRAM_FN_DISABLED_INPUT();
             return;
         }
+        
         $.ajax({
             data: $('#frmForm').serialize(),
             url: "/perfil/modificar",
             type: "POST",
             dataType: 'json',
             success: function(data) {
+                console.log(data);
                 $("#btnSubmit").prop("disabled", false);
                 if (data.status == "success") {
-                    $('#frmForm').trigger("reset");
-                    $(".listError").html("");
-                    TRAM_FN_TRAMITE();
+                    // $('#frmForm').trigger("reset");
+                    // $(".listError").html("");
+                    // TRAM_FN_TRAMITE();
+                    Swal.fire({
+                        title: '¡Aviso!',
+                        text: data.message,
+                        icon: 'success',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Aceptar'
+                    });
                 } else {
                     Swal.fire({
                         title: '¡Aviso!',

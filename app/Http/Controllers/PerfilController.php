@@ -202,30 +202,30 @@ class PerfilController extends Controller
 
             if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == "CDNS")
                 //$request->txtTelefono = "";
-                $request->txtExtension = "";
+            $request->txtExtension = "";
             $request->txtUsuario = "";
-
             Cls_Usuario::TRAM_SP_MODIFICARUSUARIO($request);
 
             //Eliminar sucursal actuales
             Cls_Sucursal::TRAM_SP_ELIMINARSUCURSAL_USUARIO($request->txtIdUsuario);
 
             //Agregar sucursales
-            foreach ($request->lstSucursal as $value) {
-                $ObjSucursal = array(
-                    'txtUsuario' => $request->txtIdUsuario,
-                    'txtCalle' => $value['txtCalle_Sucursal'],
-                    'txtNumero_Interior' => $value['txtNumero_Interior_Sucursal'],
-                    'txtNumero_Exterior' => $value['txtNumero_Exterior_Sucursal'],
-                    'txtCP' => $value['txtCP_Sucursal'],
-                    'cmbColonia' => $value['cmbColonia_Sucursal'],
-                    'cmbMunicipio' => $value['cmbMunicipio_Sucursal'],
-                    'cmbEstado' => $value['cmbEstado_Sucursal'],
-                    'cmbPais' => $value['cmbPais_Sucursal']
-                );
-                Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
+            if(isset($request->lstSucursal)){
+                foreach ($request->lstSucursal as $value) {
+                    $ObjSucursal = array(
+                        'txtUsuario' => $request->txtIdUsuario,
+                        'txtCalle' => $value['txtCalle_Sucursal'],
+                        'txtNumero_Interior' => $value['txtNumero_Interior_Sucursal'],
+                        'txtNumero_Exterior' => $value['txtNumero_Exterior_Sucursal'],
+                        'txtCP' => $value['txtCP_Sucursal'],
+                        'cmbColonia' => $value['cmbColonia_Sucursal'],
+                        'cmbMunicipio' => $value['cmbMunicipio_Sucursal'],
+                        'cmbEstado' => $value['cmbEstado_Sucursal'],
+                        'cmbPais' => $value['cmbPais_Sucursal']
+                    );
+                    Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
+                }
             }
-
             //Insertar bitacora
             $ObjBitacora = new Cls_Bitacora();
             $ObjBitacora->BITA_NIDUSUARIO = Auth::user()->USUA_NIDUSUARIO;
@@ -233,6 +233,11 @@ class PerfilController extends Controller
             $ObjBitacora->BITA_CTABLA = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "CDNS" ? "tram_mst_usuario" : "tram_mst_usuario y tram_mdv_sucursal";
             $ObjBitacora->BITA_CIP = $request->ip();
             Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+            $response = [
+                'codigo' => 200,
+                'status' => "success",
+                'message' => '¡Éxito! Los datos se han guardado correctamente.'
+            ];
         } catch (Exception $e) {
             $response = [
                 'codigo' => 400,
@@ -240,11 +245,7 @@ class PerfilController extends Controller
                 'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " . $e->getMessage()
             ];
         }
-        $response = [
-            'codigo' => 200,
-            'status' => "success",
-            'message' => '¡Éxito! Acción realizada con éxito.'
-        ];
+        
 
         return Response()->json($response);
     }
