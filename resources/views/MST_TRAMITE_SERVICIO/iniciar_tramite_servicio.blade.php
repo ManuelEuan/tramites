@@ -372,8 +372,8 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
-                                                                <select name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0" class="form-control" required>
-                                                                    <option value="0">Seleccionar</option>;
+                                                                <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input">
+                                                                <select  id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple>
                                                                     @foreach ($preg->respuestas as $resp)
                                                                         @foreach ($resp->catalogos as $cat)
                                                                             <option value="{{$cat->id}}">{{$cat->clave}} - {{$cat->nombre}}</option>;
@@ -1008,28 +1008,6 @@
             }
     }
 
-    function getCatalogos(url){
-        request = $.ajax({
-            url: "/"+ url +"/find",
-            type: "get",
-            data: {paginate: false, activo:true}
-        });
-
-        // Callback handler that will be called on success
-        request.done(function (response, textStatus, jqXHR){
-            console.log(response);
-        });
-
-        // Callback handler that will be called on failure
-        request.fail(function (jqXHR, textStatus, errorThrown){
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'se presento el siguiente error: ' + errorThrown
-            });
-        });
-    }
-
     $(document).ready(function() {
         $.ajaxSetup({
             headers: {
@@ -1292,7 +1270,6 @@
         $(".documentos").each(function() {
             var id = this.id;
             var input = $("#docs_" + id).val();
-            console.log(input);
             var arr = input.split("_");
             $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(arr[2]) + '</span>');
         });
@@ -1478,7 +1455,12 @@
         $("#loading-text").html("Guardando...");
         $('#loading_save').show();
         $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
-
+        catalogos.forEach(element => {
+            let respuestas  = element.respuesta;
+            let id          = element.pregunta;
+            let input       = $("#"+ id + "_input").val(respuestas.toString());
+        });
+        
         $.ajax({
             data: $('#frmForm').serialize(),
             url: "/tramite_servicio/guardar",
@@ -1610,8 +1592,8 @@
     };
 
     /**
-        * Funcion para obtener los municipios
-        */
+    * Funcion para obtener los municipios
+    */
     function TRAM_AJX_CONSULTARMUNICIPIO() {
         var cmbMunicipio = $("#cmbMunicipio");
         cmbMunicipio.find('option').remove();
@@ -1636,6 +1618,23 @@
             }
         });
     }
+
+    $('.selectCatalogos').on('change', function(e) {
+        let select  = e.target.id;
+        let items   = $("#"+select).val();
+        let aplica  = true;
+
+        catalogos.forEach(element => {
+            if(element.pregunta == select){
+                element.respuesta = items;
+                aplica = false;
+            }
+        });
+
+        if(aplica){
+            catalogos.push({pregunta: select,respuesta:items })
+        }
+    });
 
 </script>
 @endsection
