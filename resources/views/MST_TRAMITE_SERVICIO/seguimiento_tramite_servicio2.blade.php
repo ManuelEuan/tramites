@@ -542,11 +542,22 @@
                                                                             <div class="col-md-4">
                                                                                 <div class="form-group">
                                                                                     <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
-                                                                                    <select name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0" class="form-control" required>
-                                                                                        <option value="0">Seleccionar</option>;
+                                                                                    @foreach ($preg->respuestas as $resp)
+                                                                                        <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input" value="{{$resp->respString}}">
+                                                                                    @endforeach
+
+                                                                                    <select  id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple required>
                                                                                         @foreach ($preg->respuestas as $resp)
                                                                                             @foreach ($resp->catalogos as $cat)
-                                                                                                <?php $selected = $resp->FORM_CVALOR_RESPUESTA == $cat->id ? "selected" : "" ?> 
+                                                                                                <?php
+                                                                                                    $selected = "";
+                                                                                                    foreach($resp->respArray  as $respArray){
+                                                                                                        if($respArray == $cat->id){
+                                                                                                            $selected = "selected";
+                                                                                                            break;
+                                                                                                        }
+                                                                                                    }
+                                                                                                ?> 
                                                                                                 <option {{$selected}} value="{{$cat->id}}">{{$cat->clave}} - {{$cat->nombre}}</option>;
                                                                                             @endforeach
                                                                                         @endforeach
@@ -1599,6 +1610,7 @@
         @section('scripts')
             <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
             <script>
+                var catalogos  = [];
                 var id = "{{ $tramite['idusuariotramite'] }}";
                 var encuesta_contestada = "{{ $tramite['encuesta_contestada'] }}";
                 var estatus_tram = "{{ $tramite['estatus'] }}";
@@ -1632,80 +1644,62 @@
                     //}
                 }
 		
-		//actualizar pago
-		function actualizar_pago(id){
-            var periodo = $("#pago_periodo").val();
-            var numeroTransacion = $("#numero_transacion").val();
+                //actualizar pago
+                function actualizar_pago(id){
+                    var periodo = $("#pago_periodo").val();
+                    var numeroTransacion = $("#numero_transacion").val();
 
-            if(periodo.length === 0){
-                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el periodo</div>');
-                return;
-            }
+                    if(periodo.length === 0){
+                        $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el periodo</div>');
+                        return;
+                    }
 
-            if(numeroTransacion.length === 0){
-                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el número de transacción</div>');
-                return;
-            }
+                    if(numeroTransacion.length === 0){
+                        $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el número de transacción</div>');
+                        return;
+                    }
 
-            if(isNaN(periodo)){
-                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El Periodo debe ser un número</div>');
-                return;
+                    if(isNaN(periodo)){
+                        $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El Periodo debe ser un número</div>');
+                        return;
 
-            }
+                    }
 
-            if(isNaN(numeroTransacion)){
-                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El número de transacción debe ser un número</div>');
-                return;
+                    if(isNaN(numeroTransacion)){
+                        $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El número de transacción debe ser un número</div>');
+                        return;
 
-            }
+                    }
 
-            /* 
- 			$.ajax({
-                    data: {},
-                    url: "/tramite_servicio_cemr/seccion_actualizar_pago/" + id,
-                    type: "GET",
-                    dataType: 'json',
-                    success: function(data) {
-					console.log("resp");
-					console.log(data);
-                       			location.reload();
-                    		},
-                   		error: function(data) {}
+                    var jsonobject = {
+                            PERIODO: periodo,
+                            NUMERO_TRANSACCION:numeroTransacion,
+                            TRAMITE_ID: id
+                    };        
 
-               		}); */
+                    $.ajax({
+                            data: JSON.stringify(jsonobject),
+                            url: "/validar_pago_queretaro",
+                            type: "POST",
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            success: function(data) {
+                                if(data.estatusPago == 1){
+                                    $("#alertValidatePago").html('<div class="alert alert-success" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
+                                    location.reload();
 
-            var jsonobject = {
-                    PERIODO: periodo,
-                    NUMERO_TRANSACCION:numeroTransacion,
-                    TRAMITE_ID: id
-            };        
+                                }else{
+                                    $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
+                                    return;
 
-            $.ajax({
-                    data: JSON.stringify(jsonobject),
-                    url: "/validar_pago_queretaro",
-                    type: "POST",
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function(data) {
-                        console.log("resp");
-                        console.log(data);
+                                }
 
-                        if(data.estatusPago == 1){
-                            $("#alertValidatePago").html('<div class="alert alert-success" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
-                            location.reload();
+                                
+                            },
+                                error: function(data) {}
 
-                        }else{
-                            $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
-                            return;
-
-                        }
-
-                       	
-                    },
-                   		error: function(data) {}
-
-               	});
-		}
+                        });
+                }
 
                 $(document).ready(function() {
                     var idusuario = "{{ $tramite['idsuario'] }}";
@@ -2074,10 +2068,11 @@
                     }, 1000);
 
 
-                    TRAM_FN_VERIFICAR_LLENADO()
+                    TRAM_FN_VERIFICAR_LLENADO();
+                    $(".selectCatalogos").selectpicker({
+                        noneSelectedText: 'Seleccionar',
+                    });
                 });
-
-
 
                 function TRAM_FN_SUBIR_DOCUMENTO_MULTIPLE(val) {
                     var id = "file_" + val;
@@ -2293,6 +2288,13 @@
                 function TRAM_AJX_GUARDAR() {
                     $("#loading-text").html("Guardando...");
                     $('#loading_save').show();
+
+                    catalogos.forEach(element => {
+                        let respuestas  = element.respuesta;
+                        let id          = element.pregunta;
+                        let input       = $("#"+ id + "_input").val(respuestas.toString());
+                    });
+
                     $.ajax({
                         data: $('#frmForm').serialize(),
                         url: "/tramite_servicio/guardar",
@@ -2630,6 +2632,23 @@
 
                     return size.toFixed(2) + ' TB';
                 }
+
+                $('.selectCatalogos').on('change', function(e) {
+                    let select  = e.target.id;
+                    let items   = $("#"+select).val();
+                    let aplica  = true;
+
+                    catalogos.forEach(element => {
+                        if(element.pregunta == select){
+                            element.respuesta = items;
+                            aplica = false;
+                        }
+                    });
+
+                    if(aplica){
+                        catalogos.push({pregunta: select,respuesta:items })
+                    }
+                });
 
             </script>
 

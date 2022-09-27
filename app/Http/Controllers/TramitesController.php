@@ -940,8 +940,9 @@ class TramitesController extends Controller
                                         break;
                                     case "catalogo":
                                         if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']){
-                                            $valorRespuesta = DB::table($resp->FORM_CVALOR)->where('id', $_resp->USRE_CRESPUESTA)->first();
-                                            $resp->FORM_CVALOR_RESPUESTA = $valorRespuesta->nombre;
+                                            $array = explode(",",$_resp->USRE_CRESPUESTA);
+                                            $valorRespuesta = DB::table($resp->FORM_CVALOR)->whereIn('id', $array)->get();
+                                            $resp->FORM_CVALOR_RESPUESTA = $valorRespuesta;
                                         }
                                         break;
                                     default:
