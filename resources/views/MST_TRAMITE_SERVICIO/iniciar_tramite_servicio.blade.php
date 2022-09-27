@@ -373,7 +373,7 @@
                                                             <div class="form-group">
                                                                 <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
                                                                 <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input">
-                                                                <select  id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple>
+                                                                <select id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple>
                                                                     @foreach ($preg->respuestas as $resp)
                                                                         @foreach ($resp->catalogos as $cat)
                                                                             <option value="{{$cat->id}}">{{$cat->clave}} - {{$cat->nombre}}</option>;
@@ -1132,7 +1132,6 @@
         }
         TRAM_FN_MAPA(null, null);
 
-
         function TRAM_FN_DESACTIVARMODULO() {
             //$('#cmbModulo').prop('disabled', 'disabled');
         }
@@ -1286,6 +1285,10 @@
 
         jQuery.extend(jQuery.validator.messages, {
             required: "Es requerido",
+        });
+
+        $(".selectCatalogos").selectpicker({
+            noneSelectedText: 'Seleccionar',
         });
     });
 
