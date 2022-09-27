@@ -1511,8 +1511,6 @@
                 echo json_encode($tramite['configuracion']['conceptos']); 
                 ?>;    
                 var ubicacion_ventanilla_sin_cita = {};
-                console.log('ver conecpyos');
-                console.log(conceptos_pagos);
 
                 //Unicamente se muestra el modal cuando el tramite esta finalizado y cuando el usuario no haya respondido la encuesta de satisfaccion
                 if (estatus_tram == 8) {
@@ -1574,8 +1572,6 @@
                     		type: "GET",
                     		dataType: 'json',
                     		success: function(data) {
-					console.log("resp");
-					console.log(data);
                        			location.reload();
                     		},
                    		error: function(data) {}
@@ -1595,12 +1591,8 @@
 
                     //checar dropdown de edificios disponibles
                     var selectedValue = $("#cita_edificios").children("option:selected").val();
-                    console.log("EDIFICIO: " + selectedValue);
 
                     if (selectedValue != 0) {
-
-                        console.log("TRAMITE: " + idtramiteAccede);
-
                         $("#citasdisponibles").show();
                         $('#citasdisponibles').DataTable().clear().destroy();
 
@@ -1616,12 +1608,9 @@
                     var idusuario = "{{ $tramite['idsuario'] }}";
                     var idtramiteAccede = "{{ $tramite['idtramiteaccede'] }}";
                     var seccion_active = "{{ $tramite['seccion_active'] }}";
-                    console.log("seccion active: " + seccion_active);
 
                     var moduloselected = "{{ $tramite['modulo'] }}";
                     localStorage.setItem("IdModuloSelected", moduloselected);
-
-                    console.log("este es el id que se manda: " + idtramiteAccede);
 
                     existeCita(idusuario, id, idtramiteAccede);
 
@@ -1786,11 +1775,6 @@
                         var files = $("#" + id)[0].files[0];
                         formData.append('file', files);
 
-                        // $.each($("#" + id)[0].files, function(i, file) {
-                        //     console.log('aaa');
-                        //     console.log(file);
-                        //     formData.append('file[]', file);
-                        // });
                         var name = $(this).data("docname");
                         $.ajax({
                             url: '/tramite_servicio/subir_documento',
@@ -1957,7 +1941,6 @@
                             type: "POST",
                             dataType: 'json',
                             success: function(data) {
-                                console.log(data);
 
                                 string_ = 'https://ipagostest.chihuahua.gob.mx/PagosDiversos/?parametro=' +
                                     string_;
@@ -2176,9 +2159,6 @@
                     $(".txtEnriquecido").each(function() {
                         var id = this.id;
                         var editor_val = CKEDITOR.instances[id].getData();
-
-                        console.log(editor_val, id);
-
                         if (editor_val == "" || editor_val == null) {
                             $("#error_" + id).html('<label><span style="color: red;">¡Error!</span> Es requerido</label>');
                         } else {
@@ -2230,12 +2210,9 @@
                     });
                     if (!$("#frmForm").valid()) {
 
-                        console.log("No se encuentra lleno completamente");
                         $("#estatusFormulario").html('<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
                             ' El formulario del trámite "' + nombreTramite + '"' + cuerpo + ' </div>');
                     } else {
-
-                        console.log("se encuentra lleno completamente");
                         $("#estatusFormulario" + id).html("");
                     }
                 };

@@ -373,7 +373,7 @@
                                                             <div class="form-group">
                                                                 <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
                                                                 <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input">
-                                                                <select id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple>
+                                                                <select id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple required>
                                                                     @foreach ($preg->respuestas as $resp)
                                                                         @foreach ($resp->catalogos as $cat)
                                                                             <option value="{{$cat->id}}">{{$cat->clave}} - {{$cat->nombre}}</option>;
@@ -1508,6 +1508,12 @@
     }
 
     function TRAM_AJX_ENVIAR(){
+        catalogos.forEach(element => {
+            let respuestas  = element.respuesta;
+            let id          = element.pregunta;
+            let input       = $("#"+ id + "_input").val(respuestas.toString());
+        });
+
         Swal.fire({
             title: '',
             text: '¿Está seguro de enviar su trámite?',
