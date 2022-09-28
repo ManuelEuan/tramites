@@ -249,18 +249,15 @@
     </div>
 
 
-    {{-- <script src="{{ asset('assets/template/js/jquery.js') }}"></script>
-    <script src="{{ asset('assets/template/js/jquery-ui.min.js') }}"></script> --}}
-    <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script> --}}
+
+    <script src="{{ asset('assets/template/js/jquery.js') }}"></script>
+    <script src="{{ asset('assets/template/js/jquery-ui.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset('assets/template/js/popper.min.js') }}"></script>
-    <!-- <script src="{{ asset('assets/template/plugins/bootstrap-select/js/popper.min.js') }}"></script> -->
-
     <script src="{{ asset('assets/template/js/bootstrap.min.js') }}"></script>
-    {{-- <script type="text/javascript" src="plugins/mdb/js/mdb.min.js"></script> --}}
     <script src="{{ asset('assets/template/plugins/DataTables/datatables.min.js') }}"></script>
-    {{-- <script type="text/javascript" src="plugins/fontawesome-5.9.0/js/all.min.js"></script> --}}
     <script src="{{ asset('assets/template/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
     <script src="{{ asset('assets/template/js/formValidation.min.js') }}"></script>
     <script src="{{ asset('assets/template/plugins/jquery.validate/jquery.validate.js') }}"></script>
@@ -281,166 +278,169 @@
     <script src="{{ asset('assets/template/plugins/bootstrap-select/js/bootstrap-select.min.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
-    {{-- <script src="{{ asset('assets/template/plugins/Datepicker/js/bootstrap-datetimepicker.min.js') }}"></script>--}}
-    {{-- <script src="{{ asset('assets/template/plugins/Datepicker/js/bootstrap-datetimepicker.min.js') }}"></script>--}}
 
     @yield('scripts')
 </body>
-<script>(function(d){var s = d.createElement("script");s.setAttribute("data-account", "DEMJ3A5AsR");s.setAttribute("src", "https://cdn.userway.org/widget.js");(d.body || d.head).appendChild(s);})(document)</script><noscript>Please ensure Javascript is enabled for purposes of <a href="https://userway.org">website accessibility</a></noscript>
-<script>
-    $(function() {
-        getNotificaciones();
-    });
-
-    function formateo(date) {
-        let array = date.split(" ");
-        let arraySeg = array[1].split(":");
-        let seg = arraySeg[0] + ":" + arraySeg[1];
-        return array[0].replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3/$2/$1') + " " + seg;
-    }
-
-    function getNotificaciones() {
-        let data = {
-            "usuario_id": $("#usuarioLogueado").val()
-        };
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+    <script>
+            (function(d){var s = d.createElement("script");s.setAttribute("data-account", "DEMJ3A5AsR");s.setAttribute("src", "https://cdn.userway.org/widget.js");(d.body || d.head).appendChild(s);})(document)
+    </script>
+        <noscript>
+            Please ensure Javascript is enabled for purposes of <a href="https://userway.org">website accessibility</a>
+        </noscript>
+            
+    <script>
+        $(function() {
+            getNotificaciones();
         });
 
-        request = $.ajax({
-            url: '/notificaciones',
-            type: "post",
-            data: data
-        });
+        function formateo(date) {
+            let array = date.split(" ");
+            let arraySeg = array[1].split(":");
+            let seg = arraySeg[0] + ":" + arraySeg[1];
+            return array[0].replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3/$2/$1') + " " + seg;
+        }
 
-        // Callback handler that will be called on success
-        request.done(function(dataResponse, textStatus, jqXHR) {
-
-            var response = dataResponse.notificaciones;
-            var notificaciones_tramite = dataResponse.notificaciones_tramite;
-            let html = '<div id="seccionNotificacion">';
-
-            //Notificaciones tramite
-            notificaciones_tramite.forEach(element => {
-                let fecha = element.HNOTI_DFECHACREACION == null ? '' : formateo(element.HNOTI_DFECHACREACION);
-                html += `<div class="card text-left" style="margin: .2rem;">
-                        <div class="card-header" style="text-align: left; background-color: transparent; border-bottom: none; font-weight: bold;">
-                            <div class="row">
-                                <div class="col-8" style="font-size: 16px;">${element.HNOTI_CITUTLO}</div>
-                                <div class="col-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <small>${ fecha } </small><i class="far fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body" style="font-size: 14px;">
-                            ${element.HNOTI_CMENSAJECORTO}
-                            <div style="text-align: right; margin-top:25px">
-                                <button type="button" class="btn btn-success btnModal" onclick="FN_AJX_ATENDER_TRAMITE(${element.HNOTI_NIDUSUARIOTRAMITE});">Consultar</button>
-                            </div>
-                        </div>
-                    </div>`;
+        function getNotificaciones() {
+            let data = {
+                "usuario_id": $("#usuarioLogueado").val()
+            };
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
 
-            //Notificaciones gestor
-            response.forEach(element => {
-                let fecha = element.NOTI_DFECHACREAACION == null ? '' : formateo(element.NOTI_DFECHACREAACION);
+            request = $.ajax({
+                url: '/notificaciones',
+                type: "post",
+                data: data
+            });
 
-                html += `<div class="card text-left" style="margin: .2rem;">
-                        <div class="card-header" style="text-align: left; background-color: transparent; border-bottom: none; font-weight: bold;">
-                            <div class="row">
-                                <div class="col-8" style="font-size: 16px;">${element.NOTI_CTITULO}</div>
-                                <div class="col-4" style="padding-left: 0px !important; padding-right: 0px !important;">
-                                    <small>${ fecha } </small><i class="far fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
+            // Callback handler that will be called on success
+            request.done(function(dataResponse, textStatus, jqXHR) {
+
+                var response = dataResponse.notificaciones;
+                var notificaciones_tramite = dataResponse.notificaciones_tramite;
+                let html = '<div id="seccionNotificacion">';
+
+                //Notificaciones tramite
+                notificaciones_tramite.forEach(element => {
+                    let fecha = element.HNOTI_DFECHACREACION == null ? '' : formateo(element.HNOTI_DFECHACREACION);
+                    html += `<div class="card text-left" style="margin: .2rem;">
+                            <div class="card-header" style="text-align: left; background-color: transparent; border-bottom: none; font-weight: bold;">
+                                <div class="row">
+                                    <div class="col-8" style="font-size: 16px;">${element.HNOTI_CITUTLO}</div>
+                                    <div class="col-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <small>${ fecha } </small><i class="far fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body" style="font-size: 14px;">
-                            ${element.NOTI_CMENSAJE}
-                            <div style="text-align: right; margin-top:25px">
-                                <button type="button" class="btn btn-success btnModal" onclick="vincularGestor(${element.NOTI_NID},'Autorizado','${element.NOTI_CMENSAJE}' )" id="btnAceptarVinculacion">Aceptar</button>
-                                <button type="button" class="btn btn-danger btnModal"  onclick="vincularGestor(${element.NOTI_NID},'Rechazado','${element.NOTI_CMENSAJE}' )" id="btnCancelarVinculacion">Rechazar</button>
+                            <div class="card-body" style="font-size: 14px;">
+                                ${element.HNOTI_CMENSAJECORTO}
+                                <div style="text-align: right; margin-top:25px">
+                                    <button type="button" class="btn btn-success btnModal" onclick="FN_AJX_ATENDER_TRAMITE(${element.HNOTI_NIDUSUARIOTRAMITE});">Consultar</button>
+                                </div>
                             </div>
-                        </div>
-                    </div>`;
+                        </div>`;
+                });
+
+                //Notificaciones gestor
+                response.forEach(element => {
+                    let fecha = element.NOTI_DFECHACREAACION == null ? '' : formateo(element.NOTI_DFECHACREAACION);
+
+                    html += `<div class="card text-left" style="margin: .2rem;">
+                            <div class="card-header" style="text-align: left; background-color: transparent; border-bottom: none; font-weight: bold;">
+                                <div class="row">
+                                    <div class="col-8" style="font-size: 16px;">${element.NOTI_CTITULO}</div>
+                                    <div class="col-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <small>${ fecha } </small><i class="far fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" style="font-size: 14px;">
+                                ${element.NOTI_CMENSAJE}
+                                <div style="text-align: right; margin-top:25px">
+                                    <button type="button" class="btn btn-success btnModal" onclick="vincularGestor(${element.NOTI_NID},'Autorizado','${element.NOTI_CMENSAJE}' )" id="btnAceptarVinculacion">Aceptar</button>
+                                    <button type="button" class="btn btn-danger btnModal"  onclick="vincularGestor(${element.NOTI_NID},'Rechazado','${element.NOTI_CMENSAJE}' )" id="btnCancelarVinculacion">Rechazar</button>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                html += `</div>`;
+
+                let cantidad = (parseInt(response.length) + parseInt(notificaciones_tramite.length)) > 9 ? '+9' : (parseInt(response.length) + parseInt(notificaciones_tramite.length));
+
+                if (cantidad > 0) {
+                    $("#seccionNotificacion").replaceWith(html);
+                }
+
+                if (cantidad != 0) {
+                    $("#spanNotificacion").text(cantidad);
+                }
             });
-            html += `</div>`;
+        }
 
-            let cantidad = (parseInt(response.length) + parseInt(notificaciones_tramite.length)) > 9 ? '+9' : (parseInt(response.length) + parseInt(notificaciones_tramite.length));
+        function vincularGestor(id, accion, nombre) {
+            let data = {
+                "id": id,
+                "respuesta": accion
+            };
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-            if (cantidad > 0) {
-                $("#seccionNotificacion").replaceWith(html);
-            }
+            let resta = nombre.split("te agregó");
 
-            if (cantidad != 0) {
-                $("#spanNotificacion").text(cantidad);
-            }
-        });
-    }
+            request = $.ajax({
+                url: '/gestores_solicitud/respuesta',
+                type: "post",
+                data: data
+            });
 
-    function vincularGestor(id, accion, nombre) {
-        //console.log(nombre);
-        let data = {
-            "id": id,
-            "respuesta": accion
-        };
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+            let operacion = accion == 'Autorizado' ? 'autorizar' : 'rechazar';
+            Swal.fire({
+                title: '¿Esta seguro de ' + operacion + " la solicitud?",
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Callback handler that will be called on success
+                    request.done(function(response, textStatus, jqXHR) {
 
-        let resta = nombre.split("te agregó");
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito! ya puede realizar trámites o servicios en representación de ' + resta[0],
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            getNotificaciones();
+                        }, 400);
+                    });
 
-        request = $.ajax({
-            url: '/gestores_solicitud/respuesta',
-            type: "post",
-            data: data
-        });
-
-        let operacion = accion == 'Autorizado' ? 'autorizar' : 'rechazar';
-        Swal.fire({
-            title: '¿Esta seguro de ' + operacion + " la solicitud?",
-            text: "",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Aceptar',
-            cancelButtonText: 'Cancelar',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Callback handler that will be called on success
-                request.done(function(response, textStatus, jqXHR) {
-
-                    setTimeout(() => {
+                    // Callback handler that will be called on failure
+                    request.fail(function(jqXHR, textStatus, errorThrown) {
                         Swal.fire({
-                            icon: 'success',
-                            title: '¡Éxito! ya puede realizar trámites o servicios en representación de ' + resta[0],
-                            showConfirmButton: false,
-                            timer: 1500
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'se presento el siguiente error: ' + errorThrown
                         });
                         getNotificaciones();
-                    }, 400);
-                });
-
-                // Callback handler that will be called on failure
-                request.fail(function(jqXHR, textStatus, errorThrown) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'se presento el siguiente error: ' + errorThrown
                     });
-                    getNotificaciones();
-                });
-            }
-        });
-    }
+                }
+            });
+        }
 
-    function FN_AJX_ATENDER_TRAMITE(HNOTI_NIDUSUARIOTRAMITE) {
-        location.href = "/tramite_servicio/seguimiento_tramite/" + HNOTI_NIDUSUARIOTRAMITE;
-    }
-</script>
+        function FN_AJX_ATENDER_TRAMITE(HNOTI_NIDUSUARIOTRAMITE) {
+            location.href = "/tramite_servicio/seguimiento_tramite/" + HNOTI_NIDUSUARIOTRAMITE;
+        }
+    </script>
 
 </html>

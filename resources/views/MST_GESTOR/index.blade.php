@@ -484,7 +484,6 @@
                 type: "POST",
                 success: function(data) {
                     $('#loading').hide();
-                    console.log(data);
                     $('#tramite_servicio').html(data);
                     $("html, body").animate({
                         scrollTop: 0

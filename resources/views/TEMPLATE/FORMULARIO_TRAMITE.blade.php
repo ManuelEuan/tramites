@@ -257,8 +257,12 @@
                             @foreach($pregunta->respuestas as $respuesta)
                                 <p>
                                     @if(count($pregunta->respuestas)>0)
-                                        {{ $pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA }}
+                                    <ul>
+                                        @foreach ($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA  as $item)
+                                            <li>{{$item->nombre}}</li>
+                                        @endforeach
                                     @endif
+                                    </ul>
                                 </p>
                             @endforeach
                         </div>

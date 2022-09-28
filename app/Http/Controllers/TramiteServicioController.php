@@ -326,8 +326,7 @@ class TramiteServicioController extends Controller
 
     public function seguimiento_tramite_servicio($id) {
         try {
-            $objUsuario = Auth::user();
-       
+            $objUsuario     = Auth::user();
             $tramites       = new Cls_Tramite_Servicio();
             $detalle        = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE_SEGUIMIENTO($id);
             $configaracion  = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($detalle->TRAM_NIDTRAMITE, $detalle->USTR_NIDUSUARIOTRAMITE);
@@ -407,6 +406,7 @@ class TramiteServicioController extends Controller
                                 $esp->id = 0;
                                 $esp->FORM_CVALOR_RESPUESTA = "";
                             }
+
                             foreach ($respuestas as $_resp) {
                                 if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
                                     $preg->estatus = $_resp['USRE_NESTATUS'];
@@ -455,6 +455,14 @@ class TramiteServicioController extends Controller
                                                     break;
                                             }
                                         }
+                                        break;
+                                    case "catalogo":
+                                        if ($resp->FORM_NPREGUNTAID == $_resp['USRE_NIDPREGUNTA']) {
+                                            $array = explode(",",$_resp['USRE_CRESPUESTA']);
+                                            $resp->respArray    = $array;
+                                            $resp->respString   = $_resp['USRE_CRESPUESTA'];
+                                        }
+                                        
                                         break;
                                     default:
                                         if ($resp->FORM_NPREGUNTAID == $_resp['USRE_NIDPREGUNTA']) {
