@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Ramsey\Uuid\Uuid;
 use Exception;
 use App\Mail\MailService;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
@@ -160,25 +161,45 @@ class LoginController extends Controller
 		$ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
 		$ObjBitacora->BITA_CIP = $request->ip();
 		Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-
-		if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == "CDNS"){
-			
+		$cookie = Cookie::forever("rol_clave", Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE);
+		Cookie::queue($cookie);
+		
+		$getCookie = Cookie::get("rol_clave");
+		Cookie::queue($getCookie);
+		if($getCookie){
+			Cookie::queue($getCookie);
+			switch($getCookie){
+				case "CDNS":
+					if(str_ends_with($request->previous_url,"logout")){
+						return Redirect::to('/tramite_servicio')->withCookie($cookie); 
+					}else{
+						return Redirect::to($request->previous_url->withCookie($cookie));
+					}
+					break;
+				case "ADM":
+					return Redirect::to('/gestores')->withCookie($cookie); 
+					// dd("admin");
+					break;
+				default:
+					return Redirect::to('/gestores')->withCookie($cookie); 
+					break;
+			}
 		}
-		switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
-			case "CDNS":
-				if(str_ends_with($request->previous_url,"logout")){
-					return redirect('/tramite_servicio'); 
-				}else{
-					return redirect($request->previous_url);
-				}
-				break;
-			case "ADM":
-				return redirect('/gestores');
-				break;
-			default:
-				return redirect('/gestores');
-				break;
-		}
+		// switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
+		// 	case "CDNS":
+		// 		if(str_ends_with($request->previous_url,"logout")){
+		// 			return redirect('/tramite_servicio'); 
+		// 		}else{
+		// 			return redirect($request->previous_url);
+		// 		}
+		// 		break;
+		// 	case "ADM":
+		// 		return redirect('/gestores');
+		// 		break;
+		// 	default:
+		// 		return redirect('/gestores');
+		// 		break;
+		// }
 		//return view('welcome')->withSuccess('Bienvenido');
 		}
 		
@@ -318,6 +339,10 @@ class LoginController extends Controller
 	
 	public function logout() {
 		Auth::logout();
+		if(Cookie::has("rol_clave")){
+			$rol = Cookie::forget("rol_clave");
+			Cookie::queue($rol);
+		}
 		return view('MSTP_LOGIN.index');
 	}
 }
