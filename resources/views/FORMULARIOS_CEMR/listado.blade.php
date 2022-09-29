@@ -939,7 +939,7 @@
                                         <i class="far fa-trash-alt" style="color: black"></i>
                                     </button>
                                     <br>
-                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" value="first_checkbox"> ¿Tiene asignación?</label>
+                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" value="tipoVinculacion_${pregunda_id}"> ¿Tiene asignación?</label>
                                 </span>
                                 </div>
                                 <br>
@@ -1211,7 +1211,7 @@
                                 <i class="far fa-trash-alt" style="color: black"></i>
                             </button>
                             <br>
-                            <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" value="first_checkbox"> ¿Tiene asignación?</label>
+                            <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" value="tipoVinculacion_${pregunda_id}"> ¿Tiene asignación?</label>
                         </span>
                         </div>
                         <br>
@@ -1234,7 +1234,10 @@
         );
         opcion_numero = 3;
     }
-
+    function muestraCampoVinculacion(data){
+        let cbNombre = data.val();
+        
+    }
     function cambiaTipoRespuesta(data) {
         let pregunta = data.id.replace("tipoRespuesta_", "");
 
