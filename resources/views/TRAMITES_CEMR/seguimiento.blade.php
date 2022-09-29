@@ -13,34 +13,33 @@
                 <div class="col-md-2" style="text-align: center;">
                     <p style="margin: 0px; font-size: 1rem; color:#393939;">Estatus de trámite</p>
                     @switch($tramite->USTR_NESTATUS)
-                    @case(9)
-                    <p class="text-danger" style="font-size: 1rem; font-weight: bold;">RECHAZADO</p>
-                    @break
-                    @case(8)
-                    <p class="text-success" style="font-size: 1rem; font-weight: bold;">TERMINADO</p>
-                    @break
-                    @case(7)
-                    <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">EN PROCESO</p>
-                    @break
-                    @case(6)
-                    <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">ACCIÓN REQUERIDA</p>
-                    @break
-                    @case(5)
-                    <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">INICIADO</p>
-                    @break
-                    @case(4)
-                    <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">INFORMACIÓN INCOMPLETA</p>
-                    @break
-                    @case(3)
-                    <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">RECIBIDO</p>
-                    @break
-                    @case(2)
-                    <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">PENDIENTE DE REVISIÓN</p>
-                    @break
-                    @default
-                    <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">CAPTURA INICIAL</p>
+                        @case(9)
+                            <p class="text-danger" style="font-size: 1rem; font-weight: bold;">RECHAZADO</p>
+                            @break
+                        @case(8)
+                            <p class="text-success" style="font-size: 1rem; font-weight: bold;">TERMINADO</p>
+                            @break
+                        @case(7)
+                            <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">EN PROCESO</p>
+                            @break
+                        @case(6)
+                            <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">ACCIÓN REQUERIDA</p>
+                            @break
+                        @case(5)
+                            <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">INICIADO</p>
+                            @break
+                        @case(4)
+                            <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">INFORMACIÓN INCOMPLETA</p>
+                            @break
+                        @case(3)
+                            <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">RECIBIDO</p>
+                            @break
+                        @case(2)
+                            <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">PENDIENTE DE REVISIÓN</p>
+                            @break
+                        @default
+                            <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">CAPTURA INICIAL</p>
                     @endswitch
-
                 </div>
             </div>
         </div>
@@ -51,707 +50,692 @@
 
             <ul id="rowTab" class="nav nav-tabs">
                 @foreach($secciones as $seccion)
-                @switch($seccion->SSEGTRA_CNOMBRE_SECCION)
+                    @switch($seccion->SSEGTRA_CNOMBRE_SECCION)
+                        @case('Revisión de documentación')
+                            <li>
+                                <a class="nav-link" data-toggle="tab" href="#tab_formulario_{{$secciones[0]->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_REVISION_DOCUMENTACION({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}, {{$secciones[$loop->index - 1]->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Revisión de documentación
+                                    @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                                    <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                    @endif
+                                </a>
+                            </li>
+                            @break
 
-                @case('Revisión de documentación')
-                <li>
-                    <a class="nav-link" data-toggle="tab" href="#tab_formulario_{{$secciones[0]->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_REVISION_DOCUMENTACION({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}, {{$secciones[$loop->index - 1]->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Revisión de documentación
-                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
-                        @endif
-                    </a>
-                </li>
-                @break
+                        @case('Citas en línea')
+                            <li>
+                                <a class="nav-link" data-toggle="tab" href="#tab_cita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_CITA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Citas en línea
+                                    @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                                    <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                    @endif
+                                </a>
+                            </li>
+                            @break
 
-                @case('Citas en línea')
-                <li>
-                    <a class="nav-link" data-toggle="tab" href="#tab_cita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_CITA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Citas en línea
-                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
-                        @endif
-                    </a>
-                </li>
-                @break
+                        @case('Ventanilla sin cita')
+                            <li>
+                                <a class="nav-link" data-toggle="tab" href="#tab_sincita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_VENTANILLA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Ventanilla sin cita
+                                    @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                                    <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                    @endif
+                                </a>
+                            </li>
+                            @break
 
-                @case('Ventanilla sin cita')
-                <li>
-                    <a class="nav-link" data-toggle="tab" href="#tab_sincita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_VENTANILLA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Ventanilla sin cita
-                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
-                        @endif
-                    </a>
-                </li>
-                @break
+                        @case('Pago en línea')
+                            @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "ANTA")
 
-                @case('Pago en línea')
-                @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "ANTA")
+                                <li>
+                                    <a class="nav-link" data-toggle="tab" href="#tab_pago_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Pago en línea
+                                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                        @endif
+                                    </a>
+                                </li>
 
-                    <li>
-                        <a class="nav-link" data-toggle="tab" href="#tab_pago_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Pago en línea
-                            @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                            <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
                             @endif
-                        </a>
-                    </li>
-                    
-                @endif
 
-                @break
+                            @break
 
-                @case('Módulo de análisis interno del área')
-                <li>
-                    <a class="nav-link" data-toggle="tab" href="#tab_analisis_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_ANALISIS_INTERNO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Módulo análisis interno del área
-                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
-                        @endif
-                    </a>
-                </li>
-                @break
+                        @case('Módulo de análisis interno del área')
+                            <li>
+                                <a class="nav-link" data-toggle="tab" href="#tab_analisis_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_ANALISIS_INTERNO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Módulo análisis interno del área
+                                    @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                                    <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                    @endif
+                                </a>
+                            </li>
+                            @break
 
-                @case('Resolutivo electrónico')
-                @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "ANTA")
+                        @case('Resolutivo electrónico')
+                            @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "ANTA")
 
-                    <li>
-                        <a class="nav-link" data-toggle="tab" href="#tab_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_RESOLUTIVO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Resolutivo electrónico
-                            @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                            <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                <li>
+                                    <a class="nav-link" data-toggle="tab" href="#tab_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_RESOLUTIVO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Resolutivo electrónico
+                                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                        @endif
+                                    </a>
+                                </li>
+
                             @endif
-                        </a>
-                    </li>
+                            @break
 
-                @endif
-
-                @break
-
-                @default
-                <li>
-                    <a class="nav-link active" data-toggle="tab" href="#tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_FORMULARIO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Formulario
-                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
-                        @endif
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link" data-toggle="tab" href="#tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_REVISION({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Revisión de documentación
-                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
-                        @endif
-                    </a>
-                </li>
-                @break
-                @endswitch
+                        @default
+                        <li>
+                            <a class="nav-link active" data-toggle="tab" href="#tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_FORMULARIO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Formulario
+                                @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                                <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                @endif
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link" data-toggle="tab" href="#tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_REVISION({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Revisión de documentación
+                                @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                                <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                @endif
+                            </a>
+                        </li>
+                        @break
+                    @endswitch
                 @endforeach
             </ul>
+
             <div class="card">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="tab-content">
-
                                 @foreach($secciones as $seccion)
-                                @switch($seccion->SSEGTRA_CNOMBRE_SECCION)
-                                @case('Revisión de documentación')
+                                    @switch($seccion->SSEGTRA_CNOMBRE_SECCION)
+                                        @case('Revisión de documentación')
 
-                                @break
-                                @case('Citas en línea')
-                                <div id="tab_cita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                                    @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                            @break
+                                        @case('Citas en línea')
+                                            <div id="tab_cita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
+                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                    <div class="row columna">
+                                                        <div class=" col-md-12">
+                                                            <div class="alert alert-warning" role="alert" style="font-size: 16px;">
+                                                                ¡Se requiere aprobar la sección anterior!
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
 
-                                    <div class="row columna">
-                                        <div class=" col-md-12">
-                                            <div class="alert alert-warning" role="alert" style="font-size: 16px;">
-                                                ¡Se requiere aprobar la sección anterior!
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
+                                                <input type="hidden" value="" id="cita_id" />
 
-                                    <input type="hidden" value="" id="cita_id" />
+                                                <div class="row columna">
+                                                    <div class=" col-md-4">
+                                                        <label class="titulo_cita">Estatus de la cita</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <label class="respuesta_pequena" id="cita_status">...</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row columna">
+                                                    <div class="col-md-12">
+                                                        <label class="titulo_cita">Datos de la cita</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row columna">
+                                                    <div class="col-md-4">
+                                                        <label class="titulo_pequeno">Folio de cita</label> <br>
+                                                        <label class="respuesta_pequena" id='cita_folio'>...</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <label class="titulo_pequeno">Fecha de cita</label> <br>
+                                                        <label class="respuesta_pequena" id='cita_fecha'>...</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row columna">
+                                                    <div class="col-md-4">
+                                                        <label class="titulo_pequeno">Hora de cita</label> <br>
+                                                        <label class="respuesta_pequena" id='cita_hora'>...</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row columna">
+                                                    <div class="col-md-4">
+                                                        <label class="titulo_pequeno">Nombre del trámite</label> <br>
+                                                        <label id="id_cita_tramite" class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_TRAMITE}}</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <label class="titulo_pequeno">ID Accede</label> <br>
+                                                        <label class='respuesta_pequena'>{{$tramite->USTR_NIDTRAMITE_ACCEDE}}</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row columna">
+                                                    <div class="col-md-4">
+                                                        <label class="titulo_pequeno">Solicitante</label> <br>
+                                                        <label id="id_cita_tramite" class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_COMPLETO}}</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <label class="titulo_pequeno">Correo</label> <br>
+                                                        <label class='respuesta_pequena'>{{$tramite->USTR_CCORREO_ELECTRONICO}}</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row columna">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="col-md-12" style="margin-top: 1%;">
+                                                                <label class="titulo_pequeno">Edificio</label> <br>
+                                                                <label class='respuesta_pequena' id='cita_edificio'>...</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12" style="margin-top: 1%;">
+                                                                <label class="titulo_pequeno">Unidad administrativa</label> <br>
+                                                                <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12" style="margin-top: 1%;">
+                                                                <label class="titulo_pequeno">Secretaria o Entidad</label> <br>
+                                                                <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div id="mapa_cita" style="height: 300px; width:100%;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="row columna_2">
+                                                    @if ($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8)
+                                                        <div style="width:100%">
+                                                            <div class="row" style="margin-bottom: 80px;">
+                                                                <div class="col-md-12">
+                                                                    <h3 class="indicaciones">Notificación al solicitante</h3>
+                                                                    <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
+                                                                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
+                                                                    <textarea name="txtAreaCita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="col-md-12 mt-5 contenedorBtn">
+                                                                        <div class="text-right botones">
+                                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
+                                                                                <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite</button>
+                                                                                <button onclick="TRAM_FN_APROBAR_CITA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
+                                                                            @else
+                                                                                <button  class="btn btn-danger border btnLetras" disabled title="No disponible">Rechazar trámite</button>
+                                                                                <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar visita</button>
+                                                                            @endif
 
-                                    <div class="row columna">
-                                        <div class=" col-md-4">
-                                            <label class="titulo_cita">Estatus de la cita</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <label class="respuesta_pequena" id="cita_status">...</label>
-                                        </div>
-                                    </div>
-                                    <div class="row columna">
-                                        <div class="col-md-12">
-                                            <label class="titulo_cita">Datos de la cita</label>
-                                        </div>
-                                    </div>
-                                    <div class="row columna">
-                                        <div class="col-md-4">
-                                            <label class="titulo_pequeno">Folio de cita</label> <br>
-                                            <label class="respuesta_pequena" id='cita_folio'>...</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <label class="titulo_pequeno">Fecha de cita</label> <br>
-                                            <label class="respuesta_pequena" id='cita_fecha'>...</label>
-                                        </div>
-                                    </div>
-                                    <div class="row columna">
-                                        <div class="col-md-4">
-                                            <label class="titulo_pequeno">Hora de cita</label> <br>
-                                            <label class="respuesta_pequena" id='cita_hora'>...</label>
-                                        </div>
-                                    </div>
-                                    <div class="row columna">
-                                        <div class="col-md-4">
-                                            <label class="titulo_pequeno">Nombre del trámite</label> <br>
-                                            <label id="id_cita_tramite" class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_TRAMITE}}</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <label class="titulo_pequeno">ID Accede</label> <br>
-                                            <label class='respuesta_pequena'>{{$tramite->USTR_NIDTRAMITE_ACCEDE}}</label>
-                                        </div>
-                                    </div>
-                                    <div class="row columna">
-                                        <div class="col-md-4">
-                                            <label class="titulo_pequeno">Solicitante</label> <br>
-                                            <label id="id_cita_tramite" class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_COMPLETO}}</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <label class="titulo_pequeno">Correo</label> <br>
-                                            <label class='respuesta_pequena'>{{$tramite->USTR_CCORREO_ELECTRONICO}}</label>
-                                        </div>
-                                    </div>
-                                    <div class="row columna">
-                                        <div class="col-md-4">
-                                            <div class="row">
-                                                <div class="col-md-12" style="margin-top: 1%;">
-                                                    <label class="titulo_pequeno">Edificio</label> <br>
-                                                    <label class='respuesta_pequena' id='cita_edificio'>...</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-12" style="margin-top: 1%;">
-                                                    <label class="titulo_pequeno">Unidad administrativa</label> <br>
-                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
+                                            @break
+
+                                        @case('Ventanilla sin cita')
+                                            <div id="tab_sincita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
+                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                    <div class="row columna">
+                                                        <div class=" col-md-12">
+                                                            <div class="alert alert-warning" role="alert" style="font-size: 16px;">
+                                                                ¡Se requiere aprobar la sección anterior!
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                <div class="row columna">
+                                                    <div class=" col-md-4">
+                                                        <label class="titulo_cita">Estatus</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <label class="respuesta_cita">{{$seccion->SSEGTRA_NIDESTATUS == 2 ? 'Aprobado' : 'Pendiente'}}</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12" style="margin-top: 1%;">
-                                                    <label class="titulo_pequeno">Secretaria o Entidad</label> <br>
-                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
+                                                <div class="row columna">
+                                                    <div class="col-md-12">
+                                                        <label class="titulo_cita">Datos de ventanilla</label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div id="mapa_cita" style="height: 300px; width:100%;">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="row columna_2">
-                                     
-                                        @if ($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) 
-                                        <div style="width:100%">
-                                            <div class="row" style="margin-bottom: 80px;">
                                                 <div class="col-md-12">
-                                                    <h3 class="indicaciones">Notificación al solicitante</h3>
-                                                    <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
-                                                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
-                                                    <textarea name="txtAreaCita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></textarea>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+
+                                                            <div class="row columna">
+                                                                <div class="col-md-12">
+                                                                    <label class="titulo_pequeno">Folio del trámite</label> <br>
+                                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CFOLIO}}</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row columna">
+                                                                <div class="col-md-12">
+                                                                    <label class="titulo_pequeno">Nombre del trámite</label> <br>
+                                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_TRAMITE}}</label>
+                                                                </div>
+                                                            </div>
+                                                            {{-- <div class="row columna_2">
+                                                                <div class="col-md-12">
+                                                                    <label class="titulo_pequeno">Edificio</label> <br>
+                                                                    <label class='respuesta_pequena'>Calle Juan Aldama 901, Zona Centro, Chihuahua, Chih.</label>
+                                                                </div>
+                                                            </div> --}}
+                                                            <div class="row columna_2">
+                                                                <div class="col-md-12">
+                                                                    <label class="titulo_pequeno">Ventanilla</label> <br>
+                                                                    <label class='respuesta_pequena'>{{$tramite->EDF_VENTANILLA_SIN_CITA}}</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row columna_2">
+                                                                <div class="col-md-12">
+                                                                    <label class="titulo_pequeno">Unidad administrativa</label> <br>
+                                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CUNIDADADMINISTRATIVA}}</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row columna_2">
+                                                                <div class="col-md-12">
+                                                                    <label class="titulo_pequeno">Secretaria o Entidad</label> <br>
+                                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div id="mapaEdificioVentanilla" style="width: 100%; height:25rem;">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>
+
+                                                @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8)
+                                                    <div class="col-md-12 mt-5">
+                                                        <div class="text-right botones">
+                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
+                                                                <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite</button>
+                                                                <button onclick="TRAM_FN_APROBAR_VENTANILLA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar visita</button>
+                                                            @else
+                                                                <button  class="btn btn-danger border btnLetras" disabled title="No disponible">Rechazar trámite</button>
+                                                                <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar visita</button>
+                                                            @endif
+
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            @break
+
+                                        @case('Pago en línea')
+                                            <div id="tab_pago_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
+                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                    <div class="row columna">
+                                                        <div class=" col-md-12">
+                                                            <div class="alert alert-warning" role="alert" style="font-size: 16px;">
+                                                                ¡Se requiere aprobar la sección anterior!
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                @if($seccion->SSEGTRA_PAGADO == 1)
+                                                    <div class="alert alert-success" role="alert" style="font-size: 16px">
+                                                        ¡Pago realizado con éxito!
+                                                    </div>
+                                                @endif
+
+                                                @if($conceptos > 0 && $tramite->USTR_NESTATUS < 8) <form id="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" name="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                                    <input type="hidden" name="txtIdUsuarioTramite" value="{{$tramite->USTR_NIDUSUARIOTRAMITE}}">
+                                                    <input type="hidden" name="txtIdSeccion" value="{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Referencia</th>
+                                                                <th scope="col">Concepto</th>
+                                                                <th scope="col">¿Aplica?</th>
+                                                                <th scope="col">Cantidad</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($conceptos as $con)
+                                                                @if($con->USCON_NIDSECCION == $seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO)
+                                                                    <tr>
+                                                                        <td>{{$con->USCON_NREFERENCIA}}</td>
+                                                                        <td>{{$con->USCON_CONCEPTO}}</td>
+                                                                        <td>
+                                                                            <div class="custom-control custom-checkbox">
+                                                                                <input class="custom-control-input" type="checkbox" name="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NIDUSUARIOCONCEPTO}}" {{$con->USCON_NACTIVO == 1 ? 'checked' : ''}}>
+                                                                                <label class="custom-control-label" for="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}"></label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="form-group">
+                                                                                <input type="number" class="form-control" name="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NCANTIDAD}}">
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endif
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                    </form>
+
+                                                    @if($seccion->SSEGTRA_PAGADO == 0)
+                                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
+                                                            <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;" {{($tramite->USTR_NESTATUS != 5)? "disabled" : ""}}>Guardar</button>
+                                                        @else
+                                                            <button type="submit" class="btn btn-success float-right" style="margin-right:10px;" disabled title="No disponible">Guardar</button>
+                                                        @endif
+                                                        {{-- <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;">Guardar</button> --}}
+                                                    @endif
+                                                @endif
+
+                                                <div class="row row-pago" id="pagos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                                    <div class="col-md-12">
+                                                        <div class="row columna">
+                                                            <div class=" col-md-4">
+                                                                <label class="titulo_cita">Estatus del pago</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <label class="respuesta_cita" id="txtEstatus_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
+
+                                                    {{-- <p>{{ Auth::user()->TRAM_CAT_ROL->ROL_NIDROL }}</p> --}}
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="row columna">
+                                                            <div class="col-md-12">
+                                                                <label class="titulo_cita">Datos del pago</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row columna">
+                                                            <div class="col-md-4">
+                                                                <label class="titulo_pequeno">Folio del trámite</label> <br>
+                                                                <label class='respuesta_pequena'>{{$tramite->USTR_CFOLIO}}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row columna">
+                                                            <div class="col-md-12">
+                                                                <label class="titulo_pequeno">Nombre del trámite</label> <br>
+                                                                <label class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_TRAMITE}}</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row columna_2">
+                                                            <!-- <div class="col-md-4">
+                                                            <label class="titulo_pequeno">Fecha de pago</label> <br>
+                                                            <label class='respuesta_pequena'>1 de febrero de 2021</label>
+                                                        </div> -->
+                                                            <div class="col-md-6">
+                                                                <label class="titulo_pequeno">Número de referencia del pago</label> <br>
+                                                                <label class='respuesta_pequena' id="txtReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="titulo_pequeno">Número de referencia</label> <br>
+                                                                <label class='respuesta_pequena' id="txtIdReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">033-6622</label>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <!-- <label class="titulo_pequeno">Mensaje</label> <br>
+                                                            <label class='respuesta_pequena' id="txtMensaje_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">033-6622</label> -->
+                                                            </div>
+                                                        </div>
+                                                        <div class="row columna_2">
+                                                            <div class="col-md-12">
+                                                                <label class="titulo_pequeno">Unidad administrativa</label> <br>
+                                                                <label class='respuesta_pequena'>{{$tramite->USTR_CUNIDADADMINISTRATIVA}}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row columna_2">
+                                                            <div class="col-md-12">
+                                                                <label class="titulo_pequeno">Secretaria o Entidad</label> <br>
+                                                                <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <br>
+                                                <div class="row columna_2">
+                                                    @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_PAGADO == 1)
+                                                        <div style="width:100%">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="col-md-12 mt-5 contenedorBtn">
+                                                                        <div class="text-right botones">
+                                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
+                                                                                <button onclick="TRAM_FN_APROBAR_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
+                                                                            @else
+                                                                                <button  class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar</button>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
+                                            @break
+
+                                        @case('Módulo de análisis interno del área')
+                                            <div id="tab_analisis_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
+                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                    <div class="row columna">
+                                                        <div class=" col-md-12">
+                                                            <div class="alert alert-warning" role="alert" style="font-size: 16px;">
+                                                                ¡Se requiere aprobar la sección anterior!
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                <div class="row columna">
+                                                    <div class=" col-md-12">
+                                                        <label class="respuesta_cita">El trámite actualmente se encuentra en el módulo de analisis interno del área, por lo que los plazos del tramite siguen contando.</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row columna">
+                                                    <div class="col-md-12">
+                                                        <label class="titulo_pequeno">Fecha de recepción del tramite:</label> <br>
+                                                        <label class='respuesta_pequena'>{{date("d/m/Y", strtotime($tramite->USTR_DFECHACREACION))}}</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row columna">
+                                                    <div class="col-md-12">
+                                                        <label class="titulo_pequeno">Días transcurridos desde el inicio del tramite:</label> <br>
+                                                        <label class='respuesta_pequena' id="diastranscurridos">0</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row columna">
+                                                    <div class="col-md-12">
+                                                        <label class="titulo_pequeno">Exportar información del tramite: </label><br>
+                                                        <span>
+                                                            <button onclick="descargar({{$tramite->USTR_NIDUSUARIOTRAMITE}}, 'TRAM_{{$tramite->USTR_CFOLIO}}')" type="button" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8)
                                                     <div class="col-md-12 mt-5 contenedorBtn">
                                                         <div class="text-right botones">
                                                             @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
-                                                            <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite</button>
-                                                            <button onclick="TRAM_FN_APROBAR_CITA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
+                                                                <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite </button>
+                                                                <button onclick="TRAM_FN_APROBAR_ANALISIS_INTERNO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Activar el siguiente módulo </button>
                                                             @else
-                                                            
-                                                            <button  class="btn btn-danger border btnLetras" disabled title="No disponible">Rechazar trámite</button>
-                                                            <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar visita</button>
-                            
+                                                                <button  class="btn btn-danger border btnLetras" disabled title="No disponible">Rechazar trámite</button>
+                                                                <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar visita</button>
                                                             @endif
-                                                            
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            @break
+
+                                        @case('Resolutivo electrónico')
+                                            <div id="tab_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
+                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                    <div class="row columna">
+                                                        <div class=" col-md-12">
+                                                            <div class="alert alert-warning" role="alert" style="font-size: 16px;">
+                                                                ¡Se requiere aprobar la sección anterior!
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                <div class="row columna">
+                                                    <div class=" col-md-4">
+                                                        <label class="titulo_cita">Resolutivo electrónico</label>
+                                                    </div>
+                                                </div>
+                                                @foreach($resolutivos as $resolutivo)
+                                                    <div class="row columna">
+                                                        <div class=" col-md-4">
+                                                            <label class="titulo_pequeno">Nombre</label>
+                                                        </div>
+                                                        <div class=" col-md-8">
+                                                            <label class="respuesta_pequena">{{$resolutivo->RESO_CNOMBRE}}</label>
+                                                        </div>
+                                                    </div>
+                                                    @if ($resolutivo->RESO_CNAMEFILE != null)
+                                                        <div class="row columna">
+                                                            <div class=" col-md-4">
+                                                                <label class="titulo_pequeno">Archivo Autogenerado</label>
+                                                            </div>
+                                                            <div class=" col-md-8">
+                                                                @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
+                                                                    <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE  ])}}">Vista Previa</a>
+                                                                @else
+                                                                    <a class="btn btn-success" target="_blank" @disabled(true) title="No disponible">Vista Previa</a>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+
+                                                <div class="row columna">
+                                                    <div class=" col-md-4">
+                                                        <label class="titulo_pequeno">Estatus</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        @if($seccion->SSEGTRA_NIDESTATUS != 2)
+                                                        <label class="respuesta_pequena">Pendiente</label>
+                                                        @else
+                                                        <label class="respuesta_pequena">Atendido</label>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                                @if($seccion->SSEGTRA_NIDESTATUS != 2 && $secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $tramite->USTR_NESTATUS < 8) <form enctype="multipart/form-data">
+                                                    <div class="row columna">
+                                                        <div class="col-md-4">
+                                                            <label class="titulo_pequeno">Estatus del resolutivo</label>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <select class="form-control" name="estatus_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" id="estatus_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                                                <option value="default" disabled>Seleccione una opción </option>
+                                                                <option value="aprobado">Aprobado</option>
+                                                                <option value="rechazado">Rechazado</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row columna">
+                                                        <div class="col-md-4">
+                                                            <label class="titulo_pequeno">Cargar documento</label><br>
+                                                            <small class="helper">Solo se acepta un archivo con formato PDF, JPG, GIF, PNG que no exceda de los 4 MB</small>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <input type="file" class="form-control-file" name="documento_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" id="documento_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 mt-5 contenedorBtn">
+                                                        <div class="text-right botones">
+                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
+                                                                <button type="button" class="btn btn-success border btnLetras" onclick="TRAM_FN_EMITIR_RESOLUTIVO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Emitir resolutivo </button>
+                                                            @else
+                                                                <button type="button" class="btn btn-success border btnLetras" disabled title="No disponible">Emitir resolutivo </button>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    </form>
+                                                @else
+                                                    <div class="row columna">
+                                                        <div class=" col-md-4">
+                                                            <label class="titulo_pequeno">Estatus del resolutivo</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @if ($seccion->SSEGTRA_NIDESTATUS == 2)
+                                                                Aprobado
+                                                            @else
+                                                                Pendiente
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="row columna">
+                                                        <div class=" col-md-4">
+                                                            <label class="titulo_pequeno">Archivo del resolutivo</label>
+                                                        </div>
+                                                        @if ($seccion->SSEGTRA_NIDESTATUS == 2)
+                                                            <div class="col-md-8" id="archivo_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                                                <span><i class="fas fa-eye"></i></span> <span><i class="fas fa-download"></i></span>
+                                                            </div>
+                                                        @else
+                                                            <div class="col-md-8" id="archivo_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                                                Pendiente
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            @break
+
+                                        @default
+                                            <div id="tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana active show">
+                                                <div id="infoCompleteRevision" style="display: none !important;" class="row columna">
+                                                    <div class=" col-md-12">
+                                                        <div class="alert alert-warning" role="alert" style="font-size: 16px;">
+                                                            ¡Se requiere aprobar la sección anterior!
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @include('TRAMITES_CEMR_SEGUIMIENTO.DET_FORMULARIO')
+                                                <div id="areaNotificacionRevision" style="display: none !important;">
+                                                    <div class="row columna" style="margin-bottom: 80px;">
+                                                        <div class="col-md-12">
+                                                            <h3 class="indicaciones">Notificación al solicitante</h3>
+                                                            <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
+                                                            <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
+                                                            <textarea name="txtAreaRevision"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row columna">
+                                                        <div class="col-md-12">
+                                                            <div class="col-md-12 mt-5 contenedorBtn">
+                                                                <div class="text-right botones">
+                                                                    @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
+                                                                        <button id="btnFormularioIncompleto" onclick="TRAM_FN_FORMULARIO_INCOMPLETO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-warning border btnLetras">Notificar información incompleta</button>
+                                                                        <button id="btnFormularioRechazar" onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Notificar rechazo de trámite</button>
+                                                                        <button id="btnFormularioAprobar" onclick="TRAM_FN_APROBAR_FORMULARIO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar documentación</button>
+                                                                    @else
+                                                                        <button  class="btn btn-warning border btnLetras" disabled title="No disponible">Notificar información incompleta</button>
+                                                                        <button class="btn btn-danger border btnLetras" disabled title="No disponible">Notificar rechazo de trámite</button>
+                                                                        <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar documentación</button>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-                            @break
-
-                            @case('Ventanilla sin cita')
-                            <div id="tab_sincita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
-                                <div class="row columna">
-                                    <div class=" col-md-12">
-                                        <div class="alert alert-warning" role="alert" style="font-size: 16px;">
-                                            ¡Se requiere aprobar la sección anterior!
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-                                <div class="row columna">
-                                    <div class=" col-md-4">
-                                        <label class="titulo_cita">Estatus</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <label class="respuesta_cita">{{$seccion->SSEGTRA_NIDESTATUS == 2 ? 'Aprobado' : 'Pendiente'}}</label>
-                                    </div>
-                                </div>
-                                <div class="row columna">
-                                    <div class="col-md-12">
-                                        <label class="titulo_cita">Datos de ventanilla</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-
-                                            <div class="row columna">
-                                                <div class="col-md-12">
-                                                    <label class="titulo_pequeno">Folio del trámite</label> <br>
-                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CFOLIO}}</label>
-                                                </div>
-                                            </div>
-                                            <div class="row columna">
-                                                <div class="col-md-12">
-                                                    <label class="titulo_pequeno">Nombre del trámite</label> <br>
-                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_TRAMITE}}</label>
-                                                </div>
-                                            </div>
-                                            {{-- <div class="row columna_2">
-                                                <div class="col-md-12">
-                                                    <label class="titulo_pequeno">Edificio</label> <br>
-                                                    <label class='respuesta_pequena'>Calle Juan Aldama 901, Zona Centro, Chihuahua, Chih.</label>
-                                                </div>
-                                            </div> --}}
-                                            <div class="row columna_2">
-                                                <div class="col-md-12">
-                                                    <label class="titulo_pequeno">Ventanilla</label> <br>
-                                                    <label class='respuesta_pequena'>{{$tramite->EDF_VENTANILLA_SIN_CITA}}</label>
-                                                </div>
-                                            </div>
-                                            <div class="row columna_2">
-                                                <div class="col-md-12">
-                                                    <label class="titulo_pequeno">Unidad administrativa</label> <br>
-                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CUNIDADADMINISTRATIVA}}</label>
-                                                </div>
-                                            </div>
-                                            <div class="row columna_2">
-                                                <div class="col-md-12">
-                                                    <label class="titulo_pequeno">Secretaria o Entidad</label> <br>
-                                                    <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div id="mapaEdificioVentanilla" style="width: 100%; height:25rem;">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) 
-                                <div class="col-md-12 mt-5">
-                                    <div class="text-right botones">
-                                      
-                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
-                                        <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite</button>
-                                        <button onclick="TRAM_FN_APROBAR_VENTANILLA({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar visita</button>
-                                        @else
-                                        
-                                        <button  class="btn btn-danger border btnLetras" disabled title="No disponible">Rechazar trámite</button>
-                                        <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar visita</button>
-        
-                                        @endif
-                                        
-                                    </div>
-
-                            </div>
-                            @endif
-                        </div>
-                        @break
-
-                        @case('Pago en línea')
-                        <div id="tab_pago_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                            @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
-                            <div class="row columna">
-                                <div class=" col-md-12">
-                                    <div class="alert alert-warning" role="alert" style="font-size: 16px;">
-                                        ¡Se requiere aprobar la sección anterior!
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-                            @if($seccion->SSEGTRA_PAGADO == 1)
-                            <div class="alert alert-success" role="alert" style="font-size: 16px">
-                                ¡Pago realizado con éxito!
-                            </div>
-                            @endif
-                            @if($conceptos > 0 && $tramite->USTR_NESTATUS < 8) <form id="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" name="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                <input type="hidden" name="txtIdUsuarioTramite" value="{{$tramite->USTR_NIDUSUARIOTRAMITE}}">
-                                <input type="hidden" name="txtIdSeccion" value="{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Referencia</th>
-                                            <th scope="col">Concepto</th>
-                                            <th scope="col">¿Aplica?</th>
-                                            <th scope="col">Cantidad</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($conceptos as $con)
-                                        @if($con->USCON_NIDSECCION == $seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO)
-                                        <tr>
-                                            <td>{{$con->USCON_NREFERENCIA}}</td>
-                                            <td>{{$con->USCON_CONCEPTO}}</td>
-                                            <td>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input class="custom-control-input" type="checkbox" name="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NIDUSUARIOCONCEPTO}}" {{$con->USCON_NACTIVO == 1 ? 'checked' : ''}}>
-                                                    <label class="custom-control-label" for="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}"></label>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <input type="number" class="form-control" name="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NCANTIDAD}}">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @endif
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                </form>
-                                @if($seccion->SSEGTRA_PAGADO == 0)
-                                @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
-                                <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;" {{($tramite->USTR_NESTATUS != 5)? "disabled" : ""}}>Guardar</button>
-                                @else
-                                
-                                <button type="submit" class="btn btn-success float-right" style="margin-right:10px;" disabled title="No disponible">Guardar</button>
-
-                                @endif
-                                {{-- <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;">Guardar</button> --}}
-                                @endif
-                                @endif
-
-                                <div class="row row-pago" id="pagos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                    <div class="col-md-12">
-                                        <div class="row columna">
-                                            <div class=" col-md-4">
-                                                <label class="titulo_cita">Estatus del pago</label>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <label class="respuesta_cita" id="txtEstatus_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
-
-                                    {{-- <p>{{ Auth::user()->TRAM_CAT_ROL->ROL_NIDROL }}</p> --}}
-
-                                            </div>
-                                        </div>
-                                        <div class="row columna">
-                                            <div class="col-md-12">
-                                                <label class="titulo_cita">Datos del pago</label>
-                                            </div>
-                                        </div>
-                                        <div class="row columna">
-                                            <div class="col-md-4">
-                                                <label class="titulo_pequeno">Folio del trámite</label> <br>
-                                                <label class='respuesta_pequena'>{{$tramite->USTR_CFOLIO}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row columna">
-                                            <div class="col-md-12">
-                                                <label class="titulo_pequeno">Nombre del trámite</label> <br>
-                                                <label class='respuesta_pequena'>{{$tramite->USTR_CNOMBRE_TRAMITE}}</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="row columna_2">
-                                            <!-- <div class="col-md-4">
-                                            <label class="titulo_pequeno">Fecha de pago</label> <br>
-                                            <label class='respuesta_pequena'>1 de febrero de 2021</label>
-                                        </div> -->
-                                            <div class="col-md-6">
-                                                <label class="titulo_pequeno">Número de referencia del pago</label> <br>
-                                                <label class='respuesta_pequena' id="txtReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="titulo_pequeno">Número de referencia</label> <br>
-                                                <label class='respuesta_pequena' id="txtIdReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">033-6622</label>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <!-- <label class="titulo_pequeno">Mensaje</label> <br>
-                                            <label class='respuesta_pequena' id="txtMensaje_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">033-6622</label> -->
-                                            </div>
-                                        </div>
-                                        <div class="row columna_2">
-                                            <div class="col-md-12">
-                                                <label class="titulo_pequeno">Unidad administrativa</label> <br>
-                                                <label class='respuesta_pequena'>{{$tramite->USTR_CUNIDADADMINISTRATIVA}}</label>
-                                            </div>
-                                        </div>
-                                        <div class="row columna_2">
-                                            <div class="col-md-12">
-                                                <label class="titulo_pequeno">Secretaria o Entidad</label> <br>
-                                                <label class='respuesta_pequena'>{{$tramite->USTR_CCENTRO}}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <br>
-                                <div class="row columna_2">
-                                    @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_PAGADO == 1) 
-                                    <div style="width:100%">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="col-md-12 mt-5 contenedorBtn">
-                                                    <div class="text-right botones">
-                                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
-                                                        <button onclick="TRAM_FN_APROBAR_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
-                                                        @else
-                                                        <button  class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar</button>
-
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
-                                </div>
-                        </div>
-                        @break
-
-                        @case('Módulo de análisis interno del área')
-                        <div id="tab_analisis_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                            @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
-                            <div class="row columna">
-                                <div class=" col-md-12">
-                                    <div class="alert alert-warning" role="alert" style="font-size: 16px;">
-                                        ¡Se requiere aprobar la sección anterior!
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-                            <div class="row columna">
-                                <div class=" col-md-12">
-                                    <label class="respuesta_cita">El trámite actualmente se encuentra en el módulo de analisis interno del área, por lo que los plazos del tramite siguen contando.</label>
-                                </div>
-                            </div>
-                            <div class="row columna">
-                                <div class="col-md-12">
-                                    <label class="titulo_pequeno">Fecha de recepción del tramite:</label> <br>
-                                    <label class='respuesta_pequena'>{{date("d/m/Y", strtotime($tramite->USTR_DFECHACREACION))}}</label>
-                                </div>
-                            </div>
-                            <div class="row columna">
-                                <div class="col-md-12">
-                                    <label class="titulo_pequeno">Días transcurridos desde el inicio del tramite:</label> <br>
-                                    <label class='respuesta_pequena' id="diastranscurridos">0</label>
-                                </div>
-                            </div>
-                            <div class="row columna">
-                                <div class="col-md-12">
-                                    <label class="titulo_pequeno">Exportar información del tramite: </label><br>
-                                    <span>
-                                        <button onclick="descargar({{$tramite->USTR_NIDUSUARIOTRAMITE}}, 'TRAM_{{$tramite->USTR_CFOLIO}}')" type="button" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                    </span>
-                                </div>
-                            </div>
-                            <br>
-                            @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8) 
-                            <div class="col-md-12 mt-5 contenedorBtn">
-                                <div class="text-right botones">
-                                    @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
-                                        <button onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Rechazar trámite </button>
-                                        <button onclick="TRAM_FN_APROBAR_ANALISIS_INTERNO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Activar el siguiente módulo </button>
-                                        @else
-                                        
-                                        <button  class="btn btn-danger border btnLetras" disabled title="No disponible">Rechazar trámite</button>
-                                        <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar visita</button>
-        
-                                        @endif
-                                   
-                                </div>
-                        </div>
-                        @endif
-                    </div>
-                    @break
-
-                    @case('Resolutivo electrónico')
-                    <div id="tab_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                        @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
-                        <div class="row columna">
-                            <div class=" col-md-12">
-                                <div class="alert alert-warning" role="alert" style="font-size: 16px;">
-                                    ¡Se requiere aprobar la sección anterior!
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-                        <div class="row columna">
-                            <div class=" col-md-4">
-                                <label class="titulo_cita">Resolutivo electrónico</label>
-                            </div>
-                        </div>
-                        @foreach($resolutivos as $resolutivo)
-                        <div class="row columna">
-                            <div class=" col-md-4">
-                                <label class="titulo_pequeno">Nombre</label>
-                            </div>
-                            <div class=" col-md-8">
-                                <label class="respuesta_pequena">{{$resolutivo->RESO_CNOMBRE}}</label>
-                            </div>
-                        </div>
-                        @if ($resolutivo->RESO_CNAMEFILE != null)
-                        <div class="row columna">
-                            <div class=" col-md-4">
-                                <label class="titulo_pequeno">Archivo Autogenerado</label>
-                            </div>
-                            <div class=" col-md-8">
-                                @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
-                                <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE  ])}}">Vista Previa</a>
-                                @else
-                                
-                                <a class="btn btn-success" target="_blank" @disabled(true) title="No disponible">Vista Previa</a>
-
-                                @endif
-                               
-                            </div>
-                        </div>
-                        @endif
-                        @endforeach
-                        <div class="row columna">
-                            <div class=" col-md-4">
-                                <label class="titulo_pequeno">Estatus</label>
-                            </div>
-                            <div class="col-md-8">
-                                @if($seccion->SSEGTRA_NIDESTATUS != 2)
-                                <label class="respuesta_pequena">Pendiente</label>
-                                @else
-                                <label class="respuesta_pequena">Atendido</label>
-                                @endif
-                            </div>
-                        </div>
-                        @if($seccion->SSEGTRA_NIDESTATUS != 2 && $secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $tramite->USTR_NESTATUS < 8) <form enctype="multipart/form-data">
-                            <div class="row columna">
-                                <div class="col-md-4">
-                                    <label class="titulo_pequeno">Estatus del resolutivo</label>
-                                </div>
-                                <div class="col-md-4">
-                                    <select class="form-control" name="estatus_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" id="estatus_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                        <option value="default" disabled>Seleccione una opción </option>
-                                        <option value="aprobado">Aprobado</option>
-                                        <option value="rechazado">Rechazado</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row columna">
-                                <div class="col-md-4">
-                                    <label class="titulo_pequeno">Cargar documento</label><br>
-                                    <small class="helper">Solo se acepta un archivo con formato PDF, JPG, GIF, PNG que no exceda de los 4 MB</small>
-                                </div>
-                                <div class="col-md-4">
-                                    <input type="file" class="form-control-file" name="documento_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" id="documento_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                </div>
-                            </div>
-                            <div class="col-md-12 mt-5 contenedorBtn">
-                                <div class="text-right botones">
-                                    @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
-                                    <button type="button" class="btn btn-success border btnLetras" onclick="TRAM_FN_EMITIR_RESOLUTIVO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Emitir resolutivo </button>
-                                    @else
-                                    
-                                    <button type="button" class="btn btn-success border btnLetras" disabled title="No disponible">Emitir resolutivo </button>
-    
-                                    @endif
-                                 
-                                </div>
-                            </div>
-                            </form>
-                            @else
-                            <div class="row columna">
-                                <div class=" col-md-4">
-                                    <label class="titulo_pequeno">Estatus del resolutivo</label>
-                                </div>
-                                <div class="col-md-8">
-                                    @if ($seccion->SSEGTRA_NIDESTATUS == 2)
-                                    Aprobado
-                                    @else
-                                    Pendiente
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="row columna">
-                                <div class=" col-md-4">
-                                    <label class="titulo_pequeno">Archivo del resolutivo</label>
-                                </div>
-                                @if ($seccion->SSEGTRA_NIDESTATUS == 2)
-                                <div class="col-md-8" id="archivo_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                    <span><i class="fas fa-eye"></i></span> <span><i class="fas fa-download"></i></span>
-                                </div>
-                                @else
-                                <div class="col-md-8" id="archivo_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
-                                    Pendiente
-                                </div>
-                                @endif
-                            </div>
-                            @endif
-                    </div>
-                    @break
-
-                    @default
-                    <div id="tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana active show">
-                        <div id="infoCompleteRevision" style="display: none !important;" class="row columna">
-                            <div class=" col-md-12">
-                                <div class="alert alert-warning" role="alert" style="font-size: 16px;">
-                                    ¡Se requiere aprobar la sección anterior!
-                                </div>
-                            </div>
-                        </div>
-                        @include('TRAMITES_CEMR_SEGUIMIENTO.DET_FORMULARIO')
-                        <div id="areaNotificacionRevision" style="display: none !important;">
-                            <div class="row columna" style="margin-bottom: 80px;">
-                                <div class="col-md-12">
-                                    <h3 class="indicaciones">Notificación al solicitante</h3>
-                                    <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
-                                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
-                                    <textarea name="txtAreaRevision"></textarea>
-                                </div>
-                            </div>
-                            <div class="row columna">
-                                <div class="col-md-12">
-                                    <div class="col-md-12 mt-5 contenedorBtn">
-                                        <div class="text-right botones">
-                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
-                                            <button id="btnFormularioIncompleto" onclick="TRAM_FN_FORMULARIO_INCOMPLETO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-warning border btnLetras">Notificar información incompleta</button>
-                                            <button id="btnFormularioRechazar" onclick="TRAM_FN_RECHAZAR({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-danger border btnLetras">Notificar rechazo de trámite</button>
-                                            <button id="btnFormularioAprobar" onclick="TRAM_FN_APROBAR_FORMULARIO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar documentación</button>
-                                            @else
-                                            <button  class="btn btn-warning border btnLetras" disabled title="No disponible">Notificar información incompleta</button>
-                                            <button class="btn btn-danger border btnLetras" disabled title="No disponible">Notificar rechazo de trámite</button>
-                                            <button class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar documentación</button>
-                                            @endif       
-                                            
-                                        </div>
-                                    </div>
-                                </div>
+                                            @break
+                                    @endswitch
+                                @endforeach
                             </div>
                         </div>
                     </div>
-                    @break
-                    @endswitch
-                    @endforeach
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
-</div>
-<br>
+    <br>
 </div>
 <br />
 
@@ -1250,7 +1234,6 @@
                 type: "GET",
                 success: function(data) {
                     var tramite = data.tramite[0];
-                    // console.log(data);
                     objTramite = data.tramite[0];
                     list_secciones_estatus = data.configuracion.secciones_estatus;
 
@@ -1337,30 +1320,26 @@
                             collapse_detalle += '<div class="col-md-5">';
 
                             switch (value_pregunta.FORM_CTIPORESPUESTA) {
-
                                 case "abierta":
-
-                                    collapse_detalle += '<p>' +
-                                        '<label class="titulo_pequeno">' + value_pregunta.FORM_CPREGUNTA + '</label> <br>' +
-                                        '<label class="respuesta_pequena">' + value_pregunta.respuestas[0].FORM_CVALOR_RESPUESTA + '</label>' +
-                                        '</p>';
+                                    collapse_detalle += `<p>
+                                        <label class="titulo_pequeno"> ${value_pregunta.FORM_CPREGUNTA} </label> <br>
+                                        <label class="respuesta_pequena"> ${value_pregunta.respuestas[0].FORM_CVALOR_RESPUESTA }</label>
+                                        </p>`;
                                     break;
 
                                 case "unica":
-
-                                    collapse_detalle += '<label class="titulo_pequeno">' + value_pregunta.FORM_CPREGUNTA + '</label> <br>';
+                                    collapse_detalle += `<label class="titulo_pequeno"> ${value_pregunta.FORM_CPREGUNTA} </label> <br>`;
                                     $.each(value_pregunta.respuestas, function(index_respuesta, value_respuesta) {
-                                        collapse_detalle += '<div class="form-check">' +
-                                            '<input ' + value_respuesta.FORM_CVALOR_RESPUESTA + ' style="pointer-events:none; width: 20px; height: 20px;" class="form-check-input" type="radio" name="radion_respuesta_' + value_respuesta.FORM_NPREGUNTAID + '" id="radion_respuesta_' + value_respuesta.FORM_NID + '">' +
-                                            '<label style="pointer-events:none; padding-top: 4px; padding-left: 8px; font-size: 14px;" class="form-check-label" for="radion_respuesta_' + value_respuesta.FORM_NID + '">' +
-                                            value_respuesta.FORM_CVALOR +
-                                            '</label>' +
-                                            '</div>';
+                                        collapse_detalle += `<div class="form-check">
+                                                                <input ${value_respuesta.FORM_CVALOR_RESPUESTA} style="pointer-events:none; width: 20px; height: 20px;" class="form-check-input" type="radio" name="radion_respuesta_${value_respuesta.FORM_NPREGUNTAID}" id="radion_respuesta_${value_respuesta.FORM_NID}">
+                                                                <label style="pointer-events:none; padding-top: 4px; padding-left: 8px; font-size: 14px;" class="form-check-label" for="radion_respuesta_${value_respuesta.FORM_NID} ">
+                                                                    ${value_respuesta.FORM_CVALOR}
+                                                                </label>
+                                                            </div>`;
                                     });
                                     break;
 
                                 case "especial":
-
                                     collapse_detalle += '<br>';
                                     collapse_detalle += '<div class="form-group">' +
                                         '<label class="titulo_pequeno">' + value_pregunta.FORM_CPREGUNTA + '</label> <br>' +
@@ -1412,7 +1391,6 @@
                                     break;
 
                                 case 'enriquecido':
-
                                     collapse_detalle += '<br>' +
                                         '<label class="titulo_pequeno">' + value_pregunta.FORM_CPREGUNTA + '</label> <br>' +
                                         '<div class="form-group">' +
@@ -1424,9 +1402,7 @@
                                         valor: value_pregunta.respuestas[0].FORM_CVALOR_RESPUESTA
                                     });
                                     break;
-
                                 case 'multiple':
-
                                     collapse_detalle += '<br>' +
                                         '<label class="titulo_pequeno">' + value_pregunta.FORM_CPREGUNTA + '</label> <br>' +
                                         '<div class="form-group">';
@@ -1443,8 +1419,24 @@
                                     collapse_detalle += '</div>';
                                     break;
 
-                                default:
+                                case 'catalogo':
+                                    collapse_detalle += `<br>
+                                                            <label class="titulo_pequeno"> ${value_pregunta.FORM_CPREGUNTA} </label> <br>
+                                                            <div class="form-group">`;
+                                                                value_pregunta.respuestas.forEach(value => {
+                                                                    value.FORM_CVALOR_RESPUESTA.forEach(element => {
+                                                                        collapse_detalle += `<div class="form-check">
+                                                                                <ul>
+                                                                                    <li class='titulo_pequeno'>${element.nombre}</li>
+                                                                                </ul>
+                                                                            </div>`;
+                                                                    });
+                                                                });
+                                        collapse_detalle += '</div>';
+                                    break;
 
+                                default:
+                                    break;
                             }
 
                             //Cierre col-md-5
@@ -1553,7 +1545,7 @@
                         }
 
                         var rutaDocumento = value.TRAD_CRUTADOC !== null && value.TRAD_CRUTADOC !== "" ? value.TRAD_CRUTADOC : "";
-                        
+
                         //VIGENCIA
                         if(value.vigencia!='' ){
                                 var ckVIG = 'checked';
@@ -1607,7 +1599,7 @@
                     divSectionContainer_documento.append(itemDocumento);
                     ///////////////////////////////////7
                     /*$('.vigencia').change(function() {
-                        console.log("Clickando")  
+                        console.log("Clickando")
                     });*/
                     $(".validatePregunta").hide();
                     $(".divV").hide();
@@ -1702,7 +1694,6 @@
             $('#vigencia' + id).change(function() {
                 var date = $(this).val();
                 fecha = date;
-                console.log(fecha, 'change')
                 var documento = list_documentos.find(x => x.documento_id === parseInt(id));
                 //var vigencia = $("#vigencia"+id).val();
                 documento.vigencia = fecha;
@@ -2162,7 +2153,7 @@
                     });
                     return;
                 }
-                console.log(seccion_formulario)
+
                 $.ajax({
                     data: seccion_formulario,
                     dataType: 'json',
@@ -2225,7 +2216,6 @@
 
     //------- Revision de documentacion - Secciones Diferentes --------
     function TRAM_FN_RENDER_REVISION_DOCUMENTACION(SeccionID, SeccionIDAnterior) {
-
         var secciones_tem = @json($secciones);
         var revision = secciones_tem.find(x => x.SSEGTRA_NIDSECCION_SEGUIMIENTO === parseInt(SeccionID));
         var seccion_anterior = secciones_tem.find(x => x.SSEGTRA_NIDSECCION_SEGUIMIENTO === parseInt(SeccionIDAnterior));
@@ -2610,7 +2600,7 @@
                     showConfirmButton: false,
                     timer: 2000
                 });
-            }, 2000);            
+            }, 2000);
             return;
         }
 
