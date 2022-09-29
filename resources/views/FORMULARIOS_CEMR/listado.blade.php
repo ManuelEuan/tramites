@@ -8,10 +8,12 @@
         border-radius: 50%;
         display: inline-block;
     }
+
     div.dt-buttons {
         float: right;
     }
-    .btn-secondary{
+
+    .btn-secondary {
         background-color: #ffa000;
         height: 25px;
         align-items: center;
@@ -54,13 +56,13 @@
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="txtNombre">Nombre</label>
-                                    <input type="text" class="form-control" id="txtNombre" placeholder="Trámite 0001" >
+                                    <input type="text" class="form-control" id="txtNombre" placeholder="Trámite 0001">
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label for="txtEstatus">Estatus</label>
                                     <select id="txtEstatus" class="form-control">
                                         <option value="NA" selected>Seleccionar</option>
-                                        <option value="1" >Activos</option>
+                                        <option value="1">Activos</option>
                                         <option value="0">Inactivos</option>
                                     </select>
                                 </div>
@@ -72,7 +74,7 @@
                                 </div>
                             </div>
                         </form>
-                        
+
                         {{-- <h2 class="resultados_De_busqueda">Resultados de la búsqueda</h2>
                         <div class="seguimiento">
                             <div class="input-group mb-3">
@@ -125,36 +127,36 @@
                         </div>
                     </div>
                 </div>
-            
+
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                            <h5 class="modal-title" id="tituloModal">Agregar Formulario</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                                <h5 class="modal-title" id="tituloModal">Agregar Formulario</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
                             <div class="modal-body">
                                 <form id="form_fomulario" class="needs-validation" novalidate>
                                     <input type="text" style="display: none;" id="id">
                                     <div class="form-row">
 
-                                    <div class="col-md-12 mb-3" id="tipoId">
-                                        <label for="tipoCuestionario">Tipo de cuestionario</label>
-                                        <select name="tipoCuestionario" id="tipoCuestionario" class="form-control" onchange="seleccionaCuestionario()">
-                                            <option value= 'nuevo' selected>Nuevo</option>
-                                            <option value= 'copia'>Duplicar</option>
-                                        </select>
-                                    </div>
+                                        <div class="col-md-12 mb-3" id="tipoId">
+                                            <label for="tipoCuestionario">Tipo de cuestionario</label>
+                                            <select name="tipoCuestionario" id="tipoCuestionario" class="form-control" onchange="seleccionaCuestionario()">
+                                                <option value='nuevo' selected>Nuevo</option>
+                                                <option value='copia'>Duplicar</option>
+                                            </select>
+                                        </div>
 
-                                    <div id="copiaCuestionario" class="row"></div>
+                                        <div id="copiaCuestionario" class="row"></div>
 
-                                    <div class="col-md-12 mb-3">
-                                        <label for="nombre">Nombre</label>
+                                        <div class="col-md-12 mb-3">
+                                            <label for="nombre">Nombre</label>
                                             <input type="text" class="form-control" id="nombre" placeholder="Nombre" autocomplete="off" required>
-                                    </div>
+                                        </div>
 
                                         <div class="col-md-12 mb-3">
                                             <label for="descripcion" class="col-form-label">Descripción:</label>
@@ -180,7 +182,7 @@
         </div>
     </div>
 
-    <div id="secciones"  style="display: none;">
+    <div id="secciones" style="display: none;">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
@@ -208,7 +210,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="btnContenedorRegresar">
                                 <button class="btn btn-link btnRegresar" type="button" onclick="regresar('formularios')"> Regresar </button>
                             </div>
@@ -219,7 +221,7 @@
         </div>
     </div>
 
-    <div id="preguntas"  style="display: none;">
+    <div id="preguntas" style="display: none;">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
@@ -229,11 +231,11 @@
                 </div>
             </div>
         </div>
-    
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-body body" >
+                    <div class="card-body body">
                         <h2 class="subtitulo" id=tituloSeccion></h2>
                         <form id="form_preguntas" class="needs-validation" novalidate>
                             <div id="contenedorPreguntas"></div>
@@ -263,13 +265,13 @@
                                 <div class="spinner-grow" role="status">
                                     <span class="sr-only">Loading...</span>
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            
+
         </div>
     </div>
 
@@ -277,133 +279,138 @@
 <br />
 @endsection
 @section('scripts')
-    <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.min.js"></script>
 
-    <script>
-        var visible             = "formulario";
-        var accion              = 'add';
-        var tipo                = 'nuevo';
-        var validateFormulario  = false;
-        var open_modal          = "{{$open}}";
-        var catalogos           = [];
-        
-        var formulario_id       = 0;
-        var seccion_id          = 0;
-        var formularios         = [];
-        var eliminados          = [];
-        var cuestionarios       = [];
+<script>
+    var visible = "formulario";
+    var accion = 'add';
+    var tipo = 'nuevo';
+    var validateFormulario = false;
+    var open_modal = "{{$open}}";
+    var catalogos = [];
 
-        /* Variables para las preguntas */
-            var pregunda_id     = 1;
-            var respuesta_id    = 1;
-            var especial_id     = 1;
-            var opcion_numero   = 3;
-            var opcion_especial = 1;
-            var editores = [];
-            var validatePreguntas = false;
-            var accion_pregunta   = "add";
+    var formulario_id = 0;
+    var seccion_id = 0;
+    var formularios = [];
+    var eliminados = [];
+    var cuestionarios = [];
 
-        $(document).ready(function() {       
-            listaFormularios();
-            getCuestionarios();
-            getSecciones();
-            getCatalogos();
+    /* Variables para las preguntas */
+    var pregunda_id = 1;
+    var respuesta_id = 1;
+    var especial_id = 1;
+    var opcion_numero = 3;
+    var opcion_especial = 1;
+    var editores = [];
+    var validatePreguntas = false;
+    var accion_pregunta = "add";
 
-            $("#descripcion").keyup(function() {
-                if($(this).val() != undefined && $(this).val() != null){
-                    if($(this).val().length < 2 || $(this).val().length > 1000){
-                        $("#error-desc").show();
-                        validateFormulario = false;
-                    }else{
-                        $("#error-desc").hide();
-                    }
+    $(document).ready(function() {
+        listaFormularios();
+        getCuestionarios();
+        getSecciones();
+        getCatalogos();
+
+        $("#descripcion").keyup(function() {
+            if ($(this).val() != undefined && $(this).val() != null) {
+                if ($(this).val().length < 2 || $(this).val().length > 1000) {
+                    $("#error-desc").show();
+                    validateFormulario = false;
+                } else {
+                    $("#error-desc").hide();
                 }
-            });
+            }
+        });
+    });
+
+    $('#txtFechaInicio').change(function() {
+        var date = $(this).val();
+        $('#txtFechaFin').attr('min', date);
+    });
+
+    function buscar() {
+        table.ajax.reload();
+    }
+
+    function getSecciones() {
+        request = $.ajax({
+            url: "/formulario/secciones",
+            type: "get"
         });
 
-        $('#txtFechaInicio').change(function() {
-            var date = $(this).val();
-            $('#txtFechaFin').attr('min' , date);
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            secciones = response;
         });
 
-        function buscar(){        
-            table.ajax.reload();
-        }
-
-        function getSecciones(){
-            request = $.ajax({
-                url: "/formulario/secciones",
-                type: "get"
+        // Callback handler that will be called on failure
+        request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
             });
-        
-            // Callback handler that will be called on success
-            request.done(function (response, textStatus, jqXHR){ 
-                secciones = response;
-            });
+        });
+    }
 
-            // Callback handler that will be called on failure
-            request.fail(function (jqXHR, textStatus, errorThrown){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'se presento el siguiente error: ' + errorThrown
-                });
-            });
-        }
+    function listaFormularios() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
-        function listaFormularios(){
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        table = $('#tblFormularios').DataTable({
+            "language": {
+                url: "/assets/template/plugins/DataTables/language/Spanish.json",
+                "search": "Filtrar resultados:",
+            },
+            "ajax": {
+                "url": "/formulario/find",
+                "type": "get",
+                "data": function(d) {
+                    return $.extend({}, d, {
+                        "fecha_inicio": $("#txtFechaInicio").val(),
+                        "fecha_final": $("#txtFechaFin").val(),
+                        "nombre": $("#txtNombre").val(),
+                        "estatus": $("#txtEstatus option:selected").text(),
+                    });
                 }
-            });
-
-            table = $('#tblFormularios').DataTable({
-                "language": {
-                    url: "/assets/template/plugins/DataTables/language/Spanish.json",
-                    "search": "Filtrar resultados:",
-                },
-                "ajax": {
-                    "url": "/formulario/find",
-                    "type": "get",
-                    "data": function(d) {
-                        return $.extend({}, d, {
-                            "fecha_inicio"   : $("#txtFechaInicio").val(),
-                            "fecha_final"    : $("#txtFechaFin").val(),
-                            "nombre"         : $("#txtNombre").val(),
-                            "estatus"        : $("#txtEstatus option:selected").text(),
-                        });
+            },
+            "columns": [{
+                    data: "FORM_DFECHA",
+                    render: function(data, type, row) {
+                        if (type === 'display') {
+                            let date = data == null ? "" : data;
+                            return date.replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3/$2/$1');
+                        }
+                        return data;
                     }
                 },
-                "columns": [
-                    { data: "FORM_DFECHA",
-                        render: function(data, type, row) {
-                            if (type === 'display') {
-                                let date = data == null ? "" : data;
-                                return date.replace(/^(\d{4})-(\d{2})-(\d{2})$/g,'$3/$2/$1');
-                            }
-                            return data;
+                {
+                    data: 'FORM_CNOMBRE'
+                },
+                {
+                    data: "FORM_CDESCRIPCION"
+                },
+                {
+                    data: "FORM_BACTIVO",
+                    render: function(data, type, row) {
+                        if (type === 'display') {
+                            return data == 0 ? 'Inactivo' : 'Activo';
                         }
-                    }, 
-                    { data: 'FORM_CNOMBRE' },
-                    { data: "FORM_CDESCRIPCION" },
-                    { data: "FORM_BACTIVO",
-                        render: function(data, type, row) {
-                            if (type === 'display') {
-                                return data  == 0 ? 'Inactivo' : 'Activo';
-                            }
-                            return data;
-                        }
-                    },
-                    {
-                        data: null,
-                        render: function(data, type, row) {
-                            let estatus = data.FORM_BACTIVO == false ? 'Activar' : 'Desactivar';
-                            html =  `<span>
+                        return data;
+                    }
+                },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        let estatus = data.FORM_BACTIVO == false ? 'Activar' : 'Desactivar';
+                        html = `<span>
                                         <button type="button" onclick="cambiaVista('secciones', ${ data.FORM_NID })" title="Secciones" class="btn btn-link"><i class="fas fa-list" style="color: black"></i></button>
                                     </span>
                                     <span>
@@ -411,58 +418,113 @@
                                     </span>
                                     <span>
                                         <button type="button" onclick="Habilitar(${ data.FORM_NID },'${ data.FORM_BACTIVO}','${ data.FORM_CNOMBRE}')" title="${estatus}" class="btn btn-link">`;
-                                            
-                                        if(data.FORM_BACTIVO == false)
-                                            html += `<i class="fas fa-toggle-off" style="color: black"></i>`;
-                                        else
-                                            html += `<i class="fas fa-toggle-on" style="color: black"></i>`;
-                                    
-                                            html +=`</button></span>
+
+                        if (data.FORM_BACTIVO == false)
+                            html += `<i class="fas fa-toggle-off" style="color: black"></i>`;
+                        else
+                            html += `<i class="fas fa-toggle-on" style="color: black"></i>`;
+
+                        html += `</button></span>
                                     <span>
                                         <button type="button" onclick="cambiaEstatus(${ data.FORM_NID }, 'eliminar')" title="Eliminar"  class="btn btn-link"><i class="far fa-trash-alt" style="color: black"></i></button>
                                     </span>`;
 
-                            return html;            
-                        }
-                    },
-                ],
-                searching: false,
-                ordering: true,
-                paging: true,
-                bLengthChange: true,
-                processing: true,
-                serverSide: true,
-                order: [[ 0, "desc" ]],
-                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
-                dom: 'Blrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        exportOptions: {
-                            columns: [ 0, 1, 2, 3 ]
-                        }
-                    },
-                    {
-                        extend: 'csvHtml5',
-                        exportOptions: {
-                            columns: [ 0, 1, 2, 3]
-                        }
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        exportOptions: {
-                            columns: [ 0, 1, 2, 3]
-                        }
+                        return html;
                     }
-                ]
-            });
-        }
+                },
+            ],
+            searching: false,
+            ordering: true,
+            paging: true,
+            bLengthChange: true,
+            processing: true,
+            serverSide: true,
+            order: [
+                [0, "desc"]
+            ],
+            lengthMenu: [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, "Todos"]
+            ],
+            dom: 'Blrtip',
+            buttons: [{
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3]
+                    }
+                },
+                {
+                    extend: 'csvHtml5',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3]
+                    }
+                }
+            ]
+        });
+    }
 
-        function cambiaEstatus($id,estatus = 'estatus'){
+    function cambiaEstatus($id, estatus = 'estatus') {
 
+        Swal.fire({
+            title: '¿Esta seguro de realizar la operación?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let url = "/formulario/status";
+                if (estatus != 'estatus') {
+                    url = "/formulario/delete";
+                }
+
+                request = $.ajax({
+                    url: url,
+                    type: "post",
+                    data: {
+                        "id": $id
+                    }
+                });
+
+                request.done(function(response, textStatus, jqXHR) {
+                    buscar();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Operación exitosa',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+
+                request.fail(function(jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'se presento el siguiente error: ' + errorThrown
+                    });
+                });
+            }
+        });
+    }
+
+    function Habilitar($id, estatus = 'estatus', valor) {
+
+        if (estatus == 0) {
+            //activar el formulario
+            estatus = 'estatus'
             Swal.fire({
-                title: '¿Esta seguro de realizar la operación?',
-                text: "",
+                title: 'Confirmar!',
+                text: "¿Desea habilitar el formulario " + valor + "?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -470,30 +532,79 @@
                 confirmButtonText: 'Aceptar',
                 cancelButtonText: 'Cancelar',
             }).then((result) => {
-                if (result.isConfirmed){
+                if (result.isConfirmed) {
                     let url = "/formulario/status";
-                    if(estatus != 'estatus'){
+                    if (estatus != 'estatus') {
                         url = "/formulario/delete";
                     }
 
                     request = $.ajax({
                         url: url,
                         type: "post",
-                        data: {"id": $id}
+                        data: {
+                            "id": $id
+                        }
                     });
 
-                    request.done(function (response, textStatus, jqXHR){
+                    request.done(function(response, textStatus, jqXHR) {
                         buscar();
 
                         Swal.fire({
                             icon: 'success',
-                            title: 'Operación exitosa',
+                            title: 'El formulario se ha habilitado con éxito.',
                             showConfirmButton: false,
                             timer: 1500
                         });
                     });
 
-                    request.fail(function (jqXHR, textStatus, errorThrown){
+                    request.fail(function(jqXHR, textStatus, errorThrown) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'se presento el siguiente error: ' + errorThrown
+                        });
+                    });
+                }
+            });
+        } else {
+            //desactivar el formulario
+            estatus = 'estatus'
+            Swal.fire({
+                title: 'Confirmar!',
+                text: "¿Desea deshabilitar el formulario " + valor + "?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let url = "/formulario/status";
+                    if (estatus != 'estatus') {
+                        url = "/formulario/delete";
+                    }
+
+                    request = $.ajax({
+                        url: url,
+                        type: "post",
+                        data: {
+                            "id": $id
+                        }
+                    });
+
+                    request.done(function(response, textStatus, jqXHR) {
+                        buscar();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'El formulario se ha deshabilitado con éxito.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    });
+
+                    request.fail(function(jqXHR, textStatus, errorThrown) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
@@ -504,207 +615,117 @@
             });
         }
 
-        function Habilitar($id,estatus = 'estatus',valor){
+    }
 
-            if(estatus == 0){
-                //activar el formulario
-                estatus = 'estatus'
-                Swal.fire({
-                    title: 'Confirmar!',
-                    text: "¿Desea habilitar el formulario " + valor+"?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                }).then((result) => {
-                    if (result.isConfirmed){
-                        let url = "/formulario/status";
-                        if(estatus != 'estatus'){
-                            url = "/formulario/delete";
-                        }
+    function abreModal(id = 0, nombre = '', descripcion = '') {
+        let valor = descripcion == 'null' ? '' : descripcion;
+        limpiaCampos();
+        $("#tituloModal").text("Agregar Formulario");
+        $("#form_fomulario").removeClass("was-validated");
 
-                        request = $.ajax({
-                            url: url,
-                            type: "post",
-                            data: {"id": $id}
-                        });
+        if (id != 0) {
+            $("#id").val(id);
+            $("#nombre").val(nombre);
+            $("#descripcion").val(valor);
+            $("#tituloModal").text("Actualizar Formulario");
+            $("#btnModal").trigger("click");
+            accion = 'update';
+            $("#tipoId").hide();
+            $("#copiaCuestionario").hide();
+            $('#frmCuestionario').removeAttr("required");
+        } else {
+            $("#tipoId").show();
+            $("#copiaCuestionario").show();
+            $('#frmCuestionario').prop("required", true);
+        }
+    }
 
-                        request.done(function (response, textStatus, jqXHR){
-                            buscar();
+    if (open_modal == 1) {
+        abreModal();
+        $("#exampleModalCenter").modal('show');
+    }
 
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'El formulario se ha habilitado con éxito.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        });
-
-                        request.fail(function (jqXHR, textStatus, errorThrown){
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'se presento el siguiente error: ' + errorThrown
-                            });
-                        });
-                    }
-                });
-            }else{  
-                //desactivar el formulario
-                estatus = 'estatus'
-                Swal.fire({
-                    title: 'Confirmar!',
-                    text: "¿Desea deshabilitar el formulario " + valor + "?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                }).then((result) => {
-                    if (result.isConfirmed){
-                        let url = "/formulario/status";
-                        if(estatus != 'estatus'){
-                            url = "/formulario/delete";
-                        }
-
-                        request = $.ajax({
-                            url: url,
-                            type: "post",
-                            data: {"id": $id}
-                        });
-
-                        request.done(function (response, textStatus, jqXHR){
-                            buscar();
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'El formulario se ha deshabilitado con éxito.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        });
-
-                        request.fail(function (jqXHR, textStatus, errorThrown){
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'se presento el siguiente error: ' + errorThrown
-                            });
-                        });
-                    }
-                });
+    function getCuestionarios() {
+        request = $.ajax({
+            url: "/formulario/find",
+            type: "get",
+            data: {
+                "paginate": true,
+                'estatus': 'Activos'
             }
+        });
 
-        }
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            cuestionarios = response.data;
+        });
 
-        function abreModal(id = 0, nombre='', descripcion= ''){
-            let valor = descripcion == 'null' ? '' : descripcion;
-            limpiaCampos();
-            $("#tituloModal").text("Agregar Formulario");
-            $("#form_fomulario").removeClass("was-validated");
+        // Callback handler that will be called on failure
+        request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
 
-            if(id != 0){
-                $("#id").val(id);
-                $("#nombre").val(nombre);
-                $("#descripcion").val(valor);
-                $("#tituloModal").text("Actualizar Formulario");
-                $("#btnModal").trigger("click");
-                accion = 'update';
-                $("#tipoId").hide();
-                $("#copiaCuestionario").hide();
-                $('#frmCuestionario').removeAttr("required");             
+    function getCatalogos() {
+        request = $.ajax({
+            url: "/catalogos/find",
+            type: "get",
+            data: {
+                paginate: false,
+                activo: true
             }
-            else{
-                $("#tipoId").show();
-                $("#copiaCuestionario").show();
-                $('#frmCuestionario').prop("required", true);
-            }
-        }
+        });
 
-        if(open_modal == 1){
-            abreModal();
-            $("#exampleModalCenter").modal('show');
-        }
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            catalogos = response.data;
+        });
 
-        function getCuestionarios(){
-            request = $.ajax({
-                url: "/formulario/find",
-                type: "get",
-                data: {"paginate":true, 'estatus':'Activos'}
+        // Callback handler that will be called on failure
+        request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
             });
-        
-            // Callback handler that will be called on success
-            request.done(function (response, textStatus, jqXHR){
-                cuestionarios = response.data;
-            });
+        });
+    }
 
-            // Callback handler that will be called on failure
-            request.fail(function (jqXHR, textStatus, errorThrown){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'se presento el siguiente error: ' + errorThrown
-                });
-            });
-        }
+    function seleccionaCuestionario() {
+        let sel = $("#tipoCuestionario option:selected").val();
 
-        function getCatalogos(){
-            request = $.ajax({
-                url: "/catalogos/find",
-                type: "get",
-                data: {paginate: false, activo:true}
-            });
-        
-            // Callback handler that will be called on success
-            request.done(function (response, textStatus, jqXHR){
-                catalogos = response.data;
-            });
-
-            // Callback handler that will be called on failure
-            request.fail(function (jqXHR, textStatus, errorThrown){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'se presento el siguiente error: ' + errorThrown
-                });
-            });
-        }
-
-        function seleccionaCuestionario(){
-            let sel = $("#tipoCuestionario option:selected").val();
-
-            if(sel == 'copia'){
-                tipo = 'copia';
-                let html = `
+        if (sel == 'copia') {
+            tipo = 'copia';
+            let html = `
                     <div class="col-md-12 mb-3" id='copiando'>
                         <label for="frmCuestionario">Formulario</label>
 
                         <select name="frmCuestionario" id="frmCuestionario" class="form-control" required>
                             <option value='' selected>Seleccionar</option>`;
-                            cuestionarios.forEach(element => {
-                                html += `<option value= ${element.FORM_NID}> ${element.FORM_CNOMBRE}</option>`;
-                            });
-                            
-                        html += `</select>
+            cuestionarios.forEach(element => {
+                html += `<option value= ${element.FORM_NID}> ${element.FORM_CNOMBRE}</option>`;
+            });
+
+            html += `</select>
                     </div>`;
 
-                $("#copiaCuestionario").append(html);
-            }
-            else{
-                tipo = 'nuevo';
-                $("#copiando").remove();
-            }
+            $("#copiaCuestionario").append(html);
+        } else {
+            tipo = 'nuevo';
+            $("#copiando").remove();
         }
+    }
 
-        /* Valido que los campos requeridos */
-        (function() {
-            'use strict';
-            window.addEventListener('load', function() {
-                var forms = document.getElementsByClassName('needs-validation');
-                var validation = Array.prototype.filter.call(forms, function(form) {
+    /* Valido que los campos requeridos */
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
                     if (form.checkValidity() === false) {
                         event.preventDefault();
@@ -716,8 +737,7 @@
                         });
                         validateFormulario = false;
                         validatePreguntas = false;
-                    }
-                    else{
+                    } else {
                         event.preventDefault();
                         validateFormulario = true;
                         validatePreguntas = true;
@@ -732,100 +752,105 @@
                     }
                     form.classList.add('was-validated');
                 }, false);
-                });
-            }, false);
-        })();
-
-        function guardarFormulario(){
-            $("#btnSubmit").click();
-
-            if(validateFormulario == false){
-                return;
-            }
-
-            var completo = $('#form_fomulario').serialize();
-            let copia_id = 0;
-
-            if(tipo == 'copia'){
-                copia_id = $("#frmCuestionario option:selected").val();
-            }
-            let data    = {"id": $("#id").val(),"nombre": $("#nombre").val(), "descripcion": $("#descripcion").val(), 'copia_id': copia_id};
-            let url     = "/formulario/store";
-
-            if(accion == 'update'){
-                url = "/formulario/update";
-            }
-        
-            request = $.ajax({
-                url: url,
-                type: "post",
-                data: data
             });
-        
-            // Callback handler that will be called on success
-            request.done(function (response, textStatus, jqXHR){
-                    limpiaCampos();
-                    setTimeout(() => {
-                        $("#btnCerrarForm").click();
-                        buscar();
+        }, false);
+    })();
 
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Operación exitosa',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    }, 400);
-            });
+    function guardarFormulario() {
+        $("#btnSubmit").click();
 
-            // Callback handler that will be called on failure
-            request.fail(function (jqXHR, textStatus, errorThrown){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'se presento el siguiente error: ' + errorThrown
-                });
-                limpiaCampos();
-            });
+        if (validateFormulario == false) {
+            return;
         }
-        
-        function limpiaCampos(opcion = 'general'){
-            accion  = 'add';
-            tipo    = 'nuevo';
-            validateFormulario = false;
 
-            /* Campos de modal de alta */
-            $("#id").val("0");
-            $("#nombre").val("");
-            $("#descripcion").val("");
-            $("#btnCerrarForm").prop('disabled', false);
-            $("#btnGuardarForm").prop('disabled', false);
-            $("#btnGuardarForm").text("Guardar");
-            $("#spinnerGuardar").remove();
+        var completo = $('#form_fomulario').serialize();
+        let copia_id = 0;
 
-            /* campos de filtros */
-            $("#txtFechaInicio").val("");
-            $("#txtFechaFin").val("");
-            $("#txtNombre").val("");
-            $("#txtEstatus").val("NA");
+        if (tipo == 'copia') {
+            copia_id = $("#frmCuestionario option:selected").val();
+        }
+        let data = {
+            "id": $("#id").val(),
+            "nombre": $("#nombre").val(),
+            "descripcion": $("#descripcion").val(),
+            'copia_id': copia_id
+        };
+        let url = "/formulario/store";
 
-            if(opcion == 'btnLimpiar'){
+        if (accion == 'update') {
+            url = "/formulario/update";
+        }
+
+        request = $.ajax({
+            url: url,
+            type: "post",
+            data: data
+        });
+
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            limpiaCampos();
+            setTimeout(() => {
+                $("#btnCerrarForm").click();
                 buscar();
-            }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Operación exitosa',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }, 400);
+        });
+
+        // Callback handler that will be called on failure
+        request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+            limpiaCampos();
+        });
+    }
+
+    function limpiaCampos(opcion = 'general') {
+        accion = 'add';
+        tipo = 'nuevo';
+        validateFormulario = false;
+
+        /* Campos de modal de alta */
+        $("#id").val("0");
+        $("#nombre").val("");
+        $("#descripcion").val("");
+        $("#btnCerrarForm").prop('disabled', false);
+        $("#btnGuardarForm").prop('disabled', false);
+        $("#btnGuardarForm").text("Guardar");
+        $("#spinnerGuardar").remove();
+
+        /* campos de filtros */
+        $("#txtFechaInicio").val("");
+        $("#txtFechaFin").val("");
+        $("#txtNombre").val("");
+        $("#txtEstatus").val("NA");
+
+        if (opcion == 'btnLimpiar') {
+            buscar();
         }
+    }
 
-        function cambiaVista(vista, id){
-            accion_pregunta = 'add';
+    function cambiaVista(vista, id) {
+        accion_pregunta = 'add';
 
-            if(vista == 'secciones' ){
-                $("#tbody").remove();
-                $('#formulario').fadeToggle(500);
-                $('#secciones').fadeToggle(500);
-                formulario_id = id;
+        if (vista == 'secciones') {
+            $("#tbody").remove();
+            $('#formulario').fadeToggle(500);
+            $('#secciones').fadeToggle(500);
+            formulario_id = id;
 
-                let tbody =  '<tbody id="tbody">';
-                    secciones.forEach(seccion => {
-                        tbody+=`<tr role=""row class="odd">
+            let tbody = '<tbody id="tbody">';
+            secciones.forEach(seccion => {
+                tbody += `<tr role=""row class="odd">
                                     <td>${seccion.FORM_CNOMBRE}</td>
                                     <td>
                                         <span>
@@ -835,45 +860,53 @@
                                         </span>
                                     </td>
                                 </tr>`;
-                    });
-                    
+            });
 
-                tbody+= '</tbody>';
 
-                $("#tblSecciones").append(tbody);
+            tbody += '</tbody>';
+
+            $("#tblSecciones").append(tbody);
+        } else {
+            seccion_id = id;
+
+            let divPreguntas = Array.prototype.slice.call(document.getElementsByClassName("contenedorPregunta"), 0);
+            let divHr = Array.prototype.slice.call(document.getElementsByClassName("hr"), 0);
+            for (element of divPreguntas) {
+                element.remove();
             }
-            else{
-                seccion_id = id;
+            for (element of divHr) {
+                element.remove();
+            }
 
-                let divPreguntas = Array.prototype.slice.call(document.getElementsByClassName("contenedorPregunta"), 0);
-                let divHr = Array.prototype.slice.call(document.getElementsByClassName("hr"), 0);
-                for(element of divPreguntas){
-                    element.remove();
+            const seccion = secciones.find(seccion => seccion.FORM_NID == seccion_id);
+            $('#secciones').fadeToggle(500);
+            $('#preguntas').fadeToggle(500);
+            $('#contenedorPeguntas').hide();
+            $('#cargaPreguntas').show();
+            $("#tituloSeccion").text(seccion.FORM_CNOMBRE);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-                for(element of divHr){
-                    element.remove();
+            });
+            request = $.ajax({
+                url: "/formulario/detalle",
+                type: "get",
+                data: {
+                    "formulario_id": formulario_id,
+                    "seccion_id": seccion_id
                 }
+            });
 
-                const seccion = secciones.find(seccion =>  seccion.FORM_NID == seccion_id );
-                $('#secciones').fadeToggle(500);
-                $('#preguntas').fadeToggle(500);
-                $('#contenedorPeguntas').hide();
-                $('#cargaPreguntas').show();
-                $("#tituloSeccion").text(seccion.FORM_CNOMBRE);        
-
-                $.ajaxSetup({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-                });
-                request = $.ajax({
-                    url: "/formulario/detalle",
-                    type: "get",
-                    data: {"formulario_id": formulario_id, "seccion_id": seccion_id}
-                });
-            
-                request.done(function (response, textStatus, jqXHR){
-                    if(response.length == 0){
-                        $("#contenedorPreguntas").append(
-                            `<div class="form-row contenedorPregunta" id="div_pregunta_${pregunda_id}">
+            request.done(function(response, textStatus, jqXHR) {
+                if (response.length == 0) {
+                    /**
+                     * !parte para poder realizar la vinculacion del campo segun lo requerido en el tipo
+                     * TODO: tipoVinculacion_ es el nombre del campo
+                     */
+                    $("#contenedorPreguntas").append(
+                        `<div class="form-row contenedorPregunta" id="div_pregunta_${pregunda_id}">
                                 <div class=" col-md-4 mb-3">
                                     <label for="pregunta_${pregunda_id}">Pregunta</label>
                                     <div class="input-group">
@@ -881,7 +914,7 @@
                                     </div>
                                     <em class="text-danger" id="error_${pregunda_id}"></em>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label for="tipoRespuesta_${pregunda_id}">Tipo respuesta</label>
                                     <select name="tipoRespuesta_${pregunda_id}" id="tipoRespuesta_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
                                         <option value= 'abierta' selected>Respuesta abierta</option>
@@ -900,25 +933,40 @@
                                     </select>
                                 </div>
 
+                                <div class="col-md-2 mb-3">
                                 <span  style="margin-top: 1%;">
                                     <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${pregunda_id}')">
                                         <i class="far fa-trash-alt" style="color: black"></i>
                                     </button>
+                                    <br>
+                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" value="first_checkbox"> ¿Tiene asignación?</label>
                                 </span>
-                                
-                                <div class="col-md-12">
+                                </div>
+                                <br>
+                                <div class="col-md-4 mb-3">
+                                    <label for="tipoVinculacion_${pregunda_id}">Tipo de Vinculación</label>
+                                    <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                        <option value= 'USUA_CRFC' selected>RFC</option>
+                                        <option value= 'USUA_CCURP'>CURP</option>
+                                        <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
+                                        <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
+                                        <option value= 'CPRIMER_APELLIDO|CSEGUNDO_APELLIDO|CNOMBRES'>Especial</option>
+                                        <option value= 'catalogo'>CALLE</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-8 mb-9">
                                     <div class="form-group" id="contenedorRespuestas_${pregunda_id}"> </div>
                                 </div>
+                                
                             </div> <hr class="hr">`
-                        );
-                    }
-                    else{
-                        accion_pregunta = 'update'
-                        response.forEach(element => {
-                            let tipo_respuesta  =  element.respuestas.length > 0 ? element.respuestas[0].FORM_CTIPORESPUESTA : "abierta";
-                            let nom_pregunta    = element.FORM_CPREGUNTA;
-                            let resol    = element.FORM_BRESOLUTIVO;
-                            let preguntas = `<div class="form-row contenedorPregunta" id="div_pregunta_update${element.FORM_NID}">
+                    );
+                } else {
+                    accion_pregunta = 'update'
+                    response.forEach(element => {
+                        let tipo_respuesta = element.respuestas.length > 0 ? element.respuestas[0].FORM_CTIPORESPUESTA : "abierta";
+                        let nom_pregunta = element.FORM_CPREGUNTA;
+                        let resol = element.FORM_BRESOLUTIVO;
+                        let preguntas = `<div class="form-row contenedorPregunta" id="div_pregunta_update${element.FORM_NID}">
                                 <div class=" col-md-4 mb-3">
                                     <label for="update_pregunta_${element.FORM_NID}">Pregunta</label>
                                     <div class="input-group">
@@ -957,13 +1005,12 @@
                                 
                                 <div class="col-md-12">
                                     <div class="form-group" id="contenedorRespuestas_update_${element.FORM_NID}">`;
-                                        if(tipo_respuesta == 'abierta'){
-                                            let prim_res = element.respuestas.length > 0 ? element.respuestas[0].FORM_NID : 0;
-                                            preguntas += ``;
-                                        }
-                                        else if(tipo_respuesta == 'unica'){
-                                            element.respuestas.forEach(res => { 
-                                                preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
+                        if (tipo_respuesta == 'abierta') {
+                            let prim_res = element.respuestas.length > 0 ? element.respuestas[0].FORM_NID : 0;
+                            preguntas += ``;
+                        } else if (tipo_respuesta == 'unica') {
+                            element.respuestas.forEach(res => {
+                                preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
                                                     <input type="radio"  name="radio_${element.FORM_NID}_${res.FORM_NID}">
                                                     <input type="text" class="form-control inputRespuesta" name="update_respuesta_${element.FORM_NID}_${res.FORM_NID}" id="respuesta_${element.FORM_NID}_${res.FORM_NID}" value='${res.FORM_CVALOR}' required>
                                                     <span>
@@ -971,16 +1018,15 @@
                                                             <i class="far fa-trash-alt" style="color: black"></i>
                                                         </button>
                                                     </span>
-                                                </div>`; 
-                                            });
-                                            preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
+                                                </div>`;
+                            });
+                            preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
                                             <div class="btnContenedor">
                                                 <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('unica', '${element.FORM_NID}')"> Agregar respuesta</button>
                                             </div>`;
-                                        }
-                                        else if(tipo_respuesta == 'multiple'){
-                                            element.respuestas.forEach(res => {
-                                                preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
+                        } else if (tipo_respuesta == 'multiple') {
+                            element.respuestas.forEach(res => {
+                                preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
                                                     <input type="checkbox"  name="checkbox_${element.FORM_NID}_${res.FORM_NID}">
                                                     <input type="text" class="form-control inputRespuesta" name="update_respuesta_${element.FORM_NID}_${res.FORM_NID}" id="respuesta_${element.FORM_NID}_${res.FORM_NID}" value='${res.FORM_CVALOR}' required>
                                                     
@@ -993,26 +1039,27 @@
                                                         </button>
                                                     </span>
                                                 </div>`;
-                                            });
-                                            preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
+                            });
+                            preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
                                             <div class="btnContenedor">
                                                 <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('multiple', '${element.FORM_NID}')"> Agregar respuesta</button>
                                             </div>`;
-                                        }
-                                        else if(tipo_respuesta == 'enriquecido'){
-                                            element.respuestas.forEach(res => {
-                                                preguntas += `<textarea class="form-control inputRespuesta2" name="update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}"  id="update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}" rows="5"></textarea>`;
-                                                setTimeout(() => {
-                                                    let ck      = CKEDITOR.replace( `update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}`);
-                                                    let array   = {"id": `respuesta_${element.FORM_NID}_${res.FORM_NID}`, "value": ck };
-                                                    editores.push( array );
-                                                    array.value.setData(res.FORM_CVALOR);
-                                                }, 300);
-                                            });
-                                        }
-                                        else if(tipo_respuesta == 'especial'){
-                                            element.respuestas.forEach(res => {
-                                                preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
+                        } else if (tipo_respuesta == 'enriquecido') {
+                            element.respuestas.forEach(res => {
+                                preguntas += `<textarea class="form-control inputRespuesta2" name="update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}"  id="update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}" rows="5"></textarea>`;
+                                setTimeout(() => {
+                                    let ck = CKEDITOR.replace(`update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}`);
+                                    let array = {
+                                        "id": `respuesta_${element.FORM_NID}_${res.FORM_NID}`,
+                                        "value": ck
+                                    };
+                                    editores.push(array);
+                                    array.value.setData(res.FORM_CVALOR);
+                                }, 300);
+                            });
+                        } else if (tipo_respuesta == 'especial') {
+                            element.respuestas.forEach(res => {
+                                preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
                                                     <div class="row">
                                                         <div class="col-md-3">
                                                             <div class="form-group">
@@ -1021,11 +1068,11 @@
                                                                 <em class="text-danger" id="error_${element.FORM_NID}_${res.FORM_NID}"></em>
                                                             </div>
                                                         </div>`;
-                                                    
-                                                    
-                                                        if(res.especial.length > 0){
-                                                            let tipo_especial = res.especial[0].FORM_CTIPORESPUESTA;
-                                                            preguntas += `<div class="col-md-3">
+
+
+                                if (res.especial.length > 0) {
+                                    let tipo_especial = res.especial[0].FORM_CTIPORESPUESTA;
+                                    preguntas += `<div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label for="encabezado_${res.FORM_NID}"></label>
                                                                     <select class="form-control mt-3" name="update_select_${element.FORM_NID}_${res.FORM_NID}" id="select_${element.FORM_NID}_${res.FORM_NID}" onchange="cambiaEspecial(this,'update');">
@@ -1036,15 +1083,15 @@
                                                                 </div>
                                                             </div>`;
 
-                                                            if(tipo_especial == 'opciones'){
-                                                                preguntas +=`<div class="col-md-3" id="contenedorRespuestaEspecial_update_${element.FORM_NID}_${res.FORM_NID}">`;
-                                                            }else{
-                                                                preguntas +=`<div class="col-md-0" id="contenedorRespuestaEspecial_update_${element.FORM_NID}_${res.FORM_NID}">`;
-                                                            }                                                               
+                                    if (tipo_especial == 'opciones') {
+                                        preguntas += `<div class="col-md-3" id="contenedorRespuestaEspecial_update_${element.FORM_NID}_${res.FORM_NID}">`;
+                                    } else {
+                                        preguntas += `<div class="col-md-0" id="contenedorRespuestaEspecial_update_${element.FORM_NID}_${res.FORM_NID}">`;
+                                    }
 
-                                                            if(tipo_especial == 'opciones'){
-                                                                res.especial.forEach(esp => {
-                                                                    preguntas +=`<div class="row" id="div_especial_update${esp.FORM_NID}" style="margin-top: 2.2%;">
+                                    if (tipo_especial == 'opciones') {
+                                        res.especial.forEach(esp => {
+                                            preguntas += `<div class="row" id="div_especial_update${esp.FORM_NID}" style="margin-top: 2.2%;">
                                                                         <div class="col-md-7">
                                                                             <input type="text" class="form-control" name="update_opcionEspecial_${element.FORM_NID}_${res.FORM_NID}_${esp.FORM_NID}" id="respuesta_${esp.FORM_NID}" value=" ${esp.FORM_CVALOR}" required>
                                                                         </div>
@@ -1056,87 +1103,82 @@
                                                                             </span>
                                                                         </div>
                                                                     </div>`;
-                                                                });
+                                        });
 
-                                                            preguntas += `<div id="agregaEspecial_${element.FORM_NID}_${res.FORM_NID}"></div>
+                                        preguntas += `<div id="agregaEspecial_${element.FORM_NID}_${res.FORM_NID}"></div>
                                                                 <button type="button" class="btn btn-success btn-circle" onclick="agregaMasEspecial(${element.FORM_NID},${res.FORM_NID})">
                                                                     <i class="fas fa-plus"></i>
                                                                 </button>`;
-                                                            }
+                                    } else if (tipo_especial == 'numerico') {
+                                        /* preguntas += ` <button type="button" class="btn btn-link" disabled  style="margin-left:20%;">
+                                            <i class="fas fa-plus-square iconoEspecial"></i>
+                                        </button>
 
-                                                            else if(tipo_especial == 'numerico'){
-                                                                /* preguntas += ` <button type="button" class="btn btn-link" disabled  style="margin-left:20%;">
-                                                                    <i class="fas fa-plus-square iconoEspecial"></i>
-                                                                </button>
+                                        <button type="button" class="btn btn-link" disabled style="margin-left:30px;">
+                                            <i class="fas fa-minus-square iconoEspecial"></i>
+                                        </button>`; */
+                                    } else if (tipo_especial == 'simple') {
+                                        /*  preguntas += `<label for="encabezado_${element.FORM_NID}_${res.FORM_NID}"></label>
+                                         <input type="text" class="form-control" id="encabezado_${element.FORM_NID}_${res.FORM_NID}" value="Texto simple" disabled >`; */
+                                    }
 
-                                                                <button type="button" class="btn btn-link" disabled style="margin-left:30px;">
-                                                                    <i class="fas fa-minus-square iconoEspecial"></i>
-                                                                </button>`; */
-                                                            }
-
-                                                            else if(tipo_especial == 'simple'){
-                                                               /*  preguntas += `<label for="encabezado_${element.FORM_NID}_${res.FORM_NID}"></label>
-                                                                <input type="text" class="form-control" id="encabezado_${element.FORM_NID}_${res.FORM_NID}" value="Texto simple" disabled >`; */
-                                                            }
-
-                                                            preguntas += `</div><span style="margin-top:1%;">
+                                    preguntas += `</div><span style="margin-top:1%;">
                                                                     <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_resp_update${res.FORM_NID}', true)">
                                                                         <i class="far fa-trash-alt" style="color: black"></i>
                                                                     </button>
                                                                 </span>
                                                             </div>`;
-                                                        }
-                                                    preguntas += `</div>`;
-                                            });
-                                            preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
+                                }
+                                preguntas += `</div>`;
+                            });
+                            preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
                                             <div class="btnContenedor">
                                                 <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('especial', '${element.FORM_NID}')"> Agregar respuesta</button>
-                                            </div>`; 
-                                        }
-                                        else if(tipo_respuesta == 'catalogo'){
-                                            element.respuestas.forEach(res => {
-                                                let id      = `update_respuesta_${res.FORM_NPREGUNTAID}_${res.FORM_NID}`;
-                                                let select  = '';
-                                                preguntas +=    `<div class="col-md-4">
+                                            </div>`;
+                        } else if (tipo_respuesta == 'catalogo') {
+                            element.respuestas.forEach(res => {
+                                let id = `update_respuesta_${res.FORM_NPREGUNTAID}_${res.FORM_NID}`;
+                                let select = '';
+                                preguntas += `<div class="col-md-4">
                                                                     <label> Catálogo</label>
                                                                     <select name="${id}" id="${id}" class="form-control" required>
                                                                         <option value="0">Seleccionar</option>`;
-                                                                        catalogos.forEach(element => {
-                                                                            select  = element.tabla == res.FORM_CVALOR ? 'selected' : '';
-                                                                            preguntas+= `<option value="${element.tabla}" ${select}>${element.nombre}</option>`;
-                                                                        });
-                                                                    preguntas+=`</select>
+                                catalogos.forEach(element => {
+                                    select = element.tabla == res.FORM_CVALOR ? 'selected' : '';
+                                    preguntas += `<option value="${element.tabla}" ${select}>${element.nombre}</option>`;
+                                });
+                                preguntas += `</select>
                                                                 </div>`;
-                                            });
-                                        }                               
-                                    
-                                    preguntas+=`</div>
+                            });
+                        }
+
+                        preguntas += `</div>
                                 </div>
                             </div> <hr class="hr">`
-                        
-                            $("#contenedorPreguntas").append(preguntas);
-                        });
-                    }
-                    $('#cargaPreguntas').hide();
-                    $('#contenedorPeguntas').show()
-                });
 
-                request.fail(function (jqXHR, textStatus, errorThrown){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'se presento el siguiente error: ' + errorThrown
+                        $("#contenedorPreguntas").append(preguntas);
                     });
+                }
+                $('#cargaPreguntas').hide();
+                $('#contenedorPeguntas').show()
+            });
+
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
                 });
+            });
 
-            }
-            $("#form_preguntas").removeClass("was-validated");
         }
+        $("#form_preguntas").removeClass("was-validated");
+    }
 
-        function agregaPregunta(){
-            pregunda_id++;
-            opcion_especial =1;
-            $("#contenedorPreguntas").append(
+    function agregaPregunta() {
+        pregunda_id++;
+        opcion_especial = 1;
+        $("#contenedorPreguntas").append(
             `<div class="form-row contenedorPregunta" id="div_pregunta_${pregunda_id}">
                     <div class=" col-md-4 mb-3">
                         <label for="pregunta_${pregunda_id}">Pregunta</label>
@@ -1145,7 +1187,7 @@
                         </div>
                         <em class="text-danger" id="error_${pregunda_id}"></em>
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                         <label for="tipoRespuesta_${pregunda_id}">Tipo respuesta</label>
                         <select name="tipoRespuesta_${pregunda_id}" id="tipoRespuesta_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
                             <option value= 'abierta' selected>Respuesta abierta</option>
@@ -1163,34 +1205,48 @@
                                         <option value= '0'>NO</option>
                                     </select>
                                 </div>
-
-                    <span style="margin-top: 1%;">
-                        <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${pregunda_id}')">
-                            <i class="far fa-trash-alt" style="color: black"></i>
-                        </button>
-                    </span>
-                    
-                    <div class="col-md-12">
+                        <div class="col-md-2 mb-3">
+                        <span  style="margin-top: 1%;">
+                            <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${pregunda_id}')">
+                                <i class="far fa-trash-alt" style="color: black"></i>
+                            </button>
+                            <br>
+                            <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" value="first_checkbox"> ¿Tiene asignación?</label>
+                        </span>
+                        </div>
+                        <br>
+                        <div class="col-md-4 mb-3">
+                            <label for="tipoVinculacion_${pregunda_id}">Tipo de Vinculación</label>
+                            <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                <option value= 'USUA_CRFC' selected>RFC</option>
+                                <option value= 'USUA_CCURP'>CURP</option>
+                                <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
+                                <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
+                                <option value= 'CPRIMER_APELLIDO|CSEGUNDO_APELLIDO|CNOMBRES'>Especial</option>
+                                <option value= 'catalogo'>CALLE</option>
+                            </select>
+                        </div>
+                    <div class="col-md-8">
                         <div class="form-group" id="contenedorRespuestas_${pregunda_id}">
                         </div>
                     </div>
                 </div><hr class="hr">`
-            );
-            opcion_numero = 3;
-        }
+        );
+        opcion_numero = 3;
+    }
 
-        function cambiaTipoRespuesta(data){
-            let pregunta = data.id.replace("tipoRespuesta_", "");
+    function cambiaTipoRespuesta(data) {
+        let pregunta = data.id.replace("tipoRespuesta_", "");
 
-            switch(data.value) {
-                case "abierta":
-                    $("#contenedorRespuestas_" + pregunta).replaceWith(`
+        switch (data.value) {
+            case "abierta":
+                $("#contenedorRespuestas_" + pregunta).replaceWith(`
                         <div class="form-group" id="contenedorRespuestas_${pregunta}">
                         </div>
                     `);
-                    break;
-                case "unica":
-                    $("#contenedorRespuestas_" + pregunta).replaceWith(`
+                break;
+            case "unica":
+                $("#contenedorRespuestas_" + pregunta).replaceWith(`
                         <div id="contenedorRespuestas_${pregunta}">
                             <div class="row">
                                 <div class="col-md-12" id="div_resp_${respuesta_id}">
@@ -1220,10 +1276,10 @@
                             </div>
                         </div>
                     `);
-                    break;
+                break;
 
-                case "multiple":
-                    $("#contenedorRespuestas_" + pregunta).replaceWith(`
+            case "multiple":
+                $("#contenedorRespuestas_" + pregunta).replaceWith(`
                         <div id="contenedorRespuestas_${pregunta}">
                             <div class="row">
                                 <div class="col-md-12" id="div_resp_${respuesta_id}">
@@ -1261,22 +1317,25 @@
                             </div>
                         </div>                    
                     `);
-                    break;
-                
-                case "enriquecido":
-                    $("#contenedorRespuestas_" + pregunta).replaceWith(`
+                break;
+
+            case "enriquecido":
+                $("#contenedorRespuestas_" + pregunta).replaceWith(`
                         <div class="form-group" id="contenedorRespuestas_${pregunta}" style="width: 70%;">
                             <textarea name="respuesta_${pregunta}_${respuesta_id}"  id="editor_${pregunta}_${respuesta_id}" rows="5"></textarea>
                         </div>
                     `);
-                    
-                    let ck      = CKEDITOR.replace( `respuesta_${pregunta}_${respuesta_id}`);
-                    let array   = {"id": `respuesta_${pregunta}_${respuesta_id}`, "value": ck };
-                    editores.push( array );
-                    break;
 
-                case "especial":
-                    $("#contenedorRespuestas_" + pregunta).replaceWith(`
+                let ck = CKEDITOR.replace(`respuesta_${pregunta}_${respuesta_id}`);
+                let array = {
+                    "id": `respuesta_${pregunta}_${respuesta_id}`,
+                    "value": ck
+                };
+                editores.push(array);
+                break;
+
+            case "especial":
+                $("#contenedorRespuestas_" + pregunta).replaceWith(`
                         <div id="contenedorRespuestas_${pregunta}">
                             <div class="row"> 
                                 <div class="col-md-12" id="div_resp_${respuesta_id}">
@@ -1317,33 +1376,33 @@
                             </div>
                         </div>
                     `);
-                    break;
-                case "catalogo":
-                    let id = `respuesta_${pregunta}_${respuesta_id}`;
-                    let html = ` <div class="form-group row" id="contenedorRespuestas_${id}" style="width: 70%; margin-left: -1%;">
+                break;
+            case "catalogo":
+                let id = `respuesta_${pregunta}_${respuesta_id}`;
+                let html = ` <div class="form-group row" id="contenedorRespuestas_${id}" style="width: 70%; margin-left: -1%;">
                                     <div class="col-md-6">
                                         <label> Catálogo</label>
                                         <select name="${id}" id="${id}" class="form-control" required>
                                             <option value="0">Seleccionar</option>`;
-                                            catalogos.forEach(element => {
-                                                html+= `<option value="${element.tabla}" >${element.nombre}</option>`;
-                                            });
-                                    html+=`</select>
+                catalogos.forEach(element => {
+                    html += `<option value="${element.tabla}" >${element.nombre}</option>`;
+                });
+                html += `</select>
                                     </div>
                                 </div>`;
-                    $("#contenedorRespuestas_" + pregunta).replaceWith(html);
-                    break;
-                default:
-                    break;
-                }
+                $("#contenedorRespuestas_" + pregunta).replaceWith(html);
+                break;
+            default:
+                break;
         }
+    }
 
-        function agregaRespuestas(opcion, pregunta){
-            respuesta_id++;
-            especial_id++;
-            switch(opcion) {
-                case "unica":
-                    $("#agregaMas_" + pregunta).append(`
+    function agregaRespuestas(opcion, pregunta) {
+        respuesta_id++;
+        especial_id++;
+        switch (opcion) {
+            case "unica":
+                $("#agregaMas_" + pregunta).append(`
                         <div class="col-md-12" id="div_resp_${respuesta_id}">
                             <input type="radio" name="radio_${pregunta}_${respuesta_id}">
                             <input type="text" class="form-control inputRespuesta" name="respuesta_${pregunta}_${respuesta_id}" id="respuesta_${pregunta}_${respuesta_id}" value='Opcion ${opcion_numero}'>
@@ -1355,11 +1414,11 @@
                         </div>
                     `);
 
-                    opcion_numero++;
-                    break;
-                    
-                case "multiple":
-                    $("#agregaMas_" + pregunta).append(`
+                opcion_numero++;
+                break;
+
+            case "multiple":
+                $("#agregaMas_" + pregunta).append(`
                         <div class="col-md-12" id="div_resp_${respuesta_id}">
                             <input type="checkbox" name="checkbox_${pregunta}"">
                             <input type="text" name="respuesta_${pregunta}_${respuesta_id}" class="form-control inputRespuesta" id="usr" value='Opcion ${opcion_numero}'>
@@ -1374,11 +1433,11 @@
                         </div>
                     `);
 
-                    opcion_numero++;
-                    break;
+                opcion_numero++;
+                break;
 
-                case "especial":
-                    $("#agregaMas_" + pregunta).append(`
+            case "especial":
+                $("#agregaMas_" + pregunta).append(`
                         <div class="col-md-12" id="div_resp_${respuesta_id}">
                             <div class="row">
                                 <div class="col-md-3">
@@ -1408,39 +1467,39 @@
                             </div>
                         </div>
                     `);
-                
-                default:
-                    break;
-                }
+
+            default:
+                break;
+        }
+    }
+
+    function cambiaEspecial(data, accion = 'add') {
+        let opcion = data.id.replace("tipoEspecial_", "");
+        opcion = opcion.replace("select_", "");
+        let pregunta = pregunda_id;
+        let respuesta = respuesta_id;
+        let especial = especial_id;
+
+        if (accion != 'add') {
+            opcion = 'update_' + opcion;
         }
 
-        function cambiaEspecial(data, accion = 'add'){
-            let opcion = data.id.replace("tipoEspecial_","");
-            opcion = opcion.replace("select_","");
-            let pregunta = pregunda_id;
-            let respuesta = respuesta_id;
-            let especial = especial_id;
 
-            if(accion != 'add'){
-                opcion = 'update_' + opcion;
-            }
-
-
-            switch(data.value) {
-                case "simple":
-                    $("#contenedorRespuestaEspecial_" + opcion).replaceWith(`
+        switch (data.value) {
+            case "simple":
+                $("#contenedorRespuestaEspecial_" + opcion).replaceWith(`
                         <div class="" id="contenedorRespuestaEspecial_${opcion}"></div>
                     `);
-                    break;
-                case "numerico":
-                    $("#contenedorRespuestaEspecial_" + opcion).replaceWith(`
+                break;
+            case "numerico":
+                $("#contenedorRespuestaEspecial_" + opcion).replaceWith(`
                         <div class="" id="contenedorRespuestaEspecial_${opcion}"></div>
                     `);
-                    break;
-                case "opciones":
-                    opcion_especial = 1;
+                break;
+            case "opciones":
+                opcion_especial = 1;
 
-                    $("#contenedorRespuestaEspecial_" + opcion).replaceWith(`  
+                $("#contenedorRespuestaEspecial_" + opcion).replaceWith(`  
                         <div class="col-md-4" id="contenedorRespuestaEspecial_${opcion}">
                             <div class="row" id="div_especial_${especial}" style="margin-top: 2.2%;">
                                 <div class="col-md-7">
@@ -1460,47 +1519,48 @@
                             </button>
                         </div>
                     `);
-                    break;
-                default:
-                    break;
-                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    function eliminaRespuesta(data, eliminar = false) {
+        if (eliminar != false) {
+            let p = data.includes('div_pregunta');
+            let r = data.includes('div_resp');
+            let tipo_eliminar = 'especial';
+            let array = 0;
+
+            if (p) {
+                tipo_eliminar = 'pregunta';
+                array = data.split('pregunta_update');
+            } else if (r) {
+                tipo_eliminar = 'respuesta';
+                array = data.split('div_resp_update');
+            } else {
+                array = data.split('div_especial_update');
+            }
+
+            let final = {
+                "tipo": tipo_eliminar,
+                'id': array[1]
+            };
+            eliminados.push(final);
         }
 
-        function eliminaRespuesta(data, eliminar= false){
-            if(eliminar != false){
-                let p = data.includes('div_pregunta');
-                let r = data.includes('div_resp');
-                let tipo_eliminar = 'especial';
-                let array = 0;
+        $("#" + data).remove();
+    }
 
-                if(p){
-                    tipo_eliminar  = 'pregunta';
-                    array = data.split('pregunta_update');
-                }
-                else if(r){
-                    tipo_eliminar  = 'respuesta';
-                    array = data.split('div_resp_update');
-                }
-                else{
-                    array = data.split('div_especial_update');
-                }
-
-                let final = {"tipo": tipo_eliminar, 'id': array[1]};
-                eliminados.push(final); 
-            }        
-            
-            $("#"+data).remove();
-        }
-
-        function agregaMasEspecial(pre,resp){ 
-            opcion_especial++;
-            let pregunta = pregunda_id;
-            let respuesta = respuesta_id;
-            let especial = especial_id;
+    function agregaMasEspecial(pre, resp) {
+        opcion_especial++;
+        let pregunta = pregunda_id;
+        let respuesta = respuesta_id;
+        let especial = especial_id;
 
 
-            let q = 'agregaEspecial_' + pre + "_" + resp;
-            $("#agregaEspecial_" + pre + "_" + resp).append(`
+        let q = 'agregaEspecial_' + pre + "_" + resp;
+        $("#agregaEspecial_" + pre + "_" + resp).append(`
                 <div class="row" id="div_especial_${especial}" style="margin-top: 2.2%;">
                                 
                     <div class="col-md-7">
@@ -1516,188 +1576,201 @@
                 </div>
             `);
 
-            especial_id++;
+        especial_id++;
+    }
+
+    function guardarPreguntas() {
+        $("#btnPreguntas").click();
+
+        if (validatePreguntas == false) {
+            return;
         }
 
-        function  guardarPreguntas(){
-            $("#btnPreguntas").click();
-
-            if(validatePreguntas == false){
-                return;
-            }
-
-            $("#btnGPreg").text("");
-            $("#btnGPreg").append(`
+        $("#btnGPreg").text("");
+        $("#btnGPreg").append(`
                 <div id="spinnerGuardar" class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
                 </div> `);
-            $("#btnCPreg").prop('disabled', true);
-            $("#btnGPreg").prop('disabled', true);
+        $("#btnCPreg").prop('disabled', true);
+        $("#btnGPreg").prop('disabled', true);
 
-            setTimeout(() => {
-                let completo = jQuery('#form_preguntas').serializeArray();
-                let entra = false;
+        setTimeout(() => {
+            let completo = jQuery('#form_preguntas').serializeArray();
+            let entra = false;
 
-                for (let i = 0; i < completo.length; i++) {
-                    completo[i].id = 0;
-                    let name = completo[i].name;
-                    
-                    if(name.includes("update_pregunta")){
-                        array = name.split("update_pregunta_");
-                        completo[i].id = array[1];
-                        completo[i].name = "pregunta_" + array[1];
-                    }
-                    if(name.includes("update_resolutivo_")){
-                        array = name.split("update_resolutivo_");
-                        completo[i].id = array[1];
-                        completo[i].name = "resolutivo_" + array[1];
-                    }
-                    else if(name.includes("update_respuesta")){
-                        array = name.split("_");
-                        completo[i].id = array[3];
-                        completo[i].name = "respuesta_" + array[3];                   
-                    }
-                    else if(name.includes("update_opcionEspecial_")){
-                        array = name.split("_");
-                        completo[i].id = array[4];
-                        completo[i].name = "opcionEspecial_" + array[4];                   
-                    }
-                    else if(name.includes("update_select_")){
-                        array = name.split("_");
-                        completo[i].id = array[3];   
-                    }
+            for (let i = 0; i < completo.length; i++) {
+                completo[i].id = 0;
+                let name = completo[i].name;
 
-                    if(completo[i].value == 'enriquecido'){
-                        entra = true;
-                    }
-
-                    if(entra){
-                        editores.forEach(editor => {
-                            if(editor.id == completo[i].name ){
-                                completo[i].value = editor.value.getData();
-                                entra = false;
-                            }
-                        });
-                    }
+                if (name.includes("update_pregunta")) {
+                    array = name.split("update_pregunta_");
+                    completo[i].id = array[1];
+                    completo[i].name = "pregunta_" + array[1];
                 }
-                $reslu = $('#resolutivo').val();
-                let preguntas = JSON.stringify(completo);
-                let data    = {"formulario_id": formulario_id, "seccion_id": seccion_id, "preguntas": preguntas, "eliminados":  JSON.stringify(eliminados), "resolutivo":$reslu };
-                request = $.ajax({
-                    type: 'POST',
-                    url: '/formulario/preguntas',
-                    data: data,
-                    async: false, 
-                });
-                
-                // Callback handler that will be called on success
-                request.done(function (response, textStatus, jqXHR){
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Operación exitosa',
-                        showConfirmButton: false,
-                        timer: 1500
+                if (name.includes("update_resolutivo_")) {
+                    array = name.split("update_resolutivo_");
+                    completo[i].id = array[1];
+                    completo[i].name = "resolutivo_" + array[1];
+                } else if (name.includes("update_respuesta")) {
+                    array = name.split("_");
+                    completo[i].id = array[3];
+                    completo[i].name = "respuesta_" + array[3];
+                } else if (name.includes("update_opcionEspecial_")) {
+                    array = name.split("_");
+                    completo[i].id = array[4];
+                    completo[i].name = "opcionEspecial_" + array[4];
+                } else if (name.includes("update_select_")) {
+                    array = name.split("_");
+                    completo[i].id = array[3];
+                }
+
+                if (completo[i].value == 'enriquecido') {
+                    entra = true;
+                }
+
+                if (entra) {
+                    editores.forEach(editor => {
+                        if (editor.id == completo[i].name) {
+                            completo[i].value = editor.value.getData();
+                            entra = false;
+                        }
                     });
-                    setTimeout(() => {
-                        $("#btnGPreg").text("Guardar");
-                        $("#spinnerGuardar").remove();
-                        $("#btnGPreg").prop('disabled', false);
-                        $("#btnCPreg").prop('disabled', false);
-                        $('#preguntas').fadeToggle(500);
-                        $('#secciones').fadeToggle(500);
-                        eliminados= [];
-                    }, 400);
-                });
-
-                // Callback handler that will be called on failure
-                request.fail(function (jqXHR, textStatus, errorThrown){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'se presento el siguiente error: ' + errorThrown
-                    });
-                });
-            }, 300);
-        }
-        
-        function regresar(vista){
-            $('#secciones').fadeToggle(500);
-
-            if(vista == 'formularios'){
-                $('#formulario').fadeToggle(500);    
+                }
             }
-            else if('secciones'){
-                $('#preguntas').fadeToggle(500);
-            }
-        }
+            $reslu = $('#resolutivo').val();
+            let preguntas = JSON.stringify(completo);
+            let data = {
+                "formulario_id": formulario_id,
+                "seccion_id": seccion_id,
+                "preguntas": preguntas,
+                "eliminados": JSON.stringify(eliminados),
+                "resolutivo": $reslu
+            };
+            request = $.ajax({
+                type: 'POST',
+                url: '/formulario/preguntas',
+                data: data,
+                async: false,
+            });
 
-    </script>
+            // Callback handler that will be called on success
+            request.done(function(response, textStatus, jqXHR) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Operación exitosa',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setTimeout(() => {
+                    $("#btnGPreg").text("Guardar");
+                    $("#spinnerGuardar").remove();
+                    $("#btnGPreg").prop('disabled', false);
+                    $("#btnCPreg").prop('disabled', false);
+                    $('#preguntas').fadeToggle(500);
+                    $('#secciones').fadeToggle(500);
+                    eliminados = [];
+                }, 400);
+            });
+
+            // Callback handler that will be called on failure
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
+                });
+            });
+        }, 300);
+    }
+
+    function regresar(vista) {
+        $('#secciones').fadeToggle(500);
+
+        if (vista == 'formularios') {
+            $('#formulario').fadeToggle(500);
+        } else if ('secciones') {
+            $('#preguntas').fadeToggle(500);
+        }
+    }
+</script>
 @endsection
 
 <style>
     /* CSS Manuel Euan */
-    .body{
+    .body {
         min-height: 400px;
     }
-    .border{
+
+    .border {
         border-radius: 5px;
     }
-    .btnLetras{
+
+    .btnLetras {
         color: #fff;
         font-weight: 900;
         margin-left: 20px;
-        min-width: 180px;      
+        min-width: 180px;
     }
-    .btnAgregaRespuesta{
+
+    .btnAgregaRespuesta {
         margin: 0 30px;
     }
 
-    .btnContenedor{
+    .btnContenedor {
         margin-top: 1.2%;
         margin-right: 20px;
         margin-left: 20px;
     }
-    label{
+
+    label {
         font-weight: bold;
     }
-    .resultados_De_busqueda{
+
+    .resultados_De_busqueda {
         font-weight: bold;
         margin-top: 40px;
     }
-    .bntGeneral{
+
+    .bntGeneral {
         min-width: 120px;
         margin-right: 30px;
     }
-    .btnLimpiar{
+
+    .btnLimpiar {
         float: right;
         background-color: #01b3e8 !important;
         border-color: #01b3e8 !important;
         color: #ffffff;
     }
-    
-    .btnLimpiar:hover{
+
+    .btnLimpiar:hover {
         background-color: #33B5FF !important;
         border-color: #33B5FF !important;
         color: #ffffff;
         margin-left: 20px;
     }
-    
-    .buttons-html5{
+
+    .buttons-html5 {
         background-color: #01b3e8 !important;
     }
+
     .btnModal {
         min-width: 115px;
     }
-    .subtitulo{
+
+    .subtitulo {
         font-size: 22px;
     }
-    .contenedorPregunta{
+
+    .contenedorPregunta {
         margin-top: 35px;
     }
-    .dataTables_info{
+
+    .dataTables_info {
         text-align: left !important;
     }
-    .btn-circle{
+
+    .btn-circle {
         margin-top: 10px !important;
         width: 30px !important;
         height: 30px !important;
@@ -1707,50 +1780,57 @@
     }
 
     /* CSS para las respuestas*/
-    .inputRespuesta{
+    .inputRespuesta {
         display: inline !important;
         width: 71% !important;
         margin-left: 30px;
         margin-top: 10px !important;
     }
-    .inputRespuesta2{
+
+    .inputRespuesta2 {
         display: inline !important;
         width: 71% !important;
         margin-top: 10px !important;
     }
-    .iconoEspecial{
+
+    .iconoEspecial {
         font-size: 30px;
         margin-top: 10px;
     }
-    .btnLink{
+
+    .btnLink {
         color: #218838;
-        text-decoration:none;
+        text-decoration: none;
         font-weight: 900;
         margin-bottom: 30px;
     }
-    .btnLink:hover{
+
+    .btnLink:hover {
         color: #218838;
-        text-decoration:none;
+        text-decoration: none;
     }
 
 
     /* Css de secciones */
-    .btnContenedorRegresar{
+    .btnContenedorRegresar {
         margin-top: 1.2%;
         margin-right: 20px;
         margin-left: 20px;
     }
-    .btnRegresar{
+
+    .btnRegresar {
         float: right;
         color: #218838;
-        text-decoration:none;
+        text-decoration: none;
         font-weight: 900;
         margin-bottom: 30px;
     }
-    .btnRegresar:hover{
+
+    .btnRegresar:hover {
         color: #218838;
-        text-decoration:none;
+        text-decoration: none;
     }
+
     .btn-circle {
         width: 30px;
         height: 30px;
@@ -1760,18 +1840,19 @@
         font-size: 12px;
         line-height: 1.42857;
     }
-    .btnDerecha{
+
+    .btnDerecha {
         float: right;
     }
 
 
 
     /* CSS Buscador */
-    .container-1{
+    .container-1 {
         text-align: center;
     }
 
-    .container-1 input#search{
+    .container-1 input#search {
         width: 87%;
         height: 50px;
         font-size: 10pt;
@@ -1782,7 +1863,8 @@
         -moz-border-radius: 5px;
         border-radius: 60px;
     }
-    .container-1 .icon{
+
+    .container-1 .icon {
         position: absolute;
         top: 20%;
         font-size: 20px;
@@ -1792,10 +1874,10 @@
         color: #4f5b66;
     }
 
-    .container-1 input#search:hover, .container-1 input#search:focus, .container-1 input#search:active{
-        outline:none;
+    .container-1 input#search:hover,
+    .container-1 input#search:focus,
+    .container-1 input#search:active {
+        outline: none;
         background: #ffffff;
     }
-
 </style>
-

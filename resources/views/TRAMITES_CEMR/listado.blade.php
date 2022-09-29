@@ -336,6 +336,9 @@
                         }
                     },
                     {
+                        /**
+                         * !configurar para mostrar el botón asignar 
+                         */
                         data: null,
                         render: function(data, type, row) {
                             return `<span>
