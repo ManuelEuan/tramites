@@ -939,20 +939,39 @@
                                         <i class="far fa-trash-alt" style="color: black"></i>
                                     </button>
                                     <br>
-                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" value="tipoVinculacion_${pregunda_id}"> ¿Tiene asignación?</label>
+                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" value="1" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                                 </span>
                                 </div>
                                 <br>
                                 <div class="col-md-4 mb-3">
-                                    <label for="tipoVinculacion_${pregunda_id}">Tipo de Vinculación</label>
-                                    <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
-                                        <option value= 'USUA_CRFC' selected>RFC</option>
-                                        <option value= 'USUA_CCURP'>CURP</option>
-                                        <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
-                                        <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
-                                        <option value= 'CPRIMER_APELLIDO|CSEGUNDO_APELLIDO|CNOMBRES'>Especial</option>
-                                        <option value= 'catalogo'>CALLE</option>
-                                    </select>
+                                <label for="tipoVinculacion_${pregunda_id}" hidden>Tipo de Vinculación</label>
+                                <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" hidden>
+                                    <option value= 'USUA_CRFC' selected>RFC</option>
+                                    <option value= 'USUA_CCURP'>CURP</option>
+                                    <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
+                                    <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
+                                    <option value= 'USUA_CNOMBRES'>Nombre Ciudadano</option>
+                                    <option value= 'USUA_CCALLE'>Calle Persona Moral</option>
+                                    <option value= 'USUA_NNUMERO_EXTERIOR'>Número Exterior Persona Moral</option>
+                                    <option value= 'USUA_NNUMERO_INTERIOR'>Número Interior Persona Moral</option>
+                                    <option value= 'USUA_CCOLONIA'>Colonia Persona Moral</option>
+                                    <option value= 'USUA_CMUNICIPIO'>Municipio Persona Moral</option>
+                                    <option value= 'USUA_CESTADO'>Estado Persona Moral</option>
+                                    <option value= 'USUA_CPAIS'>Pais Persona Moral</option>
+                                    <option value= 'USUA_CCORREO_ELECTRONICO'>Correo Electronico</option>
+                                    <option value= 'USUA_CCORREO_ALTERNATIVO'>Correo Alternativo</option>
+                                    <option value= 'USUA_CCALLE_PARTICULAR'>Calle Particular Persona Física</option>
+                                    <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR'>Número Exterior Particular Persona Física</option>
+                                    <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR'>Número Interior Particular Persona Física</option>
+                                    <option value= 'USUA_CCOLONIA_PARTICULAR'>Colonia Persona Física</option>
+                                    <option value= 'USUA_CMUNICIPIO_PARTICULAR'>Municio Persona Física</option>
+                                    <option value= 'USUA_CESTADO_PARTICULAR'>Estado Persona Física</option>
+                                    <option value= 'USUA_CPAIS_PARTICULAR'>Pais Persona Física</option>
+                                    <option value= 'USUA_NTELEFONO'>Telefono</option>
+                                    <option value= 'USUA_DFECHA_NACIMIENTO'>Fecha De Nacimiento</option>
+                                    <option value= 'USUA_CTEL_LOCAL'>Número De Teléfono Fijo</option>
+                                    <option value= 'USUA_CTEL_CELULAR'>Número De Teléfono Celular</option>
+                                </select>
                                 </div>
                                 <div class="col-md-8 mb-9">
                                     <div class="form-group" id="contenedorRespuestas_${pregunda_id}"> </div>
@@ -975,7 +994,7 @@
                                     <em class="text-danger" id="error_${element.FORM_NID}"></em>
                                 </div>
                                 
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label for="tipoRespuesta_update_${element.FORM_NID}">Tipo respuesta</label>
                                     <select name="tipoRespuesta_update_${element.FORM_NID}" id="tipoRespuesta_update_${element.FORM_NID}" class="form-control" onchange="cambiaTipoRespuesta(this);">
                                         <option value= 'abierta'     ${tipo_respuesta   == 'abierta' ? 'selected': ''}>Respuesta abierta</option>
@@ -997,13 +1016,47 @@
                                     <em class="text-danger" id="error_${element.FORM_NID}"></em>
                                 </div>
 
+                                <div class="col-md-2 mb-3">
                                 <span  style="margin-top: 1%;">
-                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_update${element.FORM_NID}', true)">
+                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${pregunda_id}')">
                                         <i class="far fa-trash-alt" style="color: black"></i>
                                     </button>
+                                    <br>
+                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" value="1" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                                 </span>
-                                
-                                <div class="col-md-12">
+                                </div>
+                                <br>
+                                <div class="col-md-4 mb-3">
+                                <label for="tipoVinculacion_${pregunda_id}" hidden>Tipo de Vinculación</label>
+                                <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" hidden>
+                                    <option value= 'USUA_CRFC' selected>RFC</option>
+                                    <option value= 'USUA_CCURP'>CURP</option>
+                                    <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
+                                    <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
+                                    <option value= 'USUA_CNOMBRES'>Nombre Ciudadano</option>
+                                    <option value= 'USUA_CCALLE'>Calle Persona Moral</option>
+                                    <option value= 'USUA_NNUMERO_EXTERIOR'>Número Exterior Persona Moral</option>
+                                    <option value= 'USUA_NNUMERO_INTERIOR'>Número Interior Persona Moral</option>
+                                    <option value= 'USUA_CCOLONIA'>Colonia Persona Moral</option>
+                                    <option value= 'USUA_CMUNICIPIO'>Municipio Persona Moral</option>
+                                    <option value= 'USUA_CESTADO'>Estado Persona Moral</option>
+                                    <option value= 'USUA_CPAIS'>Pais Persona Moral</option>
+                                    <option value= 'USUA_CCORREO_ELECTRONICO'>Correo Electronico</option>
+                                    <option value= 'USUA_CCORREO_ALTERNATIVO'>Correo Alternativo</option>
+                                    <option value= 'USUA_CCALLE_PARTICULAR'>Calle Particular Persona Física</option>
+                                    <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR'>Número Exterior Particular Persona Física</option>
+                                    <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR'>Número Interior Particular Persona Física</option>
+                                    <option value= 'USUA_CCOLONIA_PARTICULAR'>Colonia Persona Física</option>
+                                    <option value= 'USUA_CMUNICIPIO_PARTICULAR'>Municio Persona Física</option>
+                                    <option value= 'USUA_CESTADO_PARTICULAR'>Estado Persona Física</option>
+                                    <option value= 'USUA_CPAIS_PARTICULAR'>Pais Persona Física</option>
+                                    <option value= 'USUA_NTELEFONO'>Telefono</option>
+                                    <option value= 'USUA_DFECHA_NACIMIENTO'>Fecha De Nacimiento</option>
+                                    <option value= 'USUA_CTEL_LOCAL'>Número De Teléfono Fijo</option>
+                                    <option value= 'USUA_CTEL_CELULAR'>Número De Teléfono Celular</option>
+                                </select>
+                                </div>
+                                <div class="col-md-8">
                                     <div class="form-group" id="contenedorRespuestas_update_${element.FORM_NID}">`;
                         if (tipo_respuesta == 'abierta') {
                             let prim_res = element.respuestas.length > 0 ? element.respuestas[0].FORM_NID : 0;
@@ -1151,7 +1204,9 @@
                                                                 </div>`;
                             });
                         }
-
+                        /**
+                         * !aqui finaliza el div
+                        */
                         preguntas += `</div>
                                 </div>
                             </div> <hr class="hr">`
@@ -1211,19 +1266,38 @@
                                 <i class="far fa-trash-alt" style="color: black"></i>
                             </button>
                             <br>
-                            <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" value="tipoVinculacion_${pregunda_id}"> ¿Tiene asignación?</label>
+                            <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" value="1" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                         </span>
                         </div>
                         <br>
                         <div class="col-md-4 mb-3">
-                            <label for="tipoVinculacion_${pregunda_id}">Tipo de Vinculación</label>
-                            <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                            <label for="tipoVinculacion_${pregunda_id}" hidden>Tipo de Vinculación</label>
+                            <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" hidden>
                                 <option value= 'USUA_CRFC' selected>RFC</option>
                                 <option value= 'USUA_CCURP'>CURP</option>
                                 <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
                                 <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
-                                <option value= 'CPRIMER_APELLIDO|CSEGUNDO_APELLIDO|CNOMBRES'>Especial</option>
-                                <option value= 'catalogo'>CALLE</option>
+                                <option value= 'USUA_CNOMBRES'>Nombre Ciudadano</option>
+                                <option value= 'USUA_CCALLE'>CALLE Persona Moral</option>
+                                <option value= 'USUA_NNUMERO_EXTERIOR'>Número Exterior Persona Moral</option>
+                                <option value= 'USUA_NNUMERO_INTERIOR'>Número Interior Persona Moral</option>
+                                <option value= 'USUA_CCOLONIA'>Colonia Persona Moral</option>
+                                <option value= 'USUA_CMUNICIPIO'>Municipio Persona Moral</option>
+                                <option value= 'USUA_CESTADO'>Estado Persona Moral</option>
+                                <option value= 'USUA_CPAIS'>Pais Persona Moral</option>
+                                <option value= 'USUA_CCORREO_ELECTRONICO'>Correo Electronico</option>
+                                <option value= 'USUA_CCORREO_ALTERNATIVO'>Correo Alternativo</option>
+                                <option value= 'USUA_CCALLE_PARTICULAR'>CALLE</option>
+                                <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR'>Número Exterior Particular Persona Física</option>
+                                <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR'>Número Interior Particular Persona Física</option>
+                                <option value= 'USUA_CCOLONIA_PARTICULAR'>Colonia Persona Física</option>
+                                <option value= 'USUA_CMUNICIPIO_PARTICULAR'>Municio Persona Física</option>
+                                <option value= 'USUA_CESTADO_PARTICULAR'>Estado Persona Física</option>
+                                <option value= 'USUA_CPAIS_PARTICULAR'>Pais Persona Física</option>
+                                <option value= 'USUA_NTELEFONO'>Telefono</option>
+                                <option value= 'USUA_DFECHA_NACIMIENTO'>Fecha De Nacimiento</option>
+                                <option value= 'USUA_CTEL_LOCAL'>Número De Teléfono Fijo</option>
+                                <option value= 'USUA_CTEL_CELULAR'>Número De Teléfono Celular</option>
                             </select>
                         </div>
                     <div class="col-md-8">
@@ -1235,8 +1309,15 @@
         opcion_numero = 3;
     }
     function muestraCampoVinculacion(data){
-        let cbNombre = data.val();
-        
+        let cbNombre = $(data).attr("nameVinculo");
+        // alert($("#"+cbNombre).is(":visible"));
+        if($("#"+cbNombre).attr("hidden")){
+            $("#"+cbNombre).attr("hidden", false);
+            $("#"+cbNombre).closest("div").find("label").attr("hidden", false);
+        }else{
+            $("#"+cbNombre).attr("hidden", true);
+            $("#"+cbNombre).closest("div").find("label").attr("hidden", true);
+        }
     }
     function cambiaTipoRespuesta(data) {
         let pregunta = data.id.replace("tipoRespuesta_", "");
@@ -1600,7 +1681,7 @@
         setTimeout(() => {
             let completo = jQuery('#form_preguntas').serializeArray();
             let entra = false;
-
+            console.log(completo)
             for (let i = 0; i < completo.length; i++) {
                 completo[i].id = 0;
                 let name = completo[i].name;
@@ -1649,40 +1730,40 @@
                 "eliminados": JSON.stringify(eliminados),
                 "resolutivo": $reslu
             };
-            request = $.ajax({
-                type: 'POST',
-                url: '/formulario/preguntas',
-                data: data,
-                async: false,
-            });
+            // request = $.ajax({
+            //     type: 'POST',
+            //     url: '/formulario/preguntas',
+            //     data: data,
+            //     async: false,
+            // });
 
             // Callback handler that will be called on success
-            request.done(function(response, textStatus, jqXHR) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Operación exitosa',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                setTimeout(() => {
-                    $("#btnGPreg").text("Guardar");
-                    $("#spinnerGuardar").remove();
-                    $("#btnGPreg").prop('disabled', false);
-                    $("#btnCPreg").prop('disabled', false);
-                    $('#preguntas').fadeToggle(500);
-                    $('#secciones').fadeToggle(500);
-                    eliminados = [];
-                }, 400);
-            });
+            // request.done(function(response, textStatus, jqXHR) {
+            //     Swal.fire({
+            //         icon: 'success',
+            //         title: 'Operación exitosa',
+            //         showConfirmButton: false,
+            //         timer: 1500
+            //     });
+            //     setTimeout(() => {
+            //         $("#btnGPreg").text("Guardar");
+            //         $("#spinnerGuardar").remove();
+            //         $("#btnGPreg").prop('disabled', false);
+            //         $("#btnCPreg").prop('disabled', false);
+            //         $('#preguntas').fadeToggle(500);
+            //         $('#secciones').fadeToggle(500);
+            //         eliminados = [];
+            //     }, 400);
+            // });
 
-            // Callback handler that will be called on failure
-            request.fail(function(jqXHR, textStatus, errorThrown) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'se presento el siguiente error: ' + errorThrown
-                });
-            });
+            // // Callback handler that will be called on failure
+            // request.fail(function(jqXHR, textStatus, errorThrown) {
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Oops...',
+            //         text: 'se presento el siguiente error: ' + errorThrown
+            //     });
+            // });
         }, 300);
     }
 
