@@ -438,6 +438,18 @@
                 }
                 
             })
+            function convertValueToUpperCase() {
+                $("#txtRfc").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                $("#txtCurpFisica").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                $("#txtCurpMoral").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                
+            }
             $.validator.addMethod("soloLetras", function(value, element) {
                 return this.optional(element) || /^\D+$/gi.test(value);
             }, "no valido");
