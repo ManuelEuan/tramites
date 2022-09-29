@@ -448,8 +448,35 @@
                 $("#txtCurpMoral").keyup(function(){
                     this.value = this.value.toLocaleUpperCase();
                 });
+                $("#txtNombres").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                $("#txtPrimer_Apellido").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                
+                $("#txtSegundo_Apellido").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                
+                $("#nombrePersonaAutorizada").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                $("#txtRazon_Social").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                $("#txtNombres").on("change",function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                $("#txtPrimer_Apellido").on("change",function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                $("#txtSegundo_Apellido").on("change",function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
                 
             }
+            convertValueToUpperCase();
             $.validator.addMethod("soloLetras", function(value, element) {
                 return this.optional(element) || /^\D+$/gi.test(value);
             }, "no valido");
