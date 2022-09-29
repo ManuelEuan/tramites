@@ -1,92 +1,85 @@
-@section('scripts')
-
-@endsection
-
 
 @extends('layout.Layout')
 @section('body')
 
 <!-- <%-- Contenido individual --%> -->
-<div class="container-fluid contentPage">
-    <br>
-    <div id="formulario">
+    <div class="container-fluid">
+        <br>
         <div class="row">
             <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-12" style="text-align: left;">
-                        <h2 class="titulo">Configuraciones</h2>
-                    </div>
-                </div>
+                <h2>Dias Ihabiles</h2>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body body">
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title" id="tituloModal">Día Inhabil</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form id="frm_dias" class="needs-validation" novalidate>
-                                            <input type="text" style="display: none;" id="id">
-                                            <div class="form-row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="fecha">Fecha Inicial</label>
-                                                    <input type="date" class="form-control" id="fechaInicial" name='fechaInicial' placeholder="Inicio" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="fecha">Fecha Final</label>
-                                                    <input type="date" class="form-control" id="fechaFinal" name='fechaInicial' placeholder="Final" required>
-                                                </div>
-
-                                                <div class="col-md-12 mb-3">
-                                                    <label for="nombre">Nombre</label>
-                                                    <input type="text" class="form-control" id="nombre" placeholder="Nombre" required autocomplete="off">
-                                                </div>
-
-                                                <div class="col-md-12 mb-3">
-                                                    <label for="color">Color</label>
-                                                    <select id="color" class="form-control">
-                                                        <option value="#1FBEF2" selected>Azul</option>
-                                                        <option value="#F7391B" >Rojo</option>
-                                                        <option value="#11EE0A">Verde</option>
-                                                        <option value="#F79D22">Naranja</option>
-                                                        <option value="#FC08E2">Morado</option>
-                                                    </select>
-                                                </div>                                            
-                                            </div>
-                                            <button style="display: none;" id="btnSubmit" type="submit">Submit form</button>
-                                        </form>
-
-
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger btnModal" onclick="eliminar();" data-dismiss="modal" id="btnCerrarModal">Cancelar</button>
-                                        <button type="button" class="btn btn-success btnModal" onclick="guardarFormulario();" id="btnGuardarModal">
-                                            Guardar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+        <div class="col-md-12">
+            <div class="card col-md-12">
+                <div class="card-body col-md-12 row">
+                    <div class="col-md-12">
                         <div id="calendar"></div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="tituloModal">Día Inhabil</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="frm_dias" class="needs-validation" novalidate>
+                            <input type="text" style="display: none;" id="id">
+                            <div class="form-row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fecha">Fecha Inicial</label>
+                                    <input type="date" class="form-control" id="fechaInicial" name='fechaInicial' placeholder="Inicio" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="fecha">Fecha Final</label>
+                                    <input type="date" class="form-control" id="fechaFinal" name='fechaInicial' placeholder="Final" required>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label for="nombre">Nombre</label>
+                                    <input type="text" class="form-control" id="nombre" placeholder="Nombre" required autocomplete="off">
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label for="color">Color</label>
+                                    <select id="color" class="form-control">
+                                        <option value="#1FBEF2" selected>Azul</option>
+                                        <option value="#F7391B" >Rojo</option>
+                                        <option value="#11EE0A">Verde</option>
+                                        <option value="#F79D22">Naranja</option>
+                                        <option value="#FC08E2">Morado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button style="display: none;" id="btnSubmit" type="submit">Submit form</button>
+                        </form>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btnModal" onclick="eliminar();" data-dismiss="modal" id="btnCerrarModal">Cancelar</button>
+                        <button type="button" class="btn btn-success btnModal" onclick="guardarFormulario();" id="btnGuardarModal">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<br />
 @endsection
+
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/locales-all.js"></script>
 
     <script>
         var validateFormulario = false;
@@ -95,7 +88,9 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
-            calendar = new FullCalendar.Calendar(calendarEl, {
+            window.calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
                 headerToolbar: {
                     right: 'prev,next',
                     center: 'title',
@@ -105,7 +100,7 @@
                     Miboton:{
                         text: "Nuevo",
                         click:function(){
-                            $('#exampleModalCenter').modal('toggle');                            
+                            $('#exampleModalCenter').modal('toggle');
                             limpiaCampos();
                         }
                     }
@@ -133,7 +128,7 @@
                     $("#btnGuardarModal").text("Actualizar");
                     $("#btnCerrarModal").text("Eliminar");
                     accion = 'update';
-                  
+
                 },
                 editable: false,
                 dayMaxEvents: true, // allow "more" link when too many events
@@ -158,8 +153,6 @@
                     getEventos(fecha);
                 });
             }
-
-
         });
 
         (function() {
@@ -188,7 +181,7 @@
                 });
             }, false);
         })();
-        
+
         function guardarFormulario(){
             $("#btnSubmit").click();
 
@@ -203,20 +196,20 @@
                     "fechaInicial"  : $("#fechaInicial").val(),
                     "fechaFinal"    : $("#fechaFinal").val()
             };
-           
+
             if(accion == 'update'){
                 url = "/dias_inhabiles/update";
             }
-            
+
             $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
             request = $.ajax({
                 url : url,
                 type: "post",
                 data: data
             });
-            
+
             // Callback handler that will be called on success
-            request.done(function (response, textStatus, jqXHR){                
+            request.done(function (response, textStatus, jqXHR){
                 limpiaCampos();
                 setTimeout(() => {
                     $("#btnCerrarModal").click();
@@ -258,7 +251,7 @@
                 cancelButtonText: 'Cancelar',
             }).then((result) => {
                 if (result.isConfirmed){
-                    let url = "/dias_inhabiles/delete";                
+                    let url = "/dias_inhabiles/delete";
                     $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
                     request = $.ajax({
                         url: url,
@@ -291,7 +284,7 @@
 
         function getEventos(fecha){
             let date = fecha.getFullYear() + "/" + (fecha.getMonth() +1) + "/" + fecha.getDate();
-            console.log(date);
+
             /* $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
             request = $.ajax({
                 url: '/dias_inhabiles/find',
@@ -302,7 +295,7 @@
             request.done(function (response, textStatus, jqXHR){
                 response.forEach(element => {
                     console.log(element);
-                    calendar.addEvent({                        
+                    calendar.addEvent({
                         id      : element.id,
                         color   : element.color,
                         end     : element.end,
@@ -314,7 +307,7 @@
 
                     });
                 });
-            
+
             });
 
             request.fail(function (jqXHR, textStatus, errorThrown){
@@ -342,10 +335,10 @@
             $("#btnGuardarModal").prop('disabled', false);
             $("#btnGuardarModal").text("Guardar");
             $("#btnCerrarModal").text("Cancelar");
-            $("#spinnerGuardar").remove();  
+            $("#spinnerGuardar").remove();
         }
     </script>
-
+@endsection
 
 <style>
 
@@ -397,4 +390,3 @@
     }
 
 </style>
-
