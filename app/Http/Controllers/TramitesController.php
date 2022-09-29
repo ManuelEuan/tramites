@@ -20,6 +20,7 @@ use App\Models\Cls_Citas_Calendario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Cls_Seguimiento_Servidor_Publico;
+use App\Models\Cls_Formulario_Pregunta_Respuesta;
 
 class TramitesController extends Controller
 {
@@ -181,14 +182,10 @@ class TramitesController extends Controller
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
     }
 
-    public function generatePrevioResolutivo($resolutivoId, $tramiteId)
-    {
-
+    public function generatePrevioResolutivo($resolutivoId, $tramiteId) {
         $resolutivo = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO($resolutivoId)[0];
-
         $mapeoCampos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO_MAPEO($resolutivoId, $tramiteId);
 
-        //dd($mapeoCampos);
         /* Set the PDF Engine Renderer Path */
         $domPdfPath = base_path('vendor/dompdf/dompdf');
 
@@ -196,14 +193,23 @@ class TramitesController extends Controller
         Settings::setPdfRendererName('DomPDF');
 
         $rutaBase = public_path() . '/docts/resolutivos/';
-        //dd($rutaBase);
         $rutaResolutivo =   $rutaBase . $resolutivo->RESO_CNAMEFILE;
         $nameFile = explode(".", $resolutivo->RESO_CNAMEFILE);
         /*@ Reading doc file */
         $template = new \PhpOffice\PhpWord\TemplateProcessor($rutaResolutivo);
 
         foreach ($mapeoCampos as $campo) {
+            $pregunta = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID', $campo->USRE_NIDPREGUNTA)->first();
+            if($pregunta->FORM_CTIPORESPUESTA == 'catalogo') {
+                $array      = explode(",", $campo->USRE_CRESPUESTA);
+                $respuestas = DB::table($pregunta->FORM_CVALOR)->whereIn('id', $array)->get();
+                $texto      = "";
 
+                foreach ($respuestas as $key => $value) {
+                    $texto = $key == 0 ? $value->nombre : $texto.", ". $value->nombre;
+                }
+                $campo->USRE_CRESPUESTA = $texto;
+            }
             $template->setValue($campo->TRAM_CNOMBRECAMPO, $campo->USRE_CRESPUESTA);
         }
 
@@ -230,30 +236,20 @@ class TramitesController extends Controller
             unlink($savePdfPath);
         }
 
-
-
-        //dd($pathQR);
         //Save it into PDF
         $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
         $PDFWriter->save($savePdfPath);
-        //echo 'File has been successfully converted ' . $savePdfPath;
 
         /*@ Remove temporarily created word file */
         if (file_exists($saveDocPath)) {
             unlink($saveDocPath);
         }
-        //return response()->file($savePdfPath);
-
-        //dd($savePdfPath);
 
         return redirect('/docts/resolutivos/new-result' . $nameFile[0] . '.pdf');
-
-        //return response()->file($savePdfPath, ['Content-Type' => 'application/pdf']);
     }
 
     //Obtener trámite en seguimiento
-    public function obtener_tramite_seguimiento($id)
-    {
+    public function obtener_tramite_seguimiento($id) {
         $tramite = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
         $configaracion =  $tramite;
 
