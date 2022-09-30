@@ -939,7 +939,7 @@
                                         <i class="far fa-trash-alt" style="color: black"></i>
                                     </button>
                                     <br>
-                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" value="1" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
+                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                                 </span>
                                 </div>
                                 <br>
@@ -1018,17 +1018,17 @@
 
                                 <div class="col-md-2 mb-3">
                                 <span  style="margin-top: 1%;">
-                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${pregunda_id}')">
+                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${element.FORM_NID}')">
                                         <i class="far fa-trash-alt" style="color: black"></i>
                                     </button>
                                     <br>
-                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" value="1" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
+                                    <label class="ml-3"><input type="checkbox" name="asignacion_${element.FORM_NID}" id="asignacion" nameVinculo="tipoVinculacion_${element.FORM_NID}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                                 </span>
                                 </div>
                                 <br>
                                 <div class="col-md-4 mb-3">
-                                <label for="tipoVinculacion_${pregunda_id}" hidden>Tipo de Vinculación</label>
-                                <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" hidden>
+                                <label for="tipoVinculacion_${element.FORM_NID}" hidden>Tipo de Vinculación</label>
+                                <select name="tipoVinculacion_${element.FORM_NID}" id="tipoVinculacion_${element.FORM_NID}" class="form-control" hidden>
                                     <option value= 'USUA_CRFC' selected>RFC</option>
                                     <option value= 'USUA_CCURP'>CURP</option>
                                     <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
@@ -1266,7 +1266,7 @@
                                 <i class="far fa-trash-alt" style="color: black"></i>
                             </button>
                             <br>
-                            <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" value="1" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
+                            <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                         </span>
                         </div>
                         <br>
@@ -1730,31 +1730,31 @@
                 "eliminados": JSON.stringify(eliminados),
                 "resolutivo": $reslu
             };
-            // request = $.ajax({
-            //     type: 'POST',
-            //     url: '/formulario/preguntas',
-            //     data: data,
-            //     async: false,
-            // });
-
+            request = $.ajax({
+                type: 'POST',
+                url: '/formulario/preguntas',
+                data: data,
+                async: false,
+            });
             // Callback handler that will be called on success
-            // request.done(function(response, textStatus, jqXHR) {
-            //     Swal.fire({
-            //         icon: 'success',
-            //         title: 'Operación exitosa',
-            //         showConfirmButton: false,
-            //         timer: 1500
-            //     });
-            //     setTimeout(() => {
-            //         $("#btnGPreg").text("Guardar");
-            //         $("#spinnerGuardar").remove();
-            //         $("#btnGPreg").prop('disabled', false);
-            //         $("#btnCPreg").prop('disabled', false);
-            //         $('#preguntas').fadeToggle(500);
-            //         $('#secciones').fadeToggle(500);
-            //         eliminados = [];
-            //     }, 400);
-            // });
+            request.done(function(response, textStatus, jqXHR) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Operación exitosa',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setTimeout(() => {
+                    $("#btnGPreg").text("Guardar");
+                    $("#spinnerGuardar").remove();
+                    $("#btnGPreg").prop('disabled', false);
+                    $("#btnCPreg").prop('disabled', false);
+                    // $('#preguntas').fadeToggle(500);
+                    // $('#secciones').fadeToggle(500);
+                    eliminados = [];
+                }, 400);
+                console.log(response);
+            });
 
             // // Callback handler that will be called on failure
             // request.fail(function(jqXHR, textStatus, errorThrown) {

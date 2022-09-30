@@ -191,6 +191,7 @@ class FormularioController extends Controller
             $respuesta  = null;
             $tiRes      = "";
             $tipEsp     = "";
+            $isAsigned = 0;
             //DB::beginTransaction();
 
             $eliminados = json_decode($request->eliminados);
@@ -202,9 +203,11 @@ class FormularioController extends Controller
                 elseif($eliminar->tipo == 'especial')
                     Cls_Formulario_Respuesta_Especial::where('FORM_NID', $eliminar->id)->delete();
             }
-
+            $texto = "";
+            $textoasig = "";
             $array = json_decode($request->preguntas);
             foreach ($array as $datos) {
+                
                 $valP       = strpos($datos->name,  'pregunta_');
                 $valTR      = strpos($datos->name,  'tipoRespuesta_');
                 $valR       = strpos($datos->name,  'respuesta_');
@@ -215,8 +218,10 @@ class FormularioController extends Controller
                 $valCat     = strpos($datos->name,  'tipoCatalogo_');
                 $valRes     = strpos($datos->name,  'update_resolutivo_');
                 $valResol   = strpos($datos->name,  'resolutivo_');
+                $valAsignasion = strpos($datos->name, 'asignacion_');
+                $valVinculacion = strpos($datos->name, 'tipoVinculacion_');
+                
                 $resolutivo = $datos->id;
-
                 if($valResol !== FALSE) {
                     if($resolutivo == 0)
                         $res =$datos->value;
@@ -270,6 +275,31 @@ class FormularioController extends Controller
 
                 if($valCh !== false)
                     Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$respuesta->FORM_NID)->update(['FORM_BBLOQUEAR' => true ]);
+                
+                if($valAsignasion !== false){
+                    if($datos->id == 0){
+                        $lastId =  Cls_Formulario_Pregunta_Respuesta::latest('FORM_NID')->first();
+                        Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$lastId)->update(['FORM_BTIENEASIGNACION' => true ]);
+                        $isAsigned = 1;
+                    }else{
+                        Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$respuesta->FORM_NID)->update(['FORM_BTIENEASIGNACION' => true]);
+                        $isAsigned = 1;
+                    }
+                    
+                }
+                if($valVinculacion !== false && $isAsigned === 1){
+                    if($datos->id == 0){
+                            $res_id     = explode("_", $datos->name);
+                            Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$lastId)->update(['FORM_CVALORASIGNACION' => $datos->value]);
+                    }
+                    else{
+                        Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$respuesta->FORM_NID)->update(['FORM_CVALORASIGNACION' => $datos->value]);
+                        $isAsigned = 1;
+                    }
+                    // $res_id     = explode("_", $datos->name);
+                    // $anterior   = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID',$res_id[2])->select('*')->first();
+                    // $valVinculacion = Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$respuesta->FORM_NID)->update(['FORM_BTIENEASIGNACION' => true]);
+                }
 
                 if($valTE !== FALSE)
                     $tipEsp = $datos->value;
