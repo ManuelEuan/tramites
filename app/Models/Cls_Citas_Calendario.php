@@ -4,7 +4,7 @@ namespace App\Models;
 
 use DateTime;
 use Carbon\Carbon;
-use App\Services\TramiteService;
+use App\Models\Cls_Dia_Inhabil;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -46,8 +46,8 @@ class Cls_Citas_Calendario extends Model {
         $final_inhabil = new DateTime($fecha_final);
         $final_inhabil->modify("2 month");
 
-        $inhabiles = DB::table('tram_dia_inhabil')->where('fecha_inicio', '>=', $inicio_inhabil->format('Y-m-d'))
-                        ->where('fecha_inicio', '<=', $final_inhabil->format('Y-m-d'))->where('activo', true )->get();
+        $inhabiles =  Cls_Dia_Inhabil::where('fecha_inicio', '>=', $inicio_inhabil->format('Y-m-d'))
+                            ->where('fecha_inicio', '<=', $final_inhabil->format('Y-m-d'))->where('activo', true )->get();
 
         foreach($inhabiles as $dia){
             $dependencias = explode(",", $dia->dependencias);
@@ -67,7 +67,7 @@ class Cls_Citas_Calendario extends Model {
             $fecha      = date("Y-m-d", $i);
             $aplica     =  $tipo == 'usuario' && $fecha_inicio < $toDay ? false : true;
 
-            if($aplica ){
+            if($aplica){
                 $rowOcupacion = DB::table('citas_tramites_calendario')->where([
                                     'CITA_FECHA'        => $fecha,
                                     'CITA_IDTRAMITE'    => $tramite->TRAM_NIDTRAMITE,
