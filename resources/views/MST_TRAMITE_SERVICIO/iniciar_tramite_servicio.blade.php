@@ -248,7 +248,7 @@
                                                                         <input type="text" class="form-control txt_abierta" 
                                                                         name="resp_{{$preg->FORM_NID}}_0" 
                                                                         id="resp_{{$preg->FORM_NID}}_0" 
-                                                                        placeholder="{{$preg->FORM_CPREGUNTA}}" required> 
+                                                                        placeholder="{{$preg->FORM_CPREGUNTA}}" vinculacion="<?php echo(isset($preg->FORM_CVALORASIGNACION)? ($preg->FORM_CVALORASIGNACION):"" )?>" required> 
                                                                     <?php };    ?>
                                                                     @endforeach
                                                                 @endif
@@ -1007,14 +1007,14 @@
                             break;
             }
     }
-
+    
     $(document).ready(function() {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+        consultaInformacionCiudadano();
         //$('#cmbModulo').prop('disabled', false);
         TRAM_AJX_CONSULTARMODULO(0, id_accede);
 
@@ -1079,7 +1079,50 @@
                 TRAM_AJX_CONSULTARMODULO_DETALLE(id_modulo, lat, lon, direc);
             }
         });
+        function consultaInformacionCiudadano() {
 
+            data={
+                NIDEUSUARIO : $("#txtIdUsuario").val()
+            }
+            $.ajax({
+                url: "/tramite_servicio/api/obtenerinfociudadano" ,
+                type: "POST",
+                data: data,
+                success: function(data) {
+                    for(const clave in data[0]){
+                        if($(`[vinculacion=${clave}]`)){
+                            $(`[vinculacion=${clave}]`).val(data[0][clave]);
+                        }
+                    }
+                },
+                error: function(data) {
+                    Swal.fire({
+                        icon: data.status,
+                        title: '',
+                        text: data.message,
+                        footer: ''
+                    });
+                }
+            });
+            // respuesta = $.ajax({
+            //     url: "/tramite_servicio/api/obtenerinfociudadano",
+            //     type: "post"
+            // });
+
+            // respuesta.done(function(response, textStatus, jqXHR) {
+            //     console.log(response);
+            //     if (response.length == 0) {
+            //     }
+            // });
+
+            // respuesta.fail(function(jqXHR, textStatus, errorThrown) {
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Oops...',
+            //         text: 'se presento el siguiente error: ' + errorThrown
+            //     });
+            // });
+    }
         function TRAM_AJX_CONSULTARMODULO_DETALLE(id_modulo, lat, lon, direc){
             // $.ajax({
             //     url: "/tramite_servicio/obtener_modulo_detalle/" + id_modulo,
