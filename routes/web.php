@@ -141,14 +141,6 @@ Route::group(['prefix' => 'formulario'], function () {
     Route::post('/preguntas', 'FormularioController@preguntas');
 });
 
-Route::group(['prefix' => 'dias_inhabiles'], function () {
-    Route::get('/', 'DiaInhabilController@calendario');
-    Route::get('/find', 'DiaInhabilController@find');
-    Route::post('/store', 'DiaInhabilController@store');
-    Route::post('/update', 'DiaInhabilController@update');
-    Route::post('/delete', 'DiaInhabilController@delete');
-});
-
 Route::group(['prefix' => 'gestores_solicitud'], function () {
     Route::get('/', 'GestoresController@index')->middleware("permiso");
     Route::get('/find', 'GestoresController@find');
@@ -256,6 +248,14 @@ Route::group(['prefix' => 'giros'], function () {
     Route::post('/', 'GiroController@store');
     Route::post('/estatus', 'GiroController@cambiaEstatus');
     Route::put('/', 'GiroController@update');
+});
+
+Route::group(['prefix' => 'dias_inhabiles'], function () {
+    Route::get('/', 'DiaInhabilController@calendario');
+    Route::get('/find', 'DiaInhabilController@find');
+    Route::post('/store', 'DiaInhabilController@store');
+    Route::post('/update', 'DiaInhabilController@update');
+    Route::post('/delete', 'DiaInhabilController@delete');
 });
 
 Route::group(['prefix' => 'catalogos'], function () {

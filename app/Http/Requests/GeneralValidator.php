@@ -133,4 +133,19 @@ class GeneralValidator extends FormRequest
         return true;
     }
     
+    public function listadoCitas(Request $request) {
+        $params = [
+            'tramite_id'    => 'required|integer',
+            'edificio_id'   => 'required|integer',
+            'anio'          => 'required|integer',
+            'mes'           => 'required|integer',
+            'tipo'          => ['required','string', Rule::in(['admin', 'usuario'])],
+        ];
+
+        $validator = Validator::make($request->all(),$params);
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+        return true;
+    }
 }
