@@ -21,7 +21,7 @@
         font-size: x-small;
     }
 </style>
-
+ 
 <!-- <%-- Contenido individual --%> -->
 <div class="container-fluid contentPage">
     <br>
@@ -1022,42 +1022,45 @@
                                         <i class="far fa-trash-alt" style="color: black"></i>
                                     </button>
                                     <br>
-                                    <label class="ml-3"><input type="checkbox" name="asignacion_${element.FORM_NID}" id="asignacion" nameVinculo="tipoVinculacion_${element.FORM_NID}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
+                                    <label class="ml-3"><input type="checkbox" name="update_asignacion_${element.FORM_NID}" id="update_asignacion" nameVinculo="update_tipoVinculacion_${element.FORM_NID}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                                 </span>
                                 </div>
                                 <br>
                                 <div class="col-md-4 mb-3">
-                                <label for="tipoVinculacion_${element.FORM_NID}" hidden>Tipo de Vinculación</label>
-                                <select name="tipoVinculacion_${element.FORM_NID}" id="tipoVinculacion_${element.FORM_NID}" class="form-control" hidden>
-                                    <option value= 'USUA_CRFC' selected>RFC</option>
-                                    <option value= 'USUA_CCURP'>CURP</option>
-                                    <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
-                                    <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
-                                    <option value= 'USUA_CNOMBRES'>Nombre Ciudadano</option>
-                                    <option value= 'USUA_CCALLE'>Calle Persona Moral</option>
-                                    <option value= 'USUA_NNUMERO_EXTERIOR'>Número Exterior Persona Moral</option>
-                                    <option value= 'USUA_NNUMERO_INTERIOR'>Número Interior Persona Moral</option>
-                                    <option value= 'USUA_CCOLONIA'>Colonia Persona Moral</option>
-                                    <option value= 'USUA_CMUNICIPIO'>Municipio Persona Moral</option>
-                                    <option value= 'USUA_CESTADO'>Estado Persona Moral</option>
-                                    <option value= 'USUA_CPAIS'>Pais Persona Moral</option>
-                                    <option value= 'USUA_CCORREO_ELECTRONICO'>Correo Electronico</option>
-                                    <option value= 'USUA_CCORREO_ALTERNATIVO'>Correo Alternativo</option>
-                                    <option value= 'USUA_CCALLE_PARTICULAR'>Calle Particular Persona Física</option>
-                                    <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR'>Número Exterior Particular Persona Física</option>
-                                    <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR'>Número Interior Particular Persona Física</option>
-                                    <option value= 'USUA_CCOLONIA_PARTICULAR'>Colonia Persona Física</option>
-                                    <option value= 'USUA_CMUNICIPIO_PARTICULAR'>Municio Persona Física</option>
-                                    <option value= 'USUA_CESTADO_PARTICULAR'>Estado Persona Física</option>
-                                    <option value= 'USUA_CPAIS_PARTICULAR'>Pais Persona Física</option>
-                                    <option value= 'USUA_NTELEFONO'>Telefono</option>
-                                    <option value= 'USUA_DFECHA_NACIMIENTO'>Fecha De Nacimiento</option>
-                                    <option value= 'USUA_CTEL_LOCAL'>Número De Teléfono Fijo</option>
-                                    <option value= 'USUA_CTEL_CELULAR'>Número De Teléfono Celular</option>
+                                <label for="tipoVinculacion_${element.FORM_NID}" ${element.FORM_BTIENEASIGNACION == 1 ? "": "hidden"}>Tipo de Vinculación</label>
+                                <select name="update_tipoVinculacion_${element.FORM_NID}" id="update_tipoVinculacion_${element.FORM_NID}" class="form-control" ${element.FORM_BTIENEASIGNACION == 1 ? "": "hidden"}>
+                                    <option value= 'USUA_CRFC' ${element.FORM_CVALORASIGNACION == "USUA_CRFC" ? "selected": ""}>RFC</option>
+                                    <option value= 'USUA_CCURP' ${element.FORM_CVALORASIGNACION == "USUA_CCURP" ? "selected": ""}>CURP</option>
+                                    <option value= 'USUA_NTIPO_SEXO' ${element.FORM_CVALORASIGNACION == "USUA_NTIPO_SEXO" ? "selected": ""}>Sexo</option>
+                                    <option value= 'USUA_CRAZON_SOCIAL' ${element.FORM_CVALORASIGNACION == "USUA_CRAZON_SOCIAL" ? "selected": ""}>Razón Social</option>
+                                    <option value= 'USUA_CNOMBRES' ${element.FORM_CVALORASIGNACION == "USUA_CNOMBRES" ? "selected": ""}>Nombre Ciudadano</option>
+                                    <option value= 'USUA_CCALLE' ${element.FORM_CVALORASIGNACION == "USUA_CCALLE" ? "selected": ""}>Calle Persona Moral</option>
+                                    <option value= 'USUA_NNUMERO_EXTERIOR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_EXTERIOR" ? "selected": ""}>Número Exterior Persona Moral</option>
+                                    <option value= 'USUA_NNUMERO_INTERIOR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_INTERIOR" ? "selected": ""}>Número Interior Persona Moral</option>
+                                    <option value= 'USUA_CCOLONIA' ${element.FORM_CVALORASIGNACION == "USUA_CCOLONIA" ? "selected": ""}>Colonia Persona Moral</option>
+                                    <option value= 'USUA_CMUNICIPIO' ${element.FORM_CVALORASIGNACION == "USUA_CMUNICIPIO" ? "selected": ""}>Municipio Persona Moral</option>
+                                    <option value= 'USUA_CESTADO' ${element.FORM_CVALORASIGNACION == "USUA_CESTADO" ? "selected": ""}>Estado Persona Moral</option>
+                                    <option value= 'USUA_CPAIS' ${element.FORM_CVALORASIGNACION == "USUA_CPAIS" ? "selected": ""}>Pais Persona Moral</option>
+                                    <option value= 'USUA_CCORREO_ELECTRONICO' ${element.FORM_CVALORASIGNACION == "USUA_CCORREO_ELECTRONICO" ? "selected": ""}>Correo Electronico</option>
+                                    <option value= 'USUA_CCORREO_ALTERNATIVO' ${element.FORM_CVALORASIGNACION == "USUA_CCORREO_ALTERNATIVO" ? "selected": ""}>Correo Alternativo</option>
+                                    <option value= 'USUA_CCALLE_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CCALLE_PARTICULAR" ? "selected": ""}>Calle Particular Persona Física</option>
+                                    <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_EXTERIOR_PARTICULAR" ? "selected": ""}>Número Exterior Particular Persona Física</option>
+                                    <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_INTERIOR_PARTICULAR" ? "selected": ""}>Número Interior Particular Persona Física</option>
+                                    <option value= 'USUA_CCOLONIA_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CCOLONIA_PARTICULAR" ? "selected": ""}>Colonia Persona Física</option>
+                                    <option value= 'USUA_CMUNICIPIO_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CMUNICIPIO_PARTICULAR" ? "selected": ""}>Municio Persona Física</option>
+                                    <option value= 'USUA_CESTADO_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CESTADO_PARTICULAR" ? "selected": ""}>Estado Persona Física</option>
+                                    <option value= 'USUA_CPAIS_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CPAIS_PARTICULAR" ? "selected": ""}>Pais Persona Física</option>
+                                    <option value= 'USUA_NTELEFONO' ${element.FORM_CVALORASIGNACION == "USUA_NTELEFONO" ? "selected": ""}>Telefono</option>
+                                    <option value= 'USUA_DFECHA_NACIMIENTO' ${element.FORM_CVALORASIGNACION == "USUA_DFECHA_NACIMIENTO" ? "selected": ""}>Fecha De Nacimiento</option>
+                                    <option value= 'USUA_CTEL_LOCAL' ${element.FORM_CVALORASIGNACION == "USUA_CTEL_LOCAL" ? "selected": ""}>Número De Teléfono Fijo</option>
+                                    <option value= 'USUA_CTEL_CELULAR' ${element.FORM_CVALORASIGNACION == "USUA_CTEL_CELULAR" ? "selected": ""}>Número De Teléfono Celular</option>
                                 </select>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-group" id="contenedorRespuestas_update_${element.FORM_NID}">`;
+                                    if(element.FORM_BTIENEASIGNACION == 1){
+                                        $("#update_asignacion"+element.FORM_BTIENEASIGNACION).attr("checked",true);
+                                    }
                         if (tipo_respuesta == 'abierta') {
                             let prim_res = element.respuestas.length > 0 ? element.respuestas[0].FORM_NID : 0;
                             preguntas += ``;
@@ -1685,7 +1688,16 @@
             for (let i = 0; i < completo.length; i++) {
                 completo[i].id = 0;
                 let name = completo[i].name;
-
+                if(name.includes("update_tipoVinculacion_")){
+                    array = name.split("update_tipoVinculacion_");
+                    completo[i].id = array[1];
+                    completo[i].name = "tipoVinculacion_" + array[1];
+                }
+                if(name.includes("update_asignacion_")){
+                    array = name.split("update_asignacion_");
+                    completo[i].id = array[1];
+                    completo[i].name = "asignacion_" + array[1];
+                }
                 if (name.includes("update_pregunta")) {
                     array = name.split("update_pregunta_");
                     completo[i].id = array[1];
@@ -1697,7 +1709,6 @@
                     completo[i].name = "resolutivo_" + array[1];
                 } else if (name.includes("update_respuesta")) {
                     array = name.split("_");
-                    completo[i].id = array[3];
                     completo[i].name = "respuesta_" + array[3];
                 } else if (name.includes("update_opcionEspecial_")) {
                     array = name.split("_");
@@ -1756,14 +1767,14 @@
                 console.log(response);
             });
 
-            // // Callback handler that will be called on failure
-            // request.fail(function(jqXHR, textStatus, errorThrown) {
-            //     Swal.fire({
-            //         icon: 'error',
-            //         title: 'Oops...',
-            //         text: 'se presento el siguiente error: ' + errorThrown
-            //     });
-            // });
+            // Callback handler that will be called on failure
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
+                });
+            });
         }, 300);
     }
 
