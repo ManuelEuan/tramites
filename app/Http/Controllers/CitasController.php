@@ -118,10 +118,19 @@ class CitasController extends Controller
     public function getCitas() {
         return response()->json(Cls_Citas_Calendario::all());
     }
-    // Obtener las citas disponibles por mes
-    public function getCitasFiltro($idtramiteAccede,$idedificio,$anio,$mes) {
-        $tramite    = $this->tramiteService->getTramitesSiegy($idtramiteAccede);
-        $result     = Cls_Citas_Calendario::getByFiltro($tramite->TRAM_NIDTRAMITE,$idedificio,$anio,$mes);
+
+    /**
+     * Retorna el listado de citas en base a un rangoo de fechas
+     * @param Request $request
+     * @return Response
+     */
+    public function getCitasFiltro(Request $request) {
+        $validacion = $this->validaciones->listadoCitas($request);
+        if($validacion !== true)
+            return response()->json(['error' => $validacion->original], 403);
+
+        $tramite    = $this->tramiteService->getTramitesSiegy($request->tramite_id);
+        $result     = Cls_Citas_Calendario::getByFiltro($tramite,$request->edificio_id,$request->anio,$request->mes, $request->tipo);
         return response()->json($result);
     }
 

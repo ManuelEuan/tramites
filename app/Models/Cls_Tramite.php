@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Tramite extends Model
 {
-    protected $table = 'tram_mst_tramite';
-    protected $fillable = [
+    protected $table        = 'tram_mst_tramite';
+    protected $primaryKey   = 'TRAM_NIDTRAMITE';
+    protected $fillable     = [
         'TRAM_NIDTRAMITE',
         'TRAM_NIDTRAMITE_ACCEDE',
         'TRAM_NTIPO',

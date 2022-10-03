@@ -206,10 +206,12 @@
                 URL_COMP = formatURLGet(payload.view.currentStart);
             }
 
+            let fecha = URL_COMP.split("/");
             $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
             request = $.ajax({
-                url : '/api/citas/'+ tramite + '/' + modulo + URL_COMP,
-                type: "GET"
+                url : '/api/citas',
+                type: "GET",
+                data: {"tramite_id": tramite, 'edificio_id': modulo, 'anio': fecha[1], 'mes':  parseInt(fecha[2]), 'tipo': 'admin' }
             });
             //On success
             request.done(function (response, textStatus, jqXHR){
