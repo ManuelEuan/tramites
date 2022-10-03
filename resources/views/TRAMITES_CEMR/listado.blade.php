@@ -284,17 +284,6 @@
                                 level = 3;
                             }
                             var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : "red");
-                            console.log("creacion: " + data.USTR_DFECHACREACION)
-                            console.log("dias h: " + data.USTR_NDIASHABILESRESOLUCION)
-                            console.log("dateFromTramite-----: " + dateFromTramite)
-                            console.log("dateMiddle-------: " + dateMiddle)
-                            console.log("currentDate-------: " + currentDate)
-                            
-                            /*console.log("Sin suma: " + sinsuma.getDay())
-                            console.log("Con suma: " + dateFromTramite)
-                            console.log("Con suma: " + dateFromTramite.getDate())
-                            console.log(dateMiddle)
-                            console.log(level)*/
                             
                             return '<span class="dot" style="background-color:' + color + '"></span>';
                         }
