@@ -2340,6 +2340,7 @@
                                 type: "POST",
                                 dataType: 'json',
                                 success: function(data) {
+                                    console.log(data)
                                     if (data.status == "success") {
                                         Swal.fire({
                                             title: '¡Éxito!',
@@ -2371,7 +2372,7 @@
                                     Swal.fire({
                                         icon: data.status,
                                         title: '',
-                                        text: data.message,
+                                        text: 'Error',
                                         footer: ''
                                     });
                                     $('#loading_save').hide();
