@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Cls_Seguimiento_Servidor_Publico;
+use App\Models\Cls_PersonaFisicaMoral;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class TramiteServicioController extends Controller
@@ -199,7 +200,7 @@ class TramiteServicioController extends Controller
         $tramite['costo']       = $datosGenerales['costo'];
         $tramite['requerimientos']      = $datosGenerales['requerimientos'];
         $tramite['informacion_general'] = $datosGenerales['informacion_general'];
-        $tramite['fundamento_legal']    = array(["titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento]);
+        $tramite['fundamento_legal']    = $datosGenerales['fundamento_legal'];//array(["titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento]);
 
         $tramite['estatus'] = 1;
         /* $tramite['estatus'] = $detalle->TRAM_NESTATUS_PROCESO == null ? 1 : $detalle->TRAM_NESTATUS_PROCESO;
@@ -211,7 +212,9 @@ class TramiteServicioController extends Controller
 
         return view('MST_TRAMITE_SERVICIO.DET_TRAMITE', compact('tramite'));
     }
-
+    /**
+     * !construccion del
+     */
     public function iniciar_tramite_servicio($id)
     {
 
@@ -323,7 +326,16 @@ class TramiteServicioController extends Controller
         $nmbres='';$P_NESTATUS='';$TXT_STAT=$arrTst;$docs_base;
         return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'ARR_DOC_CON', 'nmbres', 'P_NESTATUS', 'TXT_STAT', 'docs_base'));
     }
-
+    public function obtenerInformacionCiudadano(Request $request)
+    {
+        # code...
+        if(isset($request->NIDEUSUARIO)){
+            $datos = Cls_PersonaFisicaMoral::where('USUA_NIDUSUARIO',$request->NIDEUSUARIO)->get();
+            return response()->json($datos, 200);
+        }else{
+            return response()->json(['informacion'=> false], 404);
+        }
+    }
     public function seguimiento_tramite_servicio($id) {
         try {
             $objUsuario     = Auth::user();
@@ -1206,7 +1218,7 @@ class TramiteServicioController extends Controller
         $response = [
             'codigo' => 200,
             'status' => "success",
-            'message' => 'Los datos se han enviado correctamente.',
+            'message' => 'Tu solicitud se ha enviado, te recordamos que los horarios de atención son de Lunes a Viernes de 08:30 a 15:30 hrs. en días hábiles. Si tu solicitud fue enviada en día inhábil o fuera de horario laboral, esta será atendida hasta en el próximo día laboral, en el horario señalado.',
             'data' => $IntIdUsuarioTramite
         ];
 
