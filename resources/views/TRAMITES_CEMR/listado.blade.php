@@ -132,6 +132,33 @@
 
 </div>
 <br />
+<!-- Modal -->
+<div class="modal fade" id="asignarFuncionarioModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 mb-3" id="tipoId" style="">
+                    <label for="tipoCuestionario">Tipo de cuestionario</label>
+                    <select name="tipoCuestionario" id="tipoCuestionario" class="form-control" onchange="seleccionaCuestionario()">
+                        <option value="nuevo" selected="">Nuevo</option>
+                        <option value="copia">Duplicar</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('scripts')
 <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
@@ -294,7 +321,7 @@
                         render: function(data, type, row) {
                             if (type === 'display') {
                                 var date = new Date(data.substring(0, 10));
-                                return (date.getDate() + 1)+ '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + data.substring(11, data.length);
+                                return (date.getDate() + 1) + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + data.substring(11, data.length);
                             }
                             return data;
                         }
@@ -302,21 +329,21 @@
                     {
                         "data": "USTR_CFOLIO"
                     },
-                   /* {
-                        "data": "USTR_CNOMBRE_COMPLETO"
-                    },*/
+                    /* {
+                         "data": "USTR_CNOMBRE_COMPLETO"
+                     },*/
                     {
                         "data": null,
                         render: function(data, type, row) {
                             var nombre = "";
-                            if(data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null){
-                                if(data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == ""){
-                                    nombre = data.USTR_CNOMBRE + " " +data.USTR_CPRIMER_APELLIDO;
-                                }else{
-                                    nombre = data.USTR_CNOMBRE + " " +data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
-                                }          
-                            }else{
-                                nombre =  data.USTR_CNOMBRE_COMPLETO;
+                            if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
+                                if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
+                                    nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO;
+                                } else {
+                                    nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
+                                }
+                            } else {
+                                nombre = data.USTR_CNOMBRE_COMPLETO;
                             }
                             return nombre;
                         }
@@ -345,6 +372,9 @@
                                         <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
                                     </span>
                                     <span>
+                                        <button type="button" onclick="asignarFuncionario(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i class='fa fa-users' style="color: black"></i></button>
+                                    </span>
+                                    <span>
                                         <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
                                     </span>`;
                         }
@@ -361,23 +391,22 @@
                     [10, 25, 50, 100, "Todos"]
                 ],
                 dom: 'Blrtip',
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         exportOptions: {
-                            columns: [ 0, 1, 2, 3, 4, 5 ]
+                            columns: [0, 1, 2, 3, 4, 5]
                         }
                     },
                     {
                         extend: 'csvHtml5',
                         exportOptions: {
-                            columns: [ 0, 1, 2, 3, 4, 5 ]
+                            columns: [0, 1, 2, 3, 4, 5]
                         }
                     },
                     {
                         extend: 'pdfHtml5',
                         exportOptions: {
-                            columns: [ 0, 1, 2, 3, 4, 5 ]
+                            columns: [0, 1, 2, 3, 4, 5]
                         }
                     }
                 ]
@@ -386,6 +415,13 @@
 
         TRAM_AJX_CONSULTARSEGUIMIENTO();
     });
+
+    // ! modalito
+    function asignarFuncionario(id) {
+        // !codigo
+        alert(id);
+        $("#asignarFuncionarioModal").show();
+    }
 
     function verDetalle(id) {
         var host = window.location.origin;
@@ -541,7 +577,7 @@
         background: #ffffff;
     }
 
-    .buttons-html5{
+    .buttons-html5 {
         background-color: #01b3e8 !important;
     }
 </style>

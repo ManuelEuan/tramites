@@ -77,7 +77,7 @@ class TramitesController extends Controller
             $filter['rfc'] = $request->get('rfc') ?? "";
             $filter['curp'] = $request->get('curp') ?? "";
             $filter['estatus'] = is_null($request->get('estatus')) ? 0 : intval($request->get('estatus'));
-
+ 
             $tramite_seguimiento = new Cls_Seguimiento_Servidor_Publico();
             $tramite_seguimiento->USTR_NIDUSUARIOTRAMITE = 0;
             $tramite_seguimiento->StrTexto =  $filter['StrTexto'] ?? "";
