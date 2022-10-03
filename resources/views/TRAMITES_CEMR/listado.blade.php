@@ -271,7 +271,7 @@
                             dateFromTramite.setDate(parseInt(dateFromTramite.getDate()) + parseInt(data.USTR_NDIASHABILESRESOLUCION));
 
                             var dateMiddle = new Date(data.USTR_DFECHACREACION);
-                            dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 3));
+                            dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 2));
 
                             var currentDate = new Date();
 
