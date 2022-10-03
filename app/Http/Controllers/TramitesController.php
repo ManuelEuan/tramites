@@ -20,6 +20,7 @@ use App\Models\Cls_Citas_Calendario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Cls_Seguimiento_Servidor_Publico;
+use App\Models\Cls_Formulario_Pregunta_Respuesta;
 
 class TramitesController extends Controller
 {
@@ -167,7 +168,7 @@ class TramitesController extends Controller
                 ["CITA_IDMODULO", $tramite->infoModulo['iId']],
             ])->orderBy('idcitas_tramites_calendario', 'DESC');
 
-        $tramite->cita = ($cita->count() > 0 
+        $tramite->cita = ($cita->count() > 0
             ? array(
                     "ID" => $cita->first()->idcitas_tramites_calendario,
                     "USUARIO" => $cita->first()->CITA_IDUSUARIO,
@@ -179,18 +180,14 @@ class TramitesController extends Controller
                     "FOLIO" => $cita->first()->CITA_FOLIO,
                 )
             : array());
- 
+
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
     }
 
-    public function generatePrevioResolutivo($resolutivoId, $tramiteId)
-    {
-
+    public function generatePrevioResolutivo($resolutivoId, $tramiteId) {
         $resolutivo = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO($resolutivoId)[0];
-
         $mapeoCampos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO_MAPEO($resolutivoId, $tramiteId);
 
-        //dd($mapeoCampos);
         /* Set the PDF Engine Renderer Path */
         $domPdfPath = base_path('vendor/dompdf/dompdf');
 
@@ -198,14 +195,23 @@ class TramitesController extends Controller
         Settings::setPdfRendererName('DomPDF');
 
         $rutaBase = public_path() . '/docts/resolutivos/';
-        //dd($rutaBase);
         $rutaResolutivo =   $rutaBase . $resolutivo->RESO_CNAMEFILE;
         $nameFile = explode(".", $resolutivo->RESO_CNAMEFILE);
         /*@ Reading doc file */
         $template = new \PhpOffice\PhpWord\TemplateProcessor($rutaResolutivo);
 
         foreach ($mapeoCampos as $campo) {
+            $pregunta = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID', $campo->USRE_NIDPREGUNTA)->first();
+            if($pregunta->FORM_CTIPORESPUESTA == 'catalogo') {
+                $array      = explode(",", $campo->USRE_CRESPUESTA);
+                $respuestas = DB::table($pregunta->FORM_CVALOR)->whereIn('id', $array)->get();
+                $texto      = "";
 
+                foreach ($respuestas as $key => $value) {
+                    $texto = $key == 0 ? $value->nombre : $texto.", ". $value->nombre;
+                }
+                $campo->USRE_CRESPUESTA = $texto;
+            }
             $template->setValue($campo->TRAM_CNOMBRECAMPO, $campo->USRE_CRESPUESTA);
         }
 
@@ -232,30 +238,20 @@ class TramitesController extends Controller
             unlink($savePdfPath);
         }
 
-
-
-        //dd($pathQR);
         //Save it into PDF
         $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content, 'PDF');
         $PDFWriter->save($savePdfPath);
-        //echo 'File has been successfully converted ' . $savePdfPath;
 
         /*@ Remove temporarily created word file */
         if (file_exists($saveDocPath)) {
             unlink($saveDocPath);
         }
-        //return response()->file($savePdfPath);
-
-        //dd($savePdfPath);
 
         return redirect('/docts/resolutivos/new-result' . $nameFile[0] . '.pdf');
-
-        //return response()->file($savePdfPath, ['Content-Type' => 'application/pdf']);
     }
 
     //Obtener trámite en seguimiento
-    public function obtener_tramite_seguimiento($id)
-    {
+    public function obtener_tramite_seguimiento($id) {
         $tramite = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
         $configaracion =  $tramite;
 
@@ -267,17 +263,12 @@ class TramitesController extends Controller
             ->get()->toArray();
 
         foreach ($configaracion['formularios'] as $form) {
-
             foreach ($form->secciones as $sec) {
-
                 foreach ($sec->preguntas as $preg) {
-
                     foreach ($preg->respuestas as $resp) {
-
                         $resp->FORM_CVALOR_RESPUESTA = "";
 
                         foreach ($respuestas as $_resp) {
-
                             if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
                                 $preg->estatus = $_resp['USRE_NESTATUS'];
                                 $preg->observaciones = $_resp['USRE_COBSERVACION'];
@@ -315,6 +306,14 @@ class TramitesController extends Controller
                                                 }
                                                 break;
                                         }
+                                    }
+                                    break;
+                                case "catalogo":
+                                    if ($preg->FORM_NID === $_resp['USRE_NIDPREGUNTA']) {
+                                        $array = explode(",",$_resp['USRE_CRESPUESTA']);
+                                        $valorRespuesta = DB::table($resp->FORM_CVALOR)->whereIn('id', $array)->get();
+                                        $resp->FORM_CVALOR_RESPUESTA = $valorRespuesta;
+                                        break;
                                     }
                                     break;
                                 default:
@@ -407,7 +406,7 @@ class TramitesController extends Controller
                 foreach ($request->CONF_PREGUNTAS as $pregunta) {
                     $observaciones = '';
                     if(isset($pregunta['observaciones'])){
-                        
+
                         $observaciones = $pregunta['observaciones'];
                     }
                     Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_PREGUNTA($request->CONF_NIDUSUARIOTRAMITE, $pregunta['pregunta_id'], $pregunta['estatus'], $observaciones);
@@ -420,21 +419,21 @@ class TramitesController extends Controller
                 if (count($request->CONF_DOCUMENTOS)) {
 
                     foreach ($request->CONF_DOCUMENTOS as $documento) {
- 
-                        Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO_VIG($request->CONF_NIDUSUARIOTRAMITE, 
+
+                        Cls_Seguimiento_Servidor_Publico::TRAM_ESTATUS_DOCUMENTO_VIG($request->CONF_NIDUSUARIOTRAMITE,
                         $documento['documento_id'], $documento['estatus'], $documento['observaciones'], $documento['vigencia']);
                         //Aqui se agrega la vigencia//
                         //getIdDocExp afecta tram_mdv_usuariordocumento, el parametro es para USDO_NIDTRAMITEDOCUMENTO
                         $idDocExp = Cls_Seguimiento_Servidor_Publico::getIdDocExp($documento['documento_id']);
-                        //////////////// 
+                        ////////////////
                         //
                         $TEST_MS = $TEST_MS.'( DOCid: '.$documento['documento_id'];
-                        if(isset($idDocExp->id)){ 
+                        if(isset($idDocExp->id)){
                             //$TEST_MS = $TEST_MS.'( idDocExp1: '.$idDocExp->id;
                             //modificamos la vigencia en la tabla tram_mst_documentosbase
                             Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
                         }else{//si el idDocsExpediente no existe
-                           
+
                             $idDocExp2 = Cls_Seguimiento_Servidor_Publico::getnombDocExp($documento['documento_id']);
                             if(isset($idDocExp2->USDO_CDOCNOMBRE)){
                                 //$TEST_MS = $TEST_MS.$idDocExp2->USDO_CDOCNOMBRE;
@@ -442,7 +441,7 @@ class TramitesController extends Controller
                                 $idDocExp3 = Cls_Seguimiento_Servidor_Publico::getIdusrTram($request->CONF_NIDUSUARIOTRAMITE);
                                 if(isset($idDocExp3->id)){
                                     //$TEST_MS = $TEST_MS.' . u: '.$idDocExp3->id;
-                            
+
                                     $USDO_CDOCNOMBRE =$idDocExp2->USDO_CDOCNOMBRE;
                                     $USDO_NIDUSUARIOBASE =$idDocExp3->id;
 
@@ -453,13 +452,13 @@ class TramitesController extends Controller
                                         foreach ($doc_base as $key => $H) {
                                             $id_doc_base = $H->id;
                                         }
-                                        if($id_doc_base!=''){                                        
-                                            $TEST_MS = $TEST_MS.'--> SAVE  '.$id_doc_base;                                    
+                                        if($id_doc_base!=''){
+                                            $TEST_MS = $TEST_MS.'--> SAVE  '.$id_doc_base;
                                             Cls_Seguimiento_Servidor_Publico::ActualizarDocVigencia($id_doc_base, $documento['vigencia']);
                                         };
                                         //*/
                                     };
-                                    
+
                                 };
 
                             };
@@ -508,7 +507,7 @@ class TramitesController extends Controller
                     if(isset($idDocExp->id)){
                         Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
                     }
-                    
+
                 }
             }
 
@@ -556,7 +555,7 @@ class TramitesController extends Controller
                     if(isset($idDocExp->id)){
                         Cls_Seguimiento_Servidor_Publico::ActualizarDocsUsuario($idDocExp->id, $documento['vigencia']);
                     }
-                    
+
                 }
             }
 
@@ -899,13 +898,13 @@ class TramitesController extends Controller
                     foreach ($sec->preguntas as $preg) {
                         foreach ($preg->respuestas as $resp) {
                             $resp->FORM_CVALOR_RESPUESTA = "";
-    
+
                             foreach ($respuestas as $_resp) {
                                 if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
                                     $preg->estatus = $_resp['USRE_NESTATUS'];
                                     $preg->observaciones = $_resp['USRE_COBSERVACION'];
                                 }
-    
+
                                 switch ($preg->FORM_CTIPORESPUESTA) {
                                     case "multiple":
                                         if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
@@ -923,7 +922,7 @@ class TramitesController extends Controller
                                         foreach ($resp->respuestas_especial as $esp) {
                                             switch ($resp->FORM_CTIPORESPUESTAESPECIAL) {
                                                 case "opciones":
-    
+
                                                     if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
                                                         if ($esp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
                                                             $esp->FORM_CVALOR_RESPUESTA = "selected";
@@ -959,7 +958,7 @@ class TramitesController extends Controller
                     }
                 }
             }
-    
+
             $tramite        = $configuracion['tramite'][0];
             $formularios    =  $configuracion['formularios'][0];
 
@@ -987,20 +986,20 @@ class TramitesController extends Controller
             $folio = explode('/', $tramite->USTR_CFOLIO);
             $folio = $folio[0] . '_' . $folio[1];
             $fileName = 'TRAM_' . $folio  . '.zip';
-    
+
 
             //Obtenemos documentos del trámite
             $listDocumentos = DB::select('SELECT * FROM tram_mdv_usuariordocumento WHERE USDO_NIDUSUARIOTRAMITE = ?', array($id));
             $listResolutivos = DB::select('SELECT * FROM tram_mdv_usuario_resolutivo WHERE USRE_NIDUSUARIOTRAMITE = ?', array($id));
-    
+
             if ($zip->open($pathPdf."/".$fileName, ZipArchive::CREATE) == TRUE) {
-    
+
                 //Agregamos formulario
                 $zip->addFile($pathPdf."/".$fileNamePdf, 'FORMULARIO_' . $folio . '.pdf');
-    
+
                 //Agregar documentos al zip
                 foreach ($listDocumentos as $key => $value) {
-    
+
                     if ($value->USDO_CRUTADOC != null && $value->USDO_CRUTADOC != "") {
                         if (file_exists(public_path($value->USDO_CRUTADOC))) {
                             $fileNameDocumento = $value->USDO_CDOCNOMBRE . '.' . $value->USDO_CEXTENSION;
@@ -1008,7 +1007,7 @@ class TramitesController extends Controller
                         }
                     }
                 }
-    
+
                 //Agregar resolutivos
                 foreach ($listResolutivos as $key => $value) {
                     if ($value->USRE_CRUTADOC != null && $value->USRE_CRUTADOC != "") {
@@ -1020,11 +1019,11 @@ class TramitesController extends Controller
                 }
                 $zip->close();
             }
-    
+
             //Eliminamos los archivos
             File::delete($pathPdf . '/' . $fileNamePdf);
             //File::delete($pathPdf . '/' . $fileName);
-    
+
             $response = [ 'name' => 'tramites/'.$fileName ];
         } catch (Exception $ex) {
             dd($ex->getMessage());
