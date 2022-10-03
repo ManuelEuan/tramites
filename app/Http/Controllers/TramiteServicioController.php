@@ -199,7 +199,7 @@ class TramiteServicioController extends Controller
         $tramite['costo']       = $datosGenerales['costo'];
         $tramite['requerimientos']      = $datosGenerales['requerimientos'];
         $tramite['informacion_general'] = $datosGenerales['informacion_general'];
-        $tramite['fundamento_legal']    = array(["titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento]);
+        $tramite['fundamento_legal']    = $datosGenerales['fundamento_legal'];//array(["titulo" => "", "opciones" => [], "adicional" => [], "descripcion" => $objTramite->nameInstrumento]);
 
         $tramite['estatus'] = 1;
         /* $tramite['estatus'] = $detalle->TRAM_NESTATUS_PROCESO == null ? 1 : $detalle->TRAM_NESTATUS_PROCESO;
@@ -1206,7 +1206,7 @@ class TramiteServicioController extends Controller
         $response = [
             'codigo' => 200,
             'status' => "success",
-            'message' => 'Los datos se han enviado correctamente.',
+            'message' => 'Tu solicitud se ha enviado, te recordamos que los horarios de atención son de Lunes a Viernes de 08:30 a 15:30 hrs. en días hábiles. Si tu solicitud fue enviada en día inhábil o fuera de horario laboral, esta será atendida hasta en el próximo día laboral, en el horario señalado.',
             'data' => $IntIdUsuarioTramite
         ];
 
