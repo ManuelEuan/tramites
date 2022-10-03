@@ -102,7 +102,9 @@ class TramitesController extends Controller
             } else {
                 $tramite_seguimiento->UsuarioID = Auth::user()->USUA_NIDUSUARIO;
             }
-
+            /**
+             * !parte de la busqueda de las solicitudes
+             */
             $result = $tramite_seguimiento->TRAM_SP_CONSULTAR_TRAMITES_SEGUIMIENTO();
             $tramites = $result['result'];
             $totalRegistros = $result['total'][0]->TotalRegistros;

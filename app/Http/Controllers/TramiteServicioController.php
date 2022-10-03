@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Cls_Seguimiento_Servidor_Publico;
+use App\Models\Cls_PersonaFisicaMoral;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class TramiteServicioController extends Controller
@@ -211,7 +212,9 @@ class TramiteServicioController extends Controller
 
         return view('MST_TRAMITE_SERVICIO.DET_TRAMITE', compact('tramite'));
     }
-
+    /**
+     * !construccion del
+     */
     public function iniciar_tramite_servicio($id)
     {
 
@@ -323,7 +326,16 @@ class TramiteServicioController extends Controller
         $nmbres='';$P_NESTATUS='';$TXT_STAT=$arrTst;$docs_base;
         return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'ARR_DOC_CON', 'nmbres', 'P_NESTATUS', 'TXT_STAT', 'docs_base'));
     }
-
+    public function obtenerInformacionCiudadano(Request $request)
+    {
+        # code...
+        if(isset($request->NIDEUSUARIO)){
+            $datos = Cls_PersonaFisicaMoral::where('USUA_NIDUSUARIO',$request->NIDEUSUARIO)->get();
+            return response()->json($datos, 200);
+        }else{
+            return response()->json(['informacion'=> false], 404);
+        }
+    }
     public function seguimiento_tramite_servicio($id) {
         try {
             $objUsuario     = Auth::user();

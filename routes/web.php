@@ -92,6 +92,7 @@ Route::group(['prefix' => 'tramite_servicio'], function () {
     Route::post('/enviar_encuesta', 'TramiteServicioController@enviar_encuesta')->name('enviar_encuesta');
     Route::get('/seguimiento_tramite/{id}', 'TramiteServicioController@seguimiento_tramite_servicio')->name('seguimiento_tramite');
     Route::put('/ubicacion_ventanilla', 'TramiteServicioController@ubicacion_ventanilla_sin_cita')->name('ubicacion_ventanilla_sin_cita');
+    Route::post('/api/obtenerinfociudadano', 'TramiteServicioController@obtenerInformacionCiudadano');
 });
 
 
