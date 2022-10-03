@@ -64,6 +64,7 @@
                         <!-- Material form register -->
                         <form action="{{url('/login')}}" method="POST" id="frmLogin">
                             {{ csrf_field() }}
+                            
                             <p class="h4 medium text-center pt-4 pb-2">
                                 <img src="assets/template/img/login.png" height="80px" /><br>
                                 <span class="pt-3">Trámites en Línea</span>
