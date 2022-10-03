@@ -90,7 +90,7 @@
                                     <option value="0">Estatus</option>
                                     <option value="2">Pendiente de revisión</option>
                                     <option value="3">Recibido</option>
-                                    <option value="4">Información incompleta</option>
+                                    <option value="4">Solicitud con Observaciones</option>
                                     <option value="5">Iniciado</option>
                                     <option value="6">Acción requerida</option>
                                     <option value="7">En proceso</option>
@@ -195,7 +195,7 @@
         },
         {
             id: 4,
-            nombre: "Información incompleta"
+            nombre: "Solicitud con Observaciones"
         },
         {
             id: 5,
@@ -268,10 +268,10 @@
                         render: function(data, type, row) {
 
                             var dateFromTramite = new Date(data.USTR_DFECHACREACION);
-                            dateFromTramite.setDate(dateFromTramite.getDate() + data.USTR_NDIASHABILESRESOLUCION);
+                            dateFromTramite.setDate(parseInt(dateFromTramite.getDate()) + parseInt(data.USTR_NDIASHABILESRESOLUCION));
 
                             var dateMiddle = new Date(data.USTR_DFECHACREACION);
-                            dateMiddle.setDate(dateMiddle.getDate() + (data.USTR_NDIASHABILESRESOLUCION / 2));
+                            dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 3));
 
                             var currentDate = new Date();
 
@@ -283,9 +283,19 @@
                             } else {
                                 level = 3;
                             }
-
                             var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : "red");
-
+                            console.log("creacion: " + data.USTR_DFECHACREACION)
+                            console.log("dias h: " + data.USTR_NDIASHABILESRESOLUCION)
+                            console.log("dateFromTramite-----: " + dateFromTramite)
+                            console.log("dateMiddle-------: " + dateMiddle)
+                            console.log("currentDate-------: " + currentDate)
+                            
+                            /*console.log("Sin suma: " + sinsuma.getDay())
+                            console.log("Con suma: " + dateFromTramite)
+                            console.log("Con suma: " + dateFromTramite.getDate())
+                            console.log(dateMiddle)
+                            console.log(level)*/
+                            
                             return '<span class="dot" style="background-color:' + color + '"></span>';
                         }
                     },

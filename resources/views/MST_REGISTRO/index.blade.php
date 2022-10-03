@@ -121,6 +121,7 @@
                                             placeholder="Razón Social">
                                     </div>
                                 </div>
+                                <!--
                                 <div class="col-md-4 divFechaConstitucionMoral">
                                     <div class="form-group" style="text-align: -webkit-center;">
                                         <br>
@@ -128,6 +129,7 @@
                                         <input type="date" id="fechaConstitucionMoral" name="fechaConstitucionMoral" value="">
                                     </div>
                                 </div>
+                            -->
 
                             </div>
 
@@ -142,7 +144,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <!--<p class="text-dark" id="divTxtRepresentante">Por favor, captura los datos del representante legal</p>-->
-                                    <label for="bus-txt-centro-trabajo">Sexo <span class="text-danger">*</span> </label>
+                                    <label for="bus-txt-centro-trabajo">Género<span class="text-danger">*</span> </label>
                                     <div class="form-group">
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" value="F"
@@ -153,6 +155,11 @@
                                             <input class="form-check-input" type="radio" value="M"
                                                 name="rdbSexo" required>
                                             <label class="form-check-label">Hombre</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" value="NA"
+                                                name="rdbSexo" required>
+                                            <label class="form-check-label">Prefiero no contestar</label>
                                         </div>
                                     </div>
                                     <br>
