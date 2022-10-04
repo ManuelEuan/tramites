@@ -4,6 +4,9 @@ namespace App\Services;
 
 use stdClass;
 use Exception;
+use Carbon\Carbon;
+use App\Models\Cls_Tramite; 
+use App\Models\Cls_Dia_Inhabil;
 use App\Models\Cls_DiasCitaTramite;
 use App\Models\Cls_Citas_Calendario;
 
@@ -75,9 +78,8 @@ class CitasService {
      * @return array
      */
     public function update(object $data){
-        $response = ["status" => true, "user" => null, "error" => null];
-
-        $cita = Cls_Citas_Calendario::where('idcitas_tramites_calendario', $data->cita_Id)->first();
+        $response   = ["status" => true, "user" => null, "error" => null];
+        $cita       = Cls_Citas_Calendario::where('idcitas_tramites_calendario', $data->cita_Id)->first();
 
         try {
             $cita->CITA_IDUSUARIO   = $cita->CITA_IDUSUARIO;
@@ -105,52 +107,65 @@ class CitasService {
         $fechaFF    = strtotime(date($fecha));
         $dia        = date("N", $fechaFF);
         $disponible = array();
+        $today      = Carbon::now()->format('Y-m-d');
+        $aplica     =  $fecha >= $today ? true : false;
+        $inhabiles  =  Cls_Dia_Inhabil::where('fecha_inicio', '<=', $fecha)
+                            ->where('fecha_final', '>=', $fecha)->where('activo', true )->first();
+        $tramite    = Cls_Tramite::find($tramite_id);
+        $dependencias = is_null($inhabiles) ?  [] : explode(",", $inhabiles->dependencias);
 
-        switch ($dia) {
-            case '1': $dia = "Lunes";   break;
-            case '2': $dia = "Martes";  break;
-            case '3': $dia = "Miercoles"; break;
-            case '4': $dia = "Jueves";  break;
-            case '5': $dia = "Viernes"; break;
-            case '6': $dia = "Sabado";  break;
-            case '7': $dia = "Domingo"; break;
+        foreach($dependencias as $dependencia){
+            if($tramite->TRAM_NIDCENTRO == (int)$dependencia)
+                $aplica = false;
         }
 
-        $citas  = Cls_DiasCitaTramite::where([
-                    'tramiteId' => $tramite_id,
-                    'moduloId'  => $modulo_id,
-                    'dia'       =>  $dia
-                ])->get();
-
-        foreach ($citas as  $cita) {
-            $ocupados = Cls_Citas_Calendario::where([
-                        'CITA_IDTRAMITE'    => $tramite_id,
-                        'CITA_IDMODULO'     => $modulo_id,
-                        'CITA_FECHA'        => $fecha
+        if($aplica){
+            switch ($dia) {
+                case '1': $dia = "Lunes";   break;
+                case '2': $dia = "Martes";  break;
+                case '3': $dia = "Miercoles"; break;
+                case '4': $dia = "Jueves";  break;
+                case '5': $dia = "Viernes"; break;
+                case '6': $dia = "Sabado";  break;
+                case '7': $dia = "Domingo"; break;
+            }
+    
+            $citas  = Cls_DiasCitaTramite::where([
+                        'tramiteId' => $tramite_id,
+                        'moduloId'  => $modulo_id,
+                        'dia'       =>  $dia
                     ])->get();
-
-            for($j=strtotime($cita->horarioInicial); $j<=strtotime($cita->horarioFinal); $j+=($cita->tiempoAtencion * 60)){
-                $hora       = date("H:i:s", $j);
-                $ocupado    = false;
-
-                foreach ($ocupados as $item) {
-                    if ($item->CITA_HORA == $hora){
-                        //Valido cuantos estan ocupados por ventanilla
-                        $numero = Cls_Citas_Calendario::where([
-                                    'CITA_IDTRAMITE'    => $tramite_id,
-                                    'CITA_IDMODULO'     => $modulo_id,
-                                    'CITA_FECHA'        => $fecha,
-                                    'CITA_HORA'         => $hora
-                                ])->count();
-                        
-                        $ocupado = $numero >= $cita->ventanillas ? true : false;
+    
+            foreach ($citas as  $cita) {
+                $ocupados = Cls_Citas_Calendario::where([
+                            'CITA_IDTRAMITE'    => $tramite_id,
+                            'CITA_IDMODULO'     => $modulo_id,
+                            'CITA_FECHA'        => $fecha
+                        ])->get();
+    
+                for($j=strtotime($cita->horarioInicial); $j<=strtotime($cita->horarioFinal); $j+=($cita->tiempoAtencion * 60)){
+                    $hora       = date("H:i:s", $j);
+                    $ocupado    = false;
+    
+                    foreach ($ocupados as $item) {
+                        if ($item->CITA_HORA == $hora){
+                            //Valido cuantos estan ocupados por ventanilla
+                            $numero = Cls_Citas_Calendario::where([
+                                        'CITA_IDTRAMITE'    => $tramite_id,
+                                        'CITA_IDMODULO'     => $modulo_id,
+                                        'CITA_FECHA'        => $fecha,
+                                        'CITA_HORA'         => $hora
+                                    ])->count();
+                            
+                            $ocupado = $numero >= $cita->ventanillas ? true : false;
+                        }
                     }
+    
+                    array_push($disponible,array(
+                        'horario' => $hora,
+                        'ocupado' => $ocupado
+                    ));
                 }
-
-                array_push($disponible,array(
-                    'horario' => $hora,
-                    'ocupado' => $ocupado
-                ));
             }
         }
 

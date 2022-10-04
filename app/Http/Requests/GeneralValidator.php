@@ -111,5 +111,41 @@ class GeneralValidator extends FormRequest
 
         return true;
     }
+
+    public function diaInhabil(Request $request, $accion= 'add') {
+        $params = [
+            'nombre'        => 'required|string|max:200',
+            'color'         => 'required|string|max:20',
+            'fecha_inicio'  => 'required|date',
+            'fecha_final'   => 'required|date',
+            'dependencias'  => 'nullable|string',
+            'all'           => ['required','string', Rule::in(['true', 'false'])],
+            'activo'        => 'nullable|boolean'
+        ];
+
+        if($accion != 'add')
+            $params = array_merge($params, ['id' => 'required|integer|exists:tram_dia_inhabil,id']);
+
+        $validator = Validator::make($request->all(),$params);
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+        return true;
+    }
     
+    public function listadoCitas(Request $request) {
+        $params = [
+            'tramite_id'    => 'required|integer',
+            'edificio_id'   => 'required|integer',
+            'anio'          => 'required|integer',
+            'mes'           => 'required|integer',
+            'tipo'          => ['required','string', Rule::in(['admin', 'usuario'])],
+        ];
+
+        $validator = Validator::make($request->all(),$params);
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+        return true;
+    }
 }

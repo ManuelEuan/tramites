@@ -198,7 +198,7 @@ class Cls_Tramite_Servicio extends Model
                 $form->secciones = [];
                 foreach($secciones as $sec){
                     $sec->preguntas = DB::select(
-                        'SELECT a.FORM_NID, a.FORM_NFORMULARIOID, a.FORM_NSECCIONID, a.FORM_CPREGUNTA, b.FORM_CTIPORESPUESTA 
+                        'SELECT a.FORM_NID, a.FORM_NFORMULARIOID, a.FORM_NSECCIONID, a.FORM_CPREGUNTA, a.FORM_BTIENEASIGNACION, A.FORM_CVALORASIGNACION, b.FORM_CTIPORESPUESTA 
                         FROM tram_form_pregunta as a
                         LEFT JOIN tram_form_pregunta_respuestas as b on a.FORM_NID = b.FORM_NPREGUNTAID
                         WHERE a.FORM_NFORMULARIOID = ? and a.FORM_NSECCIONID = ?

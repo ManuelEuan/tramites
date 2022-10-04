@@ -165,6 +165,4 @@ class DatosDurosController extends Controller
 
         return response()->json(['data'=> $decrypted], 200);
     }
-
-    
 }

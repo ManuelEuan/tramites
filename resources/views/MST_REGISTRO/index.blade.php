@@ -259,9 +259,21 @@
                             <label for=""><b>Personas autorizadas para oír y recibir notificaciones</b></label>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label for="bus-txt-centro-trabajo">Nombre y Apellidos<span class="text-danger">*</span> </label>
+                                    <label for="bus-txt-centro-trabajo">Nombre<span class="text-danger">*</span> </label>
                                     <div class="form-group">
                                         <input class="form-control" type="text" id="nombrePersonaAutorizada" name="nombrePersonaAutorizada" placeholder="Nombre (s)" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="bus-txt-centro-trabajo">Primer apellido <span class="text-danger">*</span> </label>
+                                        <input type="text" class="form-control" name="apellidoPrimerAutorizada" id="apellidoPrimerAutorizada" placeholder="Primer apellido" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="bus-txt-centro-trabajo">Segundo apellido</label>
+                                        <input type="text" class="form-control" name="apellidoSegundoAutorizada" id="apellidoSegundoAutorizada" placeholder="Segundo apellido">
                                     </div>
                                 </div>
 
@@ -470,6 +482,12 @@
                 $("#nombrePersonaAutorizada").keyup(function(){
                     this.value = this.value.toLocaleUpperCase();
                 });
+                $("#apellidoPrimerAutorizada").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
+                $("#apellidoSegundoAutorizada").keyup(function(){
+                    this.value = this.value.toLocaleUpperCase();
+                });
                 $("#txtRazon_Social").keyup(function(){
                     this.value = this.value.toLocaleUpperCase();
                 });
@@ -560,6 +578,16 @@
                         passwordcheck:true
                     },
                     nombrePersonaAutorizada: {
+                        minlength: 2,
+                        maxlength: 100,
+                        soloLetras: ""
+                    },
+                    apellidoPrimerAutorizada: {
+                        minlength: 2,
+                        maxlength: 100,
+                        soloLetras: ""
+                    },
+                    apellidoSegundoAutorizada: {
                         minlength: 2,
                         maxlength: 100,
                         soloLetras: ""
@@ -694,6 +722,18 @@
                         required: ""
                     },
                     nombrePersonaAutorizada:{
+                        minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+                        maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+                        required: "",
+                        soloLetras: "La campo solamente puede tener caracteres alfabéticos y espacios."
+                    },
+                    apellidoPrimerAutorizada:{
+                        minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+                        maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
+                        required: "",
+                        soloLetras: "La campo solamente puede tener caracteres alfabéticos y espacios."
+                    },
+                    apellidoSegundoAutorizada:{
                         minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
                         required: "",
