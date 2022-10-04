@@ -133,7 +133,7 @@
 </div>
 <br />
 <!-- Modal -->
-<div class="modal fade" id="asignarFuncionarioModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal" id="asignarFuncionarioModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -149,6 +149,7 @@
                         <option value="nuevo" selected="">Nuevo</option>
                         <option value="copia">Duplicar</option>
                     </select>
+                    <input type="text" id="idTramite">
                 </div>
             </div>
             <div class="modal-footer">
@@ -414,15 +415,18 @@
         }
 
         TRAM_AJX_CONSULTARSEGUIMIENTO();
+
+        listaAnalistas();
     });
 
     // ! modalito
     function asignarFuncionario(id) {
         // !codigo
-        alert(id);
-        $("#asignarFuncionarioModal").show();
+        $("#idTramite").val(id);
+        $("#asignarFuncionarioModal").modal('show');
     }
-
+    // ! modalito
+    
     function verDetalle(id) {
         var host = window.location.origin;
         location.href = "/tramite_servicio_cemr/detalle/" + id;
@@ -475,6 +479,27 @@
 
     function filter() {
         table.ajax.reload();
+    }
+
+    function listaAnalistas(){  
+        listado = []; 
+        html = '';
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "/ListaAnalistas", 
+            success: function(result){
+                for(i=0; i<result.length; i++){
+                    var nombre = result[i].USUA_CPRIMER_APELLIDO+' '+result[i].USUA_CSEGUNDO_APELLIDO+' '+result[i].USUA_CNOMBRES;
+                    html += '<option value="'+result[i].USUA_NIDUSUARIO+'" >'+nombre+'</option>';
+                }
+                $("#tipoIdres").html(result);
+                $("#tipoCuestionario").html(html);
+            }}
+        );
     }
 </script>
 

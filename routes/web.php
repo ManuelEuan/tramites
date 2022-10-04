@@ -161,9 +161,12 @@ Route::group(['prefix' => 'gestores_solicitud'], function () {
 Route::group(['prefix' => 'personasfsicasmorales'], function () {
     Route::get('/', 'PersonaController@index')->middleware("permiso");
     Route::get('/find', 'PersonaController@find');
+    Route::get('/findAnalista', 'PersonaController@findAnalista');
     Route::post('/status', 'PersonaController@status');
     Route::post('/update', 'PersonaController@update');
 });
+
+Route::get('/ListaAnalistas', 'PersonaController@findAnalista');
 
 Route::group(['prefix' => 'notificaciones'], function () {
     Route::post('/', 'NotificacionController@getNotificaciones');
