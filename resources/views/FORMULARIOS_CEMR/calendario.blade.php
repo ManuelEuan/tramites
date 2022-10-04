@@ -7,7 +7,7 @@
         <br>
         <div class="row">
             <div class="col-md-12">
-                <h2>Dias Ihabiles</h2>
+                <h2>Días Inhábiles</h2>
             </div>
         </div>
 
@@ -26,7 +26,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                    <h5 class="modal-title" id="tituloModal">Día Inhabil</h5>
+                    <h5 class="modal-title" id="tituloModal">Día Inhábil</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -51,13 +51,24 @@
 
                                 <div class="col-md-12 mb-3">
                                     <label for="color">Color</label>
-                                    <select id="color" class="form-control">
-                                        <option value="#1FBEF2" selected>Azul</option>
+                                    <select id="color" class="form-control" required>
+                                        <option value="#1FBEF2">Azul</option>
                                         <option value="#F7391B" >Rojo</option>
                                         <option value="#11EE0A">Verde</option>
                                         <option value="#F79D22">Naranja</option>
                                         <option value="#FC08E2">Morado</option>
                                     </select>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label for="color">Dependencias</label>
+                                    <select id="dependencias" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple>
+                                        @foreach ($filtros['dependencias'] as $dependencia)
+                                            <option value="{{$dependencia->iId}}"> {{$dependencia->name}}</option>;
+                                        @endforeach
+                                     </select>
+                                     <br><br>
+                                    <input type="checkbox" name="allDependencia" id="allDependencia"> <label for="">Seleccionar todo</label>
                                 </div>
                             </div>
                             <button style="display: none;" id="btnSubmit" type="submit">Submit form</button>
@@ -82,9 +93,9 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/locales-all.js"></script>
 
     <script>
-        var validateFormulario = false;
-        var accion = 'add';
-        var calendar = null;
+        var validacion  = false;
+        var accionGuar  = 'add';
+        var calendar    = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -110,25 +121,11 @@
                 selectable: false,
                 selectMirror: true,
                 dateClick: function(arg) {
-                    $('#exampleModalCenter').modal('toggle');
-                    limpiaCampos();
-                    $('#fechaInicial').val(arg.dateStr);
-                    $('#fechaFinal').val(arg.dateStr);
-                    accion = 'add';
+                    abreModal( arg, 'add');
                     return;
                 },
                 eventClick: function(arg) {
-                    let color = arg.event.backgroundColor;
-                    $('#exampleModalCenter').modal('toggle');
-                    $("#id").val(arg.event.id);
-                    $("#nombre").val(arg.event.title);
-                    $("#color option[value="+color+"]").attr('selected', 'selected');
-                    $("#fechaInicial").val(arg.event._def.extendedProps.starStr);
-                    $("#fechaFinal").val(arg.event._def.extendedProps.endStr);
-                    $("#btnGuardarModal").text("Actualizar");
-                    $("#btnCerrarModal").text("Eliminar");
-                    accion = 'update';
-
+                    abreModal( arg, 'update');
                 },
                 editable: false,
                 dayMaxEvents: true, // allow "more" link when too many events
@@ -137,22 +134,9 @@
 
             calendar.render();
 
-            let btnSiguiente = document.getElementsByClassName('fc-next-button')
-            let btnAnterior = document.getElementsByClassName('fc-prev-button');
-
-            for(let el of btnSiguiente) {
-                el.addEventListener('click', function() {
-                    let fecha = calendar.getDate();
-                    getEventos(fecha);
-                });
-            }
-
-            for(let el of btnAnterior) {
-                el.addEventListener('click', function() {
-                    let fecha = calendar.getDate();
-                    getEventos(fecha);
-                });
-            }
+            $(".selectCatalogos").selectpicker({
+                noneSelectedText: 'Seleccionar',
+            });
         });
 
         (function() {
@@ -167,7 +151,7 @@
                     }
                     else{
                         event.preventDefault();
-                        validateFormulario = true;
+                        validacion = true;
                         $("#btnGuardarModal").text("");
                         $("#btnGuardarModal").append(`
                             <div id="spinnerGuardar" class="spinner-border" role="status">
@@ -182,22 +166,84 @@
             }, false);
         })();
 
+        function abreModal(data, accion = 'add') {
+            limpiaCampos();
+            accionGuar = accion;
+
+            if(accion == 'add' ){
+                $('#fechaInicial').val(data.dateStr);
+                $('#fechaFinal').val(data.dateStr);
+            }
+            else{
+                let color = data.event.extendedProps.colores;
+                $('#exampleModalCenter').modal('toggle');
+                $("#id").val(data.event.id);
+                $("#nombre").val(data.event.title);
+                $("#color option[value="+color+"]").attr('selected', true);
+                $("#fechaInicial").val(data.event._def.extendedProps.starStr);
+                $("#fechaFinal").val(data.event._def.extendedProps.endStr);
+                $("#btnGuardarModal").text("Actualizar");
+                $("#btnCerrarModal").text("Eliminar");
+
+                //Selecciono las opciones anteriores
+                let ids     = data.event.extendedProps.dependencias;
+                let array   = ids.split(",");
+
+                array.forEach(element => {
+                    $("#dependencias option[value="+ element +"]").attr("selected", true);
+                });
+
+                $('select').selectpicker('render');
+            }
+            console.log(accion);
+            $('#exampleModalCenter').modal('toggle');
+        }
+
+        function messageError(mensaje='') {
+            Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: mensaje,
+                });
+        }
+
         function guardarFormulario(){
             $("#btnSubmit").click();
-
-            if(validateFormulario == false){
+            console.log(accionGuar);
+            if(validacion == false){
                 return;
             }
-            let url     = "/dias_inhabiles/store";
-            let data    = {
+
+            //Valido que las fechas sean correctas
+            let init = new Date($("#fechaInicial").val());
+            let finish = new Date($("#fechaFinal").val());
+            if(init > finish){
+                messageError("La fecha inicial no puede ser mayor a la final.");
+                return;
+            }
+
+            //Valido las dependencias
+            let all = $("#allDependencia").prop('checked');
+            let dependencias = $("#dependencias").val();
+
+            if( dependencias == null &&  all == false){
+                messageError("Es requerido seleccionar mínimo una dependencia.");
+                return;
+            }
+
+            dependencias    = dependencias == null ? null : dependencias.toString();
+            let url         = "/dias_inhabiles/store";
+            let data        = {
                     "id"        : $("#id").val(),
                     "nombre"    : $("#nombre").val(),
                     "color"     : $("#color option:selected").val(),
-                    "fechaInicial"  : $("#fechaInicial").val(),
-                    "fechaFinal"    : $("#fechaFinal").val()
+                    "all"       : all,
+                    "fecha_inicio"  : $("#fechaInicial").val(),
+                    "fecha_final"   : $("#fechaFinal").val(),
+                    "dependencias"  : dependencias
             };
 
-            if(accion == 'update'){
+            if(accionGuar == 'update'){
                 url = "/dias_inhabiles/update";
             }
 
@@ -226,17 +272,13 @@
 
             // Callback handler that will be called on failure
             request.fail(function (jqXHR, textStatus, errorThrown){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'se presento el siguiente error: ' + errorThrown
-                });
+                messageError('se presento el siguiente error: ' + errorThrown);
                 limpiaCampos();
             });
         }
 
         function eliminar(){
-            if(accion != 'update'){
+            if(accionGuar != 'update'){
                 return;
             }
 
@@ -282,47 +324,9 @@
             });
         }
 
-        function getEventos(fecha){
-            let date = fecha.getFullYear() + "/" + (fecha.getMonth() +1) + "/" + fecha.getDate();
-
-            /* $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
-            request = $.ajax({
-                url: '/dias_inhabiles/find',
-                type: "get",
-                data: {"id": $("#id").val()}
-            });
-
-            request.done(function (response, textStatus, jqXHR){
-                response.forEach(element => {
-                    console.log(element);
-                    calendar.addEvent({
-                        id      : element.id,
-                        color   : element.color,
-                        end     : element.end,
-                        endStr  : element.endStr,
-                        starStr : element.starStr,
-                        start   : element.start,
-                        title   : element.title,
-                        textColor: element.textColor,
-
-                    });
-                });
-
-            });
-
-            request.fail(function (jqXHR, textStatus, errorThrown){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'se presento el siguiente error: ' + errorThrown
-                });
-            }); */
-        }
-
-
         function limpiaCampos(){
-            validateFormulario = false;
-            accion= "add";
+            validacion  = false;
+            accionGuar  = "add";
 
             $("#frm_dias").removeClass("was-validated");
             $("#formulario").removeClass("was-validated");
@@ -330,12 +334,16 @@
             $("#nombre").val("");
             $("#fechaInicial").val("");
             $("#fechaFinal").val("");
-            $("#color option[value='#1FBEF2']").attr('selected', 'selected');
+            /* $("#color").val(""); */
+            /* $("#color option[value='#1FBEF2']").attr('selected', 'selected'); */
+            $('#dependencias').selectpicker('deselectAll');
             $("#btnCerrarModal").prop('disabled', false);
             $("#btnGuardarModal").prop('disabled', false);
+            $('#myCheckbox').prop('checked', false);
             $("#btnGuardarModal").text("Guardar");
             $("#btnCerrarModal").text("Cancelar");
             $("#spinnerGuardar").remove();
+
         }
     </script>
 @endsection

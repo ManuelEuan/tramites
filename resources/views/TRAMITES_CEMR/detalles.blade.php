@@ -292,9 +292,9 @@
                     var filter = data.configuracion.documentos.filter(x => x.existe === 1);
                     var itemDocumento = "";
                     itemDocumento += '<div class="card-body">';
-
+                    var rfc = '{{ $tramite->USTR_CRFC }}';
                     $.each(lista_documentos, function(index, value) {
-
+                        console.log(rfc)
                         var documento_add = {
                             documento_id: parseInt(value.TRAD_NIDTRAMITEDOCUMENTO),
                             estatus: parseInt(value.TRAD_NESTATUS),
@@ -305,7 +305,6 @@
                         };
 
                         list_documentos.push(documento_add);
-
                         var icon = "";
                         switch (value.TRAD_CEXTENSION) {
                             case "jpg":
@@ -349,7 +348,7 @@
                         itemDocumento += '<div class="col-2">';
                         if (value.existe > 0 && rutaDocumento != "") {
                             itemDocumento += '<span style="padding-right: 15px;font-size: 20px;"><i title="Ver documento" style="cursor:pointer;" onclick="TRAM_FN_VER_DOCUMENTO(' + value.TRAD_NIDTRAMITEDOCUMENTO + ')" class="fas fa-eye"></i></span>' +
-                                "<a href='{{ asset('') }}" + rutaDocumento + "' style='padding-right: 15px;font-size: 20px;' download='" + documento_add.nombre + "'><i title='Descargar documento' class='fas fa-download'></i></a>";
+                                "<a href='{{ asset('') }}" + rutaDocumento + "' style='padding-right: 15px;font-size: 20px;' download='" + documento_add.nombre + '_' + rfc +"'><i title='Descargar documento' class='fas fa-download'></i></a>";
                         }
                         itemDocumento += '</div>'; //col-2
                         itemDocumento += '</div>' + //row

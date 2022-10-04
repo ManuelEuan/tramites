@@ -95,6 +95,7 @@
                             </div>
                         </div>
                     </div>
+                    <!--
                     <div class="card">
                         <div class="card-header" id="headingThree">
                             <h5 class="mb-0">
@@ -104,6 +105,7 @@
                                 </button>
                             </h5>
                         </div>
+
                         <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                             <div class="card-body">
                                 @foreach ($tramite['en_linea'] as $linea)
@@ -141,18 +143,42 @@
                             </div>
                         </div>
                     </div>
+                -->
+                
                     <div class="card">
                         <div class="card-header" id="headingFive">
                             <h5 class="mb-0">
                                 <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFive"
                                     aria-expanded="false" aria-controls="collapseFive">
-                                    <i class="fa" aria-hidden="true"></i> Responsables
+                                    <i class="fa" aria-hidden="true"></i> Fundamento jurídico
                                 </button>
                             </h5>
                         </div>
                         <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
                             <div class="card-body">
-                                @foreach ($tramite['fundamento_legal'] as $fundamento)
+                                @foreach($tramite['fundamento_legal'] as $fundamento)
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="lblDatos">{{$fundamento['titulo']}}</label>
+                                            <p class="pDatos">{{$fundamento['descripcion']}}</p>
+                                        </div>
+                                        @if(count($fundamento['adicional'])> 0)
+                                        @foreach($fundamento['adicional'] as $adicional)
+                                        <div class="col-md-12">
+                                            <div class="documentTitle">
+                                                <span class="spanBorder">.</span>
+                                                <span class="spanTitle">{{$adicional['titulo']}}</span>
+                                                <div class="documentInfo">
+                                                    <span style="width: 100%;">{{$adicional['descripcion']}}</span>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </div>
+                                        @endforeach
+                                        @endif
+                                    </div>
+                                @endforeach
+                                <!--@foreach ($tramite['fundamento_legal'] as $fundamento)
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label class="lblDatos">{{ $fundamento['titulo'] }}</label>
@@ -174,10 +200,11 @@
                                             @endforeach
                                         @endif
                                     </div>
-                                @endforeach
+                                @endforeach-->
                             </div>
                         </div>
                     </div>
+                <!--
                     <div class="card">
                         <div class="card-header" id="headingFive">
                             <h5 class="mb-0">
@@ -215,6 +242,7 @@
                             </div>
                         </div>
                     </div>
+                -->
                     <div class="card">
                         <div class="card-header" id="headingFour">
                             <h5 class="mb-0">
@@ -265,67 +293,78 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-header" id="headprotesta">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#protesta"
-                                    aria-expanded="false" aria-controls="collapseFour">
-                                    <i class="fa" aria-hidden="true"></i> Protesta ciudadana
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="protesta" class="collapse" aria-labelledby="protesta" data-parent="#accordion">
-                            <div class="card-body">
+                    @isset($tramite['protestaCiudadana'])
+                        <div class="card">
+                            <div class="card-header" id="headprotesta">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#protesta"
+                                        aria-expanded="false" aria-controls="collapseFour">
+                                        <i class="fa" aria-hidden="true"></i> Protesta ciudadana
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="protesta" class="collapse" aria-labelledby="protesta" data-parent="#accordion">
+                                <div class="card-body">
 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="plazo">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link collapsed" data-toggle="collapse"
-                                    data-target="#collapseplazos" aria-expanded="false" aria-controls="collapseplazos">
-                                    <i class="fa" aria-hidden="true"></i> Plazos
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="collapseplazos" class="collapse" aria-labelledby="headingFour"
-                            data-parent="#accordion">
-                            <div class="card-body">
+                    @endisset
+                    
+                    @isset($tramite['plazos'])
+                        <div class="card">
+                            <div class="card-header" id="plazo">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapseplazos" aria-expanded="false" aria-controls="collapseplazos">
+                                        <i class="fa" aria-hidden="true"></i> Plazos
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseplazos" class="collapse" aria-labelledby="headingFour"
+                                data-parent="#accordion">
+                                <div class="card-body">
 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="headingFour">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#inspVer"
-                                    aria-expanded="false" aria-controls="collapseFour">
-                                    <i class="fa" aria-hidden="true"></i> Inspecciones y Verificaciones
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="inspVer" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
-                            <div class="card-body">
+                    @endisset
+                    
+                    @isset($tramite['inspverify'])
+                        <div class="card">
+                            <div class="card-header" id="headingFour">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#inspVer"
+                                        aria-expanded="false" aria-controls="collapseFour">
+                                        <i class="fa" aria-hidden="true"></i> Inspecciones y Verificaciones
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="inspVer" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                                <div class="card-body">
 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="headingFour">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#infoad"
-                                    aria-expanded="false" aria-controls="collapseFour">
-                                    <i class="fa" aria-hidden="true"></i> Información adicional
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="infoad" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
-                            <div class="card-body">
-
+                    @endisset
+                    @isset($tramite['infoAdicional'])
+                        <div class="card">
+                            <div class="card-header" id="headingFour">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#infoad"
+                                        aria-expanded="false" aria-controls="collapseFour">
+                                        <i class="fa" aria-hidden="true"></i> Información adicional
+                                    </button>
+                                </h5>
                             </div>
-                        </div>
-                    </div>
+                            <div id="infoad" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                                <div class="card-body">
+
+                                </div>
+                            </div>
+                        </div> 
+                    @endisset
+                    
                 </div>
             </div>
             <div class="col-md-4">

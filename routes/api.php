@@ -21,11 +21,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 ###################### Manuel Euan ######################
 
-Route::get('/tramite_servicio_cemr/download_tramite/{id}', 'TramitesController@download_tramite'); 
-Route::get('/tramite_servicio/seguimiento/{id}', 'TramitesController@seguimiento');
-Route::get('/tramite_servicio_cemr/obtener_tramite/{id}', 'TramitesController@obtener_tramite_seguimiento');
-
 /* Route::get('/getFiltros', 'GestorController@obtener_filtro');
+Route::get('/tramite_servicio_cemr/download_tramite/{id}', 'TramitesController@download_tramite'); 
+Route::get('/tramite_servicio_cemr/obtener_tramite/{id}', 'TramitesController@obtener_tramite_seguimiento');
+Route::get('/getFiltros', 'DiaInhabilController@calendario');
+Route::get('/tramite_servicio/seguimiento/{id}', 'TramitesController@seguimiento');
+
+
+Route::group(['prefix' => 'dias_inhabiles'], function () {
+    Route::get('/', 'DiaInhabilController@calendario');
+    Route::get('/find', 'DiaInhabilController@find');
+    Route::post('/store', 'DiaInhabilController@store');
+    Route::post('/update', 'DiaInhabilController@update');
+    Route::post('/delete', 'DiaInhabilController@delete');
+});
+
 Route::group(['prefix' => 'catalogos'], function () {
     Route::get('/find', 'CatalogoController@find');
     Route::get('/get', 'CatalogoController@get');
@@ -142,8 +152,11 @@ Route::get('/vw_sici_citas_disponibles_filtro_tram/{idtramite}', array('uses' =>
 Route::post('/vw_accede_tramite_filtro', array('uses' => 'VistaAccedeController@vw_accede_tramite_filtro'));
 
 //CITAS Angel Ruiz
-Route::get('/citas/index', array('uses' => 'CitasController@getCitas'));
-Route::get('/citas/{idtramite}/{idedificio}/{anio}/{mes}', array('uses' => 'CitasController@getCitasFiltro'));
-Route::post('citas', array('uses' => 'CitasController@saveCita'));
-Route::delete('citas/{id}', array('uses' => 'CitasController@deleteCita'));
-Route::post('citas/descargar', array('uses' => 'CitasController@descargaPDFCita'));
+Route::group(['prefix' => 'citas'], function () {
+    Route::get('/index', 'CitasController@getCitas');
+    Route::get('/', 'CitasController@getCitasFiltro');
+    Route::post('/', 'CitasController@saveCita');
+    Route::post('/descargar', 'CitasController@descargaPDFCita');
+    Route::post('/delete', 'CitasController@delete');
+    Route::delete('/{id}', 'CitasController@deleteCita');
+});

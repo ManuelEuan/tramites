@@ -985,7 +985,8 @@ class TramitesController extends Controller
             $fecha = $fecha['timestamp'];
             $folio = explode('/', $tramite->USTR_CFOLIO);
             $folio = $folio[0] . '_' . $folio[1];
-            $fileName = 'TRAM_' . $folio  . '.zip';
+            //$fileName = 'TRAM_' . $folio  . '.zip';
+            $fileName = 'TRAM_' . $tramite->USTR_CRFC  . '.zip';
 
 
             //Obtenemos documentos del trámite
@@ -1026,7 +1027,8 @@ class TramitesController extends Controller
 
             $response = [ 'name' => 'tramites/'.$fileName ];
         } catch (Exception $ex) {
-            dd($ex->getMessage());
+            //dd($ex->getMessage());
+            return response()->json($ex->getMessage());
         }
 
         //return response()->download(public_path($fileName))->deleteFileAfterSend(true);
