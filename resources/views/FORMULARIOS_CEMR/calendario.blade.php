@@ -51,8 +51,8 @@
 
                                 <div class="col-md-12 mb-3">
                                     <label for="color">Color</label>
-                                    <select id="color" class="form-control">
-                                        <option value="#1FBEF2" selected>Azul</option>
+                                    <select id="color" class="form-control" required>
+                                        <option value="#1FBEF2">Azul</option>
                                         <option value="#F7391B" >Rojo</option>
                                         <option value="#11EE0A">Verde</option>
                                         <option value="#F79D22">Naranja</option>
@@ -152,13 +152,13 @@
                     else{
                         event.preventDefault();
                         validacion = true;
-                        /* $("#btnGuardarModal").text("");
+                        $("#btnGuardarModal").text("");
                         $("#btnGuardarModal").append(`
                             <div id="spinnerGuardar" class="spinner-border" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div> `);
                         $("#btnCerrarModal").prop('disabled', true);
-                        $("#btnGuardarModal").prop('disabled', true); */
+                        $("#btnGuardarModal").prop('disabled', true);
                     }
                     form.classList.add('was-validated');
                 }, false);
@@ -176,11 +176,10 @@
             }
             else{
                 let color = data.event.extendedProps.colores;
-                console.log(data.event.extendedProps.colores);
                 $('#exampleModalCenter').modal('toggle');
                 $("#id").val(data.event.id);
                 $("#nombre").val(data.event.title);
-                $("#color option[value="+color+"]").attr('selected', 'selected');
+                $("#color option[value="+color+"]").attr('selected', true);
                 $("#fechaInicial").val(data.event._def.extendedProps.starStr);
                 $("#fechaFinal").val(data.event._def.extendedProps.endStr);
                 $("#btnGuardarModal").text("Actualizar");
@@ -189,7 +188,6 @@
                 //Selecciono las opciones anteriores
                 let ids     = data.event.extendedProps.dependencias;
                 let array   = ids.split(",");
-                let nombres = [];
 
                 array.forEach(element => {
                     $("#dependencias option[value="+ element +"]").attr("selected", true);
@@ -336,8 +334,8 @@
             $("#nombre").val("");
             $("#fechaInicial").val("");
             $("#fechaFinal").val("");
-            $("#color option[value='#1FBEF2']").attr('selected', 'selected');
-            /* $("#dependencias").val(""); */
+            /* $("#color").val(""); */
+            /* $("#color option[value='#1FBEF2']").attr('selected', 'selected'); */
             $('#dependencias').selectpicker('deselectAll');
             $("#btnCerrarModal").prop('disabled', false);
             $("#btnGuardarModal").prop('disabled', false);
