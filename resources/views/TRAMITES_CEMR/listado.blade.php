@@ -179,6 +179,10 @@
             id: 9,
             nombre: "Rechazado"
         },
+        {
+            id: 10,
+            nombre: "Cancelado"
+        },
     ];
 
     var estatus_seguimiento = [{
@@ -216,6 +220,10 @@
         {
             id: 9,
             nombre: "Rechazado"
+        },
+        {
+            id: 10,
+            nombre: "Cancelado"
         }
     ];
 
@@ -276,15 +284,20 @@
                             var currentDate = new Date();
 
                             var level = 0;
-                            if (dateMiddle >= currentDate) {
-                                level = 1;
-                            } else if (dateFromTramite >= currentDate) {
-                                level = 2;
-                            } else {
+                            if(data.USTR_NESTATUS != 10){
+                                if (dateMiddle >= currentDate) {
+                                    level = 1;
+                                } else if (dateFromTramite >= currentDate) {
+                                    level = 2;
+                                } else {
+                                    level = 3;
+                                }
+                            }else{
                                 level = 3;
                             }
-                            var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : "red");
                             
+                            var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : "red");
+                           
                             return '<span class="dot" style="background-color:' + color + '"></span>';
                         }
                     },
@@ -337,15 +350,18 @@
                     {
                         data: null,
                         render: function(data, type, row) {
-                            return `<span>
-                                        <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                    </span>`;
+                            var acciones = `<span>
+                                                <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                            </span>`;
+                            if(data.USTR_NESTATUS != 10){
+                               acciones = acciones + `<span>
+                                    <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                </span>`
+                            }
+                            acciones = acciones + `<span>
+                                <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                </span>`
+                            return acciones;
                         }
                     },
                 ],

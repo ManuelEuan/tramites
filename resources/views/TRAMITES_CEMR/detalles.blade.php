@@ -34,10 +34,12 @@
                                             <label class="titulo_pequeno">Segundo Apellido</label> <br>
                                             <label class='respuesta_pequena'>{{$tramite->USTR_CSEGUNDO_APELLIDO}}</label>
                                         </div>
+                                        @if($tramite->USTR_NESTATUS != 10)
                                         <div class="col-md-3">
                                             <button id="btnRevision" disabled class="btn btn-primary btnLetras" 
                                             onclick="seguimiento()" type="button">Iniciar revisión</button>
                                         </div>
+                                        @endif
                                     </div>
                                     <div class="row columna">
                                         <div class="col-md-3">

@@ -160,6 +160,10 @@
         {
             id: 9,
             nombre: "Rechazado"
+        },
+        {
+            id: 10,
+            nombre: "Cancelado"
         }
     ];
 

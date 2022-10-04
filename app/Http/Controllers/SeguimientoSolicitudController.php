@@ -37,7 +37,18 @@ class SeguimientoSolicitudController extends Controller
         // }
 
         //dd($request);
+        $data = Cls_Usuario_Tramite::TRAM_SP_CONSULTAR_SEGUIMIENTO_TRAMITE_USUARIO(Auth::user()->USUA_NIDUSUARIO, $request->txtNombre, $request->cmbEstatus, $request->cmbDependenciaEntidad, $request->dteFechaInicio);
 
+        foreach ($data as $key => $t) {
+            $diasH = $t->USTR_NDIASHABILESRESOLUCION;
+            $hoy = date('Y-m-d');
+            $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
+            
+            if($hoy > $fechaFinal){
+                Cls_Usuario_Tramite::ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+            }
+
+        }
         $response = [
             'data' =>  Cls_Usuario_Tramite::TRAM_SP_CONSULTAR_SEGUIMIENTO_TRAMITE_USUARIO(Auth::user()->USUA_NIDUSUARIO, $request->txtNombre, $request->cmbEstatus, $request->cmbDependenciaEntidad, $request->dteFechaInicio),
         ];
