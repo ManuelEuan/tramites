@@ -939,7 +939,7 @@
                                         <i class="far fa-trash-alt" style="color: black"></i>
                                     </button>
                                     <br>
-                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
+                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion_${pregunda_id}" nameVinculo="tipoVinculacion_${pregunda_id}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                                 </span>
                                 </div>
                                 <br>
@@ -1018,11 +1018,11 @@
 
                                 <div class="col-md-2 mb-3">
                                 <span  style="margin-top: 1%;">
-                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${element.FORM_NID}')">
+                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_update${element.FORM_NID}', true)">
                                         <i class="far fa-trash-alt" style="color: black"></i>
                                     </button>
                                     <br>
-                                    <label class="ml-3"><input type="checkbox" name="update_asignacion_${element.FORM_NID}" id="update_asignacion" nameVinculo="update_tipoVinculacion_${element.FORM_NID}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
+                                    <label class="ml-3"><input type="checkbox" name="update_asignacion_${element.FORM_NID}" id="update_asignacion_${element.FORM_NID}" nameVinculo="update_tipoVinculacion_${element.FORM_NID}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                                 </span>
                                 </div>
                                 <br>
@@ -1057,10 +1057,9 @@
                                 </select>
                                 </div>
                                 <div class="col-md-8">
+                                
                                     <div class="form-group" id="contenedorRespuestas_update_${element.FORM_NID}">`;
-                                    if(element.FORM_BTIENEASIGNACION == 1){
-                                        $("#update_asignacion"+element.FORM_BTIENEASIGNACION).attr("checked",true);
-                                    }
+                                    
                         if (tipo_respuesta == 'abierta') {
                             let prim_res = element.respuestas.length > 0 ? element.respuestas[0].FORM_NID : 0;
                             preguntas += ``;
@@ -1215,6 +1214,9 @@
                             </div> <hr class="hr">`
 
                         $("#contenedorPreguntas").append(preguntas);
+                        if(element.FORM_BTIENEASIGNACION == 1){
+                            $(`#update_asignacion_${element.FORM_NID}`).attr("checked",true);
+                        }
                     });
                 }
                 $('#cargaPreguntas').hide();
@@ -1269,7 +1271,7 @@
                                 <i class="far fa-trash-alt" style="color: black"></i>
                             </button>
                             <br>
-                            <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion" nameVinculo="tipoVinculacion_${pregunda_id}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
+                            <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion_${pregunda_id}" nameVinculo="tipoVinculacion_${pregunda_id}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
                         </span>
                         </div>
                         <br>
@@ -1634,6 +1636,7 @@
                 'id': array[1]
             };
             eliminados.push(final);
+            console.log(eliminados);
         }
 
         $("#" + data).remove();
@@ -1684,7 +1687,7 @@
         setTimeout(() => {
             let completo = jQuery('#form_preguntas').serializeArray();
             let entra = false;
-            console.log(completo)
+            console.log(completo);
             for (let i = 0; i < completo.length; i++) {
                 completo[i].id = 0;
                 let name = completo[i].name;
@@ -1709,7 +1712,7 @@
                     completo[i].name = "resolutivo_" + array[1];
                 } else if (name.includes("update_respuesta")) {
                     array = name.split("_");
-                    completo[i].name = "respuesta_" + array[3];
+                    completo[i].name = "respuesta_" + array[3] + "_"+array[2];
                 } else if (name.includes("update_opcionEspecial_")) {
                     array = name.split("_");
                     completo[i].id = array[4];
@@ -1734,6 +1737,7 @@
             }
             $reslu = $('#resolutivo').val();
             let preguntas = JSON.stringify(completo);
+            console.log(preguntas)
             let data = {
                 "formulario_id": formulario_id,
                 "seccion_id": seccion_id,
@@ -1749,6 +1753,7 @@
             });
             // Callback handler that will be called on success
             request.done(function(response, textStatus, jqXHR) {
+                console.log(response)
                 Swal.fire({
                     icon: 'success',
                     title: 'Operación exitosa',
@@ -1760,11 +1765,10 @@
                     $("#spinnerGuardar").remove();
                     $("#btnGPreg").prop('disabled', false);
                     $("#btnCPreg").prop('disabled', false);
-                    // $('#preguntas').fadeToggle(500);
-                    // $('#secciones').fadeToggle(500);
+                    $('#preguntas').fadeToggle(500);
+                    $('#secciones').fadeToggle(500);
                     eliminados = [];
                 }, 400);
-                console.log(response);
             });
 
             // Callback handler that will be called on failure
