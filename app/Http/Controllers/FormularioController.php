@@ -185,7 +185,8 @@ class FormularioController extends Controller
         return response()->json(['message'=> 'Operación exitosa'], 200);
     }
 
-    public function preguntas(Request $request){
+    public function preguntas(Request $request)
+    {
         try {
             $pregunta   = null;
             $respuesta  = null;
@@ -196,13 +197,14 @@ class FormularioController extends Controller
 
             $eliminados = json_decode($request->eliminados);
             foreach ($eliminados as $eliminar) {
-                if($eliminar->tipo == 'pregunta')
+                if ($eliminar->tipo == 'pregunta')
                     Cls_Formulario_Pregunta::where('FORM_NID', $eliminar->id)->delete();
-                elseif($eliminar->tipo == 'respuesta')
+                elseif ($eliminar->tipo == 'respuesta')
                     Cls_Formulario_Pregunta_Respuesta::where('FORM_NID', $eliminar->id)->delete();
-                elseif($eliminar->tipo == 'especial')
+                elseif ($eliminar->tipo == 'especial')
                     Cls_Formulario_Respuesta_Especial::where('FORM_NID', $eliminar->id)->delete();
             }
+
             $array = json_decode($request->preguntas);
             foreach ($array as $datos) {
                 $valP       = strpos($datos->name,  'pregunta_');
@@ -217,147 +219,138 @@ class FormularioController extends Controller
                 $valResol   = strpos($datos->name,  'resolutivo_');
                 $valAsignasion = strpos($datos->name, 'asignacion_');
                 $valVinculacion = strpos($datos->name, 'tipoVinculacion_');
-                
                 $resolutivo = $datos->id;
-                if($valResol !== FALSE) {
-                    if($resolutivo == 0)
-                        $res =$datos->value;
-                    else{
-                        $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->select('*')->first('FORM_NID');
-                        Cls_Formulario_Pregunta::where('FORM_NID',$resolutivo)->update(['FORM_BRESOLUTIVO' => $datos->value]);
-                    }
 
+                if ($valResol !== FALSE) {
+                    if ($resolutivo == 0)
+                        $res = $datos->value;
+                    else {
+                        $pregunta = Cls_Formulario_Pregunta::where('FORM_NID', $resolutivo)->select('*')->first('FORM_NID');
+                        Cls_Formulario_Pregunta::where('FORM_NID', $resolutivo)->update(['FORM_BRESOLUTIVO' => $datos->value]);
+                    }
                 }
 
-                if($valP !== FALSE) {
+                if ($valP !== FALSE) {
                     // $resolutivo =$datos->id;
-                    if($datos->id == 0){
+                    if ($datos->id == 0) {
                         $pregunta = new Cls_Formulario_Pregunta();
                         $pregunta->FORM_NFORMULARIOID   = $request->formulario_id;
                         $pregunta->FORM_NSECCIONID      = $request->seccion_id;
                         $pregunta->FORM_CPREGUNTA       = $datos->value;
                         $pregunta->FORM_BRESOLUTIVO       = $request->resolutivo;
                         $pregunta->save();
-                    }
-                    else{
-                        $pregunta = Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->select('*')->first('FORM_NID');
-                        Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->update(['FORM_CPREGUNTA' => $datos->value]);
-                    }
-                }
-
-                if($valTR !== FALSE)
-                    $tiRes = $datos->value;
-
-                if($valR !== FALSE){
-                    if($datos->id == 0){
-                        if (str_contains($datos->name,'respuesta_update_')) {
-                            $res_id     = explode("_", $datos->name);
-                            $anterior   = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID',$res_id[2])->select('*')->first();
-
-                            if($anterior->FORM_CTIPORESPUESTA != $tiRes)
-                                Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID',$res_id[2])->delete();
-                        }
-
-                        $respuesta = new Cls_Formulario_Pregunta_Respuesta();
-                        $respuesta->FORM_NPREGUNTAID    = $pregunta->FORM_NID;
-                        $respuesta->FORM_CTIPORESPUESTA = $tiRes;
-                        $respuesta->FORM_CVALOR         = $datos->value;
-                        $respuesta->save();
-                    }
-                    else{
-                        $respuesta = Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$datos->id)->select('*')->first('FORM_NID');
-                        Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$datos->id)->update(['FORM_NPREGUNTAID' => $pregunta->FORM_NID, 'FORM_CTIPORESPUESTA' => $tiRes, 'FORM_CVALOR' =>  $datos->value, "FORM_BBLOQUEAR" => null]);
+                    } else {
+                        $pregunta = Cls_Formulario_Pregunta::where('FORM_NID', $datos->id)->select('*')->first('FORM_NID');
+                        Cls_Formulario_Pregunta::where('FORM_NID', $datos->id)->update(['FORM_CPREGUNTA' => $datos->value]);
                     }
                 }
-
-                if($valCh !== false)
-                    Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$respuesta->FORM_NID)->update(['FORM_BBLOQUEAR' => true ]);
-                
-                if($valAsignasion !== false){
-                    if($datos->id == 0){
+                if ($valCh !== false)
+                    Cls_Formulario_Pregunta_Respuesta::where('FORM_NID', $respuesta->FORM_NID)->update(['FORM_BBLOQUEAR' => true]);
+                    
+                if ($datos->id !== 0) {
+                    Cls_Formulario_Pregunta::where('FORM_NID', $datos->id)->update(['FORM_BTIENEASIGNACION' => false]);
+                }
+                if ($valAsignasion !== false) {
+                    if ($datos->id == 0) {
                         $lastId =  Cls_Formulario_Pregunta::latest('FORM_NID')->first();
-                        Cls_Formulario_Pregunta::where('FORM_NID',$lastId)->update(['FORM_BTIENEASIGNACION' => true ]);
+                        Cls_Formulario_Pregunta::where('FORM_NID', $lastId)->update(['FORM_BTIENEASIGNACION' => true]);
                         $isAsigned = 1;
-                    }else{
-                        Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->update(['FORM_BTIENEASIGNACION' => true]);
+                    } else {
+                        Cls_Formulario_Pregunta::where('FORM_NID', $datos->id)->update(['FORM_BTIENEASIGNACION' => true]);
                         $isAsigned = 1;
                     }
-                } else{
-                    if($datos->id == 0){
-                        $lastId =  Cls_Formulario_Pregunta::latest('FORM_NID')->first();
-                        Cls_Formulario_Pregunta::where('FORM_NID',$lastId)->update(['FORM_BTIENEASIGNACION' => false ]);
-                       
-                    }else{
-                        Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->update(['FORM_BTIENEASIGNACION' => false]);
-                       
-                    }
-                }
-                if($valVinculacion !== false && $isAsigned === 1){
-                    if($datos->id == 0){
-                            Cls_Formulario_Pregunta::where('FORM_NID',$lastId)->update(['FORM_CVALORASIGNACION' => $datos->value]);
-                            $isAsigned = 0;
-                    }
-                    else{
-                        Cls_Formulario_Pregunta::where('FORM_NID',$datos->id)->update(['FORM_CVALORASIGNACION' => $datos->value]);
+                } 
+                if ($valVinculacion !== false && $isAsigned === 1) {
+                    if ($datos->id == 0) {
+                        Cls_Formulario_Pregunta::where('FORM_NID', $lastId)->update(['FORM_CVALORASIGNACION' => $datos->value]);
+                        $isAsigned = 0;
+                    } else {
+                        Cls_Formulario_Pregunta::where('FORM_NID', $datos->id)->update(['FORM_CVALORASIGNACION' => $datos->value]);
                         $isAsigned = 0;
                     }
                 }
+                if ($valTR !== FALSE)
+                    $tiRes = $datos->value;
 
-                if($valTE !== FALSE)
+                if ($valR !== FALSE) {
+                    if ($datos->id == 0) {
+                        if (str_contains($datos->name, 'respuesta_update_')) {
+                            $res_id     = explode("_", $datos->name);
+                            $anterior   = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID', $res_id[2])->select('*')->first();
+
+                            if ($anterior->FORM_CTIPORESPUESTA != $tiRes)
+                                Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID', $res_id[2])->delete();
+                        }else{
+                            $respuesta = new Cls_Formulario_Pregunta_Respuesta();
+                            $respuesta->FORM_NPREGUNTAID    = $pregunta->FORM_NID;
+                            $respuesta->FORM_CTIPORESPUESTA = $tiRes;
+                            $respuesta->FORM_CVALOR         = $datos->value;
+                            $respuesta->save();
+                        }
+
+                        
+                    } else {
+                        $respuesta = Cls_Formulario_Pregunta_Respuesta::where('FORM_NID', $datos->id)->select('*')->first('FORM_NID');
+                        Cls_Formulario_Pregunta_Respuesta::where('FORM_NID', $datos->id)->update(['FORM_NPREGUNTAID' => $pregunta->FORM_NID, 'FORM_CTIPORESPUESTA' => $tiRes, 'FORM_CVALOR' =>  $datos->value, "FORM_BBLOQUEAR" => null]);
+                    }
+                }
+
+                if ($valCh !== false)
+                    Cls_Formulario_Pregunta_Respuesta::where('FORM_NID', $respuesta->FORM_NID)->update(['FORM_BBLOQUEAR' => true]);
+
+                if ($valTE !== FALSE)
                     $tipEsp = $datos->value;
 
-                if($valEO !== FALSE)
+                if ($valEO !== FALSE)
                     $tipEsp = $datos->value;
 
-                if(($tiRes == "especial" && $valTE !== false) || ($tiRes == "especial" && $valEO !== false)){
-                    $anterior = Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->first();
-                    if($anterior != null){
-                        if($anterior->FORM_CTIPORESPUESTA != $datos->value){
-                            if($datos->value != "opciones"){
-                                Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->update(['FORM_CTIPORESPUESTA' => $datos->value, 'FORM_CVALOR' => $datos->value]);
+                if (($tiRes == "especial" && $valTE !== false) || ($tiRes == "especial" && $valEO !== false)) {
+                    $anterior = Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID', $datos->id)->first();
+                    if ($anterior != null) {
+                        if ($anterior->FORM_CTIPORESPUESTA != $datos->value) {
+                            if ($datos->value != "opciones") {
+                                Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID', $datos->id)->update(['FORM_CTIPORESPUESTA' => $datos->value, 'FORM_CVALOR' => $datos->value]);
 
-                                if($anterior->FORM_CTIPORESPUESTA == "opciones"){
-                                    $primero = Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->first();
-                                    Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->where('FORM_NID', '!=', $primero->FORM_NID)->delete();
+                                if ($anterior->FORM_CTIPORESPUESTA == "opciones") {
+                                    $primero = Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID', $datos->id)->first();
+                                    Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID', $datos->id)->where('FORM_NID', '!=', $primero->FORM_NID)->delete();
                                 }
-                            }
-                            else
-                                Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID',$datos->id)->delete();
+                            } else
+                                Cls_Formulario_Respuesta_Especial::where('FORM_NPREGUNTARESPUESTAID', $datos->id)->delete();
                         }
                     }
 
-                    if($tipEsp !== "opciones" && $datos->value !== "opciones"  ){
-                        if($datos->id == 0){
+                    if ($tipEsp !== "opciones" && $datos->value !== "opciones") {
+                        if ($datos->id == 0) {
                             $especiales = new Cls_Formulario_Respuesta_Especial();
                             $especiales->FORM_NPREGUNTARESPUESTAID  = $respuesta->FORM_NID;
 
-                            if($datos->value != "simple" && $datos->value != "numerico"){
-                                $tipEsp= 'opciones';
+                            if ($datos->value != "simple" && $datos->value != "numerico") {
+                                $tipEsp = 'opciones';
                             }
 
                             $especiales->FORM_CTIPORESPUESTA        = $tipEsp;
                             $especiales->FORM_CVALOR                = trim($datos->value);
                             $especiales->save();
-                        }
-                        else{
-                            if($datos->value != "simple" && $datos->value != "numerico"){
-                                $tipEsp= 'opciones';
+                        } else {
+                            if ($datos->value != "simple" && $datos->value != "numerico") {
+                                $tipEsp = 'opciones';
                             }
 
-                            Cls_Formulario_Respuesta_Especial::where('FORM_NID',$datos->id)->update(['FORM_CTIPORESPUESTA' => $tipEsp, 'FORM_CVALOR' => trim($datos->value) ]);
+                            Cls_Formulario_Respuesta_Especial::where('FORM_NID', $datos->id)->update(['FORM_CTIPORESPUESTA' => $tipEsp, 'FORM_CVALOR' => trim($datos->value)]);
                         }
                     }
-                }elseif($tiRes == 'abierta'){
+                } elseif ($tiRes == 'abierta') {
                     //eliminar las respustas anteriores
-                    if(strpos($datos->name, 'update')){
+                    if (strpos($datos->name, 'update')) {
                         $inf = explode("_", $datos->name);
                         //bscar las IDs de la respuesta
-                        $data = Cls_Formulario_Pregunta_Respuesta::select('FORM_NID')->where('FORM_NPREGUNTAID','=',$inf[2])->get();
-                        foreach($data as $d){
-                            Cls_Formulario_Pregunta_Respuesta::where('FORM_NID','=',$d->FORM_NID)->delete();
+                        $data = Cls_Formulario_Pregunta_Respuesta::select('FORM_NID')->where('FORM_NPREGUNTAID', '=', $inf[2])->get();
+                        foreach ($data as $d) {
+                            Cls_Formulario_Pregunta_Respuesta::where('FORM_NID', '=', $d->FORM_NID)->delete();
                         }
                     }
-                    if($datos->id == 0){
+                    if ($datos->id == 0) {
                         $answer = new Cls_Formulario_Pregunta_Respuesta();
                         $answer->FORM_NPREGUNTAID    = $pregunta->FORM_NID;
                         $answer->FORM_CTIPORESPUESTA = $tiRes;
@@ -366,9 +359,10 @@ class FormularioController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            return response()->json(['error'=> $th], 403);
+            return response()->json(['error' => $th], 403);
         }
-        return response()->json(['message'=> 'Operación exitosa'], 200);
+
+        return response()->json(['message' => 'Operación exitosa'], 200);
     }
 
     public function detalle(Request $request){
