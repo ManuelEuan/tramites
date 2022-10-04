@@ -45,7 +45,9 @@ class SeguimientoSolicitudController extends Controller
             $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
             
             if($hoy > $fechaFinal){
-                Cls_Usuario_Tramite::ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                if($t->USTR_NESTATUS != 8){
+                    Cls_Usuario_Tramite::ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                }
             }
 
         }
