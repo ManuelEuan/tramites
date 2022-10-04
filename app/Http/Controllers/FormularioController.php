@@ -227,6 +227,7 @@ class FormularioController extends Controller
                     else {
                         $pregunta = Cls_Formulario_Pregunta::where('FORM_NID', $resolutivo)->select('*')->first('FORM_NID');
                         Cls_Formulario_Pregunta::where('FORM_NID', $resolutivo)->update(['FORM_BRESOLUTIVO' => $datos->value]);
+                        Cls_Formulario_Pregunta::where('FORM_NID', $resolutivo)->update(['FORM_BTIENEASIGNACION' => false]);
                     }
                 }
 
@@ -247,9 +248,9 @@ class FormularioController extends Controller
                 if ($valCh !== false)
                     Cls_Formulario_Pregunta_Respuesta::where('FORM_NID', $respuesta->FORM_NID)->update(['FORM_BBLOQUEAR' => true]);
                     
-                if ($datos->id !== 0) {
-                    Cls_Formulario_Pregunta::where('FORM_NID', $datos->id)->update(['FORM_BTIENEASIGNACION' => false]);
-                }
+                // if ($datos->id !== 0) {
+                //     Cls_Formulario_Pregunta::where('FORM_NID', $datos->id)->update(['FORM_BTIENEASIGNACION' => false]);
+                // }
                 if ($valAsignasion !== false) {
                     if ($datos->id == 0) {
                         $lastId =  Cls_Formulario_Pregunta::latest('FORM_NID')->first();
