@@ -1687,7 +1687,7 @@
         setTimeout(() => {
             let completo = jQuery('#form_preguntas').serializeArray();
             let entra = false;
-            console.log(completo)
+            console.log(completo);
             for (let i = 0; i < completo.length; i++) {
                 completo[i].id = 0;
                 let name = completo[i].name;
@@ -1712,7 +1712,7 @@
                     completo[i].name = "resolutivo_" + array[1];
                 } else if (name.includes("update_respuesta")) {
                     array = name.split("_");
-                    completo[i].name = "respuesta_" + array[3];
+                    completo[i].name = "respuesta_" + array[3] + "_"+array[2];
                 } else if (name.includes("update_opcionEspecial_")) {
                     array = name.split("_");
                     completo[i].id = array[4];
@@ -1737,6 +1737,7 @@
             }
             $reslu = $('#resolutivo').val();
             let preguntas = JSON.stringify(completo);
+            console.log(preguntas)
             let data = {
                 "formulario_id": formulario_id,
                 "seccion_id": seccion_id,
