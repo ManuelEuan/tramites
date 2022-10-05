@@ -541,12 +541,12 @@ class FormularioController extends Controller
                             Cls_Formulario_Pregunta_Respuesta::where('FORM_NID','=',$d->FORM_NID)->delete();
                         }
                     }
-                    // if($datos->id == 0){
-                    //     $answer = new Cls_Formulario_Pregunta_Respuesta();
-                    //     $answer->FORM_NPREGUNTAID    = $pregunta->FORM_NID;
-                    //     $answer->FORM_CTIPORESPUESTA = $tiRes;
-                    //     $answer->save();
-                    // }
+                    if($datos->id == 0){
+                        $answer = new Cls_Formulario_Pregunta_Respuesta();
+                        $answer->FORM_NPREGUNTAID    = $pregunta->FORM_NID;
+                        $answer->FORM_CTIPORESPUESTA = $tiRes;
+                        $answer->save();
+                    }
                 }
             }
             return response()->json(['message'=> $tipoRespuesta], 200);
