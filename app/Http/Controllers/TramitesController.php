@@ -194,13 +194,19 @@ class TramitesController extends Controller
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
     }
 
-    public function generatePrevioResolutivo($resolutivoId, $tramiteId) {
-        $resolutivo = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO($resolutivoId)[0];
-        $mapeoCampos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO_MAPEO($resolutivoId, $tramiteId);
+    /**
+     * Retorna el resolutivo en formato PDF y/o Doc
+     * @param int $resolutivo_Id
+     * @param int $tramite_Id
+     * @param int $tipo
+     * @return File
+     */
+    public function generatePrevioResolutivo($resolutivo_Id,$tramite_Id, $tipo = 0 ) {
+        $resolutivo = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO($resolutivo_Id)[0];
+        $mapeoCampos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO_MAPEO($resolutivo_Id, $tramite_Id);
 
-        /* Set the PDF Engine Renderer Path */
+        /* Set the PDF Engine Renderer Path */  
         $domPdfPath = base_path('vendor/dompdf/dompdf');
-
         Settings::setPdfRendererPath($domPdfPath);
         Settings::setPdfRendererName('DomPDF');
 
@@ -212,7 +218,7 @@ class TramitesController extends Controller
 
         foreach ($mapeoCampos as $campo) {
             $pregunta = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID', $campo->USRE_NIDPREGUNTA)->first();
-            if($pregunta->FORM_CTIPORESPUESTA == 'catalogo') {
+            if(!is_null($pregunta) && $pregunta->FORM_CTIPORESPUESTA == 'catalogo') {
                 $array      = explode(",", $campo->USRE_CRESPUESTA);
                 $respuestas = DB::table($pregunta->FORM_CVALOR)->whereIn('id', $array)->get();
                 $texto      = "";
@@ -222,26 +228,27 @@ class TramitesController extends Controller
                 }
                 $campo->USRE_CRESPUESTA = $texto;
             }
+
+            /*@ Replacing variables in doc file */
             $template->setValue($campo->TRAM_CNOMBRECAMPO, $campo->USRE_CRESPUESTA);
         }
 
-        $pathQR = $this->variosService->generaQR(url('/') . '/docts/resolutivos/new-result' . $nameFile[0] . '.pdf');
+        $pathQR = $this->variosService->generaQR(url('/') . '/docts/resolutivos/resolutivo_' . $nameFile[0] . '.pdf');
         $template->setImageValue('qrcode', array('path' =>  $pathQR, 'width' => 100, 'height' => 100, 'ratio' => true));
-        /*@ Replacing variables in doc file */
-        /*  $template->setValue('date', date('d-m-Y'));
-        $template->setValue('title', 'Mr.');
-        $template->setValue('firstname', 'Josue');
-        $template->setValue('lastname', 'Lopez');
-        */
+
         /*@ Save Temporary Word File With New Name */
-        $saveDocPath = $rutaBase . 'new-result' . $nameFile[0] . '.docx';
+        $saveDocPath = $rutaBase . 'resolutivo_'. $nameFile[0] .'.docx';
         $template->saveAs($saveDocPath);
+
+        if($tipo == 0)
+            return redirect('/docts/resolutivos/resolutivo_' . $nameFile[0] . '.docx');
+
 
         // Load temporarily create word file
         $Content = \PhpOffice\PhpWord\IOFactory::load($saveDocPath);
 
         //Save it into PDF
-        $savePdfPath = $rutaBase . 'new-result' . $nameFile[0] . '.pdf';
+        $savePdfPath = $rutaBase . 'resolutivo_'. $nameFile[0] .'.pdf';
 
         /*@ If already PDF exists then delete it */
         if (file_exists($savePdfPath)) {
@@ -257,7 +264,7 @@ class TramitesController extends Controller
             unlink($saveDocPath);
         }
 
-        return redirect('/docts/resolutivos/new-result' . $nameFile[0] . '.pdf');
+        return redirect('/docts/resolutivos/resolutivo_' . $nameFile[0] . '.pdf');
     }
 
     //Obtener trámite en seguimiento
