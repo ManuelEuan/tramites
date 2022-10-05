@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use DateTime;
+use Carbon\Carbon;
+use App\Models\Cls_Dia_Inhabil;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Cls_Citas_Calendario extends Model {
@@ -26,94 +29,106 @@ class Cls_Citas_Calendario extends Model {
     public static function getAll(){
         return Cls_Citas_Calendario::all();
     }
-    public static function getByFiltro($idtramite,$idedificio,$anio,$mes){
-        //Obtener detalles del tramite
-        // $tramiteService = new TramiteService();
-        // $objTramite     = $tramiteService->getTramite($idtramite);
-        // $result = $tramiteService->getDetalle($objTramite->Id);
 
-        // $modulos = $result['oficinas'];
-        // $horarios = $result['horario'];
-        //Fin obtener detalles del tramite
+    /**
+     * 
+     */
+    public static function getByFiltro($tramite,$idedificio,$anio,$mes,$tipo){
+        $toDay          = Carbon::now()->format('Y-m-d');
 
-        $inicio = date($anio."-".(strlen($mes) == 1 ? "0".$mes : $mes)."-01");
-        $fin = date($anio."-".(strlen($mes) == 1 ? "0".$mes : $mes)."-t");
+        $arrayInhabil   = array();
+        $fecha_inicio   = date($anio."-".(strlen($mes) == 1 ? "0".$mes : $mes)."-01");
+        $fecha_final    = date($anio."-".(strlen($mes) == 1 ? "0".$mes : $mes)."-t");
 
-        $fechasDisponibles = array();
+        //Dias Inhabiles
+        $inicio_inhabil = new DateTime($fecha_inicio);
+        $inicio_inhabil->modify("-2 month");
+        $final_inhabil = new DateTime($fecha_final);
+        $final_inhabil->modify("2 month");
 
-        for($i=strtotime(date($inicio)); $i<=strtotime(date($fin)); $i+=86400){
-            $rowHorario = array();
-            $rowOcupacion = DB::table('citas_tramites_calendario')
-                ->where('CITA_FECHA', date("Y-m-d", $i))
-                ->where('CITA_IDTRAMITE', $idtramite)
-                ->where('CITA_IDMODULO', $idedificio)
-                ->where('deleted_at', null)
-                ->get();
-            $ocupacion = count($rowOcupacion);
-            $dia = "";
-            switch (date("N", $i)) {
-                case '1':
-                    $dia = "Lunes";
-                    break;
-                case '2':
-                    $dia = "Martes";
-                    break;
-                case '3':
-                    $dia = "Miercoles";
-                    break;
-                case '4':
-                    $dia = "Jueves";
-                    break;
-                case '5':
-                    $dia = "Viernes";
-                    break;
-                case '6':
-                    $dia = "Sabado";
-                    break;
-                case '7':
-                    $dia = "Domingo";
-                    break;
-            }
+        $inhabiles =  Cls_Dia_Inhabil::where('fecha_inicio', '>=', $inicio_inhabil->format('Y-m-d'))
+                            ->where('fecha_inicio', '<=', $final_inhabil->format('Y-m-d'))->where('activo', true )->get();
 
-            $horario = DB::table('citas_tramites')
-                ->where('tramiteId', '=', $idtramite)
-                ->where('moduloId', '=', $idedificio)
-                ->where('dia', '=', $dia)
-                ->get();
-
-            $rowDisponibles = array();
-            if ($horario->count() > 0) {
-                $horario = $horario[0];
-                for($j=strtotime(date("Y-m-d", $i).' '.$horario->horarioInicial);
-                    $j<=strtotime(date("Y-m-d", $i).' '.$horario->horarioFinal);
-                    $j+=($horario->tiempoAtencion * 60)){
-                        $hora = date("H:i:s", $j);
-                        $disponibilidad = 0;
-                        $ocupado = 0;
-                        $reservas = 0;
-                        foreach ($rowOcupacion as $ocupacion) {
-                            if ($ocupacion->CITA_HORA == $hora) {
-                                $ocupado = 1;
-                                $reservas++;
-                            }
-                        }
-                        array_push($rowDisponibles,array(
-                            'horario' => $hora,
-                            'ocupado' => $ocupado,
-                            'recervas' => $reservas
-                        ));
-                    $horario->disponibles = $rowDisponibles;
-                    $horario->disponibilidad = count($rowDisponibles) * $horario->ventanillas;
-                    $horario->ocupacion = count($rowOcupacion);
-                    $horario->porcentajeOcupacion = round(((count($rowOcupacion) * 100) / (count($rowDisponibles) * $horario->ventanillas)));
+        foreach($inhabiles as $dia){
+            $dependencias = explode(",", $dia->dependencias);
+            
+            foreach($dependencias as $dependencia){
+                if($tramite->TRAM_NIDCENTRO == (int)$dependencia){
+                    array_push($arrayInhabil, ["fecha_inicio" => $dia->fecha_inicio, "fecha_final" => $dia->fecha_final]);
                 }
-                $rowHorario = $horario;
+            }
+        }
+
+        //Comienzo a crear los dias con sus respectivos horarios
+        $fechasDisponibles = array();
+        for($i=strtotime(date($fecha_inicio)); $i<=strtotime(date($fecha_final)); $i+=86400){
+            $rowHorario = array();
+            $diaSemana  = "";
+            $fecha      = date("Y-m-d", $i);
+            $aplica     =  $tipo == 'usuario' && $fecha_inicio < $toDay ? false : true;
+
+            if($aplica){
+                $rowOcupacion = DB::table('citas_tramites_calendario')->where([
+                                    'CITA_FECHA'        => $fecha,
+                                    'CITA_IDTRAMITE'    => $tramite->TRAM_NIDTRAMITE,
+                                    'CITA_IDMODULO'     => $idedificio,
+                                    'deleted_at'        => null
+                                ])->get();
+    
+                switch (date("N", $i)) {
+                    case '1': $diaSemana = "Lunes";   break;
+                    case '2': $diaSemana = "Martes";  break;
+                    case '3': $diaSemana = "Miercoles"; break;
+                    case '4': $diaSemana = "Jueves";  break;
+                    case '5': $diaSemana = "Viernes"; break;
+                    case '6': $diaSemana = "Sabado";  break;
+                    case '7': $diaSemana = "Domingo"; break;
+                }
+    
+                $horario = Cls_DiasCitaTramite::where([
+                                'tramiteId' => $tramite->TRAM_NIDTRAMITE,
+                                'moduloId'  => $idedificio,
+                                'dia'       => $diaSemana
+                            ])->first();
+    
+                foreach($arrayInhabil as $value){
+                    if($fecha >= $value['fecha_inicio'] && $fecha <= $value['fecha_final'] ){
+                        $horario = null;
+                    }
+                }
+    
+                $rowDisponibles = array();
+                if (!is_null($horario)) {
+                    for( $j=strtotime($fecha.' '.$horario->horarioInicial); $j<=strtotime($fecha.' '.$horario->horarioFinal); $j+=($horario->tiempoAtencion * 60)){
+                            $hora       = date("H:i:s", $j);
+                            $ocupado    = 0;
+                            $reservas   = 0;
+    
+                            foreach ($rowOcupacion as $ocupacion) {
+                                if ($ocupacion->CITA_HORA == $hora) {
+                                    $ocupado = 1;
+                                    $reservas++;
+                                }
+                            }
+                            array_push($rowDisponibles,array(
+                                'horario' => $hora,
+                                'ocupado' => $ocupado,
+                                'recervas' => $reservas
+                            ));
+    
+                        $horario->disponibles       = $rowDisponibles;
+                        $horario->disponibilidad    = count($rowDisponibles) * $horario->ventanillas;
+                        $horario->ocupacion         = count($rowOcupacion);
+                        $horario->porcentajeOcupacion = round(((count($rowOcupacion) * 100) / (count($rowDisponibles) * $horario->ventanillas)));
+                    }
+                    $rowHorario = $horario;
+                }
             }
 
             array_push($fechasDisponibles, array(
-                'dia' => date("N", $i),
-                'fecha' => date("Y-m-d", $i),
-                'horario' => $rowHorario,
+                'dia'       => date("N", $i),
+                'fecha'     => $fecha,
+                'horario'   => $rowHorario,
             ));
         }
 

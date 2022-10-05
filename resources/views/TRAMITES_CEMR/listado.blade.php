@@ -90,7 +90,7 @@
                                     <option value="0">Estatus</option>
                                     <option value="2">Pendiente de revisión</option>
                                     <option value="3">Recibido</option>
-                                    <option value="4">Información incompleta</option>
+                                    <option value="4">Solicitud con Observaciones</option>
                                     <option value="5">Iniciado</option>
                                     <option value="6">Acción requerida</option>
                                     <option value="7">En proceso</option>
@@ -207,6 +207,10 @@
             id: 9,
             nombre: "Rechazado"
         },
+        {
+            id: 10,
+            nombre: "Cancelado"
+        },
     ];
 
     var estatus_seguimiento = [{
@@ -223,7 +227,7 @@
         },
         {
             id: 4,
-            nombre: "Información incompleta"
+            nombre: "Solicitud con Observaciones"
         },
         {
             id: 5,
@@ -244,6 +248,10 @@
         {
             id: 9,
             nombre: "Rechazado"
+        },
+        {
+            id: 10,
+            nombre: "Cancelado"
         }
     ];
 
@@ -296,24 +304,28 @@
                         render: function(data, type, row) {
 
                             var dateFromTramite = new Date(data.USTR_DFECHACREACION);
-                            dateFromTramite.setDate(dateFromTramite.getDate() + data.USTR_NDIASHABILESRESOLUCION);
+                            dateFromTramite.setDate(parseInt(dateFromTramite.getDate()) + parseInt(data.USTR_NDIASHABILESRESOLUCION));
 
                             var dateMiddle = new Date(data.USTR_DFECHACREACION);
-                            dateMiddle.setDate(dateMiddle.getDate() + (data.USTR_NDIASHABILESRESOLUCION / 2));
+                            dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 2));
 
                             var currentDate = new Date();
 
                             var level = 0;
-                            if (dateMiddle >= currentDate) {
-                                level = 1;
-                            } else if (dateFromTramite >= currentDate) {
-                                level = 2;
-                            } else {
+                            if(data.USTR_NESTATUS != 10){
+                                if (dateMiddle >= currentDate) {
+                                    level = 1;
+                                } else if (dateFromTramite >= currentDate) {
+                                    level = 2;
+                                } else {
+                                    level = 3;
+                                }
+                            }else{
                                 level = 3;
                             }
-
+                            
                             var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : "red");
-
+                           
                             return '<span class="dot" style="background-color:' + color + '"></span>';
                         }
                     },
@@ -364,8 +376,12 @@
                         }
                     },
                     {
+                        /**
+                         * !configurar para mostrar el botón asignar 
+                         */
                         data: null,
                         render: function(data, type, row) {
+<<<<<<< HEAD
                             return `<span>
                                         <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
                                     </span>
@@ -378,6 +394,20 @@
                                     <span>
                                         <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
                                     </span>`;
+=======
+                            var acciones = `<span>
+                                                <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                            </span>`;
+                            if(data.USTR_NESTATUS != 10){
+                               acciones = acciones + `<span>
+                                    <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                </span>`
+                            }
+                            acciones = acciones + `<span>
+                                <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                </span>`
+                            return acciones;
+>>>>>>> 216f60907f0022f9023b7ba6c740f2747a97c003
                         }
                     },
                 ],

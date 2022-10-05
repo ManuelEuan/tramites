@@ -201,7 +201,7 @@ class TramiteService
 
         $tramite['costo'] = [
             [
-                "titulo"        => "¿Tiene costo?",
+                "titulo"        => "¿Este trámite o servicio tiene monto de derechos o aprovechamientos?",
                 "descripcion"   => $monto > 0 ? "SI" : "NO",
                 "opciones"      => [],
                 "documentos"    => []

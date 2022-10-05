@@ -92,6 +92,7 @@ Route::group(['prefix' => 'tramite_servicio'], function () {
     Route::post('/enviar_encuesta', 'TramiteServicioController@enviar_encuesta')->name('enviar_encuesta');
     Route::get('/seguimiento_tramite/{id}', 'TramiteServicioController@seguimiento_tramite_servicio')->name('seguimiento_tramite');
     Route::put('/ubicacion_ventanilla', 'TramiteServicioController@ubicacion_ventanilla_sin_cita')->name('ubicacion_ventanilla_sin_cita');
+    Route::post('/api/obtenerinfociudadano', 'TramiteServicioController@obtenerInformacionCiudadano');
 });
 
 
@@ -139,14 +140,6 @@ Route::group(['prefix' => 'formulario'], function () {
     Route::post('/delete', 'FormularioController@delete');
     Route::get('/detalle', 'FormularioController@detalle');
     Route::post('/preguntas', 'FormularioController@preguntas');
-});
-
-Route::group(['prefix' => 'dias_inhabiles'], function () {
-    Route::get('/', 'DiaInhabilController@calendario');
-    Route::get('/find', 'DiaInhabilController@find');
-    Route::post('/store', 'DiaInhabilController@store');
-    Route::post('/update', 'DiaInhabilController@update');
-    Route::post('/delete', 'DiaInhabilController@delete');
 });
 
 Route::group(['prefix' => 'gestores_solicitud'], function () {
@@ -259,6 +252,14 @@ Route::group(['prefix' => 'giros'], function () {
     Route::post('/', 'GiroController@store');
     Route::post('/estatus', 'GiroController@cambiaEstatus');
     Route::put('/', 'GiroController@update');
+});
+
+Route::group(['prefix' => 'dias_inhabiles'], function () {
+    Route::get('/', 'DiaInhabilController@calendario');
+    Route::get('/find', 'DiaInhabilController@find');
+    Route::post('/store', 'DiaInhabilController@store');
+    Route::post('/update', 'DiaInhabilController@update');
+    Route::post('/delete', 'DiaInhabilController@delete');
 });
 
 Route::group(['prefix' => 'catalogos'], function () {

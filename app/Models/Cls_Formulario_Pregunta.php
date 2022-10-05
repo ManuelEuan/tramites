@@ -15,6 +15,9 @@ class Cls_Formulario_Pregunta extends Model
         'FORM_NFORMULARIOID',
         'FORM_NSECCIONID',
         'FORM_CPREGUNTA',
+        'FORM_BRESOLUTIVO',
+        'FORM_BTIENEASIGNACION',
+        'FORM_CVALORASIGNACION'
     ];
 
     public $timestamps = false;
