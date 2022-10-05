@@ -179,6 +179,10 @@
             id: 9,
             nombre: "Rechazado"
         },
+        {
+            id: 10,
+            nombre: "Cancelado"
+        },
     ];
 
     var estatus_seguimiento = [{
@@ -216,6 +220,10 @@
         {
             id: 9,
             nombre: "Rechazado"
+        },
+        {
+            id: 10,
+            nombre: "Cancelado"
         }
     ];
 
@@ -271,31 +279,25 @@
                             dateFromTramite.setDate(parseInt(dateFromTramite.getDate()) + parseInt(data.USTR_NDIASHABILESRESOLUCION));
 
                             var dateMiddle = new Date(data.USTR_DFECHACREACION);
-                            dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 3));
+                            dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 2));
 
                             var currentDate = new Date();
 
                             var level = 0;
-                            if (dateMiddle >= currentDate) {
-                                level = 1;
-                            } else if (dateFromTramite >= currentDate) {
-                                level = 2;
-                            } else {
+                            if(data.USTR_NESTATUS != 10){
+                                if (dateMiddle >= currentDate) {
+                                    level = 1;
+                                } else if (dateFromTramite >= currentDate) {
+                                    level = 2;
+                                } else {
+                                    level = 3;
+                                }
+                            }else{
                                 level = 3;
                             }
+                            
                             var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : "red");
-                            console.log("creacion: " + data.USTR_DFECHACREACION)
-                            console.log("dias h: " + data.USTR_NDIASHABILESRESOLUCION)
-                            console.log("dateFromTramite-----: " + dateFromTramite)
-                            console.log("dateMiddle-------: " + dateMiddle)
-                            console.log("currentDate-------: " + currentDate)
-                            
-                            /*console.log("Sin suma: " + sinsuma.getDay())
-                            console.log("Con suma: " + dateFromTramite)
-                            console.log("Con suma: " + dateFromTramite.getDate())
-                            console.log(dateMiddle)
-                            console.log(level)*/
-                            
+                           
                             return '<span class="dot" style="background-color:' + color + '"></span>';
                         }
                     },
@@ -351,15 +353,18 @@
                          */
                         data: null,
                         render: function(data, type, row) {
-                            return `<span>
-                                        <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                    </span>`;
+                            var acciones = `<span>
+                                                <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                            </span>`;
+                            if(data.USTR_NESTATUS != 10){
+                               acciones = acciones + `<span>
+                                    <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                </span>`
+                            }
+                            acciones = acciones + `<span>
+                                <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                </span>`
+                            return acciones;
                         }
                     },
                 ],
