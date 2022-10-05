@@ -61,7 +61,7 @@
                             </div>
                         </div>
                         <!-- <label for="bus-txt-centro-trabajo" style="color: red;">PARA LA CREACION  DE UNA PERSONA MORAL ES IMPORTANTE QUE EL REPRESENTANTE LEGAL ESTÉ REGISTRADO COMO PERSONA FISICA <span class="text-danger">*</span></label> -->
-                        <div class="row">
+                        <div>
                             <div class="col-md-4">
                                 <p class="text-dark">Por favor, selecciona una opción</p>
                                 <div class="form-group">
@@ -76,11 +76,12 @@
                                         <label class="form-check-label">Moral</label>
                                     </div>
                                 </div>
-                                <br/>
                             </div>
-                            <div class="col-md-8">
+                            <div id="divMensaje" style="display: none;">
+                                <p style="color: black;">Para Registrar una Persona Moral, es es necesario realizar el registro previamente del Representante Legal como Persona Física.</p>
                             </div>
                         </div>
+                        
                         <div id="frmRegistro" style="display: none;">
                             <div class="row">
                                 <div class="col-md-3">
@@ -842,6 +843,7 @@
             var value = $( this ).val();
             $("#frmRegistro").show();
             if(value == "FISICA"){
+                $("#divMensaje").hide();
                 $(".divRazon_Social").hide();
                 $(".divCurp").show();
                 $("#divTxtRepresentante").hide();
@@ -890,6 +892,7 @@
                 $('#lblRfc').html("Se compone de 13 caracteres");
 
             }else {
+                $("#divMensaje").show();
                 $(".divRazon_Social").show();
                 $(".divCurp").hide();
                 $("#divTxtRepresentante").show();

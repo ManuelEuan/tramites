@@ -108,6 +108,16 @@ class TramitesController extends Controller
             $result = $tramite_seguimiento->TRAM_SP_CONSULTAR_TRAMITES_SEGUIMIENTO();
             $tramites = $result['result'];
             $totalRegistros = $result['total'][0]->TotalRegistros;
+            foreach ($tramites as $key => $t) {
+                $diasH = $t->USTR_NDIASHABILESRESOLUCION;
+                $hoy = date('Y-m-d');
+                $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
+                
+                if($hoy > $fechaFinal){
+                    $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                }
+
+            }
 
             $response = [
                 'recordsTotal' => $totalRegistros,

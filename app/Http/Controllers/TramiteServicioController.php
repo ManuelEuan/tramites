@@ -469,6 +469,8 @@ class TramiteServicioController extends Controller
                                         }
                                         break;
                                     case "catalogo":
+                                        $resp->respArray = array();
+                                        $resp->respString = "";
                                         if ($resp->FORM_NPREGUNTAID == $_resp['USRE_NIDPREGUNTA']) {
                                             $array = explode(",",$_resp['USRE_CRESPUESTA']);
                                             $resp->respArray    = $array;
