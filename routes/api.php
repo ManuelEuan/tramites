@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 ###################### Manuel Euan ######################
+Route::get('/generate_previo_resolutivo', 'TramitesController@generatePrevioResolutivo');
 
 /* Route::get('/getFiltros', 'GestorController@obtener_filtro');
 Route::get('/tramite_servicio_cemr/download_tramite/{id}', 'TramitesController@download_tramite'); 
