@@ -112,7 +112,7 @@ Route::group(['prefix' => 'tramite_servicio_cemr'], function () {
     Route::post('/find', 'TramitesController@find');
     Route::get('/detalle/{id}', 'TramitesController@detalle');
     Route::get('/seguimiento/{id}', 'TramitesController@seguimiento')->name('seguimiento_tramite_servidor');
-    Route::get('/generate_previo_resolutivo/{resolutivoId}/{tramiteId}', 'TramitesController@generatePrevioResolutivo')->name('generate_previo_resolutivo');
+    Route::get('/generate_previo_resolutivo/{resolutivoId}/{tramiteId}/{tipo}', 'TramitesController@generatePrevioResolutivo')->name('generate_previo_resolutivo');
     Route::get('/obtener_tramite/{id}', 'TramitesController@obtener_tramite_seguimiento');
     Route::post('/seccion_formulario_incompleta', 'TramitesController@seccion_formulario_incompleta');
     Route::post('/seccion_formulario_aprobado', 'TramitesController@aprobar_seccion_formulario');
