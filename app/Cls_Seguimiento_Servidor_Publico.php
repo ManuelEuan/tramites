@@ -59,6 +59,13 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         }
     }
 
+    static function ACTUALIZAR_STATUS($folio){
+        $rsp = DB::table('tram_mdv_usuariotramite')
+        ->where('USTR_CFOLIO', $folio)
+        ->update(['USTR_NESTATUS' => 10]);
+        return $rsp;
+    }
+
     static function TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($TRAM_NIDTRAMITE_CONFIG)
     {
         $response = [

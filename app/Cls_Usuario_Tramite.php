@@ -21,4 +21,10 @@ class Cls_Usuario_Tramite extends Model
         return DB::select('call TRAM_SP_CONSULTAR_SEGUIMIENTO_TRAMITE_USUARIO(?,?,?,?,?)'
         , array($IntUsiario, $StrTexto, $IntEstatus, $IntDependencia, $DteFechaInicio));
     }
+    static function ACTUALIZAR_STATUS($folio){
+        $rsp = DB::table('tram_mdv_usuariotramite')
+        ->where('USTR_CFOLIO', $folio)
+        ->update(['USTR_NESTATUS' => 10]);
+        return $rsp;
+    }
 }
