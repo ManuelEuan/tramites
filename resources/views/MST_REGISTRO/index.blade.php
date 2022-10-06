@@ -216,12 +216,19 @@
                             <br>
 
                             <h5 class="font-weight-bold">Datos de Contacto</h5>
-                            <div class="row">
-                                <div class="col-md-6">
+                            <div class="row ">
+                                <div class="col-md-6 divCorreoFisica">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Correo electrónico <span class="text-danger">*</span></label>
                                         <input type="email" class="form-control" name="txtCorreo_Electronico" id="txtCorreo_Electronico" placeholder="Correo electrónico" required>
                                             <span id="resultadoExistCorreo" style="font-size: 12px;"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 divCorreoMoral">
+                                    <div class="form-group">
+                                        <label for="bus-txt-centro-trabajo">Correo electrónico Moral<span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" name="txtCorreo_ElectronicoMoral" id="txtCorreo_ElectronicoMoral" placeholder="Correo electrónico" required>
+                                            <span id="resultadoExistCorreoMoral" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -248,7 +255,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                           
                             <div class="row">
                                 <div class="col-md-6">
 
@@ -452,6 +459,9 @@
             //     var pattern = /^[a-zA-Z]+$/i;
             //     return this.optional(element) || pattern.test(value);
             // }, "El primer apellido solamente puede tener caracteres alfabéticos y espacios.");
+            var tipoPersona = $('.rdbTipo_Persona').val();
+            console.log(tipoPersona)
+
             $("#txtCurpFisica").focusout(function(){
                 let curp = $(this).val();
                 let isCurp =  TRAM_FN_VALIDAR_CURP(curp);
@@ -534,10 +544,14 @@
             });
 
             $.validator.addMethod("passwordcheck", function(value) {
-                return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(value)// has a special character
+                return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,20}$/.test(value)// has a special character
                 },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."
             );
-
+          
+//             $.validator.addMethod("passwordcheck", function(value) {
+//     return /^[a-zA-Z0-9!@#$%^&()=[]{};':"\|,.<>\/?+-]+$/.test(value) 
+//   },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."  
+//   );
 
             $("#frmForm").validate({
                 focusInvalid: false,
@@ -704,7 +718,7 @@
                     txtContrasenia: {
                         minlength: "El tamaño del campo debe contener mínimo 5 dígitos.",
                         maxlength: "El tamaño del campo debe contener máximo 20.",
-                        passwordcheck:"La contraseña requiere mínimo una letra mayúscula y un número para que sea válido",
+                        passwordcheck:"La contraseña requiere mínimo una letra mayúscula y un caracter especial [!@#$%^&*]",
                         required: ""
                     },
                         cmbColonia_Particular: {
@@ -873,6 +887,7 @@
         //Tipo de persona
         $('.rdbTipo_Persona').change(function(){
             var value = $( this ).val();
+            // console.log(value);
             $("#frmRegistro").show();
             if(value == "FISICA"){
                 $("#divMensaje").hide();
@@ -882,13 +897,18 @@
                 $(".divDomicilio_Particular").show();
                 $(".divCurp_Moral").hide();
                 $(".divCurpMoral").hide();
+                $(".divCorreoMoral").hide();
 
                 $(".divFechaNacimiento").show();
                 $(".divFechaConstitucionMoral").hide();
+                $(".divCorreoFisica").show();
+
 
                 $('#txtNombres').val('')
                 $('#txtPrimer_Apellido').val('')
                 $('#txtSegundo_Apellido').val('')
+                $('#txtCurpMoral').val('')
+                $('#txtCurpMoral').val('')
                 $('#txtCurpMoral').val('')
 
                 //TXT Datos de la persona
@@ -917,6 +937,8 @@
 
                 $('#txtCurpFisica').prop('required',true);
                 $('#txtCurpMoral').prop('required',false);
+                $('#txtCorreo_Electronico').prop('required',true);
+                $('#txtCorreo_ElectronicoMoral').prop('required',false);
 
                 $('#txtRazon_Social').prop('required',false);
 
@@ -931,6 +953,8 @@
                 $(".divDomicilio_Particular").hide();
                 $(".divCurp_Moral").show();
                 $(".divCurpMoral").show();
+                $(".divCorreoMoral").show();
+                $(".divCorreoFisica").hide();
 
                 $(".divFechaNacimiento").hide();
                 $(".divFechaConstitucionMoral").show();
@@ -962,6 +986,8 @@
                 $('#txtCurpFisica').prop('required',false);
                 $('#txtCurpMoral').prop('required',true);
                 $('#txtRazon_Social').prop('required',true);
+                $('#txtCorreo_Electronico').prop('required',false);
+                $('#txtCorreo_ElectronicoMoral').prop('required',true);
 
                 $('.asterisco').show();
                 $('#lblRfc').html("Se compone de 12 caracteres");
@@ -989,14 +1015,35 @@
 
         //Correo
         $('#txtCorreo_Electronico').change(function(){
+            // $('.rdbTipo_Persona').empty();
             var value = $( this ).val();
+            var tipo = 'FISICA';
+            // var tipoPersona = $('.rdbTipo_Persona').val();
+            // console.log(tipoPersona);
             emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
             if(value != ""){
                 if (emailRegex.test(value)) {
                     $("#resultadoExistCorreo").html('');
-                    TRAM_AJX_VALIDAR_CORREO(value);
+                    TRAM_AJX_VALIDAR_CORREO(value,tipo);
                 } else {
                     $("#resultadoExistCorreo").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+                }
+            }
+        });
+        $('#txtCorreo_ElectronicoMoral').change(function(){
+            // $('.rdbTipo_Persona').empty();
+            var value = $( this ).val();
+            var tipo = 'MORAL';
+            // var tipoPersona = $('.rdbTipo_Persona').val();
+            // console.log(tipoPersona);
+            emailRegex = /^([a-zA-Z0-9_.+-])+\@((gmail|hotmail|outlook)+\.)+([a-zA-Z0-9]{2,4})+$/i;
+            console.log(emailRegex.test(value));
+            if(value != ""){
+                if (!emailRegex.test(value)) {
+                    $("#resultadoExistCorreoMoral").html('');
+                    TRAM_AJX_VALIDAR_CORREO(value,tipo);
+                } else {
+                    $("#resultadoExistCorreoMoral").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
                 }
             }
         });
@@ -1188,6 +1235,10 @@
             }
 
             if($("#resultadoExistCorreo").html() != ""){
+                $("#btnSubmit").prop("disabled", true);
+                return;
+            }
+            if($("#resultadoExistCorreoMoral").html() != ""){
                 $("#btnSubmit").prop("disabled", true);
                 return;
             }
@@ -1477,7 +1528,7 @@
         };
 
         //Validar si el correo existe
-        function TRAM_AJX_VALIDAR_CORREO(StrCorreo){
+        function TRAM_AJX_VALIDAR_CORREO(StrCorreo,tipo){
             $.get('/registrar/validar_correo/' + StrCorreo, function (data) {
                 //Validamos si existe un usuario con el correo capturado
                 if(data.status == "success"){
@@ -1486,14 +1537,26 @@
                     }, 1000);
                     $("#txtRfc").attr("aria-invalid", "true");
                     $("#txtRfc").addClass("error");
-                    $("#resultadoExistCorreo").html("<span style='color: red;'>"+ data.message +"</span>");
+                    if(tipo == 'FISICA'){
+
+                        $("#resultadoExistCorreo").html("<span style='color: red;'>"+ data.message +"</span>");
+                    }else{
+
+                        $("#resultadoExistCorreoMoral").html("<span style='color: red;'>"+ data.message +"</span>");
+                    }
                 }else {
                     setTimeout(function(){
                         $(".btnSubmit").prop("disabled", false);
                     }, 1000);
                     $("#txtRfc").attr("aria-invalid", "false");
                     $("#txtRfc").removeClass("error");
-                    $("#resultadoExistCorreo").html("");
+                    if(tipo == 'FISICA'){
+
+                        $("#resultadoExistCorreo").html("");
+                    }else{
+
+                        $("#resultadoExistCorreoMoral").html("");
+                    }
                 }
             });
         };
