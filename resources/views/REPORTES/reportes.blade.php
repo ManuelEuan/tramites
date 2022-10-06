@@ -45,13 +45,14 @@
                                     <option value="6">Campos desplegables contenidos en cada trámite</option>
                                     <option value="7">Resultado de encuestas de satisfacción</option>
                                     <option value="8">Todos los rubros</option>
+                                    <option value="9">Expediente de solicitudes</option>
                                 </select>
                                 <em id="error_select" class="text-danger">Campo Obligatorio.</em>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12 mt-5">
+                <div id="btnDescargarOtros" class="col-md-12 mt-5">
                     <div class="text-right">
                         <div class="btn-group">
                             <button type="button" id="descarga" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
@@ -64,6 +65,17 @@
                             </div>
                         </div>
                         <p><label class="mr-3" for="">XLS, CSV, XML</label><p>
+                    </div>
+                </div>
+
+                <div id="btnDescargarZip" class="col-md-12 mt-5" style="display: none;">
+                    <div class="text-right">
+                        <div class="btn-group">
+                            <button type="button" id="descargaZip" class="btn btn-success" onclick="descargarZip();" disabled>
+                                Descargar
+                            </button>
+                        </div>
+                        <p><label class="mr-3" for="">ZIP</label><p>
                     </div>
                 </div>
                 
@@ -105,14 +117,32 @@
             var finish_date = $('#dateend').val();
             var option = $('#selectrubro').val();
 
-            console.log(init_date+' - '+finish_date+' - '+option);
+            //console.log(init_date+' - '+finish_date+' - '+option);
             $("#error_select").empty();
-            if( !validate_date(init_date, finish_date) && option > 0  ){
-                $('#descarga').attr('disabled', false);
+            if(option == 9){
+                $("#btnDescargarOtros").hide();
+                $("#btnDescargarZip").show();
+                if( !validate_date(init_date, finish_date) && option > 0  ){
+                    $('#descarga').attr('disabled', false);
+                    $('#descargaZip').attr('disabled', false);
+                }else{
+                    if (option == 0){ $("#error_select").append('Campo Obligatorio.'); }
+                    $('#descarga').attr('disabled', true);
+                    $('#descargaZip').attr('disabled', true);
+                    error = true;
+                }
             }else{
-                if (option == 0){ $("#error_select").append('Campo Obligatorio.'); }
-                $('#descarga').attr('disabled', true);
-                error = true;
+                $("#btnDescargarOtros").show();
+                $("#btnDescargarZip").hide();
+                if( !validate_date(init_date, finish_date) && option > 0  ){
+                    $('#descarga').attr('disabled', false);
+                    $('#descargaZip').attr('disabled', false);
+                }else{
+                    if (option == 0){ $("#error_select").append('Campo Obligatorio.'); }
+                    $('#descarga').attr('disabled', true);
+                    $('#descargaZip').attr('disabled', true);
+                    error = true;
+                }
             }
 
             if(type == 1){
@@ -169,6 +199,48 @@
                     return 'MJV-003 ¡Error! El campo <Fecha inicial> es requerido';
                 }
             }
+        }
+
+        function descargarZip(){
+            datestart = document.getElementById("datestart").value;
+            dateend = document.getElementById("dateend").value;
+            var array = {
+                    'datestart' : datestart,
+                    'dateend' : dateend,
+                    }
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'info',
+                        title: 'Su archivo se esta generando',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+            $.ajax({
+                type: "POST",
+                url: "/generarZip",
+                data: array,
+                success: function (response) {
+                    if(response.status == 'success'){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Listo!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        window.location = response.name;
+                    }else{
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Ha ocurrido un error!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                   
+                }
+            });
         }
 
         function genXLS(){

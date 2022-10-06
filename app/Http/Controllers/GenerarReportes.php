@@ -15,6 +15,12 @@ use Illuminate\Support\Facades\Storage;
 use \App\Exports\Export_TipoTramite;
 use ZipArchive;
 use File;
+use App\Cls_Seguimiento_Servidor_Publico;
+use App\Models\Cls_Formulario_Pregunta_Respuesta;
+use App\Cls_Usuario_Respuesta;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class GenerarReportes extends Controller
 {
@@ -1071,5 +1077,175 @@ class GenerarReportes extends Controller
         $registros = json_decode($result, true);
 
         $this->edificio = $registros;
+    }
+
+    public function generarZip(Request $request){
+        $inicio = $request->input("datestart");
+        $fin = $request->input("dateend");
+        $idsTramites = Cls_Seguimiento_Servidor_Publico::OBTENER_ID_POR_FECHA($inicio, $fin);
+
+        try {
+        $zipPrincipal = new ZipArchive();
+        $fecha = Carbon::now();
+        $fecha = $fecha->toArray();
+        $fecha = $fecha['timestamp'];
+        $fileNamePrincipal = 'REPORTES_' . $inicio .'_'. $fin .'.zip';
+        $fileName = "";
+        $pathPdf        = public_path('tramites');
+        $archivosBorrar = array();
+
+        if ($zipPrincipal->open($pathPdf."/".$fileNamePrincipal, ZipArchive::CREATE) == TRUE) {
+            foreach ($idsTramites as $key => $id) {
+                $tramite_ = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id->USTR_NIDUSUARIOTRAMITE);
+                $configuracion =  $tramite_;
+                $USTR_NIDUSUARIOTRAMITE = $tramite_['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
+
+                $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->orderBy('USRE_NIDUSUARIORESP','DESC')->get();
+
+
+                foreach ($configuracion['formularios'] as $form) {
+                    foreach ($form->secciones as $sec) {
+                        foreach ($sec->preguntas as $preg) {
+                            foreach ($preg->respuestas as $resp) {
+                                $resp->FORM_CVALOR_RESPUESTA = "";
+    
+                                foreach ($respuestas as $_resp) {
+                                    if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
+                                        $preg->estatus = $_resp['USRE_NESTATUS'];
+                                        $preg->observaciones = $_resp['USRE_COBSERVACION'];
+                                    }
+    
+                                    switch ($preg->FORM_CTIPORESPUESTA) {
+                                        case "multiple":
+                                            if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                                $resp->FORM_CVALOR_RESPUESTA = "checked";
+                                                break;
+                                            }
+                                            break;
+                                        case "unica":
+                                            if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                                $resp->FORM_CVALOR_RESPUESTA = "checked";
+                                                break;
+                                            }
+                                            break;
+                                        case "especial":
+                                            foreach ($resp->respuestas_especial as $esp) {
+                                                switch ($resp->FORM_CTIPORESPUESTAESPECIAL) {
+                                                    case "opciones":
+    
+                                                        if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
+                                                            if ($esp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                                                $esp->FORM_CVALOR_RESPUESTA = "selected";
+                                                                break;
+                                                            }
+                                                        }
+                                                        break;
+                                                    default:
+                                                        if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
+                                                            $esp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
+                                                            break;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                            break;
+                                        case "catalogo":
+                                            if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']){
+                                                $array = explode(",",$_resp->USRE_CRESPUESTA);
+                                                $valorRespuesta = DB::table($resp->FORM_CVALOR)->whereIn('id', $array)->get();
+                                                $resp->FORM_CVALOR_RESPUESTA = $valorRespuesta;
+                                            }
+                                            break;
+                                        default:
+                                            if ($resp->FORM_NPREGUNTAID === $_resp['USRE_NIDPREGUNTA']) {
+                                                $resp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
+                                                break;
+                                            }
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                $tramite        = $configuracion['tramite'][0];
+                $formularios    =  $configuracion['formularios'][0];
+
+                //Creacion de pdf
+                $pdf = app('dompdf.wrapper');
+                $pdf->getDomPDF()->set_option("enable_php", true);
+                $pdf->setPaper("letter", "portrait");
+                //$pdf->loadHTML('<h1>Styde.net</h1>');
+                $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios'));
+                //return $pdf->download('Formulario.pdf');
+
+                //Se guardar el pdf
+                $pathPdf        = public_path('tramites');
+                $fileNamePdf    = Str::random(8) . '.pdf';
+                if(!File::isDirectory($pathPdf)) {
+                    if(!File::makeDirectory($pathPdf, $mode = 0777, true, true))
+                        $response = false;
+                }
+
+                $pdf->save($pathPdf . '/' . $fileNamePdf);
+    
+                $zip = new ZipArchive();
+                $fecha = Carbon::now();
+                $fecha = $fecha->toArray();
+                $fecha = $fecha['timestamp'];
+                $folio = explode('/', $tramite->USTR_CFOLIO);
+                $folio = $folio[0] . '_' . $folio[1];
+                $fileName = 'TRAM_' . $folio. '_'.$tramite->USTR_CRFC . '.zip';
+                //$fileName = 'TRAM_' . $tramite->USTR_CRFC  . '.zip';
+                //$fileName = 'TRAM_' . $folio. '.zip';
+                $listDocumentos = DB::select('SELECT * FROM tram_mdv_usuariordocumento WHERE USDO_NIDUSUARIOTRAMITE = ?', array($id->USTR_NIDUSUARIOTRAMITE));
+                $listResolutivos = DB::select('SELECT * FROM tram_mdv_usuario_resolutivo WHERE USRE_NIDUSUARIOTRAMITE = ?', array($id->USTR_NIDUSUARIOTRAMITE));
+                if ($zip->open($pathPdf."/".$fileName, ZipArchive::CREATE) == TRUE) {
+
+                    //Agregamos formulario
+                    $zip->addFile($pathPdf."/".$fileNamePdf, 'FORMULARIO_' . $folio . '.pdf');
+    
+                    //Agregar documentos al zip
+                    foreach ($listDocumentos as $key => $value) {
+    
+                        if ($value->USDO_CRUTADOC != null && $value->USDO_CRUTADOC != "") {
+                            if (file_exists(public_path($value->USDO_CRUTADOC))) {
+                                $fileNameDocumento = $value->USDO_CDOCNOMBRE . '.' . $value->USDO_CEXTENSION;
+                                $zip->addFile(public_path($value->USDO_CRUTADOC), $fileNameDocumento);
+                            }
+                        }
+                    }
+    
+                    //Agregar resolutivos
+                    foreach ($listResolutivos as $key => $value) {
+                        if ($value->USRE_CRUTADOC != null && $value->USRE_CRUTADOC != "") {
+                            if (file_exists(public_path($value->USRE_CRUTADOC))) {
+                                $fileNameDocumento = "R-" . $value->USRE_NIDUSUARIO_RESOLUTIVO . '.' . $value->USRE_CEXTENSION;
+                                $zip->addFile(public_path($value->USRE_CRUTADOC), $fileNameDocumento);
+                            }
+                        }
+                    }
+                    $zip->close();
+                }
+                $zipPrincipal->addFile($pathPdf."/".$fileName, $fileName);
+                File::delete($pathPdf . '/' . $fileNamePdf);
+                array_push($archivosBorrar, $fileName);
+                
+            }
+            $zipPrincipal->close();
+            foreach ($archivosBorrar as $key => $nombre) {
+                File::delete($pathPdf . '/' . $nombre);
+            }
+            
+            
+        }
+        
+        $response = [ 'name' => 'tramites/'.$fileNamePrincipal, 'status' => 'success'];
+        return response()->json($response);
+        } catch (\Throwable $th) {
+            //dd($ex->getMessage());
+            $response = [ 'name' => '', 'status' => 'error'];
+            return response()->json($response);
+        }
     }
 }

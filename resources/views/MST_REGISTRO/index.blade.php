@@ -77,8 +77,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="divMensaje" style="display: none;">
-                                <p style="color: black;">Para Registrar una Persona Moral, es es necesario realizar el registro previamente del Representante Legal como Persona Física.</p>
+                            <div id="divMensaje" class="alert alert-warning" role="alert" style="display: none;">
+                                Para Registrar una Persona Moral, es es necesario realizar el registro previamente del Representante Legal como Persona Física.
                             </div>
                         </div>
                         
