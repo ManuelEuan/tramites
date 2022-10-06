@@ -132,6 +132,32 @@
 
 </div>
 <br />
+<!-- Modal -->
+<div class="modal" id="asignarFuncionarioModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 mb-3" id="tipoId" style="">
+                    <label>Tipo de cuestionario</label>
+                    <select name="analistaSelec" id="analistaSelec" class="form-control">
+                    </select>
+                    <input type="text" id="idTramite">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="asignarFuncionario()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('scripts')
 <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
@@ -306,7 +332,7 @@
                         render: function(data, type, row) {
                             if (type === 'display') {
                                 var date = new Date(data.substring(0, 10));
-                                return (date.getDate() + 1)+ '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + data.substring(11, data.length);
+                                return (date.getDate() + 1) + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + data.substring(11, data.length);
                             }
                             return data;
                         }
@@ -314,21 +340,21 @@
                     {
                         "data": "USTR_CFOLIO"
                     },
-                   /* {
-                        "data": "USTR_CNOMBRE_COMPLETO"
-                    },*/
+                    /* {
+                         "data": "USTR_CNOMBRE_COMPLETO"
+                     },*/
                     {
                         "data": null,
                         render: function(data, type, row) {
                             var nombre = "";
-                            if(data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null){
-                                if(data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == ""){
-                                    nombre = data.USTR_CNOMBRE + " " +data.USTR_CPRIMER_APELLIDO;
-                                }else{
-                                    nombre = data.USTR_CNOMBRE + " " +data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
-                                }          
-                            }else{
-                                nombre =  data.USTR_CNOMBRE_COMPLETO;
+                            if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
+                                if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
+                                    nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO;
+                                } else {
+                                    nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
+                                }
+                            } else {
+                                nombre = data.USTR_CNOMBRE_COMPLETO;
                             }
                             return nombre;
                         }
@@ -353,18 +379,32 @@
                          */
                         data: null,
                         render: function(data, type, row) {
-                            var acciones = `<span>
-                                                <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
-                                            </span>`;
-                            if(data.USTR_NESTATUS != 10){
-                               acciones = acciones + `<span>
-                                    <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
-                                </span>`
+                            if(data.rol == 'ANTA'){
+                                return `<span>
+                                        <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                    </span>`;
                             }
-                            acciones = acciones + `<span>
-                                <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                </span>`
-                            return acciones;
+                            else{
+                                return `<span>
+                                        <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i class='fa fa-users' style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                    </span>`;
+                            }
+                            
                         }
                     },
                 ],
@@ -379,23 +419,22 @@
                     [10, 25, 50, 100, "Todos"]
                 ],
                 dom: 'Blrtip',
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         exportOptions: {
-                            columns: [ 0, 1, 2, 3, 4, 5 ]
+                            columns: [0, 1, 2, 3, 4, 5]
                         }
                     },
                     {
                         extend: 'csvHtml5',
                         exportOptions: {
-                            columns: [ 0, 1, 2, 3, 4, 5 ]
+                            columns: [0, 1, 2, 3, 4, 5]
                         }
                     },
                     {
                         extend: 'pdfHtml5',
                         exportOptions: {
-                            columns: [ 0, 1, 2, 3, 4, 5 ]
+                            columns: [0, 1, 2, 3, 4, 5]
                         }
                     }
                 ]
@@ -403,6 +442,8 @@
         }
 
         TRAM_AJX_CONSULTARSEGUIMIENTO();
+
+        listaAnalistas();
     });
 
     function verDetalle(id) {
@@ -458,6 +499,72 @@
     function filter() {
         table.ajax.reload();
     }
+
+    function listaAnalistas(){  
+        listado = []; 
+        html = '';
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type: 'GET',
+            url: "/ListaAnalistas", 
+            success: function(result){
+                html += '<option value="'+0+'" >Sin Asignación</option>';
+                for(i=0; i<result.length; i++){
+                    var nombre = result[i].USUA_CPRIMER_APELLIDO+' '+result[i].USUA_CSEGUNDO_APELLIDO+' '+result[i].USUA_CNOMBRES;
+                    html += '<option value="'+result[i].USUA_NIDUSUARIO+'" >'+nombre+'</option>';
+                }
+                $("#tipoIdres").html(result);
+                $("#analistaSelec").html(html);
+            }}
+        );
+    }
+
+    // ! modalito
+    function asignarFuncionarioModal(id) {
+        // !codigo
+        $("#idTramite").val(id);
+        $("#asignarFuncionarioModal").modal('show');
+    }
+
+    function asignarFuncionario() {
+        listado = []; 
+        var envio = {
+                USTR_NIDUSUARIOTRAMITE: $("#idTramite").val(),
+                USUA_NIDUSUARIO: $("#analistaSelec").val(),
+                USUA_NIDUSUARIOREGISTRO: 0,
+            };
+        
+        $.ajax({
+            data: envio,
+            type: 'POST',
+            url: "tramite_servicio_cemr/asignar_tramite", 
+            success: function(result){
+                $("#asignarFuncionarioModal").modal('hide');
+                Swal.fire({
+                    icon: result.estatus,
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+            },
+            error: function(result) {
+                Swal.fire({
+                    icon: "error",
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 3000
+                });
+            }
+        });
+    }
+    // ! modalito
 </script>
 
 
@@ -559,7 +666,7 @@
         background: #ffffff;
     }
 
-    .buttons-html5{
+    .buttons-html5 {
         background-color: #01b3e8 !important;
     }
 </style>

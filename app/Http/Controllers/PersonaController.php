@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cls_PersonaFisicaMoral;
+use App\Models\Cls_UsuarioTramiteAnalista;
 
 class PersonaController extends Controller
 {
@@ -158,6 +159,22 @@ class PersonaController extends Controller
         
         
         return response()->json($final, 200);
+    }
+
+    public function findAnalista(){
+        $items      = [];
+        $order_by   = 'USUA_CPRIMER_APELLIDO';
+        $array      = [];
+        
+        //Comienza el Query
+        $query = DB::table('tram_mst_usuario');
+        //$query->where("USUA_NACTIVO", true);
+        $query->where("USUA_NIDROL", 9);
+        $query->orderBy($order_by, 'asc');
+
+        $items = $query->get();
+
+        return response()->json($items);
     }
 
     public function status(Request $request){
