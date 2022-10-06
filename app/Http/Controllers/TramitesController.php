@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Mail;
 use App\Cls_Seguimiento_Servidor_Publico;
 use App\Models\Cls_Formulario_Pregunta_Respuesta;
 
+//asignar tramites
+use App\Cls_UsuarioTramiteAnalista;
+
 class TramitesController extends Controller
 {
     protected $variosService;
@@ -108,21 +111,55 @@ class TramitesController extends Controller
             $result = $tramite_seguimiento->TRAM_SP_CONSULTAR_TRAMITES_SEGUIMIENTO();
             $tramites = $result['result'];
             $totalRegistros = $result['total'][0]->TotalRegistros;
-            foreach ($tramites as $key => $t) {
-                $diasH = $t->USTR_NDIASHABILESRESOLUCION;
-                $hoy = date('Y-m-d');
-                $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
-                
-                if($hoy > $fechaFinal){
-                    $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
-                }
+            $mostrar=[];
 
+            if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE === 'ANTA'){
+                $asignados = Cls_UsuarioTramiteAnalista::TramitesAnalista($tramite_seguimiento->UsuarioID);
+                //$asignados[] = $tramite_seguimiento->UsuarioID;
+                //$asignados[] = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
+
+                foreach ($tramites as $key => $t) {
+                    foreach ($asignados as $llave => $index) {
+                        if($t->USTR_NIDUSUARIOTRAMITE == $index->USTR_NIDUSUARIOTRAMITE){
+                            $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
+                            $mostrar[] = $t;
+
+                            $diasH = $t->USTR_NDIASHABILESRESOLUCION;
+                            $hoy = date('Y-m-d');
+                            $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
+                            
+                            if($hoy > $fechaFinal){
+                                $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                            }
+
+                        }
+                    }
+                }
+                $tramites = $mostrar;
+                $totalRegistros=strval(count($tramites));
+                $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
+            }else{
+                //$asignados =[$tramite_seguimiento->UsuarioID, 'rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
+                $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
+                foreach ($tramites as $key => $t) {
+                    $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
+
+                    $diasH = $t->USTR_NDIASHABILESRESOLUCION;
+                    $hoy = date('Y-m-d');
+                    $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
+                    
+                    if($hoy > $fechaFinal){
+                        $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                    }
+    
+                }
             }
 
             $response = [
                 'recordsTotal' => $totalRegistros,
                 'recordsFiltered' => $searchValue === null ? $totalRegistros : count($tramites),
-                'data' =>  $tramites
+                'data' =>  $tramites,
+                'asignados' => $asignados
             ];
         } catch (\Throwable $th) {
             $response = [
@@ -384,6 +421,7 @@ class TramitesController extends Controller
 
             Cls_Seguimiento_Servidor_Publico::TRAM_ACEPTAR_SECCION_FORMULARIO($request->CONF_NIDUSUARIOTRAMITE, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO);
             $this->enviar_correo_aprobacion($request->CONF_NIDUSUARIOTRAMITE);
+            Cls_UsuarioTramiteAnalista::ApruebaTramite($request->CONF_NIDUSUARIOTRAMITE);
 
             $response = [
                 "estatus" => "success",
@@ -1043,5 +1081,13 @@ class TramitesController extends Controller
 
         //return response()->download(public_path($fileName))->deleteFileAfterSend(true);
         return response()->json($response);
+    }
+
+
+    //--------------------------asignar--------------------
+    public function asignar_tramite(Request $request){//Request $request
+        $respuesta = Cls_UsuarioTramiteAnalista::AsignarTramite($request);
+        
+        return $respuesta;
     }
 }

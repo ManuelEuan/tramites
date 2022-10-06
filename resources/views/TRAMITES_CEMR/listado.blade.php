@@ -144,17 +144,15 @@
             </div>
             <div class="modal-body">
                 <div class="col-md-12 mb-3" id="tipoId" style="">
-                    <label for="tipoCuestionario">Tipo de cuestionario</label>
-                    <select name="tipoCuestionario" id="tipoCuestionario" class="form-control" onchange="seleccionaCuestionario()">
-                        <option value="nuevo" selected="">Nuevo</option>
-                        <option value="copia">Duplicar</option>
+                    <label>Tipo de cuestionario</label>
+                    <select name="analistaSelec" id="analistaSelec" class="form-control">
                     </select>
                     <input type="text" id="idTramite">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success">Save changes</button>
+                <button type="button" class="btn btn-success" onclick="asignarFuncionario()">Save changes</button>
             </div>
         </div>
     </div>
@@ -381,33 +379,32 @@
                          */
                         data: null,
                         render: function(data, type, row) {
-<<<<<<< HEAD
-                            return `<span>
+                            if(data.rol == 'ANTA'){
+                                return `<span>
                                         <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
                                     </span>
                                     <span>
                                         <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
                                     </span>
                                     <span>
-                                        <button type="button" onclick="asignarFuncionario(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i class='fa fa-users' style="color: black"></i></button>
+                                        <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                    </span>`;
+                            }
+                            else{
+                                return `<span>
+                                        <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i class='fa fa-users' style="color: black"></i></button>
                                     </span>
                                     <span>
                                         <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
                                     </span>`;
-=======
-                            var acciones = `<span>
-                                                <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
-                                            </span>`;
-                            if(data.USTR_NESTATUS != 10){
-                               acciones = acciones + `<span>
-                                    <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
-                                </span>`
                             }
-                            acciones = acciones + `<span>
-                                <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                </span>`
-                            return acciones;
->>>>>>> 216f60907f0022f9023b7ba6c740f2747a97c003
+                            
                         }
                     },
                 ],
@@ -449,14 +446,6 @@
         listaAnalistas();
     });
 
-    // ! modalito
-    function asignarFuncionario(id) {
-        // !codigo
-        $("#idTramite").val(id);
-        $("#asignarFuncionarioModal").modal('show');
-    }
-    // ! modalito
-    
     function verDetalle(id) {
         var host = window.location.origin;
         location.href = "/tramite_servicio_cemr/detalle/" + id;
@@ -520,17 +509,62 @@
             }
         });
         $.ajax({
+            type: 'GET',
             url: "/ListaAnalistas", 
             success: function(result){
+                html += '<option value="'+0+'" >Sin Asignación</option>';
                 for(i=0; i<result.length; i++){
                     var nombre = result[i].USUA_CPRIMER_APELLIDO+' '+result[i].USUA_CSEGUNDO_APELLIDO+' '+result[i].USUA_CNOMBRES;
                     html += '<option value="'+result[i].USUA_NIDUSUARIO+'" >'+nombre+'</option>';
                 }
                 $("#tipoIdres").html(result);
-                $("#tipoCuestionario").html(html);
+                $("#analistaSelec").html(html);
             }}
         );
     }
+
+    // ! modalito
+    function asignarFuncionarioModal(id) {
+        // !codigo
+        $("#idTramite").val(id);
+        $("#asignarFuncionarioModal").modal('show');
+    }
+
+    function asignarFuncionario() {
+        listado = []; 
+        var envio = {
+                USTR_NIDUSUARIOTRAMITE: $("#idTramite").val(),
+                USUA_NIDUSUARIO: $("#analistaSelec").val(),
+                USUA_NIDUSUARIOREGISTRO: 0,
+            };
+        
+        $.ajax({
+            data: envio,
+            type: 'POST',
+            url: "tramite_servicio_cemr/asignar_tramite", 
+            success: function(result){
+                $("#asignarFuncionarioModal").modal('hide');
+                Swal.fire({
+                    icon: result.estatus,
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+            },
+            error: function(result) {
+                Swal.fire({
+                    icon: "error",
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 3000
+                });
+            }
+        });
+    }
+    // ! modalito
 </script>
 
 
