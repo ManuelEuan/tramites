@@ -1167,7 +1167,6 @@
                     $("#alternativoEsIgual").html("<span style='color: red;'> Los correos alternativos no coinciden favor de verificar la información</span>");
                     return;
                 }
-                return;
             }
             if($("#resultadoExistRfc").html() != ""){
                 $("#btnSubmit").prop("disabled", true);
