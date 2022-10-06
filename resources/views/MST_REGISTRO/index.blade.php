@@ -183,12 +183,6 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="bus-txt-centro-trabajo">Nombre (s) <span class="text-danger">*</span> </label>
-                                        <input type="text" class="form-control" name="txtNombres" id="txtNombres" placeholder="Nombre (s)" required >
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Primer apellido <span class="text-danger">*</span> </label>
                                         <input type="text" class="form-control" name="txtPrimer_Apellido" id="txtPrimer_Apellido" placeholder="Primer apellido" required>
                                     </div>
@@ -197,6 +191,12 @@
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Segundo apellido</label>
                                         <input type="text" class="form-control" name="txtSegundo_Apellido" id="txtSegundo_Apellido" placeholder="Segundo apellido">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="bus-txt-centro-trabajo">Nombre (s) <span class="text-danger">*</span> </label>
+                                        <input type="text" class="form-control" name="txtNombres" id="txtNombres" placeholder="Nombre (s)" required >
                                     </div>
                                 </div>
                             </div>
@@ -282,12 +282,6 @@
                             <label for=""><b>Personas autorizadas para oír y recibir notificaciones</b></label>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label for="bus-txt-centro-trabajo">Nombre<span class="text-danger">*</span> </label>
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" id="nombrePersonaAutorizada" name="nombrePersonaAutorizada" placeholder="Nombre (s)" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Primer apellido <span class="text-danger">*</span> </label>
                                         <input type="text" class="form-control" name="apellidoPrimerAutorizada" id="apellidoPrimerAutorizada" placeholder="Primer apellido" required>
@@ -299,7 +293,12 @@
                                         <input type="text" class="form-control" name="apellidoSegundoAutorizada" id="apellidoSegundoAutorizada" placeholder="Segundo apellido">
                                     </div>
                                 </div>
-
+                                <div class="col-md-4">
+                                    <label for="bus-txt-centro-trabajo">Nombre<span class="text-danger">*</span> </label>
+                                    <div class="form-group">
+                                        <input class="form-control" type="text" id="nombrePersonaAutorizada" name="nombrePersonaAutorizada" placeholder="Nombre (s)" required>
+                                    </div>
+                                </div>
                                 <div class="col-md-4">
                                     <label for="bus-txt-centro-trabajo">Teléfono <span class="text-danger">*</span> </label>
                                     <div class="form-group">
@@ -1185,7 +1184,8 @@
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 return;
             }
-            if($("#txtConfirmacionCorreo_Electronico").val() != $("#txtConfirmacionCorreo_Alternativo").val()){
+            if($("#txtConfirmacionCorreo_Electronico").val() != $("#txtCorreo_Electronico").val()){
+                console.log($("#txtConfirmacionCorreo_Electronico").val(),)
                 Swal.fire({
                     icon: 'error',
                     title: 'Correos incorrectos',
@@ -1214,7 +1214,6 @@
                     $("#alternativoEsIgual").html("<span style='color: red;'> Los correos alternativos no coinciden favor de verificar la información</span>");
                     return;
                 }
-                return;
             }
             if($("#resultadoExistRfc").html() != ""){
                 $("#btnSubmit").prop("disabled", true);
