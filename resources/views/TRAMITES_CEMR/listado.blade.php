@@ -147,7 +147,7 @@
                     <label>Tipo de cuestionario</label>
                     <select name="analistaSelec" id="analistaSelec" class="form-control">
                     </select>
-                    <input type="text" id="idTramite">
+                    <input type="text" id="idTramite" readonly>
                 </div>
             </div>
             <div class="modal-footer">
