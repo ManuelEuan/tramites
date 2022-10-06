@@ -128,6 +128,8 @@ Route::group(['prefix' => 'tramite_servicio_cemr'], function () {
     Route::post('/guardar_conceptos', 'TramitesController@guardar_conceptos')->name("guardar_conceptos");
     Route::get('/download_tramite/{id}', 'TramitesController@download_tramite')->name('download_tramite');
     Route::get('/seccion_actualizar_pago/{id}', 'GestorController@actualizar_pago')->name('actualizar_pago');
+    //vista de asignacion
+    Route::post('/asignar_tramite', 'TramitesController@asignar_tramite')->name('asignar_tramite');;
 });
 
 Route::group(['prefix' => 'formulario'], function () {
@@ -154,9 +156,12 @@ Route::group(['prefix' => 'gestores_solicitud'], function () {
 Route::group(['prefix' => 'personasfsicasmorales'], function () {
     Route::get('/', 'PersonaController@index')->middleware("permiso");
     Route::get('/find', 'PersonaController@find');
+    Route::get('/findAnalista', 'PersonaController@findAnalista');
     Route::post('/status', 'PersonaController@status');
     Route::post('/update', 'PersonaController@update');
 });
+
+Route::get('/ListaAnalistas', 'PersonaController@findAnalista');
 
 Route::group(['prefix' => 'notificaciones'], function () {
     Route::post('/', 'NotificacionController@getNotificaciones');
