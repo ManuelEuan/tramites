@@ -21,6 +21,7 @@ class RegistroController extends Controller
             $request->txtExtension  = "";
             $request->txtUsuario    = "";
             $request->txtCurp       = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCurpMoral : $request->txtCurp;
+            $request->txtCorreo_Electronico       = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCorreo_ElectronicoMoral : $request->txtCorreo_Electronico;
             $IntUsuarioId           = Cls_Usuario::TRAM_SP_AGREGARUSUARIO($request);
             $sucursales             = is_null($request->lstSucursal) ? [] : $request->lstSucursal;
             
@@ -53,7 +54,7 @@ class RegistroController extends Controller
 		$ObjData['StrNombres'] = $request->txtNombres;
 		$ObjData['StrHost'] = $request->getHttpHost();
 		$ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
-		$ObjData['StrCorreoElectronico'] = $request->txtCorreo_Electronico;
+		$ObjData['StrCorreoElectronico'] = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCorreo_ElectronicoMoral : $request->txtCorreo_Electronico;
 		$ObjData['StrRFC'] = $request->txtRfc;
 		Mail::send('MSTP_MAIL.registro', $ObjData, function ($message) use($ObjData) {
 			$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
