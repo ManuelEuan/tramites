@@ -602,7 +602,8 @@
                                                             </div>
                                                             <div class=" col-md-8">
                                                                 @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
-                                                                    <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE  ])}}">Vista Previa</a>
+                                                                    <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE, 'tipo' => 1 ])}}">Vista Previa</a>
+                                                                    <a class="btn btn-primary" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE, 'tipo' => 0 ])}}">Descargar</a>
                                                                 @else
                                                                     <a class="btn btn-success" target="_blank" @disabled(true) title="No disponible">Vista Previa</a>
                                                                 @endif

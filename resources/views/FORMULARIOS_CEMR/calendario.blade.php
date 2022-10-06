@@ -133,10 +133,11 @@
             });
 
             calendar.render();
-
+            
             $(".selectCatalogos").selectpicker({
                 noneSelectedText: 'Seleccionar',
             });
+           
         });
 
         (function() {
@@ -169,6 +170,7 @@
         function abreModal(data, accion = 'add') {
             limpiaCampos();
             accionGuar = accion;
+            const seleccionados = [];
 
             if(accion == 'add' ){
                 $('#fechaInicial').val(data.dateStr);
@@ -190,12 +192,13 @@
                 let array   = ids.split(",");
 
                 array.forEach(element => {
-                    $("#dependencias option[value="+ element +"]").attr("selected", true);
+                    seleccionados.push(element);
                 });
 
-                $('select').selectpicker('render');
+                $('.selectpicker').selectpicker('val', seleccionados);
+                $('.selectpicker').selectpicker('refresh');
             }
-            console.log(accion);
+
             $('#exampleModalCenter').modal('toggle');
         }
 
@@ -209,7 +212,7 @@
 
         function guardarFormulario(){
             $("#btnSubmit").click();
-            console.log(accionGuar);
+
             if(validacion == false){
                 return;
             }

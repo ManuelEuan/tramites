@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Mail;
 use App\Cls_Seguimiento_Servidor_Publico;
 use App\Models\Cls_Formulario_Pregunta_Respuesta;
 
+//asignar tramites
+use App\Cls_UsuarioTramiteAnalista;
+
 class TramitesController extends Controller
 {
     protected $variosService;
@@ -77,7 +80,7 @@ class TramitesController extends Controller
             $filter['rfc'] = $request->get('rfc') ?? "";
             $filter['curp'] = $request->get('curp') ?? "";
             $filter['estatus'] = is_null($request->get('estatus')) ? 0 : intval($request->get('estatus'));
-
+ 
             $tramite_seguimiento = new Cls_Seguimiento_Servidor_Publico();
             $tramite_seguimiento->USTR_NIDUSUARIOTRAMITE = 0;
             $tramite_seguimiento->StrTexto =  $filter['StrTexto'] ?? "";
@@ -108,21 +111,55 @@ class TramitesController extends Controller
             $result = $tramite_seguimiento->TRAM_SP_CONSULTAR_TRAMITES_SEGUIMIENTO();
             $tramites = $result['result'];
             $totalRegistros = $result['total'][0]->TotalRegistros;
-            foreach ($tramites as $key => $t) {
-                $diasH = $t->USTR_NDIASHABILESRESOLUCION;
-                $hoy = date('Y-m-d');
-                $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
-                
-                if($hoy > $fechaFinal){
-                    $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
-                }
+            $mostrar=[];
 
+            if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE === 'ANTA'){
+                $asignados = Cls_UsuarioTramiteAnalista::TramitesAnalista($tramite_seguimiento->UsuarioID);
+                //$asignados[] = $tramite_seguimiento->UsuarioID;
+                //$asignados[] = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
+
+                foreach ($tramites as $key => $t) {
+                    foreach ($asignados as $llave => $index) {
+                        if($t->USTR_NIDUSUARIOTRAMITE == $index->USTR_NIDUSUARIOTRAMITE){
+                            $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
+                            $mostrar[] = $t;
+
+                            $diasH = $t->USTR_NDIASHABILESRESOLUCION;
+                            $hoy = date('Y-m-d');
+                            $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
+                            
+                            if($hoy > $fechaFinal){
+                                $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                            }
+
+                        }
+                    }
+                }
+                $tramites = $mostrar;
+                $totalRegistros=strval(count($tramites));
+                $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
+            }else{
+                //$asignados =[$tramite_seguimiento->UsuarioID, 'rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
+                $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
+                foreach ($tramites as $key => $t) {
+                    $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
+
+                    $diasH = $t->USTR_NDIASHABILESRESOLUCION;
+                    $hoy = date('Y-m-d');
+                    $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
+                    
+                    if($hoy > $fechaFinal){
+                        $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                    }
+    
+                }
             }
 
             $response = [
                 'recordsTotal' => $totalRegistros,
                 'recordsFiltered' => $searchValue === null ? $totalRegistros : count($tramites),
-                'data' =>  $tramites
+                'data' =>  $tramites,
+                'asignados' => $asignados
             ];
         } catch (\Throwable $th) {
             $response = [
@@ -194,13 +231,19 @@ class TramitesController extends Controller
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
     }
 
-    public function generatePrevioResolutivo($resolutivoId, $tramiteId) {
-        $resolutivo = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO($resolutivoId)[0];
-        $mapeoCampos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO_MAPEO($resolutivoId, $tramiteId);
+    /**
+     * Retorna el resolutivo en formato PDF y/o Doc
+     * @param int $resolutivo_Id
+     * @param int $tramite_Id
+     * @param int $tipo
+     * @return File
+     */
+    public function generatePrevioResolutivo($resolutivo_Id,$tramite_Id, $tipo = 0 ) {
+        $resolutivo = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO($resolutivo_Id)[0];
+        $mapeoCampos = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVO_MAPEO($resolutivo_Id, $tramite_Id);
 
-        /* Set the PDF Engine Renderer Path */
+        /* Set the PDF Engine Renderer Path */  
         $domPdfPath = base_path('vendor/dompdf/dompdf');
-
         Settings::setPdfRendererPath($domPdfPath);
         Settings::setPdfRendererName('DomPDF');
 
@@ -212,7 +255,7 @@ class TramitesController extends Controller
 
         foreach ($mapeoCampos as $campo) {
             $pregunta = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID', $campo->USRE_NIDPREGUNTA)->first();
-            if($pregunta->FORM_CTIPORESPUESTA == 'catalogo') {
+            if(!is_null($pregunta) && $pregunta->FORM_CTIPORESPUESTA == 'catalogo') {
                 $array      = explode(",", $campo->USRE_CRESPUESTA);
                 $respuestas = DB::table($pregunta->FORM_CVALOR)->whereIn('id', $array)->get();
                 $texto      = "";
@@ -222,26 +265,27 @@ class TramitesController extends Controller
                 }
                 $campo->USRE_CRESPUESTA = $texto;
             }
+
+            /*@ Replacing variables in doc file */
             $template->setValue($campo->TRAM_CNOMBRECAMPO, $campo->USRE_CRESPUESTA);
         }
 
-        $pathQR = $this->variosService->generaQR(url('/') . '/docts/resolutivos/new-result' . $nameFile[0] . '.pdf');
+        $pathQR = $this->variosService->generaQR(url('/') . '/docts/resolutivos/resolutivo_' . $nameFile[0] . '.pdf');
         $template->setImageValue('qrcode', array('path' =>  $pathQR, 'width' => 100, 'height' => 100, 'ratio' => true));
-        /*@ Replacing variables in doc file */
-        /*  $template->setValue('date', date('d-m-Y'));
-        $template->setValue('title', 'Mr.');
-        $template->setValue('firstname', 'Josue');
-        $template->setValue('lastname', 'Lopez');
-        */
+
         /*@ Save Temporary Word File With New Name */
-        $saveDocPath = $rutaBase . 'new-result' . $nameFile[0] . '.docx';
+        $saveDocPath = $rutaBase . 'resolutivo_'. $nameFile[0] .'.docx';
         $template->saveAs($saveDocPath);
+
+        if($tipo == 0)
+            return redirect('/docts/resolutivos/resolutivo_' . $nameFile[0] . '.docx');
+
 
         // Load temporarily create word file
         $Content = \PhpOffice\PhpWord\IOFactory::load($saveDocPath);
 
         //Save it into PDF
-        $savePdfPath = $rutaBase . 'new-result' . $nameFile[0] . '.pdf';
+        $savePdfPath = $rutaBase . 'resolutivo_'. $nameFile[0] .'.pdf';
 
         /*@ If already PDF exists then delete it */
         if (file_exists($savePdfPath)) {
@@ -257,7 +301,7 @@ class TramitesController extends Controller
             unlink($saveDocPath);
         }
 
-        return redirect('/docts/resolutivos/new-result' . $nameFile[0] . '.pdf');
+        return redirect('/docts/resolutivos/resolutivo_' . $nameFile[0] . '.pdf');
     }
 
     //Obtener trámite en seguimiento
@@ -384,6 +428,7 @@ class TramitesController extends Controller
 
             Cls_Seguimiento_Servidor_Publico::TRAM_ACEPTAR_SECCION_FORMULARIO($request->CONF_NIDUSUARIOTRAMITE, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO);
             $this->enviar_correo_aprobacion($request->CONF_NIDUSUARIOTRAMITE);
+            Cls_UsuarioTramiteAnalista::ApruebaTramite($request->CONF_NIDUSUARIOTRAMITE);
 
             $response = [
                 "estatus" => "success",
@@ -1043,5 +1088,13 @@ class TramitesController extends Controller
 
         //return response()->download(public_path($fileName))->deleteFileAfterSend(true);
         return response()->json($response);
+    }
+
+
+    //--------------------------asignar--------------------
+    public function asignar_tramite(Request $request){//Request $request
+        $respuesta = Cls_UsuarioTramiteAnalista::AsignarTramite($request);
+        
+        return $respuesta;
     }
 }
