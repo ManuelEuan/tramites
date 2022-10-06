@@ -69,7 +69,7 @@ class Cls_UsuarioTramiteAnalista extends Model
     }
 
     static function VerificaAsignacion($USTR_NIDUSUARIOTRAMITE){//Request $request
-        $verifica = DB::select('select * from tram_mdv_usuariotramite_analista where USTR_NIDUSUARIOTRAMITE = ?', [$USTR_NIDUSUARIOTRAMITE,]);
+        $verifica = DB::select('select * from tram_mdv_usuariotramite_analista where USTR_NIDUSUARIOTRAMITE = ? and USUA_NIDUSUARIO > 0', [$USTR_NIDUSUARIOTRAMITE,]);
         
         if(count($verifica) > 0){
             $verifica=1;
