@@ -231,6 +231,22 @@
                                         <span id="resultadoAlterno" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
+                                <br>
+                                <!-- metodos de confirmacion -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="bus-txt-centro-trabajo">Ingresa nuevamente el correo electrónico <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" name="txtConfirmacionCorreo_Electronico" id="txtConfirmacionCorreo_Electronico" placeholder="Vuelve a escribir el correo electrónico" required>
+                                            <span id="correoEsIgual" style="font-size: 12px;"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="bus-txt-centro-trabajo">Ingresa nuevamente el correo electrónico alternativo</label>
+                                        <input type="email" class="form-control" name="txtConfirmacionCorreo_Alternativo" id="txtConfirmacionCorreo_Alternativo" placeholder="Vuelve a escribir el correo electrónico alternativo">
+                                        <span id="alternativoEsIgual" style="font-size: 12px;"></span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">
@@ -290,7 +306,12 @@
                                         <input class="form-control" type="text" id="correoPersonaAutorizada" name="correoPersonaAutorizada" placeholder="Correo" required>
                                     </div>
                                 </div>
-
+                                <div class="col-md-4">
+                                    <label for="bus-txt-centro-trabajo">Confirmación correo persona autorizada <span class="text-danger">*</span> </label>
+                                    <div class="form-group">
+                                        <input class="form-control" type="text" id="ConfirmCorreoPersonaAutorizada" name="ConfirmCorreoPersonaAutorizada" placeholder="Correo" required>
+                                    </div>
+                                </div>
                             </div>
 
                             <br>
@@ -672,6 +693,14 @@
                         email: "",
                         required: ""
                     },
+                    txtConfirmacionCorreo_Electronico: {
+                        email: "",
+                        required: ""
+                    },
+                    txtConfirmacionCorreo_Alternativo: {
+                        email: "",
+                        required: ""
+                    },
                     txtContrasenia: {
                         minlength: "El tamaño del campo debe contener mínimo 5 dígitos.",
                         maxlength: "El tamaño del campo debe contener máximo 20.",
@@ -740,6 +769,9 @@
                         soloLetras: "La campo solamente puede tener caracteres alfabéticos y espacios."
                     },
                     correoPersonaAutorizada: {
+                        required: ""
+                    },
+                    ConfirmCorreoPersonaAutorizada: {
                         required: ""
                     },
                     txtConfirmacion: {
@@ -980,6 +1012,28 @@
                 }
             }
         });
+        $('#txtConfirmacionCorreo_Electronico').change(function(){
+            var value = $( this ).val();
+            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            if(value != ""){
+                if (emailRegex.test(value)) {
+                    $("#correoEsIgual").html('');
+                } else {
+                    $("#correoEsIgual").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+                }
+            }
+        });
+        $('#txtConfirmacionCorreo_Alternativo').change(function(){
+            var value = $( this ).val();
+            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            if(value != ""){
+                if (emailRegex.test(value)) {
+                    $("#alternativoEsIgual").html('');
+                } else {
+                    $("#alternativoEsIgual").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+                }
+            }
+        });
 
         $('#txtConfirmacion').change(function(){
             var value = $( this ).val();
@@ -1084,7 +1138,37 @@
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 return;
             }
-
+            if($("#txtConfirmacionCorreo_Electronico").val() != $("#txtConfirmacionCorreo_Alternativo").val()){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Correos incorrectos',
+                    text: 'Los correos no coinciden, por favor verifica la información e intenta nuevamente',
+                })
+                $("#resultadoExistCorreo").html("<span style='color: red;'> Los correos principales no coinciden favor de verificar la información</span>");
+                $("#correoEsIgual").html("<span style='color: red;'> Los correos principales no coinciden favor de verificar la información</span>");
+                return;
+            }
+            if($("#correoPersonaAutorizada").val() != $("#ConfirmCorreoPersonaAutorizada").val()){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Correos incorrectos',
+                    text: 'Los correos de la persona autorizada no coinciden, por favor verifica la información e intenta nuevamente',
+                })
+                return;
+            }
+            if($("#txtCorreo_Alternativo").val() != ""){
+                if($("#txtCorreo_Alternativo").val() != $("#txtConfirmacionCorreo_Alternativo").val()){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Correos alternativos incorrectos',
+                        text: 'Los correos alternativos no coinciden, por favor verifica la información e intenta nuevamente',
+                    })
+                    $("#resultadoAlterno").html("<span style='color: red;'> Los correos alternativos no coinciden favor de verificar la información</span>");
+                    $("#alternativoEsIgual").html("<span style='color: red;'> Los correos alternativos no coinciden favor de verificar la información</span>");
+                    return;
+                }
+                return;
+            }
             if($("#resultadoExistRfc").html() != ""){
                 $("#btnSubmit").prop("disabled", true);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -1108,75 +1192,75 @@
                 return;
             }
 
-            Swal.fire({
-                title: '¡Confirmar!',
-                text: "Se enviará un correo con la información para iniciar sesión. ¿Desea continuar?",
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Aceptar'
-                }).then((result) => {
-                if (result.isConfirmed) {
+            // Swal.fire({
+            //     title: '¡Confirmar!',
+            //     text: "Se enviará un correo con la información para iniciar sesión. ¿Desea continuar?",
+            //     icon: 'info',
+            //     showCancelButton: true,
+            //     confirmButtonColor: '#3085d6',
+            //     cancelButtonColor: '#d33',
+            //     cancelButtonText: 'Cancelar',
+            //     confirmButtonText: 'Aceptar'
+            //     }).then((result) => {
+            //     if (result.isConfirmed) {
 
 
-                    $.ajax({
-                        data: $('#frmForm').serialize(),
-                        url: "/registrar/agregar",
-                        type: "POST",
-                        dataType: 'json',
-                        success: function (data) {
-                            $("#btnSubmit").prop("disabled", false);
-                            if(data.status == "success"){
-                                $('#frmForm').trigger("reset");
-                                $(".MensajeSuccess").html('<div class="alert alert-success" role="alert">'+ data.message +'</div>');
-                                $("#frmRegistro").hide();
-                                $("#iconRfc_Valido").hide();
-                                $(".iconCurp_Valido").hide();
-                                Swal.fire({
-                                    title: '¡Éxito!',
-                                    text: "Su usuario se registró correctamente.",
-                                    icon: 'success',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        $(".listError").html("");
-                                        TRAM_FN_LOGIN();
-                                    }
-                                });
-                            }else {
-                                $(".MensajeSuccess").html("");
-                                Swal.fire({
-                                    title: '¡Aviso!',
-                                    text: data.message,
-                                    icon: 'info',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
-                                });
-                            }
-                        },
-                        error: function (data) {
-                            $("#btnSubmit").prop("disabled", false);
-                            // $("#lblRespuesta").text(data.message);
-                            // $("#modalError").modal('show');
-                            Swal.fire({
-                                    title: '¡Aviso!',
-                                    text: data.message,
-                                    icon: 'info',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
-                                });
-                        }
-                    });
+            //         $.ajax({
+            //             data: $('#frmForm').serialize(),
+            //             url: "/registrar/agregar",
+            //             type: "POST",
+            //             dataType: 'json',
+            //             success: function (data) {
+            //                 $("#btnSubmit").prop("disabled", false);
+            //                 if(data.status == "success"){
+            //                     $('#frmForm').trigger("reset");
+            //                     $(".MensajeSuccess").html('<div class="alert alert-success" role="alert">'+ data.message +'</div>');
+            //                     $("#frmRegistro").hide();
+            //                     $("#iconRfc_Valido").hide();
+            //                     $(".iconCurp_Valido").hide();
+            //                     Swal.fire({
+            //                         title: '¡Éxito!',
+            //                         text: "Su usuario se registró correctamente.",
+            //                         icon: 'success',
+            //                         showCancelButton: false,
+            //                         confirmButtonColor: '#3085d6',
+            //                         confirmButtonText: 'Aceptar'
+            //                     }).then((result) => {
+            //                         if (result.isConfirmed) {
+            //                             $(".listError").html("");
+            //                             TRAM_FN_LOGIN();
+            //                         }
+            //                     });
+            //                 }else {
+            //                     $(".MensajeSuccess").html("");
+            //                     Swal.fire({
+            //                         title: '¡Aviso!',
+            //                         text: data.message,
+            //                         icon: 'info',
+            //                         showCancelButton: false,
+            //                         confirmButtonColor: '#3085d6',
+            //                         confirmButtonText: 'Aceptar'
+            //                     });
+            //                 }
+            //             },
+            //             error: function (data) {
+            //                 $("#btnSubmit").prop("disabled", false);
+            //                 // $("#lblRespuesta").text(data.message);
+            //                 // $("#modalError").modal('show');
+            //                 Swal.fire({
+            //                         title: '¡Aviso!',
+            //                         text: data.message,
+            //                         icon: 'info',
+            //                         showCancelButton: false,
+            //                         confirmButtonColor: '#3085d6',
+            //                         confirmButtonText: 'Aceptar'
+            //                     });
+            //             }
+            //         });
 
 
-                }
-            });
+            //     }
+            // });
 
 
         }
