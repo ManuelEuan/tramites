@@ -1192,75 +1192,75 @@
                 return;
             }
 
-            // Swal.fire({
-            //     title: '¡Confirmar!',
-            //     text: "Se enviará un correo con la información para iniciar sesión. ¿Desea continuar?",
-            //     icon: 'info',
-            //     showCancelButton: true,
-            //     confirmButtonColor: '#3085d6',
-            //     cancelButtonColor: '#d33',
-            //     cancelButtonText: 'Cancelar',
-            //     confirmButtonText: 'Aceptar'
-            //     }).then((result) => {
-            //     if (result.isConfirmed) {
+            Swal.fire({
+                title: '¡Confirmar!',
+                text: "Se enviará un correo con la información para iniciar sesión. ¿Desea continuar?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                if (result.isConfirmed) {
 
 
-            //         $.ajax({
-            //             data: $('#frmForm').serialize(),
-            //             url: "/registrar/agregar",
-            //             type: "POST",
-            //             dataType: 'json',
-            //             success: function (data) {
-            //                 $("#btnSubmit").prop("disabled", false);
-            //                 if(data.status == "success"){
-            //                     $('#frmForm').trigger("reset");
-            //                     $(".MensajeSuccess").html('<div class="alert alert-success" role="alert">'+ data.message +'</div>');
-            //                     $("#frmRegistro").hide();
-            //                     $("#iconRfc_Valido").hide();
-            //                     $(".iconCurp_Valido").hide();
-            //                     Swal.fire({
-            //                         title: '¡Éxito!',
-            //                         text: "Su usuario se registró correctamente.",
-            //                         icon: 'success',
-            //                         showCancelButton: false,
-            //                         confirmButtonColor: '#3085d6',
-            //                         confirmButtonText: 'Aceptar'
-            //                     }).then((result) => {
-            //                         if (result.isConfirmed) {
-            //                             $(".listError").html("");
-            //                             TRAM_FN_LOGIN();
-            //                         }
-            //                     });
-            //                 }else {
-            //                     $(".MensajeSuccess").html("");
-            //                     Swal.fire({
-            //                         title: '¡Aviso!',
-            //                         text: data.message,
-            //                         icon: 'info',
-            //                         showCancelButton: false,
-            //                         confirmButtonColor: '#3085d6',
-            //                         confirmButtonText: 'Aceptar'
-            //                     });
-            //                 }
-            //             },
-            //             error: function (data) {
-            //                 $("#btnSubmit").prop("disabled", false);
-            //                 // $("#lblRespuesta").text(data.message);
-            //                 // $("#modalError").modal('show');
-            //                 Swal.fire({
-            //                         title: '¡Aviso!',
-            //                         text: data.message,
-            //                         icon: 'info',
-            //                         showCancelButton: false,
-            //                         confirmButtonColor: '#3085d6',
-            //                         confirmButtonText: 'Aceptar'
-            //                     });
-            //             }
-            //         });
+                    $.ajax({
+                        data: $('#frmForm').serialize(),
+                        url: "/registrar/agregar",
+                        type: "POST",
+                        dataType: 'json',
+                        success: function (data) {
+                            $("#btnSubmit").prop("disabled", false);
+                            if(data.status == "success"){
+                                $('#frmForm').trigger("reset");
+                                $(".MensajeSuccess").html('<div class="alert alert-success" role="alert">'+ data.message +'</div>');
+                                $("#frmRegistro").hide();
+                                $("#iconRfc_Valido").hide();
+                                $(".iconCurp_Valido").hide();
+                                Swal.fire({
+                                    title: '¡Éxito!',
+                                    text: "Su usuario se registró correctamente.",
+                                    icon: 'success',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Aceptar'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $(".listError").html("");
+                                        TRAM_FN_LOGIN();
+                                    }
+                                });
+                            }else {
+                                $(".MensajeSuccess").html("");
+                                Swal.fire({
+                                    title: '¡Aviso!',
+                                    text: data.message,
+                                    icon: 'info',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Aceptar'
+                                });
+                            }
+                        },
+                        error: function (data) {
+                            $("#btnSubmit").prop("disabled", false);
+                            // $("#lblRespuesta").text(data.message);
+                            // $("#modalError").modal('show');
+                            Swal.fire({
+                                    title: '¡Aviso!',
+                                    text: data.message,
+                                    icon: 'info',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Aceptar'
+                                });
+                        }
+                    });
 
 
-            //     }
-            // });
+                }
+            });
 
 
         }
