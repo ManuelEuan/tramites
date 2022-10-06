@@ -122,6 +122,7 @@ class TramitesController extends Controller
                     foreach ($asignados as $llave => $index) {
                         if($t->USTR_NIDUSUARIOTRAMITE == $index->USTR_NIDUSUARIOTRAMITE){
                             $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
+
                             $mostrar[] = $t;
 
                             $diasH = $t->USTR_NDIASHABILESRESOLUCION;
@@ -143,6 +144,7 @@ class TramitesController extends Controller
                 $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
                 foreach ($tramites as $key => $t) {
                     $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
+                    $t->asignado = Cls_UsuarioTramiteAnalista::VerificaAsignacion($t->USTR_NIDUSUARIOTRAMITE);
 
                     $diasH = $t->USTR_NDIASHABILESRESOLUCION;
                     $hoy = date('Y-m-d');
