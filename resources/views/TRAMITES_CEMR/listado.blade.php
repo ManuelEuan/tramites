@@ -151,8 +151,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" onclick="asignarFuncionario()">Save changes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="asignarFuncionario()">Guarar</button>
             </div>
         </div>
     </div>
