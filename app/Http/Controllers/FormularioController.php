@@ -390,7 +390,6 @@ class FormularioController extends Controller
                 $valTE      = strpos($datos->name,  'select_');
                 $valCh      = strpos($datos->name,  'bloqueo_');
                 $valEO      = strpos($datos->name,  'opcionEspecial_');
-                $valEO      = strpos($datos->name,  'opcionEspecial_');
                 $valCat     = strpos($datos->name,  'tipoCatalogo_');
                 $valRes     = strpos($datos->name,  'update_resolutivo_');
                 $valResol   = strpos($datos->name,  'resolutivo_');

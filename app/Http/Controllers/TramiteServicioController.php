@@ -336,6 +336,7 @@ class TramiteServicioController extends Controller
             return response()->json(['informacion'=> false], 404);
         }
     }
+
     public function seguimiento_tramite_servicio($id) {
         try {
             $objUsuario     = Auth::user();
@@ -413,7 +414,10 @@ class TramiteServicioController extends Controller
                         $preg->observaciones = "";
                         foreach ($preg->respuestas as $resp) {
                             $resp->FORM_CVALOR_RESPUESTA = "";
-                            $resp->id = 0;
+                            $resp->respArray    = array();
+                            $resp->respString   = "";
+                            $resp->id           = 0;
+
                             foreach ($resp->respuestas_especial as $esp) {
                                 $esp->id = 0;
                                 $esp->FORM_CVALOR_RESPUESTA = "";
@@ -469,14 +473,11 @@ class TramiteServicioController extends Controller
                                         }
                                         break;
                                     case "catalogo":
-                                        $resp->respArray = array();
-                                        $resp->respString = "";
                                         if ($resp->FORM_NPREGUNTAID == $_resp['USRE_NIDPREGUNTA']) {
-                                            $array = explode(",",$_resp['USRE_CRESPUESTA']);
-                                            $resp->respArray    = $array;
+                                            $resp->respArray    = json_decode($_resp['USRE_CRESPUESTA']);
                                             $resp->respString   = $_resp['USRE_CRESPUESTA'];
+                                            $resp->respClave    = '';
                                         }
-                                        
                                         break;
                                     default:
                                         if ($resp->FORM_NPREGUNTAID == $_resp['USRE_NIDPREGUNTA']) {

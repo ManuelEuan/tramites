@@ -275,3 +275,12 @@ Route::group(['prefix' => 'catalogos'], function () {
     Route::post('/estatus', 'CatalogoController@cambiaEstatus');
     Route::put('/', 'CatalogoController@update'); */
 });
+
+Route::group(['prefix' => 'bancos'], function () {
+    Route::get('/find', 'BancosController@find');
+    Route::get('/get', 'BancosController@get');
+    Route::get('/', 'BancosController@index');
+    Route::post('/', 'BancosController@store');
+    Route::post('/estatus', 'BancosController@cambiaEstatus');
+    Route::put('/', 'BancosController@update');
+});

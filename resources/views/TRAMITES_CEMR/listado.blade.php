@@ -139,7 +139,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Asignación de Trámite</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -154,7 +154,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-success" onclick="asignarFuncionario()">Guarar</button>
+                <button type="button" class="btn btn-success" onclick="asignarFuncionario()">Guardar</button>
             </div>
         </div>
     </div>
@@ -409,7 +409,7 @@
                                         <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
                                     </span>
                                     <span>
-                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>
+                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>
                                     </span>
                                     <span>
                                         <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
@@ -572,9 +572,17 @@
             success: function(result){
                 $("#asignarFuncionarioModal").modal('hide');
 
-                $("#icon-"+htmlid).removeClass("fa fa-users");
-                $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
-                $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
+                if(envio.USUA_NIDUSUARIO == 0){
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa fa-users");
+                    $("#icon-"+htmlid).attr("title", "Asignar funcionario");
+                }else{
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).attr("title", "Reasignar funcionario");
+                }
 
                 //fa-solid fa-user-check
                 Swal.fire({

@@ -2,6 +2,95 @@
 @section('body')
 <!-- <%-- Contenido individual --%> -->
 <div class="container-fluid contentPage">
+
+<style>
+    #mydiv {
+    position: absolute;
+    z-index: 9;
+    background-color: #f1f1f1;
+    text-align: center;
+    border: 1px solid #d3d3d3;
+    width: 600px; 
+    height: 400px;
+    overflow: hidden;
+    resize: both;
+    bottom: 20px;
+    right: 70px;
+    }
+    #mydivheader {
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    background-color: #2196F3;
+    color: #fff;
+    }
+</style>
+
+<div id="mydiv" class="invisible">
+    <div id="mydivheader">
+        <div class="row"><div class="col-9">
+                <h3>Click aqui para mover</h3>
+            </div>
+            <div class="col-3">
+                <button type="button" class="btn btn btn-danger" id="cerrarpdf">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modalDocumentoPdf" style="height: 96%;">
+        <iframe class="modal-body" id="pdfDoc" title="Identificación Oficial" src="http://127.0.0.1:8000/files/documentos/23841297.pdf" style="width: 100%;height: 100%;"></iframe>
+    
+    </div>
+</div>
+
+<script>
+    //Make the DIV element draggagle:
+    dragElement(document.getElementById("mydiv"));
+
+    function dragElement(elmnt) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    if (document.getElementById(elmnt.id + "header")) {
+        /* if present, the header is where you move the DIV from:*/
+        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+    } else {
+        /* otherwise, move the DIV from anywhere inside the DIV:*/
+        elmnt.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+    }
+</script>
+
     <br>
     <div class="row">
         <div class="col-md-12">
@@ -737,6 +826,8 @@
         </div>
     </div>
     <br>
+
+    
 </div>
 <br />
 
@@ -746,18 +837,18 @@
         <p id="txt_loading" style="color: #393939 !important;">Cargando Trámite...</p>
     </div>
 </div>
-<!-- Modal de ver documentos -->
-<div class="modal fade" id="modalDocumento" tabindex="-1" role="dialog" aria-labelledby="modalDocumentoTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div id="modalContentDocumento" class="modal-content" style="width: 720px; height: 720px;">
-        </div>
-    </div>
-</div>
 
 <!-- Modal de ver resolutivos -->
 <div class="modal fade" id="modalResolutivo" tabindex="-1" role="dialog" aria-labelledby="modalResolutivoTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div id="modalContentResolutivo" class="modal-content" style="width: 720px; height: 720px;"></div>
+    </div>
+</div>
+
+<!-- Modal de ver documentos -->
+<div class="modal fade" data-backdrop="false" id="modalDocumento" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div id="modalContentDocumento" class="modal-content" style="width: 720px; height: 720px;"></div>
     </div>
 </div>
 
@@ -1428,7 +1519,7 @@
                                                                     value.FORM_CVALOR_RESPUESTA.forEach(element => {
                                                                         collapse_detalle += `<div class="form-check">
                                                                                 <ul>
-                                                                                    <li class='titulo_pequeno'>${element.nombre}</li>
+                                                                                    <li class='titulo_pequeno'>${element.nombre} <label style="font-size: 11px;"> Fecha ${element.fecha}</label></li>
                                                                                 </ul>
                                                                             </div>`;
                                                                     });
@@ -1599,9 +1690,6 @@
 
                     divSectionContainer_documento.append(itemDocumento);
                     ///////////////////////////////////7
-                    /*$('.vigencia').change(function() {
-                        console.log("Clickando")
-                    });*/
                     $(".validatePregunta").hide();
                     $(".divV").hide();
                     $("#txtRevisionInfo").hide();
@@ -1707,13 +1795,13 @@
     }
 
     function TRAM_FN_VER_DOCUMENTO(id) {
-
         var doc = list_documentos.find(x => x.documento_id === parseInt(id));
         var host = window.location.origin;
         var rutaa = host + "/" + doc.ruta;
 
         $("#modalContentDocumento").html("");
         var content = $("#modalContentDocumento");
+        var contentpdf = $("#modalDocumentoPdf");
 
         if (doc.extension === "png" || doc.extension === "jpg") {
 
@@ -1731,27 +1819,26 @@
             // '</div>';
 
             content.append(documentView);
+            $("#modalDocumento").modal('show');
 
         } else if (doc.extension === "pdf") {
 
-            var documentView = '<div class="modal-header">' +
-                '<h5 class="modal-title" id="exampleModalLongTitle">' + doc.nombre + '</h5>' +
-                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
-                '<span aria-hidden="true">&times;</span>' +
-                '</button>' +
-                '</div>' +
-                '<iframe class="modal-body" id="pdfDoc" title="' + doc.nombre + '" src="' + rutaa + '">' +
+            var documentView = '<iframe class="modal-body" id="pdfDoc" title="' + doc.nombre + '" src="' + rutaa + '" style="width: 100%;height: 100%;">' +
                 '</iframe>';
+
+
+            $("#mydiv").removeClass('invisible');   
+            contentpdf.html(documentView);
             // '<img id="imgDoc" class="modal-body" src="http://k36.kn3.net/5D072EE3A.jpg" alt="" style="object-fit: cover;">' +
             // '<div class="modal-footer">' +
             // '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>' +
             // '</div>';
-
-            content.append(documentView);
         }
-
-        $("#modalDocumento").modal('show');
     }
+    $( "#cerrarpdf" ).click(function() {
+        $("#mydiv").addClass('invisible');
+        $("#mydiv").removeAttr('style');
+    });
 
     function TRAM_FN_DESCARGAR_DOCUMENTO(id) {
 
@@ -2836,7 +2923,7 @@
     //--------------  Ventanilla sin cita  ------------------
 
     function TRAM_FN_RENDER_VENTANILLA(SeccionID) {
-        console.log("Render ventanilla: " + SeccionID);
+        //console.log("Render ventanilla: " + SeccionID);
     }
 
     function TRAM_FN_APROBAR_VENTANILLA(SeccionID) {
@@ -2943,7 +3030,7 @@
 
     //--------------------- Pago ----------------
     function TRAM_FN_RENDER_PAGO(SeccionID) {
-        console.log("Render pago: " + SeccionID);
+        //console.log("Render pago: " + SeccionID);
     }
 
     function TRAM_FN_APROBAR_PAGO(SeccionID) {
@@ -3072,7 +3159,7 @@
 
     //------------ Modulos de analisis interno del area--------------
     function TRAM_FN_RENDER_ANALISIS_INTERNO(SeccionID) {
-        console.log("Render analisis: " + SeccionID);
+       // console.log("Render analisis: " + SeccionID);
     }
 
     function TRAM_FN_APROBAR_ANALISIS_INTERNO(SeccionID) {
