@@ -40,8 +40,10 @@
                                 </span>
                                 <div
                                     class="progress_circle-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
-                                    <div class="h2 font-weight-bold" style="color:#03A9F4 !important;"><span
-                                            id="porcentaje">0</span><sup class="small">%</sup></div>
+                                    <div class="h2 font-weight-bold" style="color:#03A9F4 !important;">
+                                        <span id="porcentaje">0</span>
+                                        <sup class="small">%</sup>
+                                    </div>
                                 </div>
                             </div>
                             <!-- END -->
@@ -50,14 +52,14 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-12">
                 <label style="font-weight: bold; font-size:20px;">Por favor ingrese la información solicitada:</label>
             </div>
-            <div id="estatusFormulario">
-
-            </div>
+            <div id="estatusFormulario"> </div>
         </div>
+
         <div class="row">
             <div class="card" style="width: 100%; border-radius:20px;">
                 <div class="card-header"
@@ -552,7 +554,7 @@
                                                                                                 <?php
                                                                                                     $selected = "";
                                                                                                     foreach($resp->respArray  as $respArray){
-                                                                                                        if($respArray == $cat->id){
+                                                                                                        if($respArray->id == $cat->id){
                                                                                                             $selected = "selected";
                                                                                                             break;
                                                                                                         }
@@ -562,6 +564,14 @@
                                                                                             @endforeach
                                                                                         @endforeach
                                                                                     </select>
+                                                                                    {{-- Se crean los input de tipo fecha para cada giro --}}
+                                                                                    @foreach($resp->respArray  as $respArray)
+                                                                                        <div id="inputGiro_">
+                                                                                            <br />
+                                                                                            <label> {{$respArray->clave}}</label>
+                                                                                            <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" value="{{$respArray->fecha}}" required/>
+                                                                                        </div>
+                                                                                    @endforeach
                                                                                 </div>
                                                                             </div>
                                                                         @break
@@ -1610,7 +1620,9 @@
         @section('scripts')
             <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
             <script>
-                var catalogos  = [];
+                var catalogos   = [];
+                var catGiros    = [];
+                
                 var id = "{{ $tramite['idusuariotramite'] }}";
                 var encuesta_contestada = "{{ $tramite['encuesta_contestada'] }}";
                 var estatus_tram = "{{ $tramite['estatus'] }}";
@@ -2072,6 +2084,25 @@
                     $(".selectCatalogos").selectpicker({
                         noneSelectedText: 'Seleccionar',
                     });
+
+                    /** 
+                     * Obtiene el catalogo de giros
+                    */
+                    function getGiros(){
+                        $.ajax({
+                            url: "/giros/find",
+                            type: "GET",
+                            data: { paginate:false, activo: true},
+                            success: function(data) {
+                                catGiros = data.data;
+                                console.log(catGiros);
+                            },
+                            error: function(data) {
+                                mensajeError('error', data)
+                            }
+                        });
+                    }
+                    getGiros();
                 });
 
                 function TRAM_FN_SUBIR_DOCUMENTO_MULTIPLE(val) {
@@ -2638,7 +2669,23 @@
                     let select  = e.target.id;
                     let items   = $("#"+select).val();
                     let aplica  = true;
+                    let html    = '';
 
+                    items.forEach(element => {
+                        let label = "";
+                        catGiros.forEach(giro => {
+                            if(giro.id == parseInt(element)){
+                                label = giro.clave;
+                            }
+                        });
+
+                        html += `<div>
+                            <label id= 'label_${element}' for="">Giro-${label}</label>
+                            <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" required/> <br />
+                        </div>`;
+                    });
+                    $("#inputGiro_"+select).html(html);
+console.log(html);
                     catalogos.forEach(element => {
                         if(element.pregunta == select){
                             element.respuesta = items;

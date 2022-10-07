@@ -45,7 +45,6 @@ function existeCitaFuncionario(idusuario, tramitelocal){
         dataType: 'json',
         //contentType: 'application/json',
         success: function (data) {
-            console.log(data);
             if(data.data.length > 0){
                 $("#sincitareservada").hide();
                 $("#concitareservada").show();
@@ -211,9 +210,6 @@ function actualiza_local(folio, escancelacion){
         contentType: 'application/json',
         data: JSON.stringify(jsonobject),
         success: function (data) {
-
-            console.log(data);
-            console.log("COMPLETADO.");
             /*Swal.fire({
                 title: '¡Éxito!',
                 text: "Reservación completada con éxito",
@@ -239,7 +235,6 @@ function obtenerStatusCita(folio){
         type: 'get',
         dataType: 'json',
         success: function (data) {
-            console.log(data);
             $("#cita_status").text(data[0][6]);
         },
         error: function (xhr, error) {
@@ -254,7 +249,6 @@ function obtenerCitaReservada(folio, esfuncionario){
         type: 'get',
         dataType: 'json',
         success: function (data) {
-            console.log(data);
             $("#cita_fecha").text(data[0].FECHA_CITA);
             $("#cita_hora").text(data[0].HORA_CITA);
             $("#cita_edificio").text(data[0].NOMBRE_EDIFICIO);
@@ -319,8 +313,6 @@ function obtenerModulos(idtramite, esCita = true){
 }
 
 function obtenerEdificios(idtramite, esCita = true){
-    console.log('id del tramite ----------- ' + idtramite)
-
     var idModuloSelected = "";
 
     if(esCita){
@@ -390,7 +382,7 @@ function loadModulos(idtramite, selectedValue){
     $('#infoEdificioDireccion').text('----');
     $("#btnSaveUbication").prop("disabled", true);
     ubicacion_ventanilla_sin_cita = {};
-    console.log("elegido: " +selectedValue)
+
     $.ajax({
         url: "/tramite_servicio/obtener_modulo/" + 0 + "/" + idtramite,
         type: 'get',
@@ -446,7 +438,6 @@ function cargaMapaEdificios(idtramite, idEdificio, idDiv){
         type: 'get',
         dataType: 'json',
         success: function (data) {
-            console.log(data);
             for(var i=0; data.oficinas.length > i; i++){
                 if(idEdificio == data.oficinas[i].id && data.oficinas[i].latitud > 0){
                     cargarMapa(parseFloat(data.oficinas[i].latitud), parseFloat(data.oficinas[i].longitud), idDiv);
@@ -503,7 +494,6 @@ function tramiteTieneCitas(tramite){
         dataType: 'json',
         //contentType: 'application/json',
         success: function (data) {
-            //console.log(data);
             if(data.length > 0){
                localStorage.setItem("HasCitas", "True");
             }else{
@@ -536,7 +526,6 @@ function solicitudTramiteCita(tramite){
                 data: JSON.stringify(jsonobject),
                 success: function (data) {
                     if(data != undefined){
-                        console.log("Completed: "+data);
                     }
                 },
                 error: function (xhr, error) {
