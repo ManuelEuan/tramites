@@ -1497,7 +1497,7 @@
             let valor       = [];
 
             respuestas.forEach(item => {
-                let obj = {"id": item,"fecha": $('#fechaGiro_'+item).val()};
+                let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
                valor.push(obj);
             });
 
@@ -1555,7 +1555,7 @@
             let valor       = [];
 
             respuestas.forEach(item => {
-                let obj = {"id": item,"fecha": $('#fechaGiro_'+item).val()};
+                let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
                valor.push(obj);
             });
 
@@ -1718,7 +1718,7 @@
             });
 
             html += `<div>
-                <label for="">Giro-${label}</label>
+                <label id= 'label_${element}' for="">Giro-${label}</label>
                 <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" required/> <br />
             </div>`;
         });

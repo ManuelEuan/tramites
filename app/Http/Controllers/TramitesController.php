@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use File;
+use DateTime;
 use Exception;
 use ZipArchive;
 use Carbon\Carbon;
@@ -16,14 +17,14 @@ use App\Services\VariosService;
 use PhpOffice\PhpWord\Settings;
 use App\Services\TramiteService;
 use Illuminate\Support\Facades\DB;
+use App\Cls_UsuarioTramiteAnalista;
 use App\Models\Cls_Citas_Calendario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Cls_Seguimiento_Servidor_Publico;
-use App\Models\Cls_Formulario_Pregunta_Respuesta;
 
 //asignar tramites
-use App\Cls_UsuarioTramiteAnalista;
+use App\Cls_Seguimiento_Servidor_Publico;
+use App\Models\Cls_Formulario_Pregunta_Respuesta;
 
 class TramitesController extends Controller
 {
@@ -227,7 +228,7 @@ class TramitesController extends Controller
                     "FOLIO" => $cita->first()->CITA_FOLIO,
                 )
             : array());
-
+                /* dd($tramite); */
         return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
     }
 
@@ -363,10 +364,17 @@ class TramitesController extends Controller
                                     }
                                     break;
                                 case "catalogo":
-                                    if ($preg->FORM_NID === $_resp['USRE_NIDPREGUNTA']) {
-                                        $array = explode(",",$_resp['USRE_CRESPUESTA']);
-                                        $valorRespuesta = DB::table($resp->FORM_CVALOR)->whereIn('id', $array)->get();
-                                        $resp->FORM_CVALOR_RESPUESTA = $valorRespuesta;
+                                    if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
+                                        $json       = json_decode($_resp['USRE_CRESPUESTA']);
+                                        $array      = array();
+                                        foreach($json as $item){
+                                            $query = DB::table($resp->FORM_CVALOR)->where('id', $item->id)->first();
+                                            $format =  new DateTime($item->fecha);
+                                            $query->fecha = $format->format('d-m-Y');
+                                           
+                                            array_push($array, $query);
+                                        }
+                                        $resp->FORM_CVALOR_RESPUESTA = $array;
                                         break;
                                     }
                                     break;
