@@ -234,6 +234,7 @@ Route::get('/decrypt/{text}', array('uses' => 'DatosDurosController@decrypt'));
 
 Route::get('/reportes', 'GenerarReportes@index')->middleware("permiso");
 Route::get('/generar', 'GenerarReportes@gentreporte');
+Route::post('/generarZip', 'GenerarReportes@generarZip');
 
 Route::post('/validar_pago_queretaro', 'TramiteServicioController@validarPagoQueretaro');
 

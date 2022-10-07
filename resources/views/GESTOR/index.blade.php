@@ -150,7 +150,7 @@
     function buscar(){
         varPaginacion = {"txtBuscar" : $("#txtBuscar").val() };
         accion_buscar = true;
-        listar(false);
+        listarBuscar(false);
     }
 
     function regresar(){
@@ -318,6 +318,123 @@
             }else{
                 $( "#btnBuscar").prop( "disabled", false );
             }
+
+            for (let i = 0; i < gestores.length; i++) {
+                let estatus = gestores[i].GES_CESTATUS == undefined ? "" : gestores[i].GES_CESTATUS ;
+                html+= `<tr role='row' class'odd>
+                            <td> ${ gestores[i].USUA_CCURP } </td>
+                            <td> ${ gestores[i].USUA_CRFC } </td>
+                            <td> ${ estatus } </td>
+                            <td>
+                                <span>`;
+                                    if(accion_buscar == true){
+                                        html+= `<button type="button" onclick="abreModal(${ gestores[i].USUA_NIDUSUARIO })" title="Vincular"  class="btn btn-link"><i class="fas fa-plus-circle" style="color: black"></i></button>`;
+                                    }
+                                    else{
+                                        html+= `<button type="button" onclick="eliminar(${ gestores[i].GES_NID })" title="Eliminar"  class="btn btn-link"><i class="far fa-trash-alt" style="color: black"></i></button>`;
+                                    }                                    
+                        html+= `</span>
+                            </td>
+                        </tr>`;
+            }
+            html+= `</tbody>`;
+
+            let anterior = response.current_page == 1 ? "disabled" : "";
+            let siguiente= response.current_page == response.last_page ? "disabled" : "";
+            
+            if(response.total > 0){
+                let paginacion = `
+                <div class="row" id="paginacion" style="margin-top: 30px;">
+                    <div class="col-md-6 dataTables_info" style="margin-top:10px;" role="status" aria-live="polite">Mostrando registros del ${response.from} al ${response.to} de un total de ${response.total} registros</div>
+                    
+                    <div class="col-md-6 float-right">
+                    <nav aria-label="Page navigation example" style="float:right;">
+                        <ul class="pagination">
+                            <li class="page-item  ${anterior}">
+                                <a class="page-link" href="javascript:onclick=cambiaPagina(${ response.current_page - 1 });" tabindex="-1">Anterior</a>
+                            </li>`;
+                            
+                            let num_paginas = response.last_page;
+                            let activo = "";
+
+                            for (let i = 1; i <= num_paginas; i++) {
+                                if(i == response.current_page){
+                                    activo = "active";
+                                }
+                                else{
+                                    activo = "";
+                                }
+
+                                paginacion+=` <li class="page-item ${activo}"><a class="page-link" href="javascript:onclick=cambiaPagina(${ i });">${ i }</a></li>`;
+                            }
+
+                paginacion+=`<li class="page-item ${siguiente}">
+                                <a class="page-link" href="javascript:onclick=cambiaPagina(${ response.current_page + 1 });">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    </div>
+                </div>   `;
+
+                $("#divTabla").append(paginacion);
+            }
+           
+
+            $("#tblFormularios").append(html);
+            if(response.total == 0){
+                $("#divTabla").append(`<div id='sinRegistros' style='font-sizepx;' > <td> No se encontraron resultados </div>`);
+            }
+
+            $("#spinner").remove();
+
+            function formato(texto){
+               return texto.replace(/^(\d{4})-(\d{2})-(\d{2})$/g,'$3/$2/$1');
+            }
+        });
+
+        request.fail(function (jqXHR, textStatus, errorThrown){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
+
+    function listarBuscar(pag= true){
+        $("#tbodyFormulario").remove();
+        $("#paginacion").remove();
+        $("#sinRegistros").remove();
+        $("#divTabla").append(`<div id="spinner" class="spinner-grow" role="status"><span class="sr-only">Loading...</span></div>`);
+
+        varPaginacion.items_to_show = $("#selctItems option:selected").text();
+        varPaginacion.usuario_id = $("#usuario_id").val();
+
+        if(pag == false){
+            varPaginacion.page = 1;
+        }
+
+        $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} });
+        let url =  "/gestores_solicitud/find";
+        if(accion_buscar != false){
+            url = '/gestores_solicitud/usuarios';
+        }
+        request = $.ajax({
+            url: url,
+            type: "get",
+            data: varPaginacion
+        });
+      
+        request.done(function (response, textStatus, jqXHR){
+            usuarios        = response.data;
+            let gestores    = response.data;
+            let html        = '<tbody id="tbodyFormulario">';
+
+            /*if(gestores.length > 0){
+                $( "#btnBuscar").prop( "disabled", true );
+            }else{*/
+                $( "#btnBuscar").prop( "disabled", false );
+            //}
 
             for (let i = 0; i < gestores.length; i++) {
                 let estatus = gestores[i].GES_CESTATUS == undefined ? "" : gestores[i].GES_CESTATUS ;
