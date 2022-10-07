@@ -1428,7 +1428,7 @@
                                                                     value.FORM_CVALOR_RESPUESTA.forEach(element => {
                                                                         collapse_detalle += `<div class="form-check">
                                                                                 <ul>
-                                                                                    <li class='titulo_pequeno'>${element.nombre}</li>
+                                                                                    <li class='titulo_pequeno'>${element.nombre} <label style="font-size: 11px;"> Fecha ${element.fecha}</label></li>
                                                                                 </ul>
                                                                             </div>`;
                                                                     });
@@ -1599,9 +1599,6 @@
 
                     divSectionContainer_documento.append(itemDocumento);
                     ///////////////////////////////////7
-                    /*$('.vigencia').change(function() {
-                        console.log("Clickando")
-                    });*/
                     $(".validatePregunta").hide();
                     $(".divV").hide();
                     $("#txtRevisionInfo").hide();
@@ -2836,7 +2833,7 @@
     //--------------  Ventanilla sin cita  ------------------
 
     function TRAM_FN_RENDER_VENTANILLA(SeccionID) {
-        console.log("Render ventanilla: " + SeccionID);
+        //console.log("Render ventanilla: " + SeccionID);
     }
 
     function TRAM_FN_APROBAR_VENTANILLA(SeccionID) {
@@ -2943,7 +2940,7 @@
 
     //--------------------- Pago ----------------
     function TRAM_FN_RENDER_PAGO(SeccionID) {
-        console.log("Render pago: " + SeccionID);
+        //console.log("Render pago: " + SeccionID);
     }
 
     function TRAM_FN_APROBAR_PAGO(SeccionID) {
@@ -3072,7 +3069,7 @@
 
     //------------ Modulos de analisis interno del area--------------
     function TRAM_FN_RENDER_ANALISIS_INTERNO(SeccionID) {
-        console.log("Render analisis: " + SeccionID);
+       // console.log("Render analisis: " + SeccionID);
     }
 
     function TRAM_FN_APROBAR_ANALISIS_INTERNO(SeccionID) {
