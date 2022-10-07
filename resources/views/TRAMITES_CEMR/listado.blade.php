@@ -566,10 +566,12 @@
                     $("#icon-"+htmlid).removeClass("fa fa-users");
                     $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
                     $("#icon-"+htmlid).addClass("fa fa-users");
+                    $("#icon-"+htmlid).attr("title", "Asignar funcionario");
                 }else{
                     $("#icon-"+htmlid).removeClass("fa fa-users");
                     $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
                     $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).attr("title", "Reasginar funcionario");
                 }
 
                
