@@ -164,7 +164,53 @@
         {
             id: 10,
             nombre: "Cancelado"
-        }
+        },
+        {
+            id: 11,
+            nombre: "Iniciado"
+        },
+    ];
+
+    var estatus_seguimiento2 = [{
+            id: 1,
+            nombre: "Captura inicial"
+        },
+        {
+            id: 2,
+            nombre: "Pendiente de revisión"
+        },
+        {
+            id: 3,
+            nombre: "Recibido"
+        },
+        {
+            id: 4,
+            nombre: "Información incompleta"
+        },
+        {
+            id: 5,
+            nombre: "Iniciado"
+        },
+        {
+            id: 6,
+            nombre: "Acción requerida "
+        },
+        {
+            id: 7,
+            nombre: "En proceso"
+        },
+        {
+            id: 8,
+            nombre: "Terminado"
+        },
+        {
+            id: 9,
+            nombre: "Rechazado"
+        },
+        {
+            id: 10,
+            nombre: "Cancelado"
+        },
     ];
 
     $(document).ready(function() {
@@ -350,7 +396,7 @@
             //Opcion por defecto
             cmbEstatus.append('<option value="" selected>Seleccione</option>');
 
-            $(estatus_seguimiento).each(function(i, v) {
+            $(estatus_seguimiento2).each(function(i, v) {
                 cmbEstatus.append('<option value="' + v.id + '">' + v.nombre + '</option>');
             });
         }

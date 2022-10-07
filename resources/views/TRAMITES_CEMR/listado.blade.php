@@ -96,6 +96,8 @@
                                     <option value="7">En proceso</option>
                                     <option value="8">Terminado</option>
                                     <option value="9">Rechazado</option>
+                                    <option value="10">Cancelado</option>
+                                    <option value="11">Vencido</option>
                                 </select>
                             </div>
                             <div class="col-md-7 btnBuscar">
@@ -209,6 +211,10 @@
             id: 10,
             nombre: "Cancelado"
         },
+        {
+            id: 11,
+            nombre: "Vencido"
+        },
     ];
 
     var estatus_seguimiento = [{
@@ -250,7 +256,11 @@
         {
             id: 10,
             nombre: "Cancelado"
-        }
+        },
+        {
+            id: 11,
+            nombre: "Vencido"
+        },
     ];
 
     $(document).ready(function() {
@@ -310,7 +320,7 @@
                             var currentDate = new Date();
 
                             var level = 0;
-                            if(data.USTR_NESTATUS != 10){
+                            if(data.USTR_NESTATUS != 10 && data.USTR_NESTATUS != 11){
                                 if (dateMiddle >= currentDate) {
                                     level = 1;
                                 } else if (dateFromTramite >= currentDate) {

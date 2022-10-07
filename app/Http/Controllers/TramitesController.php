@@ -127,10 +127,16 @@ class TramitesController extends Controller
 
                             $diasH = $t->USTR_NDIASHABILESRESOLUCION;
                             $hoy = date('Y-m-d');
-                            $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
+                            $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval($diasH).' days'));
                             
-                            if($hoy > $fechaFinal){
-                                $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                            if($t->USTR_NESTATUS == 4){
+                                if($hoy > $fechaFinal){
+                                    $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                                }
+                            }else{
+                                if($hoy > $fechaFinal){
+                                    $tramite_seguimiento->ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
+                                }
                             }
 
                         }
@@ -148,12 +154,17 @@ class TramitesController extends Controller
 
                     $diasH = $t->USTR_NDIASHABILESRESOLUCION;
                     $hoy = date('Y-m-d');
-                    $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
+                    $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval($diasH).' days'));
                     
-                    if($hoy > $fechaFinal){
-                        $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                    if($t->USTR_NESTATUS == 4){
+                        if($hoy > $fechaFinal){
+                            $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                        }
+                    }else{
+                        if($hoy > $fechaFinal){
+                            $tramite_seguimiento->ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
+                        }
                     }
-    
                 }
             }
 

@@ -66,6 +66,13 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         return $rsp;
     }
 
+    static function ACTUALIZAR_STATUS_VENCIDO($folio){
+        $rsp = DB::table('tram_mdv_usuariotramite')
+        ->where('USTR_CFOLIO', $folio)
+        ->update(['USTR_NESTATUS' => 11]);
+        return $rsp;
+    }
+
     static function OBTENER_ID_POR_FECHA($inicio, $fin){
         $sql = "SELECT USTR_NIDUSUARIOTRAMITE FROM tram_mdv_usuariotramite WHERE created_at >= '".$inicio."' AND created_at <= '".$fin."'";
         $query = DB::select($sql);

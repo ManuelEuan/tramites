@@ -42,14 +42,18 @@ class SeguimientoSolicitudController extends Controller
         foreach ($data as $key => $t) {
             $diasH = $t->USTR_NDIASHABILESRESOLUCION;
             $hoy = date('Y-m-d');
-            $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval(2).' days'));
+            $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval($hoy).' days'));
             
-            if($hoy > $fechaFinal){
-                if($t->USTR_NESTATUS != 8){
-                    Cls_Usuario_Tramite::ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+            
+                if($t->USTR_NESTATUS == 4){
+                    if($hoy > $fechaFinal){
+                        Cls_Usuario_Tramite::ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                    }
+                }else{
+                    if($hoy > $fechaFinal){
+                        Cls_Usuario_Tramite::ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
+                    }
                 }
-            }
-
         }
         $response = [
             'data' =>  Cls_Usuario_Tramite::TRAM_SP_CONSULTAR_SEGUIMIENTO_TRAMITE_USUARIO(Auth::user()->USUA_NIDUSUARIO, $request->txtNombre, $request->cmbEstatus, $request->cmbDependenciaEntidad, $request->dteFechaInicio),

@@ -151,6 +151,8 @@ Route::group(['prefix' => 'gestores_solicitud'], function () {
     Route::post('/vincular', 'GestoresController@vincular');
     Route::post('/delete', 'GestoresController@delete');
     Route::post('/respuesta', 'GestoresController@respuesta');
+    Route::post('/leido', 'GestoresController@leido');
+    Route::get('/iduser', 'GestoresController@iduser');
 });
 
 Route::group(['prefix' => 'personasfsicasmorales'], function () {
