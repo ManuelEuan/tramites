@@ -185,52 +185,58 @@ class TramitesController extends Controller
     //Vista seguimiento
     public function seguimiento($id)
     {
-        //Marcar trámite del ciudadano como Recibido
-        Cls_Seguimiento_Servidor_Publico::TRAM_MARCAR_ESTATUS_REVISION_TRAMITE($id);
-        $result = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
-        $tramite = $result[0];
+        $var = $this->verifica_rol_analista_asignado($id);
+        if($var){
+            //Marcar trámite del ciudadano como Recibido
+            Cls_Seguimiento_Servidor_Publico::TRAM_MARCAR_ESTATUS_REVISION_TRAMITE($id);
+            $result = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
+            $tramite = $result[0];
 
-        //Secciones
-        $secciones = DB::select(
-            'SELECT * FROM tram_aux_seccion_seguimiento_tramite WHERE SSEGTRA_NIDUSUARIOTRAMITE = ? ORDER BY SSEGTRA_NIDSECCION_SEGUIMIENTO',
-            array($id)
-        );
+            //Secciones
+            $secciones = DB::select(
+                'SELECT * FROM tram_aux_seccion_seguimiento_tramite WHERE SSEGTRA_NIDUSUARIOTRAMITE = ? ORDER BY SSEGTRA_NIDSECCION_SEGUIMIENTO',
+                array($id)
+            );
 
-        //Conceptos
-        $conceptos = DB::select(
-            'SELECT * FROM tram_mdv_usuario_concepto WHERE USCON_NIDUSUARIOTRAMITE = ?',
-            array($id)
-        );
+            //Conceptos
+            $conceptos = DB::select(
+                'SELECT * FROM tram_mdv_usuario_concepto WHERE USCON_NIDUSUARIOTRAMITE = ?',
+                array($id)
+            );
 
-        $resolutivos= Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
-        $objTramite = $this->tramiteService->getTramite($tramite->USTR_NIDTRAMITE_ACCEDE);
-        $result     = $this->tramiteService->getDetalle($objTramite->Id);
-        $tramite->infoModulo                    = (array) $result['oficinas'][0];
+            $resolutivos= Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
+            $objTramite = $this->tramiteService->getTramite($tramite->USTR_NIDTRAMITE_ACCEDE);
+            $result     = $this->tramiteService->getDetalle($objTramite->Id);
+            $tramite->infoModulo                    = (array) $result['oficinas'][0];
 
-        $tramite->EDF_VENTANILLA_SIN_CITA       = $result['oficinas'][0]->Name;
-        $tramite->EDF_VENTANILLA_SIN_CITA_LAT   = $result['oficinas'][0]->Latitude;
-        $tramite->EDF_VENTANILLA_SIN_CITA_LON   = $result['oficinas'][0]->Longitude;
+            $tramite->EDF_VENTANILLA_SIN_CITA       = $result['oficinas'][0]->Name;
+            $tramite->EDF_VENTANILLA_SIN_CITA_LAT   = $result['oficinas'][0]->Latitude;
+            $tramite->EDF_VENTANILLA_SIN_CITA_LON   = $result['oficinas'][0]->Longitude;
 
-        $cita = Cls_Citas_Calendario::where([
-                ["CITA_IDUSUARIO", $tramite->USTR_NIDUSUARIO],
-                ["CITA_IDTRAMITE", $tramite->USTR_NIDTRAMITE],
-                ["CITA_IDMODULO", $tramite->infoModulo['iId']],
-            ])->orderBy('idcitas_tramites_calendario', 'DESC');
+            $cita = Cls_Citas_Calendario::where([
+                    ["CITA_IDUSUARIO", $tramite->USTR_NIDUSUARIO],
+                    ["CITA_IDTRAMITE", $tramite->USTR_NIDTRAMITE],
+                    ["CITA_IDMODULO", $tramite->infoModulo['iId']],
+                ])->orderBy('idcitas_tramites_calendario', 'DESC');
 
-        $tramite->cita = ($cita->count() > 0
-            ? array(
-                    "ID" => $cita->first()->idcitas_tramites_calendario,
-                    "USUARIO" => $cita->first()->CITA_IDUSUARIO,
-                    "FECHA" => $cita->first()->CITA_FECHA,
-                    "HORA" => $cita->first()->CITA_HORA,
-                    "TRAMITE" => $cita->first()->CITA_IDTRAMITE,
-                    "MODULO" => $cita->first()->CITA_IDMODULO,
-                    "CONFIRMADO" => $cita->first()->CITA_CONFIRMADO,
-                    "FOLIO" => $cita->first()->CITA_FOLIO,
-                )
-            : array());
+            $tramite->cita = ($cita->count() > 0
+                ? array(
+                        "ID" => $cita->first()->idcitas_tramites_calendario,
+                        "USUARIO" => $cita->first()->CITA_IDUSUARIO,
+                        "FECHA" => $cita->first()->CITA_FECHA,
+                        "HORA" => $cita->first()->CITA_HORA,
+                        "TRAMITE" => $cita->first()->CITA_IDTRAMITE,
+                        "MODULO" => $cita->first()->CITA_IDMODULO,
+                        "CONFIRMADO" => $cita->first()->CITA_CONFIRMADO,
+                        "FOLIO" => $cita->first()->CITA_FOLIO,
+                    )
+                : array());
 
-        return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
+            return view('TRAMITES_CEMR.seguimiento', compact('tramite', 'secciones', 'conceptos', 'resolutivos'));
+        }else{
+            return redirect('/tramite_servicio_cemr');
+        }
+        
     }
 
     /**
@@ -1098,5 +1104,22 @@ class TramitesController extends Controller
         $respuesta = Cls_UsuarioTramiteAnalista::AsignarTramite($request);
         
         return $respuesta;
+    }
+
+    private function verifica_rol_analista_asignado($idtramite){
+        $rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
+        $iduser = Auth::user()->USUA_NIDUSUARIO;
+
+        if($rol == 'ANTA'){
+            $asignados = Cls_UsuarioTramiteAnalista::AnalistaTramiteAsignado($idtramite, $iduser);
+            if(count($asignados) > 0){
+                $retorno = true;
+            }else{
+                $retorno = false;
+            }
+        }else{
+            $retorno = true;
+        }
+        return $retorno;
     }
 }
