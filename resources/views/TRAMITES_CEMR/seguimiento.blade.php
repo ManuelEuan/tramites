@@ -1842,6 +1842,12 @@
         $("#mydiv").removeAttr('style');
     });
 
+    window.addEventListener("scroll", function(event) {
+        var top = this.scrollY;
+        $("#mydiv").css("top", top);
+        console.log(top);
+    }, false);
+
     function TRAM_FN_DESCARGAR_DOCUMENTO(id) {
 
         var doc = list_documentos.find(x => x.documento_id === parseInt(id));
