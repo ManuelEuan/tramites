@@ -1498,7 +1498,7 @@
 
             respuestas.forEach(item => {
                 let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
-               valor.push(obj);
+                valor.push(obj);
             });
 
             $("#"+ id + "_input").val(JSON.stringify(valor));

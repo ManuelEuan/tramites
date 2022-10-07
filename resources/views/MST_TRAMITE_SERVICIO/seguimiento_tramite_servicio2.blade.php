@@ -548,7 +548,7 @@
                                                                                         <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input" value="{{$resp->respString}}">
                                                                                     @endforeach
 
-                                                                                    <select  id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple required>
+                                                                                    <select {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple required>
                                                                                         @foreach ($preg->respuestas as $resp)
                                                                                             @foreach ($resp->catalogos as $cat)
                                                                                                 <?php
@@ -564,6 +564,9 @@
                                                                                             @endforeach
                                                                                         @endforeach
                                                                                     </select>
+                                                                                </div>
+
+                                                                                <div {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="inputGiro_resp_{{$preg->FORM_NID}}_0">
                                                                                     {{-- Se crean los input de tipo fecha para cada giro --}}
                                                                                     @foreach($resp->respArray  as $respArray)
                                                                                         <div id="inputGiro_">
@@ -748,7 +751,6 @@
                             </div>
                             @break
                             @case('Revisión de documentación')
-
                             @break
                             @case('Citas en línea')
                                 <div class="col-md-12 sinCitaHide">
@@ -1622,7 +1624,8 @@
             <script>
                 var catalogos   = [];
                 var catGiros    = [];
-                
+                var anios       = [];
+
                 var id = "{{ $tramite['idusuariotramite'] }}";
                 var encuesta_contestada = "{{ $tramite['encuesta_contestada'] }}";
                 var estatus_tram = "{{ $tramite['estatus'] }}";
@@ -2323,8 +2326,15 @@
                     catalogos.forEach(element => {
                         let respuestas  = element.respuesta;
                         let id          = element.pregunta;
-                        let input       = $("#"+ id + "_input").val(respuestas.toString());
+                        let valor       = [];
                     });
+
+                    respuestas.forEach(item => {
+                        let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                        valor.push(obj);
+                    });
+
+                    $("#"+ id + "_input").val(JSON.stringify(valor));
 
                     $.ajax({
                         data: $('#frmForm').serialize(),
@@ -2670,6 +2680,12 @@
                     let items   = $("#"+select).val();
                     let aplica  = true;
                     let html    = '';
+                    let json    = null;
+
+                    let valor   = {"id": select, "valor": $("#"+select+"_input").val()} ;
+                    if(valor != ""){
+                        json = JSON.parse(valor.valor);
+                    }
 
                     items.forEach(element => {
                         let label = "";
@@ -2679,13 +2695,22 @@
                             }
                         });
 
+                        let fecha = '';
+                        if(json!=null){
+                            json.forEach(aniosGuar => {
+                                if(element == aniosGuar.id){
+                                    fecha = aniosGuar.fecha;
+                                }
+                            });
+                        }
+
                         html += `<div>
                             <label id= 'label_${element}' for="">Giro-${label}</label>
-                            <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" required/> <br />
+                            <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" value="${fecha}" required/> <br />
                         </div>`;
                     });
                     $("#inputGiro_"+select).html(html);
-console.log(html);
+
                     catalogos.forEach(element => {
                         if(element.pregunta == select){
                             element.respuesta = items;
