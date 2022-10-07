@@ -256,13 +256,16 @@ class TramitesController extends Controller
 
         foreach ($mapeoCampos as $campo) {
             $pregunta = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID', $campo->USRE_NIDPREGUNTA)->first();
-            if(!is_null($pregunta) && $pregunta->FORM_CTIPORESPUESTA == 'catalogo') {
-                $array      = explode(",", $campo->USRE_CRESPUESTA);
-                $respuestas = DB::table($pregunta->FORM_CVALOR)->whereIn('id', $array)->get();
-                $texto      = "";
+            
+            if(!is_null($pregunta) && $pregunta->FORM_CTIPORESPUESTA == 'catalogo' ) {
+                $json   = json_decode($campo->USRE_CRESPUESTA);
+                $texto  = "";
 
-                foreach ($respuestas as $key => $value) {
-                    $texto = $key == 0 ? $value->nombre : $texto.", ". $value->nombre;
+                foreach($json as $key => $value){
+                    $query = DB::table($pregunta->FORM_CVALOR)->where('id', $value->id)->first();
+                    
+                    if(!is_null($query))
+                        $texto = $key == 0 ? $query->nombre : $texto.", ". $query->nombre;
                 }
                 $campo->USRE_CRESPUESTA = $texto;
             }
@@ -1004,9 +1007,19 @@ class TramitesController extends Controller
                                         break;
                                     case "catalogo":
                                         if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']){
-                                            $array = explode(",",$_resp->USRE_CRESPUESTA);
-                                            $valorRespuesta = DB::table($resp->FORM_CVALOR)->whereIn('id', $array)->get();
-                                            $resp->FORM_CVALOR_RESPUESTA = $valorRespuesta;
+                                            $json   = json_decode($_resp->USRE_CRESPUESTA);
+                                            $array  = array();
+
+                                            foreach($json as $key => $value){
+                                                $query = DB::table($resp->FORM_CVALOR)->where('id', $value->id)->first();
+
+                                                if(!is_null($query)){
+                                                    $format         =  new DateTime($value->fecha);
+                                                    $query->fecha   = $format->format('d-m-Y');
+                                                    array_push($array, $query);
+                                                }
+                                            }
+                                            $resp->FORM_CVALOR_RESPUESTA = $array;
                                         }
                                         break;
                                     default:
