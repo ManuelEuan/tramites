@@ -422,6 +422,9 @@
                                 timer: 1500
                             });
                             getNotificaciones();
+
+                            
+                            location.reload();
                         }, 400);
                     });
 
