@@ -67,4 +67,22 @@ class Cls_UsuarioTramiteAnalista extends Model
 
         return $response;
     }
+
+    static function AnalistaTramiteAsignado($USTR_NIDUSUARIOTRAMITE, $USUA_NIDUSUARIO){//Request $request
+        $response = DB::select('select * from tram_mdv_usuariotramite_analista where USTR_NIDUSUARIOTRAMITE = ? and USUA_NIDUSUARIO = ? and USTR_ACTIVO = 1', [$USTR_NIDUSUARIOTRAMITE, $USUA_NIDUSUARIO]);
+
+        return $response;
+    }
+
+    static function VerificaAsignacion($USTR_NIDUSUARIOTRAMITE){//Request $request
+        $verifica = DB::select('select * from tram_mdv_usuariotramite_analista where USTR_NIDUSUARIOTRAMITE = ? and USUA_NIDUSUARIO > 0', [$USTR_NIDUSUARIOTRAMITE,]);
+        
+        if(count($verifica) > 0){
+            $verifica=1;
+        }else{
+            $verifica=0;
+        }
+
+        return $verifica;
+    }
 }

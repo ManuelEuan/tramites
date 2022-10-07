@@ -66,6 +66,12 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         return $rsp;
     }
 
+    static function OBTENER_ID_POR_FECHA($inicio, $fin){
+        $sql = "SELECT USTR_NIDUSUARIOTRAMITE FROM tram_mdv_usuariotramite WHERE created_at >= '".$inicio."' AND created_at <= '".$fin."'";
+        $query = DB::select($sql);
+        return $query;
+    }
+
     static function TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($TRAM_NIDTRAMITE_CONFIG)
     {
         $response = [

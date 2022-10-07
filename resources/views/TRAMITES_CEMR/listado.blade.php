@@ -137,7 +137,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Asignación de Trámite</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -147,12 +147,12 @@
                     <label>Tipo de cuestionario</label>
                     <select name="analistaSelec" id="analistaSelec" class="form-control">
                     </select>
-                    <input type="text" id="idTramite">
+                    <input type="text" id="idTramite" readonly>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" onclick="asignarFuncionario()">Save changes</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="asignarFuncionario()">Guardar</button>
             </div>
         </div>
     </div>
@@ -391,18 +391,34 @@
                                     </span>`;
                             }
                             else{
-                                return `<span>
+                                if(data.asignado != 0){
+                                    return `<span>
                                         <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
                                     </span>
                                     <span>
                                         <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
                                     </span>
                                     <span>
-                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i class='fa fa-users' style="color: black"></i></button>
+                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasginar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>
                                     </span>
                                     <span>
                                         <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
                                     </span>`;
+                                }else{
+                                    return `<span>
+                                        <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa fa-users' style="color: black"></i></button>
+                                    </span>
+                                    <span>
+                                        <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                    </span>`;
+                                }
+                                
                             }
                             
                         }
@@ -532,6 +548,7 @@
 
     function asignarFuncionario() {
         listado = []; 
+        var htmlid = $("#idTramite").val();
         var envio = {
                 USTR_NIDUSUARIOTRAMITE: $("#idTramite").val(),
                 USUA_NIDUSUARIO: $("#analistaSelec").val(),
@@ -544,6 +561,20 @@
             url: "tramite_servicio_cemr/asignar_tramite", 
             success: function(result){
                 $("#asignarFuncionarioModal").modal('hide');
+
+                if(envio.USUA_NIDUSUARIO == 0){
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa fa-users");
+                }else{
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
+                }
+
+               
+
+                //fa-solid fa-user-check
                 Swal.fire({
                     icon: result.estatus,
                     title: '',

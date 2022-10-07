@@ -95,6 +95,7 @@ class GestoresController extends Controller
             DB::table('tram_mdv_gestores')->insert([
                 'GES_NUSUARIOID'    => $request->usuario_id,
                 'GES_NGESTORID'     => $request->gestor_id,
+                'GES_CESTATUS'      => 'Vinculación pendiente por gestor'
             ]);
             $usuario = DB::table('tram_mst_usuario')->where('USUA_NIDUSUARIO', $request->usuario_id)->get();
             $nombre = '';
