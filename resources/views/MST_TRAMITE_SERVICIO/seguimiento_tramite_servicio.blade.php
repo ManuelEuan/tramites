@@ -832,7 +832,7 @@
                                                 <h6 style="font-weight:bold;">Resolutivo Digital: </h6>
                                             </div>
                                             <div class="col-md-6">
-                                                <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $reso->RESO_NID, 'tramiteId' => $tramite['idusuariotramite']])}}">Generar</a>
+                                                <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $reso->RESO_NID, 'tramiteId' => $tramite['idusuariotramite'], 'tipo' => 1 ])}}">Generar</a>
                                             </div>
                                         </div>
                                     @endif
