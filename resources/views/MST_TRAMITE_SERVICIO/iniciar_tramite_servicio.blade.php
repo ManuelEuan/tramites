@@ -1491,6 +1491,7 @@
         $("#loading-text").html("Guardando...");
         $('#loading_save').show();
         $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
+        
         catalogos.forEach(element => {
             let respuestas  = element.respuesta;
             let id          = element.pregunta;
@@ -1718,7 +1719,7 @@
             });
 
             html += `<div>
-                <label id= 'label_${element}' for="">Giro-${label}</label>
+                <label id='label_${element}' for="">Giro-${label}</label>
                 <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" required/> <br />
             </div>`;
         });

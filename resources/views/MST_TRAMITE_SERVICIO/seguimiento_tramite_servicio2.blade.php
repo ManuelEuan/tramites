@@ -571,8 +571,8 @@
                                                                                     @foreach($resp->respArray  as $respArray)
                                                                                         <div id="inputGiro_">
                                                                                             <br />
-                                                                                            <label> {{$respArray->clave}}</label>
-                                                                                            <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" value="{{$respArray->fecha}}" required/>
+                                                                                            <label id='label_{{$respArray->id}}'> {{$respArray->clave}}</label>
+                                                                                            <input type="date" id="fechaGiro_{{$respArray->id}}" name="fechaGiro_{{$respArray->id}}" class="form-control txt_abierta" placeholder="Fecha" value="{{$respArray->fecha}}" required/>
                                                                                         </div>
                                                                                     @endforeach
                                                                                 </div>
@@ -1622,17 +1622,14 @@
         @section('scripts')
             <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
             <script>
-                var catalogos   = [];
+                var catalogos   = <?php echo json_encode($tramite['giros']); ?>;
                 var catGiros    = [];
                 var anios       = [];
 
                 var id = "{{ $tramite['idusuariotramite'] }}";
                 var encuesta_contestada = "{{ $tramite['encuesta_contestada'] }}";
                 var estatus_tram = "{{ $tramite['estatus'] }}";
-                var conceptos_pagos = 
-                <?php 
-                echo json_encode($tramite['configuracion']['conceptos']); 
-                ?>;    
+                var conceptos_pagos =  <?php echo json_encode($tramite['configuracion']['conceptos']); ?>;    
                 var ubicacion_ventanilla_sin_cita = {};
 
                 //Unicamente se muestra el modal cuando el tramite esta finalizado y cuando el usuario no haya respondido la encuesta de satisfaccion
@@ -2098,7 +2095,6 @@
                             data: { paginate:false, activo: true},
                             success: function(data) {
                                 catGiros = data.data;
-                                console.log(catGiros);
                             },
                             error: function(data) {
                                 mensajeError('error', data)
@@ -2320,21 +2316,21 @@
                 };
 
                 function TRAM_AJX_GUARDAR() {
-                    $("#loading-text").html("Guardando...");
-                    $('#loading_save').show();
+                    /* $("#loading-text").html("Guardando...");
+                    $('#loading_save').show(); */
 
                     catalogos.forEach(element => {
                         let respuestas  = element.respuesta;
                         let id          = element.pregunta;
                         let valor       = [];
-                    });
 
-                    respuestas.forEach(item => {
-                        let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
-                        valor.push(obj);
-                    });
+                        respuestas.forEach(item => {
+                            let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                            valor.push(obj);
+                        });
 
-                    $("#"+ id + "_input").val(JSON.stringify(valor));
+                        $("#"+ id + "_input").val(JSON.stringify(valor));
+                    });
 
                     $.ajax({
                         data: $('#frmForm').serialize(),
@@ -2363,6 +2359,19 @@
                 };
 
                 function TRAM_AJX_ENVIAR() {
+                    catalogos.forEach(element => {
+                        let respuestas  = element.respuesta;
+                        let id          = element.pregunta;
+                        let valor       = [];
+
+                        respuestas.forEach(item => {
+                            let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                        valor.push(obj);
+                        });
+
+                        $("#"+ id + "_input").val(JSON.stringify(valor));
+                    });
+
                     Swal.fire({
                         title: '',
                         text: '¿Está seguro de enviar su trámite?',
@@ -2381,7 +2390,6 @@
                                 type: "POST",
                                 dataType: 'json',
                                 success: function(data) {
-                                    console.log(data)
                                     if (data.status == "success") {
                                         Swal.fire({
                                             title: '¡Éxito!',
@@ -2424,6 +2432,19 @@
                 };
 
                 function TRAM_AJX_ENVIAR_SEGUIMIENTO() {
+                    catalogos.forEach(element => {
+                        let respuestas  = element.respuesta;
+                        let id          = element.pregunta;
+                        let valor       = [];
+
+                        respuestas.forEach(item => {
+                            let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                        valor.push(obj);
+                        });
+
+                        $("#"+ id + "_input").val(JSON.stringify(valor));
+                    });
+                    
                     Swal.fire({
                         title: '',
                         text: '¿Está seguro de enviar su trámite?',
