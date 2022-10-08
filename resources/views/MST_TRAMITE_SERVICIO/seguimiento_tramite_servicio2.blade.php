@@ -939,6 +939,7 @@
                                 </div>
                             @break
                             @case('Resolutivo electrónico')
+                               
                                 <div class="col-md-12" style="color: black; font-weight:bold">
                                     <h3>Entrega de resolutivo</h3>
                                 </div>
@@ -953,6 +954,7 @@
 
                                     </div>
                                     @if (count($confsec->resolutivos) == 0)
+                                   
                                         <div class="row col-md-12" style="color: black;">
                                             <div class="col-md-2">
                                                 <h6 style="font-weight:bold;">Estatus: </h6>
@@ -961,6 +963,8 @@
                                                 <h6>Pendiente</h6>
                                             </div>
                                         </div>
+                                        
+                                        
                                     @endif
                                     @if (count($confsec->resolutivos) > 0)
                                         <div class="row col-md-12" style="color: black;">
@@ -973,6 +977,7 @@
                                         </div>
                                     @endif
                                     @if (count($confsec->resolutivos) > 0)
+                                   
                                         <div class="row col-md-12" style="color: black;">
                                             <div class="col-md-2">
                                                 <h6 style="font-weight:bold;">Resolutivo Digital: </h6>
@@ -981,11 +986,19 @@
                                                 <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $reso->RESO_NID, 'tramiteId' => $tramite['idusuariotramite']])}}">Generar</a>
                                             </div>
                                         </div>
+                                       
                                     @endif
                                     <hr />
                                 @endforeach
                                 @if (count($confsec->resolutivos) > 0)
-
+                                <div class="row col-md-12" style="color: black;">
+                                    <div class="col-md-12">
+                                     <p>
+                                         La constancia ha sido acreditada y se podrá descargar en el botón que aparece a continuación; sin embargo, en caso de requerir  la constancia en físico, esta se podrá recoger e las oficinas de la Dirección de Adquisiciones.
+                                         
+                                         </p>
+                                    </div>
+                                 </div>
                                     @foreach ($confsec->resolutivos as $resu)
 
                                         <button type="submit" class="btn btn-primary" style="margin-right:10px;"><a

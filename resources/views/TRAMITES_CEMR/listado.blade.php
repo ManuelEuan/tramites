@@ -399,7 +399,7 @@
                                         <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
                                     </span>
                                     <span>
-                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasginar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>
+                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>
                                     </span>
                                     <span>
                                         <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
@@ -566,13 +566,13 @@
                     $("#icon-"+htmlid).removeClass("fa fa-users");
                     $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
                     $("#icon-"+htmlid).addClass("fa fa-users");
+                    $("#icon-"+htmlid).attr("title", "Asignar funcionario");
                 }else{
                     $("#icon-"+htmlid).removeClass("fa fa-users");
                     $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
                     $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).attr("title", "Reasignar funcionario");
                 }
-
-               
 
                 //fa-solid fa-user-check
                 Swal.fire({
