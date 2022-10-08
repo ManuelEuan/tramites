@@ -1238,7 +1238,7 @@ class TramiteServicioController extends Controller
 
     public function reenviar(Request $request)
     {
-        // try{
+        try{
         $respuestas = array();
         $respuestas_especial = array();
         $documentos = array();
@@ -1297,9 +1297,16 @@ class TramiteServicioController extends Controller
                 ->first();
 
             //Exist
-            $exist_respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
+            $valorexistt = isset( $arr[3]);
+            if($valorexistt){
+                $exist_respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
                 ->select('*')
                 ->first();
+            }else{
+                $archivoexist_respuestas = null;
+            }
+            
+            
 
             if ($exist_respuestas == null) {
                 $resp = new Cls_Usuario_Respuesta();
@@ -1329,9 +1336,15 @@ class TramiteServicioController extends Controller
                 ->first();
 
             //Exist
-            $exist_respuestas_especial = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
+            $valorExistEspecial = isset( $arr[3]);
+            if($valorExistEspecial){
+                $exist_respuestas_especial = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
                 ->select('*')
                 ->first();
+            }else{
+            $exist_respuestas_especial = null;
+            }
+            
 
             if ($exist_respuestas_especial == null) {
                 $resp = new Cls_Usuario_Respuesta();
@@ -1361,10 +1374,13 @@ class TramiteServicioController extends Controller
                 $arr_value = explode("_", $value);
 
                 //Exist
-                $exist_docs = Cls_Usuario_Documento::where('USDO_NIDUSUARIORESP', $arr_key[3])
+              
+                    $exist_docs = Cls_Usuario_Documento::where('USDO_NIDUSUARIORESP', $arr_key[3])
                     ->select('*')
                     ->first();
 
+               
+               
                 if ($exist_docs == null) {
                     $doc = new Cls_Usuario_Documento();
                     $doc->USDO_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
@@ -1400,19 +1416,10 @@ class TramiteServicioController extends Controller
         $ObjData['_fecha_hora'] = now();
         $ObjData['_fecha_maxima'] = now();
 
-        Mail::send('MSTP_MAIL.notificacion_subsanar', $ObjData, function ($message) use ($ObjData) {
-            $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
-            $message->to($ObjData['_correo'], '')->subject('Corrección de información sobre trámite con folio ' . $ObjData['_folio_tramite']);
-        });
-
-        // }
-        // catch (\Throwable $e) {
-        //     $response = [
-        //         'codigo' => 400,
-        //         'status' => "error",
-        //         'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->message
-        //     ];
-        // }
+        // Mail::send('MSTP_MAIL.notificacion_subsanar', $ObjData, function ($message) use ($ObjData) {
+        //     $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
+        //     $message->to($ObjData['_correo'], '')->subject('Corrección de información sobre trámite con folio ' . $ObjData['_folio_tramite']);
+        // });
 
         $response = [
             'codigo' => 200,
@@ -1420,7 +1427,21 @@ class TramiteServicioController extends Controller
             'message' => 'Los datos se han enviado correctamente.'
         ];
 
+        }
+        catch (\Throwable $e) {
+            $response = [
+                'codigo' => 400,
+                'status' => "error",
+                'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->message
+            ];
+        // return Response()->json($response);
+
+        }
         return Response()->json($response);
+
+
+        
+
     }
 
     public function enviar_encuesta(Request $request)
