@@ -548,7 +548,7 @@
                                                                                         <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input" value="{{$resp->respString}}">
                                                                                     @endforeach
 
-                                                                                    <select  id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple required>
+                                                                                    <select {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple required>
                                                                                         @foreach ($preg->respuestas as $resp)
                                                                                             @foreach ($resp->catalogos as $cat)
                                                                                                 <?php
@@ -564,12 +564,15 @@
                                                                                             @endforeach
                                                                                         @endforeach
                                                                                     </select>
+                                                                                </div>
+
+                                                                                <div {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="inputGiro_resp_{{$preg->FORM_NID}}_0">
                                                                                     {{-- Se crean los input de tipo fecha para cada giro --}}
                                                                                     @foreach($resp->respArray  as $respArray)
                                                                                         <div id="inputGiro_">
                                                                                             <br />
-                                                                                            <label> {{$respArray->clave}}</label>
-                                                                                            <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" value="{{$respArray->fecha}}" required/>
+                                                                                            <label id='label_{{$respArray->id}}'> {{$respArray->clave}}</label>
+                                                                                            <input type="date" id="fechaGiro_{{$respArray->id}}" name="fechaGiro_{{$respArray->id}}" class="form-control txt_abierta" placeholder="Fecha" value="{{$respArray->fecha}}" required/>
                                                                                         </div>
                                                                                     @endforeach
                                                                                 </div>
@@ -748,7 +751,6 @@
                             </div>
                             @break
                             @case('Revisión de documentación')
-
                             @break
                             @case('Citas en línea')
                                 <div class="col-md-12 sinCitaHide">
@@ -1633,16 +1635,14 @@
         @section('scripts')
             <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
             <script>
-                var catalogos   = [];
+                var catalogos   = <?php echo json_encode($tramite['giros']); ?>;
                 var catGiros    = [];
-                
+                var anios       = [];
+
                 var id = "{{ $tramite['idusuariotramite'] }}";
                 var encuesta_contestada = "{{ $tramite['encuesta_contestada'] }}";
                 var estatus_tram = "{{ $tramite['estatus'] }}";
-                var conceptos_pagos = 
-                <?php 
-                echo json_encode($tramite['configuracion']['conceptos']); 
-                ?>;    
+                var conceptos_pagos =  <?php echo json_encode($tramite['configuracion']['conceptos']); ?>;    
                 var ubicacion_ventanilla_sin_cita = {};
 
                 //Unicamente se muestra el modal cuando el tramite esta finalizado y cuando el usuario no haya respondido la encuesta de satisfaccion
@@ -2108,7 +2108,6 @@
                             data: { paginate:false, activo: true},
                             success: function(data) {
                                 catGiros = data.data;
-                                console.log(catGiros);
                             },
                             error: function(data) {
                                 mensajeError('error', data)
@@ -2330,13 +2329,20 @@
                 };
 
                 function TRAM_AJX_GUARDAR() {
-                    $("#loading-text").html("Guardando...");
-                    $('#loading_save').show();
+                    /* $("#loading-text").html("Guardando...");
+                    $('#loading_save').show(); */
 
                     catalogos.forEach(element => {
                         let respuestas  = element.respuesta;
                         let id          = element.pregunta;
-                        let input       = $("#"+ id + "_input").val(respuestas.toString());
+                        let valor       = [];
+
+                        respuestas.forEach(item => {
+                            let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                            valor.push(obj);
+                        });
+
+                        $("#"+ id + "_input").val(JSON.stringify(valor));
                     });
 
                     $.ajax({
@@ -2366,6 +2372,19 @@
                 };
 
                 function TRAM_AJX_ENVIAR() {
+                    catalogos.forEach(element => {
+                        let respuestas  = element.respuesta;
+                        let id          = element.pregunta;
+                        let valor       = [];
+
+                        respuestas.forEach(item => {
+                            let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                        valor.push(obj);
+                        });
+
+                        $("#"+ id + "_input").val(JSON.stringify(valor));
+                    });
+
                     Swal.fire({
                         title: '',
                         text: '¿Está seguro de enviar su trámite?',
@@ -2384,7 +2403,6 @@
                                 type: "POST",
                                 dataType: 'json',
                                 success: function(data) {
-                                    console.log(data)
                                     if (data.status == "success") {
                                         Swal.fire({
                                             title: '¡Éxito!',
@@ -2427,6 +2445,19 @@
                 };
 
                 function TRAM_AJX_ENVIAR_SEGUIMIENTO() {
+                    catalogos.forEach(element => {
+                        let respuestas  = element.respuesta;
+                        let id          = element.pregunta;
+                        let valor       = [];
+
+                        respuestas.forEach(item => {
+                            let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                        valor.push(obj);
+                        });
+
+                        $("#"+ id + "_input").val(JSON.stringify(valor));
+                    });
+                    
                     Swal.fire({
                         title: '',
                         text: '¿Está seguro de enviar su trámite?',
@@ -2683,6 +2714,12 @@
                     let items   = $("#"+select).val();
                     let aplica  = true;
                     let html    = '';
+                    let json    = null;
+
+                    let valor   = {"id": select, "valor": $("#"+select+"_input").val()} ;
+                    if(valor != ""){
+                        json = JSON.parse(valor.valor);
+                    }
 
                     items.forEach(element => {
                         let label = "";
@@ -2692,13 +2729,22 @@
                             }
                         });
 
+                        let fecha = '';
+                        if(json!=null){
+                            json.forEach(aniosGuar => {
+                                if(element == aniosGuar.id){
+                                    fecha = aniosGuar.fecha;
+                                }
+                            });
+                        }
+
                         html += `<div>
                             <label id= 'label_${element}' for="">Giro-${label}</label>
-                            <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" required/> <br />
+                            <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" value="${fecha}" required/> <br />
                         </div>`;
                     });
                     $("#inputGiro_"+select).html(html);
-console.log(html);
+
                     catalogos.forEach(element => {
                         if(element.pregunta == select){
                             element.respuesta = items;

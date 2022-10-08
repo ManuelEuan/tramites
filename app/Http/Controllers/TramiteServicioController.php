@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Exception;
 use App\Cls_Bitacora;
 use GuzzleHttp\Client;
@@ -23,9 +24,9 @@ use App\Models\Cls_Citas_Calendario;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Cls_PersonaFisicaMoral;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Cls_Seguimiento_Servidor_Publico;
-use App\Models\Cls_PersonaFisicaMoral;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class TramiteServicioController extends Controller
@@ -381,6 +382,7 @@ class TramiteServicioController extends Controller
             $tramite['atencion_formulario'] = $this->atencion;
             $tramite['encuesta_contestada'] = $detalle->USTR_NENCUESTA_CONTESTADA;
             $tramite['seccion_active']      = $this->seccion_active;
+            $tramite['giros']               = [];
 
             if ($detalle->TRAM_NESTATUS_PROCESO == null || $detalle->TRAM_NESTATUS_PROCESO == 0)
                 $tramite['disabled'] = "";
@@ -477,6 +479,13 @@ class TramiteServicioController extends Controller
                                             $resp->respArray    = json_decode($_resp['USRE_CRESPUESTA']);
                                             $resp->respString   = $_resp['USRE_CRESPUESTA'];
                                             $resp->respClave    = '';
+
+                                            $respArray = [];
+                                            foreach($resp->respArray as $item ){
+                                                array_push($respArray, $item->id);
+                                            }
+                                            $objArray = (object)["pregunta" => "resp_".$_resp['USRE_NIDPREGUNTA']."_0", "respuesta" => $respArray];
+                                            array_push($tramite['giros'], $objArray);
                                         }
                                         break;
                                     default:
@@ -542,8 +551,7 @@ class TramiteServicioController extends Controller
                     $tramite['configuracion']['secciones'][$i]->CONF_NESTATUS_SEGUIMIENTO = 2;
             }
         }
-
-        /* dd($tramite['configuracion']['formularios'][0]->secciones); */
+        /* dd($tramite); */
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 
