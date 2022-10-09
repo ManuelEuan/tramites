@@ -1133,10 +1133,26 @@
                 type: "POST",
                 data: data,
                 success: function(data) {
+                    let nombre = "";
+                    let apePat = "";
+                    let apeMat = "" ;
                     for(const clave in data[0]){
-                        if($(`[vinculacion=${clave}]`)){
+                        console.log("clave: "+clave + " datos: "+ data[0][clave]);
+                        if($(`[vinculacion=${clave}]`) && clave != "USUA_CNOMBRES"){
                             $(`[vinculacion=${clave}]`).val(data[0][clave]);
                         }
+                        if(clave == "USUA_CNOMBRES"){
+                            nombre = data[0][clave];
+                        }
+                        if(clave == "USUA_CPRIMER_APELLIDO" ){
+                            apePat = data[0][clave];
+                        }
+                        if(clave == "USUA_CSEGUNDO_APELLIDO "){
+                            apeMat = data[0][clave];
+                        }
+                    }
+                    if($(`[vinculacion=USUA_CNOMBRES]`)){
+                        $(`[vinculacion=USUA_CNOMBRES]`).val(apePat + " " + apeMat + " " + nombre);
                     }
                 },
                 error: function(data) {
