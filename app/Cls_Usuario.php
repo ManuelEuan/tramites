@@ -387,6 +387,15 @@ class Cls_Usuario extends Model
     {
         return $this->hasMany('App\Cls_Sucursal', 'SUCU_NIDUSUARIO', 'USUA_NIDUSUARIO');
     }
+    static function updateVigencia($id_documento, $vigencia)
+    {
+        $actualizar = DB::update('update tram_mst_documentosbase as tmd
+            inner join tram_mdv_usuariordocumento as tmu
+            on tmu.idDocExpediente = tmd.ID_CDOCUMENTOS
+            set tmd.VIGENCIA_FIN = ?
+            where tmu.USDO_NIDTRAMITEDOCUMENTO = ? and tmd.isActual = 1
+        ', [ $vigencia, $id_documento]);
+    }
     static function guardarDocs($request, $idU, $nombre){
         $hoy = date('Y-m-d');
         $hoytime = date('Y-m-d H:i:s');
