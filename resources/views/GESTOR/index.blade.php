@@ -435,7 +435,6 @@
             }else{*/
                 $( "#btnBuscar").prop( "disabled", false );
             //}
-
             for (let i = 0; i < gestores.length; i++) {
                 let estatus = gestores[i].GES_CESTATUS == undefined ? "" : gestores[i].GES_CESTATUS ;
                 html+= `<tr role='row' class'odd>
