@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Exception;
 use App\Cls_Bitacora;
 use GuzzleHttp\Client;
@@ -23,9 +24,9 @@ use App\Models\Cls_Citas_Calendario;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Cls_PersonaFisicaMoral;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Cls_Seguimiento_Servidor_Publico;
-use App\Models\Cls_PersonaFisicaMoral;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class TramiteServicioController extends Controller
@@ -381,6 +382,7 @@ class TramiteServicioController extends Controller
             $tramite['atencion_formulario'] = $this->atencion;
             $tramite['encuesta_contestada'] = $detalle->USTR_NENCUESTA_CONTESTADA;
             $tramite['seccion_active']      = $this->seccion_active;
+            $tramite['giros']               = [];
 
             if ($detalle->TRAM_NESTATUS_PROCESO == null || $detalle->TRAM_NESTATUS_PROCESO == 0)
                 $tramite['disabled'] = "";
@@ -477,6 +479,13 @@ class TramiteServicioController extends Controller
                                             $resp->respArray    = json_decode($_resp['USRE_CRESPUESTA']);
                                             $resp->respString   = $_resp['USRE_CRESPUESTA'];
                                             $resp->respClave    = '';
+
+                                            $respArray = [];
+                                            foreach($resp->respArray as $item ){
+                                                array_push($respArray, $item->id);
+                                            }
+                                            $objArray = (object)["pregunta" => "resp_".$_resp['USRE_NIDPREGUNTA']."_0", "respuesta" => $respArray];
+                                            array_push($tramite['giros'], $objArray);
                                         }
                                         break;
                                     default:
@@ -542,8 +551,7 @@ class TramiteServicioController extends Controller
                     $tramite['configuracion']['secciones'][$i]->CONF_NESTATUS_SEGUIMIENTO = 2;
             }
         }
-
-        /* dd($tramite['configuracion']['formularios'][0]->secciones); */
+        /* dd($tramite); */
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 
@@ -1230,7 +1238,7 @@ class TramiteServicioController extends Controller
 
     public function reenviar(Request $request)
     {
-        // try{
+        try{
         $respuestas = array();
         $respuestas_especial = array();
         $documentos = array();
@@ -1289,9 +1297,16 @@ class TramiteServicioController extends Controller
                 ->first();
 
             //Exist
-            $exist_respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
+            $valorexistt = isset( $arr[3]);
+            if($valorexistt){
+                $exist_respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
                 ->select('*')
                 ->first();
+            }else{
+                $archivoexist_respuestas = null;
+            }
+            
+            
 
             if ($exist_respuestas == null) {
                 $resp = new Cls_Usuario_Respuesta();
@@ -1321,9 +1336,15 @@ class TramiteServicioController extends Controller
                 ->first();
 
             //Exist
-            $exist_respuestas_especial = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
+            $valorExistEspecial = isset( $arr[3]);
+            if($valorExistEspecial){
+                $exist_respuestas_especial = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
                 ->select('*')
                 ->first();
+            }else{
+            $exist_respuestas_especial = null;
+            }
+            
 
             if ($exist_respuestas_especial == null) {
                 $resp = new Cls_Usuario_Respuesta();
@@ -1353,10 +1374,13 @@ class TramiteServicioController extends Controller
                 $arr_value = explode("_", $value);
 
                 //Exist
-                $exist_docs = Cls_Usuario_Documento::where('USDO_NIDUSUARIORESP', $arr_key[3])
+              
+                    $exist_docs = Cls_Usuario_Documento::where('USDO_NIDUSUARIORESP', $arr_key[3])
                     ->select('*')
                     ->first();
 
+               
+               
                 if ($exist_docs == null) {
                     $doc = new Cls_Usuario_Documento();
                     $doc->USDO_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
@@ -1392,19 +1416,10 @@ class TramiteServicioController extends Controller
         $ObjData['_fecha_hora'] = now();
         $ObjData['_fecha_maxima'] = now();
 
-        Mail::send('MSTP_MAIL.notificacion_subsanar', $ObjData, function ($message) use ($ObjData) {
-            $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
-            $message->to($ObjData['_correo'], '')->subject('Corrección de información sobre trámite con folio ' . $ObjData['_folio_tramite']);
-        });
-
-        // }
-        // catch (\Throwable $e) {
-        //     $response = [
-        //         'codigo' => 400,
-        //         'status' => "error",
-        //         'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->message
-        //     ];
-        // }
+        // Mail::send('MSTP_MAIL.notificacion_subsanar', $ObjData, function ($message) use ($ObjData) {
+        //     $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
+        //     $message->to($ObjData['_correo'], '')->subject('Corrección de información sobre trámite con folio ' . $ObjData['_folio_tramite']);
+        // });
 
         $response = [
             'codigo' => 200,
@@ -1412,7 +1427,21 @@ class TramiteServicioController extends Controller
             'message' => 'Los datos se han enviado correctamente.'
         ];
 
+        }
+        catch (\Throwable $e) {
+            $response = [
+                'codigo' => 400,
+                'status' => "error",
+                'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->message
+            ];
+        // return Response()->json($response);
+
+        }
         return Response()->json($response);
+
+
+        
+
     }
 
     public function enviar_encuesta(Request $request)
