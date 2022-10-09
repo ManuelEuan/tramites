@@ -412,6 +412,14 @@ class FormularioController extends Controller
                 // }
                 if($valP !== FALSE) {
                     // $resolutivo =$datos->id;
+                    if ($datos->id != 0) {
+                        $existe   = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID',$datos->id)->select('*')->first();
+                        array_push($tipoRespuesta,$existe);
+                        if(isset($existe)){
+                        Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID',$datos->id)->delete();
+                        
+                        }
+                    }
                     if($datos->id == 0){
                         $pregunta = new Cls_Formulario_Pregunta();
                         $pregunta->FORM_NFORMULARIOID   = $request->formulario_id;
@@ -427,23 +435,20 @@ class FormularioController extends Controller
                 }
 
                 if($valTR !== FALSE){
-
                     $tiRes = $datos->value;
-                    array_push($tipoRespuesta,$tiRes);
                 }
 
                     
 
                 if($valR !== FALSE){
                     if($datos->id == 0){
-                        if (str_contains($datos->name,'respuesta_')) {
+                        if (str_contains($datos->name,'respuesta_update_')) {
                             $res_id     = explode("_", $datos->name);
-                            if(isset($res_id[2])){
-                                $anterior   = Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$res_id[1])->where('FORM_NPREGUNTAID',$res_id[2])->select('*')->first();
-                                if(isset($anterior)){
-                                    if($anterior->FORM_CTIPORESPUESTA == $tiRes)
-                                        Cls_Formulario_Pregunta_Respuesta::where('FORM_NID',$res_id[1])->where('FORM_NPREGUNTAID',$res_id[2])->delete();
-                                }
+                            $anterior   = Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID',$res_id[2])->select('*')->first();
+                            if(isset($anterior)){
+
+                                if($anterior->FORM_CTIPORESPUESTA != $tiRes)
+                                    Cls_Formulario_Pregunta_Respuesta::where('FORM_NPREGUNTAID',$res_id[2])->delete();
                             }
                         }
                         
