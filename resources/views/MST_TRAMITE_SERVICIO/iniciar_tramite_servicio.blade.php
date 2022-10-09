@@ -412,7 +412,7 @@
                             </thead>
                             <tbody>
                                 @if(count($tramite['configuracion']['documentos'])> 0)
-                                    @foreach($tramite['configuracion']['documentos'] as $doc)
+                                    @foreach($tramite['configuracion']['documentos'] as $key => $doc)
                                         <tr>
                                             
                                         <?php   $otrotest = '';$RowDocConf='';$P_NESTATUS='';
@@ -532,9 +532,30 @@
                                                 @endif
                                             </td>
                                             <!-- Aqui -->
-                                            <td>
-                                                {{$doc->TRAD_CDESCRIPCION}}
-                                            </td>
+                                                @if(count($descripcion)> 0)
+                                                    @if(count($descripcion) != count($tramite['configuracion']['documentos']))
+                                                        @if(isset($descripcion[$key+1][0]))
+                                                            <td>
+                                                                {{$descripcion[$key+1][0]}}
+                                                            </td>
+                                                        @else
+                                                            <td>
+                                                            </td>
+                                                        @endif
+                                                    @else
+                                                        @if(isset($descripcion[$key][0]))
+                                                            <td>
+                                                                {{$descripcion[$key][0]}}
+                                                            </td>
+                                                        @else
+                                                            <td>
+                                                            </td>
+                                                        @endif
+                                                    @endif
+                                                @else
+                                                    <td></td>
+                                                @endif
+                                            
                                             <td>
                                                 <div id="size_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
                                                 </div>

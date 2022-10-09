@@ -225,7 +225,15 @@ class TramiteServicioController extends Controller
         $gestoresFisicos    = $this->gestorService->getGestores('FISICA');
         $gestoresMorales    = $this->gestorService->getGestores('MORAL');
         $totalGestores      = sizeof($gestoresFisicos) + sizeof($gestoresMorales);
-
+        //Consultar decripcion documentos
+        $objTramite     = $this->tramiteService->getTramite($detalle->TRAM_NIDTRAMITE_ACCEDE);
+        $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
+        $arrayDocumentos = [];
+        foreach($arrayDetalle['documentos'] as $documento) {
+            $array = array($documento->Description);
+            array_push($arrayDocumentos, $array);
+        }
+        $descripcion = $arrayDocumentos;
         ################ Llenado de datos del tramite ################
         $tramite        = [];
         $tramite['id']  = $id;
@@ -243,7 +251,7 @@ class TramiteServicioController extends Controller
         $tramite['encuesta_contestada'] = $detalle->USTR_NENCUESTA_CONTESTADA;
         $tramite['disabled']            = is_null($detalle->TRAM_NESTATUS_PROCESO) && $detalle->TRAM_NESTATUS_PROCESO != 1 ?  "disabled" : "";
         $tramite['configuracion']       = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
-
+        
         //datos de ciudadano
         $ObjAuth = Auth::user();
         $tramite['USUA_CRFC'] = $ObjAuth->USUA_CRFC;
@@ -321,11 +329,11 @@ class TramiteServicioController extends Controller
                 $tramite['repositorio'][] = $repodoc;
             };
         }
+        //$tramite['descripcionesDoc'] = $arrayDocumentos;
         ///////////////////////////////////////////////////////////////////
 
-
         $nmbres='';$P_NESTATUS='';$TXT_STAT=$arrTst;$docs_base;
-        return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'ARR_DOC_CON', 'nmbres', 'P_NESTATUS', 'TXT_STAT', 'docs_base'));
+        return view('MST_TRAMITE_SERVICIO.iniciar_tramite_servicio', compact('tramite', 'descripcion', 'ARR_DOC_CON', 'nmbres', 'P_NESTATUS', 'TXT_STAT', 'docs_base'));
     }
     public function obtenerInformacionCiudadano(Request $request)
     {
