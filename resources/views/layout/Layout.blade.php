@@ -301,6 +301,8 @@
         }
 
         function getNotificaciones() {
+            $("#seccionNotificacion").replaceWith('<div id="seccionNotificacion" style="margin-top: 50px; margin-bottom:50px;text-align: center"> Sin Notificaciones </div>');
+            
             let data = {
                 "usuario_id": $("#usuarioLogueado").val()
             };
@@ -419,7 +421,10 @@
                 }
 
                 if (cantidad != 0) {
+                    console.log("cantidad diferente de 0")
                     $("#spanNotificacion").text(cantidad);
+                }else{
+                    $("#spanNotificacion").text('');
                 }
             });
         }
@@ -504,6 +509,7 @@
                         }
                     });
             request.done(function(response, textStatus, jqXHR) {
+                console.log(response)
                 setTimeout(() => {
                     Swal.fire({
                         icon: 'success',

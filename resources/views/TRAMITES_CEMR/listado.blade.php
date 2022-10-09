@@ -310,27 +310,54 @@
                 "columns": [{
                         data: null,
                         render: function(data, type, row) {
-
                             var dateFromTramite = new Date(data.USTR_DFECHACREACION);
                             dateFromTramite.setDate(parseInt(dateFromTramite.getDate()) + parseInt(data.USTR_NDIASHABILESRESOLUCION));
 
                             var dateMiddle = new Date(data.USTR_DFECHACREACION);
                             dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 2));
 
+
+                            //Fecha de notificacion
                             var currentDate = new Date();
 
                             var level = 0;
-                            if(data.USTR_NESTATUS != 10 && data.USTR_NESTATUS != 11){
-                                if (dateMiddle >= currentDate) {
-                                    level = 1;
-                                } else if (dateFromTramite >= currentDate) {
-                                    level = 2;
-                                } else {
+                            if(data.USTR_NESTATUS != 4){
+                                if(data.USTR_NESTATUS != 10 && data.USTR_NESTATUS != 11){
+                                    if (dateMiddle >= currentDate) {
+                                        level = 1;
+                                    } else if (dateFromTramite >= currentDate) {
+                                        level = 2;
+                                    } else {
+                                        level = 3;
+                                    }
+                                }else{
                                     level = 3;
                                 }
                             }else{
-                                level = 3;
+                                if(data.USTR_DFECHAESTATUS != null){
+                                    var dateNoti = new Date(data.USTR_DFECHAESTATUS);
+                                    dateNoti.setDate(parseInt(dateNoti.getDate()) + parseInt(data.USTR_NDIASHABILESNOTIFICACION));
+
+                                    var dateNotiMedio = new Date(data.USTR_DFECHAESTATUS);
+                                    dateNotiMedio.setDate(parseInt(dateNotiMedio.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESNOTIFICACION) / 2));
+                                    if(dateNotiMedio >= currentDate){
+                                        level = 1;
+                                    }else if(dateNoti >= currentDate){
+                                        level = 2;
+                                    }else{
+                                        level = 3;
+                                    }
+                                }else{
+                                    if (dateMiddle >= currentDate) {
+                                        level = 1;
+                                    } else if (dateFromTramite >= currentDate) {
+                                        level = 2;
+                                    } else {
+                                        level = 3;
+                                    }
+                                }
                             }
+                            
                             
                             var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : "red");
                            

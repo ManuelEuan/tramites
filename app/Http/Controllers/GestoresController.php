@@ -204,17 +204,25 @@ class GestoresController extends Controller
     public function leido(Request $request){
         $response = array('message' => 'Error');
         $codigo = 403;
-        
+           
         try {
-            $objNotificacion = Cls_Notificacion::find($request->id);
-            $objNotificacion->NOTI_NLEIDO = true;
-            $objNotificacion->update(); 
+            /*$objNotificacion = Cls_Notificacion::find($request->id_noti);
+            $receptor = $objNotificacion->NOTI_NIDREMITENTE;
+            $remitente = $objNotificacion->NOTI_NIDRECEPTOR;*/
+
+            $notificacion = DB::table('tram_his_notificacion')->select()->where('NOTI_NID', $request->id_noti)->first();
+
+            $remitente = $notificacion->NOTI_NIDRECEPTOR;
+            
+            DB::table('tram_his_notificacion')
+                ->where('NOTI_NID', $request->id_noti)
+                ->update(['NOTI_NLEIDO' => true]);
                     
             event(new NotificacionGestores($remitente));
             $response["message"] = "Operacion Exitosa";
         } catch (\Throwable $th) {
             return response()->json($th);
         }
-    return response()->json($response, $codigo);
+    return response()->json($response);
     }
 }

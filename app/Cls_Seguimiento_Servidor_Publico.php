@@ -541,10 +541,10 @@ class Cls_Seguimiento_Servidor_Publico extends Model
     static function TRAM_INCOMPLETA_SECCION_FORMULARIO($CONF_NIDUSUARIOTRAMITE)
     {
         try {
-
+            $hoy = "'".date('y-m-d h:i:s')."'";
             //Mantenemos el estatus general del trámite en 4 -> Información incompleta
             DB::select(
-                'UPDATE tram_mdv_usuariotramite SET USTR_NESTATUS = 4 WHERE USTR_NIDUSUARIOTRAMITE = ?',
+                'UPDATE tram_mdv_usuariotramite SET USTR_NESTATUS = 4, USTR_DFECHAESTATUS = '.$hoy.' WHERE USTR_NIDUSUARIOTRAMITE = ?',
                 array($CONF_NIDUSUARIOTRAMITE)
             );
 
@@ -554,7 +554,7 @@ class Cls_Seguimiento_Servidor_Publico extends Model
                 array('Formulario', $CONF_NIDUSUARIOTRAMITE)
             );
         } catch (\Throwable $th) {
-            //throw $th;
+            echo $th;
         }
     }
 

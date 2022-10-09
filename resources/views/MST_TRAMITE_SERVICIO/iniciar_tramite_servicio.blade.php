@@ -401,6 +401,7 @@
                                 <th scope="col">Existente</th>
                                 <th scope="col"></th>
                                 <th scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
                                 <th scope="col">Tamaño</th>
                                 <th scope="col" class="text-center">Estatus</th>
                                 <th scope="col"></th>
@@ -529,6 +530,10 @@
                                                 @if($doc->TRAD_NOBLIGATORIO == 1 )
                                                     <span class="text-danger">*</span>
                                                 @endif
+                                            </td>
+                                            <!-- Aqui -->
+                                            <td>
+                                                {{$doc->TRAD_CDESCRIPCION}}
                                             </td>
                                             <td>
                                                 <div id="size_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">

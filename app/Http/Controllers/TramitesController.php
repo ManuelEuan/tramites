@@ -128,16 +128,26 @@ class TramitesController extends Controller
 
                             $diasH = $t->USTR_NDIASHABILESRESOLUCION;
                             $hoy = date('Y-m-d');
-                            $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval($diasH).' days'));
+                            $fechaFinal = date('Y-m-d', strtotime($t->USTR_DFECHACREACION. ' + '.$diasH.' days'));
                             
+
                             if($t->USTR_NESTATUS == 4){
-                                if($hoy > $fechaFinal){
-                                    $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                                if(!empty($t->USTR_DFECHAESTATUS)){
+                                    $diasN = $t->USTR_NDIASHABILESNOTIFICACION;
+                                    $fechaFinalNotificacion = date('Y-m-d', strtotime($t->USTR_DFECHAESTATUS. ' + '.$diasN.' days'));
+                                    if($hoy > $fechaFinalNotificacion){
+                                        $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                                    }
+                                }else{
+                                    if($hoy > $fechaFinal){
+                                        $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                                    }
                                 }
-                            }else{
-                                if($hoy > $fechaFinal){
+                                
+                            }elseif($t->USTR_NESTATUS != 10){
+                                /*if($hoy > $fechaFinal){
                                     $tramite_seguimiento->ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
-                                }
+                                }*/
                             }
 
                         }
@@ -155,19 +165,30 @@ class TramitesController extends Controller
 
                     $diasH = $t->USTR_NDIASHABILESRESOLUCION;
                     $hoy = date('Y-m-d');
-                    $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval($diasH).' days'));
+                    $fechaFinal = date('Y-m-d', strtotime($t->USTR_DFECHACREACION. ' + '.$diasH.' days'));
                     
                     if($t->USTR_NESTATUS == 4){
-                        if($hoy > $fechaFinal){
-                            $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                        if(!empty($t->USTR_DFECHAESTATUS)){
+                            $diasN = $t->USTR_NDIASHABILESNOTIFICACION;
+                            $fechaFinalNotificacion = date('Y-m-d', strtotime($t->USTR_DFECHAESTATUS. ' + '.$diasN.' days'));
+                            if($hoy > $fechaFinalNotificacion){
+                                $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                            }
+                        }else{
+                            if($hoy > $fechaFinal){
+                                $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                            }
                         }
-                    }else{
-                        if($hoy > $fechaFinal){
+                    }elseif($t->USTR_NESTATUS != 10){
+                        /*if($hoy > $fechaFinal){
                             $tramite_seguimiento->ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
-                        }
+                        }*/
                     }
                 }
             }
+            $result = $tramite_seguimiento->TRAM_SP_CONSULTAR_TRAMITES_SEGUIMIENTO();
+            $tramites = $result['result'];
+            $tramites = $mostrar;
 
             $response = [
                 'recordsTotal' => $totalRegistros,

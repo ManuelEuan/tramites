@@ -42,17 +42,23 @@ class SeguimientoSolicitudController extends Controller
         foreach ($data as $key => $t) {
             $diasH = $t->USTR_NDIASHABILESRESOLUCION;
             $hoy = date('Y-m-d');
-            $fechaFinal = date('Y-m-d', strtotime(intval($t->USTR_DFECHACREACION). ' + '.floatval($hoy).' days'));
-            
-            
+            $fechaFinal = date('Y-m-d', strtotime($t->USTR_DFECHACREACION. ' + '.$diasH.' days'));
                 if($t->USTR_NESTATUS == 4){
-                    if($hoy > $fechaFinal){
-                        Cls_Usuario_Tramite::ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                    if(!empty($t->USTR_DFECHAESTATUS)){
+                        $diasN = $t->USTR_NDIASHABILESNOTIFICACION;
+                        $fechaFinalNotificacion = date('Y-m-d', strtotime($t->USTR_DFECHAESTATUS. ' + '.$diasN.' days'));
+                        if($hoy > $fechaFinalNotificacion){
+                            $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                        }
+                    }elseif($t->USTR_NESTATUS != 10){
+                       /* if($hoy > $fechaFinal){
+                            //$tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                        }*/
                     }
                 }else{
-                    if($hoy > $fechaFinal){
+                    /*if($hoy > $fechaFinal){
                         Cls_Usuario_Tramite::ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
-                    }
+                    }*/
                 }
         }
         $response = [
