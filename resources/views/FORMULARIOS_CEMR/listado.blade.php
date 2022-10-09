@@ -1687,7 +1687,6 @@
         setTimeout(() => {
             let completo = jQuery('#form_preguntas').serializeArray();
             let entra = false;
-            console.log(completo);
             for (let i = 0; i < completo.length; i++) {
                 completo[i].id = 0;
                 let name = completo[i].name;
@@ -1720,6 +1719,7 @@
                 } else if (name.includes("update_select_")) {
                     array = name.split("_");
                     completo[i].id = array[3];
+                    console.log(completo[i].name);
                 }
 
                 if (completo[i].value == 'enriquecido') {
