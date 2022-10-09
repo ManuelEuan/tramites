@@ -484,16 +484,19 @@ class TramiteServicioController extends Controller
                                         break;
                                     case "catalogo":
                                         if ($resp->FORM_NPREGUNTAID == $_resp['USRE_NIDPREGUNTA']) {
-                                            $resp->respArray    = json_decode($_resp['USRE_CRESPUESTA']);
                                             $resp->respString   = $_resp['USRE_CRESPUESTA'];
-                                            $resp->respClave    = '';
 
-                                            $respArray = [];
-                                            foreach($resp->respArray as $item ){
-                                                array_push($respArray, $item->id);
+                                            if($resp->FORM_CVALOR == 'tram_cat_giros'){
+                                                $resp->respArray    = json_decode($_resp['USRE_CRESPUESTA']);
+                                                $resp->respClave    = '';
+    
+                                                $respArray = [];
+                                                foreach($resp->respArray as $item ){
+                                                    array_push($respArray, $item->id);
+                                                }
+                                                $objArray = (object)["pregunta" => "resp_".$_resp['USRE_NIDPREGUNTA']."_0", "respuesta" => $respArray];
+                                                array_push($tramite['giros'], $objArray);
                                             }
-                                            $objArray = (object)["pregunta" => "resp_".$_resp['USRE_NIDPREGUNTA']."_0", "respuesta" => $respArray];
-                                            array_push($tramite['giros'], $objArray);
                                         }
                                         break;
                                     default:
@@ -559,7 +562,7 @@ class TramiteServicioController extends Controller
                     $tramite['configuracion']['secciones'][$i]->CONF_NESTATUS_SEGUIMIENTO = 2;
             }
         }
-        /* dd($tramite); */
+        /* dd($tramite['configuracion']['formularios'][0]->secciones); */
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 

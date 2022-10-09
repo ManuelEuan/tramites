@@ -370,11 +370,19 @@
                                                         </div>
                                                         @break
                                                     @case('catalogo')
+
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
-                                                                <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input">
-                                                                <select id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple required>
+                                                                @if ($preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros')
+                                                                    <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input">
+                                                                @endif
+                                                                <?php 
+                                                                    $multiple   = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'multiple' : '';
+                                                                    $class      = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'selectCatalogos' : '';
+                                                                    $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0';
+                                                                ?>
+                                                                <select id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control {{$class}}" data-live-search="true" {{$multiple}} {{ $name }} required>
                                                                     @foreach ($preg->respuestas as $resp)
                                                                         @foreach ($resp->catalogos as $cat)
                                                                             <option value="{{$cat->id}}">{{$cat->clave}} - {{$cat->nombre}}</option>;
@@ -383,7 +391,11 @@
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <div id="inputGiro_resp_{{$preg->FORM_NID}}_0"></div>
+
+                                                        @if ($preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros')
+                                                            <div id="inputGiro_resp_{{$preg->FORM_NID}}_0"></div>
+                                                        @endif
+                                                        
                                                         @break
                                                 @endswitch
                                             @endforeach
@@ -941,6 +953,7 @@
     var id_usuario  = "{{$tramite['idsuario']}}";//Usuario logeado
     var catalogos   = [];
     var catGiros    = [];
+    var catBancos   = [];
 
     //0 no es gestor
     if(es_gestor == 0){
@@ -1517,7 +1530,7 @@
         $("#loading-text").html("Guardando...");
         $('#loading_save').show();
         $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
-        
+       
         catalogos.forEach(element => {
             let respuestas  = element.respuesta;
             let id          = element.pregunta;
@@ -1713,6 +1726,18 @@
             data: { paginate:false, activo: true},
             success: function(data) {
                 catGiros = data.data;
+            },
+            error: function(data) {
+                mensajeError('error', data)
+            }
+        });
+
+        $.ajax({
+            url: "/bancos/find",
+            type: "GET",
+            data: { paginate:false, activo: true},
+            success: function(data) {
+                catBancos = data.data;
             },
             error: function(data) {
                 mensajeError('error', data)
