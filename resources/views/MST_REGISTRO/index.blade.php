@@ -241,10 +241,15 @@
                                 <br>
                                 <!-- metodos de confirmacion -->
                                 <div class="col-md-6">
-                                    <div class="form-group">
+                                    <div class="form-group confirmMoral">
                                         <label for="bus-txt-centro-trabajo">Ingresa nuevamente el correo electrónico <span class="text-danger">*</span></label>
                                         <input type="email" class="form-control" name="txtConfirmacionCorreo_Electronico" id="txtConfirmacionCorreo_Electronico" placeholder="Vuelve a escribir el correo electrónico" required>
                                             <span id="correoEsIgual" style="font-size: 12px;"></span>
+                                    </div>
+                                    <div class="form-group confirmFisica">
+                                        <label for="bus-txt-centro-trabajo">Ingresa nuevamente el correo electrónico <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" name="txtConfirmacionCorreo_ElectronicoFisica" id="txtConfirmacionCorreo_ElectronicoFisica" placeholder="Vuelve a escribir el correo electrónico" required>
+                                            <span id="correoEsIgualFisica" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -710,6 +715,10 @@
                         email: "",
                         required: ""
                     },
+                    txtConfirmacionCorreo_ElectronicoFisica: {
+                        email: "",
+                        required: ""
+                    },
                     txtConfirmacionCorreo_Alternativo: {
                         email: "",
                         required: ""
@@ -901,13 +910,15 @@
                 $(".divFechaNacimiento").show();
                 $(".divFechaConstitucionMoral").hide();
                 $(".divCorreoFisica").show();
+                $(".confirmMoral").hide();
+                $(".confirmFisica").show();
 
 
                 $('#txtNombres').val('')
                 $('#txtPrimer_Apellido').val('')
                 $('#txtSegundo_Apellido').val('')
                 $('#txtCurpMoral').val('')
-                $('#txtCurpMoral').val('')
+                $('#txtConfirmacionCorreo_Electronico').val('')
                 $('#txtCurpMoral').val('')
 
                 //TXT Datos de la persona
@@ -938,6 +949,8 @@
                 $('#txtCurpMoral').prop('required',false);
                 $('#txtCorreo_Electronico').prop('required',true);
                 $('#txtCorreo_ElectronicoMoral').prop('required',false);
+                $('#txtConfirmacionCorreo_ElectronicoFisica').prop('required',true);
+                $('#txtConfirmacionCorreo_Electronico').prop('required',false);
 
                 $('#txtRazon_Social').prop('required',false);
 
@@ -957,6 +970,9 @@
 
                 $(".divFechaNacimiento").hide();
                 $(".divFechaConstitucionMoral").show();
+
+                $(".confirmMoral").show();
+                $(".confirmFisica").hide();
 
                 //TXT Datos de la persona
                 document.getElementById("txtNombres").readOnly = true;
@@ -987,6 +1003,9 @@
                 $('#txtRazon_Social').prop('required',true);
                 $('#txtCorreo_Electronico').prop('required',false);
                 $('#txtCorreo_ElectronicoMoral').prop('required',true);
+                $('#txtConfirmacionCorreo_ElectronicoFisica').prop('required',false);
+                $('#txtConfirmacionCorreo_Electronico').prop('required',true);
+
 
                 $('.asterisco').show();
                 $('#lblRfc').html("Se compone de 12 caracteres");
@@ -1061,20 +1080,53 @@
         $('#txtConfirmacionCorreo_Electronico').change(function(){
             var value = $( this ).val();
             emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            var correoprincipal = $('#txtCorreo_ElectronicoMoral').val();
             if(value != ""){
                 if (emailRegex.test(value)) {
+                    if(value == correoprincipal){
                     $("#correoEsIgual").html('');
+                    }
+                    else {
+                        $("#correoEsIgual").html("<span style='color: red;'> Los correos no coinciden</span>");
+                    }
                 } else {
                     $("#correoEsIgual").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
                 }
+               
+            }
+        });
+        $('#txtConfirmacionCorreo_ElectronicoFisica').change(function(){
+            var value = $( this ).val();
+            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            var correoprincipal = $('#txtCorreo_Electronico').val();
+            if(value != ""){
+                if (emailRegex.test(value)) {
+                    if(value == correoprincipal){
+                    $("#correoEsIgualFisica").html('');
+                    }
+                    else {
+                        $("#correoEsIgualFisica").html("<span style='color: red;'> Los correos no coinciden</span>");
+                    }
+                } else {
+                    $("#correoEsIgualFisica").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+                }
+               
             }
         });
         $('#txtConfirmacionCorreo_Alternativo').change(function(){
             var value = $( this ).val();
             emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            var correoprincipal = $('#txtCorreo_Alternativo').val();
+
             if(value != ""){
                 if (emailRegex.test(value)) {
+                    if(value == correoprincipal){
                     $("#alternativoEsIgual").html('');
+                    }
+                    else {
+                        $("#alternativoEsIgual").html("<span style='color: red;'> Los correos no coinciden</span>");
+                    }
+                    // $("#alternativoEsIgual").html('');
                 } else {
                     $("#alternativoEsIgual").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
                 }
@@ -1184,17 +1236,28 @@
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 return;
             }
-            if($("#txtConfirmacionCorreo_Electronico").val() != $("#txtCorreo_Electronico").val()){
-                console.log($("#txtConfirmacionCorreo_Electronico").val(),)
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Correos incorrectos',
-                    text: 'Los correos no coinciden, por favor verifica la información e intenta nuevamente',
-                })
-                $("#resultadoExistCorreo").html("<span style='color: red;'> Los correos principales no coinciden favor de verificar la información</span>");
-                $("#correoEsIgual").html("<span style='color: red;'> Los correos principales no coinciden favor de verificar la información</span>");
-                return;
-            }
+            // if($("#txtConfirmacionCorreo_Electronico").val() != $("#txtCorreo_ElectronicoMoral").val()){
+            //     console.log($("#txtConfirmacionCorreo_Electronico").val(),)
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Correos incorrectos',
+            //         text: 'Los correos no coinciden, por favor verifica la información e intenta nuevamente',
+            //     })
+            //     $("#resultadoExistCorreo").html("<span style='color: red;'> Los correos principales no coinciden favor de verificar la información</span>");
+            //     $("#correoEsIgual").html("<span style='color: red;'> Los correos principales no coinciden favor de verificar la información</span>");
+            //     return;
+            // }
+            // if($("#txtConfirmacionCorreo_ElectronicoFisica").val() != $("#txtCorreo_Electronico").val()){
+            //     console.log($("#txtConfirmacionCorreo_ElectronicoFisica").val(),)
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Correos incorrectos',
+            //         text: 'Los correos no coinciden, por favor verifica la información e intenta nuevamente',
+            //     })
+            //     $("#resultadoExistCorreo").html("<span style='color: red;'> Los correos principales no coinciden favor de verificar la información</span>");
+            //     $("#correoEsIgual").html("<span style='color: red;'> Los correos principales no coinciden favor de verificar la información</span>");
+            //     return;
+            // }
             if($("#correoPersonaAutorizada").val() != $("#ConfirmCorreoPersonaAutorizada").val()){
                 Swal.fire({
                     icon: 'error',
