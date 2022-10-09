@@ -187,9 +187,7 @@ class TramitesController extends Controller
                     }
                 }
             }
-            $result = $tramite_seguimiento->TRAM_SP_CONSULTAR_TRAMITES_SEGUIMIENTO();
-            $tramites = $result['result'];
-            $tramites = $mostrar;
+            
 
             $response = [
                 'recordsTotal' => $totalRegistros,
