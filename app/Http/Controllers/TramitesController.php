@@ -6,6 +6,7 @@ use File;
 use DateTime;
 use Exception;
 use ZipArchive;
+use App\Cls_Usuario;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Cls_Usuario_Tramite;
@@ -448,7 +449,11 @@ class TramitesController extends Controller
             Cls_Seguimiento_Servidor_Publico::TRAM_ACEPTAR_SECCION_FORMULARIO($request->CONF_NIDUSUARIOTRAMITE, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO);
             $this->enviar_correo_aprobacion($request->CONF_NIDUSUARIOTRAMITE);
             Cls_UsuarioTramiteAnalista::ApruebaTramite($request->CONF_NIDUSUARIOTRAMITE);
-
+            foreach($request->CONF_DOCUMENTOS as $key => $value){
+                if($value["vigencia"] != "" && $value["documento_id"] != ""){
+                    Cls_Usuario::updateVigencia($value["documento_id"], $value["vigencia"]);
+                }
+            }
             $response = [
                 "estatus" => "success",
                 "mensaje" => "¡Éxito! acción realizada con éxito.",

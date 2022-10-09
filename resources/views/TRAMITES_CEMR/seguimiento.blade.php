@@ -2007,7 +2007,8 @@
             "CONF_ESTATUSSECCION": 2,
             "CONF_NOTIFICACION": "",
             "CONF_NIDUSUARIOTRAMITE": parseInt("{{request()->route('id') }}"),
-            "CONF_PREGUNTAS": []
+            "CONF_PREGUNTAS": [],
+            "CONF_DOCUMENTOS": []
         };
 
         //Verificacion de preguntas aprobadas
@@ -2039,9 +2040,11 @@
             if (value.estatus < 2) {
                 documentos_sin_atender = true;
                 return;
+            }else {
+                seccion_formulario.CONF_DOCUMENTOS.push(value);
             }
         });
-
+        // console.log(list_documentos);
         if (documentos_sin_atender) {
             Swal.fire({
                 icon: "warning",
@@ -2052,7 +2055,7 @@
 
             return;
         }
-
+        // console.log(seccion_formulario);
         Swal.fire({
             title: '¿Desea aprobar esta acción?',
             text: "Usted aprobará el formulario y los documentos",
@@ -2082,14 +2085,14 @@
                     });
                     return;
                 }
-
+                
                 $.ajax({
                     data: seccion_formulario,
                     dataType: 'json',
                     url: '/tramite_servicio_cemr/seccion_formulario_aprobado',
                     type: "POST",
                     success: function(data) {
-
+                        console.log(data);
                         if (data.codigo === 200) {
 
                             Swal.fire({
