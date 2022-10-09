@@ -259,7 +259,11 @@
                                     @if(count($pregunta->respuestas)>0)
                                     <ul>
                                         @foreach ($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA  as $item)
-                                            <li>{{$item->nombre}}, fecha: {{$item->fecha}} </li>
+                                            @if(isset($item->fecha))
+                                                <li>{{$item->nombre}}, fecha: {{$item->fecha}} </li>
+                                            @else
+                                                <li>{{$item->nombre}}</li>
+                                            @endif
                                         @endforeach
                                     @endif
                                     </ul>

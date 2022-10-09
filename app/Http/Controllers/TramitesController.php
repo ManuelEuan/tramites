@@ -1018,14 +1018,20 @@ class TramitesController extends Controller
                                             $json   = json_decode($_resp->USRE_CRESPUESTA);
                                             $array  = array();
 
-                                            foreach($json as $key => $value){
-                                                $query = DB::table($resp->FORM_CVALOR)->where('id', $value->id)->first();
-
-                                                if(!is_null($query)){
-                                                    $format         =  new DateTime($value->fecha);
-                                                    $query->fecha   = $format->format('d-m-Y');
-                                                    array_push($array, $query);
+                                            if(is_array($json)){
+                                                foreach($json as $key => $value){
+                                                    $query = DB::table($resp->FORM_CVALOR)->where('id', $value->id)->first();
+    
+                                                    if(!is_null($query)){
+                                                        $format         =  new DateTime($value->fecha);
+                                                        $query->fecha   = $format->format('d-m-Y');
+                                                        array_push($array, $query);
+                                                    }
                                                 }
+                                            }
+                                            else {
+                                                $query = DB::table($resp->FORM_CVALOR)->where('id', $json)->first();
+                                                array_push($array, $query);
                                             }
                                             $resp->FORM_CVALOR_RESPUESTA = $array;
                                         }
