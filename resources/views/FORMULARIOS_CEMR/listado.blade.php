@@ -952,6 +952,7 @@
                                     <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
                                     <option value= 'USUA_CNOMBRES'>Nombre Ciudadano</option>
                                     <option value= 'USUA_CCALLE'>Calle Persona Moral</option>
+                                    <option value= 'USUA_NCP'>Código Postal Persona Moral</option>
                                     <option value= 'USUA_NNUMERO_EXTERIOR'>Número Exterior Persona Moral</option>
                                     <option value= 'USUA_NNUMERO_INTERIOR'>Número Interior Persona Moral</option>
                                     <option value= 'USUA_CCOLONIA'>Colonia Persona Moral</option>
@@ -961,6 +962,7 @@
                                     <option value= 'USUA_CCORREO_ELECTRONICO'>Correo Electronico</option>
                                     <option value= 'USUA_CCORREO_ALTERNATIVO'>Correo Alternativo</option>
                                     <option value= 'USUA_CCALLE_PARTICULAR'>Calle Particular Persona Física</option>
+                                    <option value= 'USUA_NCP_PARTICULAR'>Código Postal Particular Persona Física</option>
                                     <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR'>Número Exterior Particular Persona Física</option>
                                     <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR'>Número Interior Particular Persona Física</option>
                                     <option value= 'USUA_CCOLONIA_PARTICULAR'>Colonia Persona Física</option>
@@ -1035,6 +1037,7 @@
                                     <option value= 'USUA_CRAZON_SOCIAL' ${element.FORM_CVALORASIGNACION == "USUA_CRAZON_SOCIAL" ? "selected": ""}>Razón Social</option>
                                     <option value= 'USUA_CNOMBRES' ${element.FORM_CVALORASIGNACION == "USUA_CNOMBRES" ? "selected": ""}>Nombre Ciudadano</option>
                                     <option value= 'USUA_CCALLE' ${element.FORM_CVALORASIGNACION == "USUA_CCALLE" ? "selected": ""}>Calle Persona Moral</option>
+                                    <option value= 'USUA_NCP' ${element.FORM_CVALORASIGNACION == "USUA_NCP" ? "selected": ""}>Código Postal Persona Moral</option>
                                     <option value= 'USUA_NNUMERO_EXTERIOR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_EXTERIOR" ? "selected": ""}>Número Exterior Persona Moral</option>
                                     <option value= 'USUA_NNUMERO_INTERIOR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_INTERIOR" ? "selected": ""}>Número Interior Persona Moral</option>
                                     <option value= 'USUA_CCOLONIA' ${element.FORM_CVALORASIGNACION == "USUA_CCOLONIA" ? "selected": ""}>Colonia Persona Moral</option>
@@ -1044,6 +1047,7 @@
                                     <option value= 'USUA_CCORREO_ELECTRONICO' ${element.FORM_CVALORASIGNACION == "USUA_CCORREO_ELECTRONICO" ? "selected": ""}>Correo Electronico</option>
                                     <option value= 'USUA_CCORREO_ALTERNATIVO' ${element.FORM_CVALORASIGNACION == "USUA_CCORREO_ALTERNATIVO" ? "selected": ""}>Correo Alternativo</option>
                                     <option value= 'USUA_CCALLE_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CCALLE_PARTICULAR" ? "selected": ""}>Calle Particular Persona Física</option>
+                                    <option value= 'USUA_NCP_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NCP_PARTICULAR" ? "selected": ""}>Código Postal Particular Persona Física</option>
                                     <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_EXTERIOR_PARTICULAR" ? "selected": ""}>Número Exterior Particular Persona Física</option>
                                     <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_INTERIOR_PARTICULAR" ? "selected": ""}>Número Interior Particular Persona Física</option>
                                     <option value= 'USUA_CCOLONIA_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CCOLONIA_PARTICULAR" ? "selected": ""}>Colonia Persona Física</option>
@@ -1283,7 +1287,8 @@
                                 <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
                                 <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
                                 <option value= 'USUA_CNOMBRES'>Nombre Ciudadano</option>
-                                <option value= 'USUA_CCALLE'>CALLE Persona Moral</option>
+                                <option value= 'USUA_CCALLE'>Calle Persona Moral</option>
+                                <option value= 'USUA_NCP'>Código Postal Persona Moral</option>
                                 <option value= 'USUA_NNUMERO_EXTERIOR'>Número Exterior Persona Moral</option>
                                 <option value= 'USUA_NNUMERO_INTERIOR'>Número Interior Persona Moral</option>
                                 <option value= 'USUA_CCOLONIA'>Colonia Persona Moral</option>
@@ -1292,7 +1297,8 @@
                                 <option value= 'USUA_CPAIS'>Pais Persona Moral</option>
                                 <option value= 'USUA_CCORREO_ELECTRONICO'>Correo Electronico</option>
                                 <option value= 'USUA_CCORREO_ALTERNATIVO'>Correo Alternativo</option>
-                                <option value= 'USUA_CCALLE_PARTICULAR'>CALLE</option>
+                                <option value= 'USUA_CCALLE_PARTICULAR'>Calle Particular Persona Física</option>
+                                <option value= 'USUA_NCP_PARTICULAR'>Código Postal Particular Persona Física</option>
                                 <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR'>Número Exterior Particular Persona Física</option>
                                 <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR'>Número Interior Particular Persona Física</option>
                                 <option value= 'USUA_CCOLONIA_PARTICULAR'>Colonia Persona Física</option>
