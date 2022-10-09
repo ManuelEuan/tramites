@@ -527,19 +527,34 @@
                                                                             <div class="col-md-4">
                                                                                 <div class="form-group">
                                                                                     <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
+                                                                                    <?php 
+                                                                                        $multiple   = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'multiple' : '';
+                                                                                        $class      = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'selectCatalogos' : '';
+                                                                                        $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0';
+                                                                                    ?>
+
                                                                                     @foreach ($preg->respuestas as $resp)
-                                                                                        <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input" value="{{$resp->respString}}">
+                                                                                        @if ($preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros')
+                                                                                            <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input" value="{{$resp->respString}}">
+                                                                                        @endif
                                                                                     @endforeach
 
-                                                                                    <select {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple required>
+                                                                                    <select {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control {{$class}}" data-live-search="true" {{$multiple}} {{ $name }}  required>
                                                                                         @foreach ($preg->respuestas as $resp)
                                                                                             @foreach ($resp->catalogos as $cat)
                                                                                                 <?php
                                                                                                     $selected = "";
-                                                                                                    foreach($resp->respArray  as $respArray){
-                                                                                                        if($respArray->id == $cat->id){
+                                                                                                    if($resp->FORM_CVALOR == 'tram_cat_giros'){
+                                                                                                        foreach($resp->respArray  as $respArray){
+                                                                                                            if($respArray->id == $cat->id){
+                                                                                                                $selected = "selected";
+                                                                                                                break;
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                    else{
+                                                                                                        if($resp->respString == $cat->id){
                                                                                                             $selected = "selected";
-                                                                                                            break;
                                                                                                         }
                                                                                                     }
                                                                                                 ?>
@@ -2291,8 +2306,8 @@
         };
 
         function TRAM_AJX_GUARDAR() {
-            /* $("#loading-text").html("Guardando...");
-            $('#loading_save').show(); */
+            $("#loading-text").html("Guardando...");
+            $('#loading_save').show();
 
             catalogos.forEach(element => {
                 let respuestas  = element.respuesta;
