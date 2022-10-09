@@ -1517,9 +1517,10 @@
                                                             <div class="form-group">`;
                                                                 value_pregunta.respuestas.forEach(value => {
                                                                     value.FORM_CVALOR_RESPUESTA.forEach(element => {
+                                                                        let html = typeof element.fecha !== 'undefined' ? `<label style="font-size: 11px;">  Fecha ${element.fecha}</label>` : '';
                                                                         collapse_detalle += `<div class="form-check">
                                                                                 <ul>
-                                                                                    <li class='titulo_pequeno'>${element.nombre} <label style="font-size: 11px;"> Fecha ${element.fecha}</label></li>
+                                                                                    <li class='titulo_pequeno'>${element.nombre} ${html}</li>
                                                                                 </ul>
                                                                             </div>`;
                                                                     });
@@ -1843,7 +1844,6 @@
     window.addEventListener("scroll", function(event) {
         var top = this.scrollY;
         $("#mydiv").css("top", top);
-        console.log(top);
     }, false);
 
     function TRAM_FN_DESCARGAR_DOCUMENTO(id) {
