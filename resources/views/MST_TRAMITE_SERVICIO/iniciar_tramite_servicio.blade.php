@@ -380,7 +380,7 @@
                                                                 <?php 
                                                                     $multiple   = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'multiple' : '';
                                                                     $class      = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'selectCatalogos' : '';
-                                                                    $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name="resp_'.$preg->FORM_NID.'_0"';
+                                                                    $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0';
                                                                 ?>
                                                                 <select id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control {{$class}}" data-live-search="true" {{$multiple}} {{ $name }} required>
                                                                     @foreach ($preg->respuestas as $resp)
