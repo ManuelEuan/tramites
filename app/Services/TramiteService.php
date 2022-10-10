@@ -186,7 +186,7 @@ class TramiteService
                 "responsable"   => $funcionarios,
                 "contacto_email"        => $oficina->Email,
                 "informacion_adicional" => "",
-                "contacto_telefono"     => "Télfono: ".$oficina->NumberPhone." Ext ".$oficina->Ext,
+                "contacto_telefono"     => "Teléfono: ".$oficina->NumberPhone." Ext ".$oficina->Ext,
             );
             array_push($tramite['oficinas'], $array);
         }
