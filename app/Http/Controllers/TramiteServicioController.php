@@ -230,7 +230,7 @@ class TramiteServicioController extends Controller
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
         $arrayDocumentos = [];
         foreach($arrayDetalle['documentos'] as $documento) {
-            $array = array($documento->Description);
+            $array = array($documento->Description, $documento->Name);
             array_push($arrayDocumentos, $array);
         }
         $descripcion = $arrayDocumentos;
