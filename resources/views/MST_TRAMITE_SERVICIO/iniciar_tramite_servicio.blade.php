@@ -1147,13 +1147,14 @@
                         if(clave == "USUA_CPRIMER_APELLIDO" ){
                             apePat = data[0][clave];
                         }
-                        if(clave == "USUA_CSEGUNDO_APELLIDO "){
+                        if(clave == "USUA_CSEGUNDO_APELLIDO"){
                             apeMat = data[0][clave];
                         }
                     }
                     if($(`[vinculacion=USUA_CNOMBRES]`)){
                         $(`[vinculacion=USUA_CNOMBRES]`).val(apePat + " " + apeMat + " " + nombre);
                     }
+                    console.log(apeMat)
                 },
                 error: function(data) {
                     Swal.fire({
