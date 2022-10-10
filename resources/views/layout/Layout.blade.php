@@ -301,6 +301,8 @@
         }
 
         function getNotificaciones() {
+            $("#seccionNotificacion").replaceWith('<div id="seccionNotificacion" style="margin-top: 50px; margin-bottom:50px;text-align: center"> Sin Notificaciones </div>');
+            
             let data = {
                 "usuario_id": $("#usuarioLogueado").val()
             };
@@ -321,6 +323,8 @@
 
                 var response = dataResponse.notificaciones;
                 var notificaciones_tramite = dataResponse.notificaciones_tramite;
+                var noti_rechazados = dataResponse.notificaciones_rechazo;
+                var noti_aceptados = dataResponse.notificaciones_aceptado;
                 let html = '<div id="seccionNotificacion">';
 
                 //Notificaciones tramite
@@ -366,16 +370,61 @@
                             </div>
                         </div>`;
                 });
+
+                noti_rechazados.forEach(element => {
+                    let fecha = element.NOTI_DFECHACREAACION == null ? '' : formateo(element.NOTI_DFECHACREAACION);
+
+                    html += `<div class="card text-left" style="margin: .2rem;">
+                            <div class="card-header" style="text-align: left; background-color: transparent; border-bottom: none; font-weight: bold;">
+                                <div class="row">
+                                    <div class="col-8" style="font-size: 16px;">${element.NOTI_CTITULO}</div>
+                                    <div class="col-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <small>${ fecha } </small><i class="far fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" style="font-size: 14px;">
+                                ${element.NOTI_CMENSAJE}
+                                <div style="text-align: right; margin-top:25px">
+                                    <button type="button" class="btn btn-success btnModal" onclick="cambiarEstatusNotiGestor(${element.NOTI_NID})" id="btnRechazoLeido">Aceptar</button>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+
+                noti_aceptados.forEach(element => {
+                    let fecha = element.NOTI_DFECHACREAACION == null ? '' : formateo(element.NOTI_DFECHACREAACION);
+
+                    html += `<div class="card text-left" style="margin: .2rem;">
+                            <div class="card-header" style="text-align: left; background-color: transparent; border-bottom: none; font-weight: bold;">
+                                <div class="row">
+                                    <div class="col-8" style="font-size: 16px;">${element.NOTI_CTITULO}</div>
+                                    <div class="col-4" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                        <small>${ fecha } </small><i class="far fa-bell" style="font-size: 1.5rem; vertical-align: bottom;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" style="font-size: 14px;">
+                                ${element.NOTI_CMENSAJE}
+                                <div style="text-align: right; margin-top:25px">
+                                    <button type="button" class="btn btn-success btnModal" onclick="cambiarEstatusNotiGestor(${element.NOTI_NID})" id="btnRechazoLeido">Aceptar</button>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+
                 html += `</div>`;
 
-                let cantidad = (parseInt(response.length) + parseInt(notificaciones_tramite.length)) > 9 ? '+9' : (parseInt(response.length) + parseInt(notificaciones_tramite.length));
-
+                let cantidad = (parseInt(response.length) + parseInt(notificaciones_tramite.length) + parseInt(noti_rechazados.length) + parseInt(noti_aceptados.length)) > 9 ? '+9' : (parseInt(response.length) + parseInt(notificaciones_tramite.length) + parseInt(noti_rechazados.length) + parseInt(noti_aceptados.length));
                 if (cantidad > 0) {
                     $("#seccionNotificacion").replaceWith(html);
                 }
 
                 if (cantidad != 0) {
+                    console.log("cantidad diferente de 0")
                     $("#spanNotificacion").text(cantidad);
+                }else{
+                    $("#spanNotificacion").text('');
                 }
             });
         }
@@ -393,11 +442,7 @@
 
             let resta = nombre.split("te agregó");
 
-            request = $.ajax({
-                url: '/gestores_solicitud/respuesta',
-                type: "post",
-                data: data
-            });
+            
 
             let operacion = accion == 'Autorizado' ? 'autorizar' : 'rechazar';
             Swal.fire({
@@ -411,18 +456,35 @@
                 cancelButtonText: 'Cancelar',
             }).then((result) => {
                 if (result.isConfirmed) {
+                    request = $.ajax({
+                        url: '/gestores_solicitud/respuesta',
+                        type: "post",
+                        data: data
+                    });
                     // Callback handler that will be called on success
                     request.done(function(response, textStatus, jqXHR) {
-
-                        setTimeout(() => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Éxito! ya puede realizar trámites o servicios en representación de ' + resta[0],
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            getNotificaciones();
-                        }, 400);
+                        if(response.aceptado){
+                            setTimeout(() => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '¡Éxito! ya puede realizar trámites o servicios en representación de ' + resta[0],
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                getNotificaciones();
+                            }, 600);
+                        }else{
+                            setTimeout(() => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Haz rechazado la solicitud para ser gestor de ' + resta[0],
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                getNotificaciones();
+                            }, 600);
+                        }
+                        
                     });
 
                     // Callback handler that will be called on failure
@@ -436,6 +498,37 @@
                     });
                 }
             });
+        }
+
+        function cambiarEstatusNotiGestor(idNotificacion){
+            request = $.ajax({
+                        url: '/gestores_solicitud/leido',
+                        type: "post",
+                        data: {
+                            id_noti:idNotificacion,
+                        }
+                    });
+            request.done(function(response, textStatus, jqXHR) {
+                console.log(response)
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Leído!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    getNotificaciones();
+                }, 600);
+            });
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'se presento el siguiente error: ' + errorThrown
+                });
+                getNotificaciones();
+            });
+
         }
 
         function FN_AJX_ATENDER_TRAMITE(HNOTI_NIDUSUARIOTRAMITE) {

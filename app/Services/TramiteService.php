@@ -216,29 +216,11 @@ class TramiteService
 
         $tramite['requerimientos'] = [
             [
-                "titulo"        => "Casos en que se debe realizar el trámite:",
-                "descripcion"   =>  "Manuel Euan",//$objTramite['casoRealizacion'] ?? "",
-                "opciones"      => [],
-                "documentos"    => []
-            ],
-            [
                 "titulo" => "Requisitos:",
                 "descripcion" => "",
                 "opciones" => [],
                 "documentos" => $arrayDocumentos
             ],
-            [
-                "titulo" => "¿Puede hacer el trámite alguien más?:",
-                "descripcion" => "",
-                "opciones" => [],
-                "documentos" => []
-            ],
-            [
-                "titulo" => "Casos de rechazo:",
-                "descripcion" => "",
-                "opciones" => [],
-                "documentos" => []
-            ]
         ];
 
         $vigencia   = $objTramite->VigencyNumber == 0 || is_null($objTramite->VigencyNumber) ? "" : $objTramite->VigencyNumber;

@@ -112,7 +112,7 @@ Route::group(['prefix' => 'tramite_servicio_cemr'], function () {
     Route::post('/find', 'TramitesController@find');
     Route::get('/detalle/{id}', 'TramitesController@detalle');
     Route::get('/seguimiento/{id}', 'TramitesController@seguimiento')->name('seguimiento_tramite_servidor');
-    Route::get('/generate_previo_resolutivo/{resolutivoId}/{tramiteId}', 'TramitesController@generatePrevioResolutivo')->name('generate_previo_resolutivo');
+    Route::get('/generate_previo_resolutivo/{resolutivoId}/{tramiteId}/{tipo}', 'TramitesController@generatePrevioResolutivo')->name('generate_previo_resolutivo');
     Route::get('/obtener_tramite/{id}', 'TramitesController@obtener_tramite_seguimiento');
     Route::post('/seccion_formulario_incompleta', 'TramitesController@seccion_formulario_incompleta');
     Route::post('/seccion_formulario_aprobado', 'TramitesController@aprobar_seccion_formulario');
@@ -151,6 +151,8 @@ Route::group(['prefix' => 'gestores_solicitud'], function () {
     Route::post('/vincular', 'GestoresController@vincular');
     Route::post('/delete', 'GestoresController@delete');
     Route::post('/respuesta', 'GestoresController@respuesta');
+    Route::post('/leido', 'GestoresController@leido');
+    Route::get('/iduser', 'GestoresController@iduser');
 });
 
 Route::group(['prefix' => 'personasfsicasmorales'], function () {
@@ -234,6 +236,7 @@ Route::get('/decrypt/{text}', array('uses' => 'DatosDurosController@decrypt'));
 
 Route::get('/reportes', 'GenerarReportes@index')->middleware("permiso");
 Route::get('/generar', 'GenerarReportes@gentreporte');
+Route::post('/generarZip', 'GenerarReportes@generarZip');
 
 Route::post('/validar_pago_queretaro', 'TramiteServicioController@validarPagoQueretaro');
 
@@ -271,4 +274,13 @@ Route::group(['prefix' => 'catalogos'], function () {
     Route::post('/', 'CatalogoController@store');
     Route::post('/estatus', 'CatalogoController@cambiaEstatus');
     Route::put('/', 'CatalogoController@update'); */
+});
+
+Route::group(['prefix' => 'bancos'], function () {
+    Route::get('/find', 'BancosController@find');
+    Route::get('/get', 'BancosController@get');
+    Route::get('/', 'BancosController@index');
+    Route::post('/', 'BancosController@store');
+    Route::post('/estatus', 'BancosController@cambiaEstatus');
+    Route::put('/', 'BancosController@update');
 });

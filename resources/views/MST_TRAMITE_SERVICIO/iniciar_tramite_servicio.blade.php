@@ -172,6 +172,7 @@
         </div>
     </div>
     <br>
+
     <div class="row seccion-tramite" style="display: none !important;">
         <div class="card" style="width: 100%; border-radius:20px;" id="sec_form">
             <div class="card-header" style="background-color: #ffffff; border-top-left-radius: 20px; border-top-right-radius: 20px;">
@@ -369,11 +370,19 @@
                                                         </div>
                                                         @break
                                                     @case('catalogo')
+
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
-                                                                <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input">
-                                                                <select id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control selectCatalogos" data-live-search="true" multiple required>
+                                                                @if ($preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros')
+                                                                    <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input">
+                                                                @endif
+                                                                <?php 
+                                                                    $multiple   = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'multiple' : '';
+                                                                    $class      = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'selectCatalogos' : '';
+                                                                    $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0';
+                                                                ?>
+                                                                <select id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control {{$class}}" data-live-search="true" {{$multiple}} {{ $name }} required>
                                                                     @foreach ($preg->respuestas as $resp)
                                                                         @foreach ($resp->catalogos as $cat)
                                                                             <option value="{{$cat->id}}">{{$cat->clave}} - {{$cat->nombre}}</option>;
@@ -382,6 +391,11 @@
                                                                 </select>
                                                             </div>
                                                         </div>
+
+                                                        @if ($preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros')
+                                                            <div id="inputGiro_resp_{{$preg->FORM_NID}}_0"></div>
+                                                        @endif
+                                                        
                                                         @break
                                                 @endswitch
                                             @endforeach
@@ -399,6 +413,7 @@
                                 <th scope="col">Existente</th>
                                 <th scope="col"></th>
                                 <th scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
                                 <th scope="col">Tamaño</th>
                                 <th scope="col" class="text-center">Estatus</th>
                                 <th scope="col"></th>
@@ -409,7 +424,7 @@
                             </thead>
                             <tbody>
                                 @if(count($tramite['configuracion']['documentos'])> 0)
-                                    @foreach($tramite['configuracion']['documentos'] as $doc)
+                                    @foreach($tramite['configuracion']['documentos'] as $key => $doc)
                                         <tr>
                                             
                                         <?php   $otrotest = '';$RowDocConf='';$P_NESTATUS='';
@@ -528,6 +543,31 @@
                                                     <span class="text-danger">*</span>
                                                 @endif
                                             </td>
+                                            <!-- Aqui -->
+                                                @if(count($descripcion)> 0)
+                                                    @if(count($descripcion) != count($tramite['configuracion']['documentos']))
+                                                        @if(isset($descripcion[$key+1][0]))
+                                                            <td>
+                                                                {{$descripcion[$key+1][0]}}
+                                                            </td>
+                                                        @else
+                                                            <td>
+                                                            </td>
+                                                        @endif
+                                                    @else
+                                                        @if(isset($descripcion[$key][0]))
+                                                            <td>
+                                                                {{$descripcion[$key][0]}}
+                                                            </td>
+                                                        @else
+                                                            <td>
+                                                            </td>
+                                                        @endif
+                                                    @endif
+                                                @else
+                                                    <td></td>
+                                                @endif
+                                            
                                             <td>
                                                 <div id="size_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
                                                 </div>
@@ -576,6 +616,7 @@
         </div>
     </div>
     <br>
+
     <div class="row seccion-tramite" style="display: none !important;">
         <div class="card" style="width: 100%; border-radius:20px;">
             <div class="card-header" style="background-color: #23468c; color: #ffffff; border-top-left-radius: 20px; border-top-right-radius: 20px;">
@@ -911,6 +952,8 @@
     var es_gestor   = "{{$tramite['es_gestor']}}";
     var id_usuario  = "{{$tramite['idsuario']}}";//Usuario logeado
     var catalogos   = [];
+    var catGiros    = [];
+    var catBancos   = [];
 
     //0 no es gestor
     if(es_gestor == 0){
@@ -993,18 +1036,18 @@
 
             $("#size_" + id).html('<span>' + peso + ' Bytes</span>');
             switch(extension){
-                        case "jpg":
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">');
-                            break;
-                        case "png":
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">');
-                            break;
-                        case "pdf":
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">');
-                            break;
-                        default:
-                            $("#icon_" + id).html('<img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">');
-                            break;
+                case "jpg":
+                    $("#icon_" + id).html('<img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">');
+                    break;
+                case "png":
+                    $("#icon_" + id).html('<img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">');
+                    break;
+                case "pdf":
+                    $("#icon_" + id).html('<img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">');
+                    break;
+                default:
+                    $("#icon_" + id).html('<img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">');
+                    break;
             }
     }
     
@@ -1079,6 +1122,7 @@
                 TRAM_AJX_CONSULTARMODULO_DETALLE(id_modulo, lat, lon, direc);
             }
         });
+
         function consultaInformacionCiudadano() {
 
             data={
@@ -1089,10 +1133,26 @@
                 type: "POST",
                 data: data,
                 success: function(data) {
+                    let nombre = "";
+                    let apePat = "";
+                    let apeMat = "" ;
                     for(const clave in data[0]){
-                        if($(`[vinculacion=${clave}]`)){
+                        console.log("clave: "+clave + " datos: "+ data[0][clave]);
+                        if($(`[vinculacion=${clave}]`) && clave != "USUA_CNOMBRES"){
                             $(`[vinculacion=${clave}]`).val(data[0][clave]);
                         }
+                        if(clave == "USUA_CNOMBRES"){
+                            nombre = data[0][clave];
+                        }
+                        if(clave == "USUA_CPRIMER_APELLIDO" ){
+                            apePat = data[0][clave];
+                        }
+                        if(clave == "USUA_CSEGUNDO_APELLIDO "){
+                            apeMat = data[0][clave];
+                        }
+                    }
+                    if($(`[vinculacion=USUA_CNOMBRES]`)){
+                        $(`[vinculacion=USUA_CNOMBRES]`).val(apePat + " " + apeMat + " " + nombre);
                     }
                 },
                 error: function(data) {
@@ -1104,25 +1164,8 @@
                     });
                 }
             });
-            // respuesta = $.ajax({
-            //     url: "/tramite_servicio/api/obtenerinfociudadano",
-            //     type: "post"
-            // });
+        }
 
-            // respuesta.done(function(response, textStatus, jqXHR) {
-            //     console.log(response);
-            //     if (response.length == 0) {
-            //     }
-            // });
-
-            // respuesta.fail(function(jqXHR, textStatus, errorThrown) {
-            //     Swal.fire({
-            //         icon: 'error',
-            //         title: 'Oops...',
-            //         text: 'se presento el siguiente error: ' + errorThrown
-            //     });
-            // });
-    }
         function TRAM_AJX_CONSULTARMODULO_DETALLE(id_modulo, lat, lon, direc){
             // $.ajax({
             //     url: "/tramite_servicio/obtener_modulo_detalle/" + id_modulo,
@@ -1333,6 +1376,8 @@
         $(".selectCatalogos").selectpicker({
             noneSelectedText: 'Seleccionar',
         });
+
+        getGiros();
     });
 
     function TRAM_FN_VALIDAR_DISABLED(id, estatus, val) {
@@ -1501,12 +1546,21 @@
         $("#loading-text").html("Guardando...");
         $('#loading_save').show();
         $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
+       
         catalogos.forEach(element => {
             let respuestas  = element.respuesta;
             let id          = element.pregunta;
-            let input       = $("#"+ id + "_input").val(respuestas.toString());
+            let valor       = [];
+
+            respuestas.forEach(item => {
+                let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                valor.push(obj);
+            });
+
+            $("#"+ id + "_input").val(JSON.stringify(valor));
+
         });
-        
+
         $.ajax({
             data: $('#frmForm').serialize(),
             url: "/tramite_servicio/guardar",
@@ -1554,7 +1608,14 @@
         catalogos.forEach(element => {
             let respuestas  = element.respuesta;
             let id          = element.pregunta;
-            let input       = $("#"+ id + "_input").val(respuestas.toString());
+            let valor       = [];
+
+            respuestas.forEach(item => {
+                let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+               valor.push(obj);
+            });
+
+            $("#"+ id + "_input").val(JSON.stringify(valor));
         });
 
         Swal.fire({
@@ -1671,11 +1732,66 @@
         });
     }
 
+    /** 
+     * Obtiene el catalogo de giros
+    */
+    function getGiros(){
+        $.ajax({
+            url: "/giros/find",
+            type: "GET",
+            data: { paginate:false, activo: true},
+            success: function(data) {
+                catGiros = data.data;
+            },
+            error: function(data) {
+                mensajeError('error', data)
+            }
+        });
+
+        $.ajax({
+            url: "/bancos/find",
+            type: "GET",
+            data: { paginate:false, activo: true},
+            success: function(data) {
+                catBancos = data.data;
+            },
+            error: function(data) {
+                mensajeError('error', data)
+            }
+        });
+    }
+
+    function mensajeError(icon = 'error', message = ''){
+        console.log(message);
+        Swal.fire({
+            icon: icon,
+            title: '',
+            text: message,
+            footer: ''
+        });
+    }
+
     $('.selectCatalogos').on('change', function(e) {
         let select  = e.target.id;
         let items   = $("#"+select).val();
         let aplica  = true;
+        let html = '';
 
+        items.forEach(element => {
+            let label = "";
+            catGiros.forEach(giro => {
+                if(giro.id == parseInt(element)){
+                    label = giro.clave;
+                }
+            });
+
+            html += `<div>
+                <label id='label_${element}' for="">Giro-${label}</label>
+                <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" required/> <br />
+            </div>`;
+        });
+
+        $("#inputGiro_"+select).html(html);
         catalogos.forEach(element => {
             if(element.pregunta == select){
                 element.respuesta = items;
@@ -1686,6 +1802,7 @@
         if(aplica){
             catalogos.push({pregunta: select,respuesta:items })
         }
+
     });
 
 </script>

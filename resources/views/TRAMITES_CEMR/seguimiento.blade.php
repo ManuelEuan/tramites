@@ -171,7 +171,7 @@
                             @break
 
                         @case('Pago en línea')
-                            @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "ANTA")
+                            @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == "ANTA")
 
                                 <li>
                                     <a class="nav-link" data-toggle="tab" href="#tab_pago_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Pago en línea
@@ -508,7 +508,7 @@
                                                     </form>
 
                                                     @if($seccion->SSEGTRA_PAGADO == 0)
-                                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
+                                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
                                                             <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;" {{($tramite->USTR_NESTATUS != 5)? "disabled" : ""}}>Guardar</button>
                                                         @else
                                                             <button type="submit" class="btn btn-success float-right" style="margin-right:10px;" disabled title="No disponible">Guardar</button>
@@ -589,7 +589,7 @@
                                                                 <div class="col-md-12">
                                                                     <div class="col-md-12 mt-5 contenedorBtn">
                                                                         <div class="text-right botones">
-                                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
+                                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
                                                                                 <button onclick="TRAM_FN_APROBAR_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
                                                                             @else
                                                                                 <button  class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar</button>
@@ -691,7 +691,8 @@
                                                             </div>
                                                             <div class=" col-md-8">
                                                                 @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 7)
-                                                                    <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE  ])}}">Vista Previa</a>
+                                                                    <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE, 'tipo' => 1 ])}}">Vista Previa</a>
+                                                                    <a class="btn btn-primary" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $resolutivo->RESO_NID, 'tramiteId' => $tramite->USTR_NIDUSUARIOTRAMITE, 'tipo' => 0 ])}}">Descargar</a>
                                                                 @else
                                                                     <a class="btn btn-success" target="_blank" @disabled(true) title="No disponible">Vista Previa</a>
                                                                 @endif
@@ -1516,9 +1517,10 @@
                                                             <div class="form-group">`;
                                                                 value_pregunta.respuestas.forEach(value => {
                                                                     value.FORM_CVALOR_RESPUESTA.forEach(element => {
+                                                                        let html = typeof element.fecha !== 'undefined' ? `<label style="font-size: 11px;">  Fecha ${element.fecha}</label>` : '';
                                                                         collapse_detalle += `<div class="form-check">
                                                                                 <ul>
-                                                                                    <li class='titulo_pequeno'>${element.nombre}</li>
+                                                                                    <li class='titulo_pequeno'>${element.nombre} ${html}</li>
                                                                                 </ul>
                                                                             </div>`;
                                                                     });
@@ -1689,9 +1691,6 @@
 
                     divSectionContainer_documento.append(itemDocumento);
                     ///////////////////////////////////7
-                    /*$('.vigencia').change(function() {
-                        console.log("Clickando")
-                    });*/
                     $(".validatePregunta").hide();
                     $(".divV").hide();
                     $("#txtRevisionInfo").hide();
@@ -1845,7 +1844,6 @@
     window.addEventListener("scroll", function(event) {
         var top = this.scrollY;
         $("#mydiv").css("top", top);
-        console.log(top);
     }, false);
 
     function TRAM_FN_DESCARGAR_DOCUMENTO(id) {
@@ -2009,7 +2007,8 @@
             "CONF_ESTATUSSECCION": 2,
             "CONF_NOTIFICACION": "",
             "CONF_NIDUSUARIOTRAMITE": parseInt("{{request()->route('id') }}"),
-            "CONF_PREGUNTAS": []
+            "CONF_PREGUNTAS": [],
+            "CONF_DOCUMENTOS": []
         };
 
         //Verificacion de preguntas aprobadas
@@ -2041,9 +2040,11 @@
             if (value.estatus < 2) {
                 documentos_sin_atender = true;
                 return;
+            }else {
+                seccion_formulario.CONF_DOCUMENTOS.push(value);
             }
         });
-
+        // console.log(list_documentos);
         if (documentos_sin_atender) {
             Swal.fire({
                 icon: "warning",
@@ -2054,7 +2055,7 @@
 
             return;
         }
-
+        // console.log(seccion_formulario);
         Swal.fire({
             title: '¿Desea aprobar esta acción?',
             text: "Usted aprobará el formulario y los documentos",
@@ -2084,14 +2085,14 @@
                     });
                     return;
                 }
-
+                
                 $.ajax({
                     data: seccion_formulario,
                     dataType: 'json',
                     url: '/tramite_servicio_cemr/seccion_formulario_aprobado',
                     type: "POST",
                     success: function(data) {
-
+                        console.log(data);
                         if (data.codigo === 200) {
 
                             Swal.fire({
@@ -2931,7 +2932,7 @@
     //--------------  Ventanilla sin cita  ------------------
 
     function TRAM_FN_RENDER_VENTANILLA(SeccionID) {
-        console.log("Render ventanilla: " + SeccionID);
+        //console.log("Render ventanilla: " + SeccionID);
     }
 
     function TRAM_FN_APROBAR_VENTANILLA(SeccionID) {
@@ -3038,7 +3039,7 @@
 
     //--------------------- Pago ----------------
     function TRAM_FN_RENDER_PAGO(SeccionID) {
-        console.log("Render pago: " + SeccionID);
+        //console.log("Render pago: " + SeccionID);
     }
 
     function TRAM_FN_APROBAR_PAGO(SeccionID) {
@@ -3168,7 +3169,7 @@
 
     //------------ Modulos de analisis interno del area--------------
     function TRAM_FN_RENDER_ANALISIS_INTERNO(SeccionID) {
-        console.log("Render analisis: " + SeccionID);
+       // console.log("Render analisis: " + SeccionID);
     }
 
     function TRAM_FN_APROBAR_ANALISIS_INTERNO(SeccionID) {

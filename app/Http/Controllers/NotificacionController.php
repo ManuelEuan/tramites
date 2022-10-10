@@ -20,11 +20,15 @@ class NotificacionController extends Controller
         ->where(['tram_mdv_usuariotramite.USTR_NIDUSUARIO' => $request->usuario_id, 'tram_his_notificacion_tramite.HNOTI_NLEIDO' => false])
             ->get();
 
-        $noti_general = Cls_Notificacion::where(['NOTI_NIDRECEPTOR' => $request->usuario_id, 'NOTI_NLEIDO' => false])->get();
+        $noti_general = Cls_Notificacion::where(['NOTI_NIDRECEPTOR' => $request->usuario_id, 'NOTI_NLEIDO' => false, 'NOTI_CTIPO' => 'GESTOR'])->get();
+        $notiRechazoGestor = Cls_Notificacion::where(['NOTI_NIDRECEPTOR' => $request->usuario_id, 'NOTI_NLEIDO' => false, 'NOTI_CTIPO' => 'RGESTOR'])->get();
+        $notiAceptaGestor = Cls_Notificacion::where(['NOTI_NIDRECEPTOR' => $request->usuario_id, 'NOTI_NLEIDO' => false, 'NOTI_CTIPO' => 'AGESTOR'])->get();
 
         $items = [
             "notificaciones" => $noti_general,
-            "notificaciones_tramite" => $noti_tramite
+            "notificaciones_tramite" => $noti_tramite,
+            "notificaciones_rechazo" => $notiRechazoGestor,
+            "notificaciones_aceptado" => $notiAceptaGestor
         ];
 
         return response()->json($items, 200);

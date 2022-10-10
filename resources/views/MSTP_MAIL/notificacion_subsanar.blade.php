@@ -86,7 +86,7 @@
             <td class="text-left">
               <br/>
               <p>
-                <b>Asunto:Corrección de información sobre el trámite  con folio {{$_folio_tramite}}</b>
+                <b>Asunto: Corrección de información sobre el trámite con folio {{$_folio_tramite}}</b>
               </p>
                 <p>
                     Apreciable {{$_nombre_usuario}}:
