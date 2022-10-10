@@ -78,7 +78,7 @@
                                 </div>
                             </div>
                             <div id="divMensaje" class="alert alert-warning" role="alert" style="display: none;">
-                                Para Registrar una Persona Moral, es es necesario realizar el registro previamente del Representante Legal como Persona Física.
+                                Para Registrar una Persona Moral, es es necesario realizar el registro previamente del Representante Legal como Persona Física. <br> El correo del Representante Legal debe ser su correo laboral, mientras que al registrar a la Persona Moral se debe de poner el correo empresarial de la misma
                             </div>
                         </div>
                         
