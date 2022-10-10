@@ -118,7 +118,7 @@
                             <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">INICIADO</p>
                             @break
                         @case(4)
-                            <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">INFORMACIÓN INCOMPLETA</p>
+                            <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">SOLICITUD CON OBSERVACIONES</p>
                             @break
                         @case(3)
                             <p style="font-size: 1rem; font-weight: bold; color: #6c757d;">RECIBIDO</p>
@@ -1517,10 +1517,10 @@
                                                             <div class="form-group">`;
                                                                 value_pregunta.respuestas.forEach(value => {
                                                                     value.FORM_CVALOR_RESPUESTA.forEach(element => {
-                                                                        let html = typeof element.fecha !== 'undefined' ? `<label style="font-size: 11px;">  Fecha ${element.fecha}</label>` : '';
+                                                                        let html = typeof element?.fecha !== 'undefined' ? `<label style="font-size: 11px;">  Fecha ${element.fecha}</label>` : '';
                                                                         collapse_detalle += `<div class="form-check">
                                                                                 <ul>
-                                                                                    <li class='titulo_pequeno'>${element.nombre} ${html}</li>
+                                                                                    <li class='titulo_pequeno'>${element?.nombre} ${html}</li>
                                                                                 </ul>
                                                                             </div>`;
                                                                     });
