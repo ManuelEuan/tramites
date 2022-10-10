@@ -296,7 +296,7 @@
                     "type": "POST",
                     "data": function(d) {
                         
-
+                        isVencido = false
                         return $.extend({}, d, {
                             "fecha": $('#txtFecha').val(),
                             "folio": $('#txtFolio').val(),
