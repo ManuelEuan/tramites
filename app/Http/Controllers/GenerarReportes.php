@@ -1175,8 +1175,8 @@ class GenerarReportes extends Controller
                 $pdf = app('dompdf.wrapper');
                 $pdf->getDomPDF()->set_option("enable_php", true);
                 $pdf->setPaper("letter", "portrait");
-                //$pdf->loadHTML('<h1>Styde.net</h1>');
-                $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios'));
+                $pdf->loadHTML('<h1>Styde.net</h1>');
+                //$pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios'));
                 //return $pdf->download('Formulario.pdf');
 
                 //Se guardar el pdf
@@ -1244,7 +1244,7 @@ class GenerarReportes extends Controller
         return response()->json($response);
         } catch (\Throwable $th) {
             //dd($ex->getMessage());
-            $response = [ 'name' => '', 'status' => 'error'];
+            $response = [ 'name' => '', 'status' => $th];
             return response()->json($response);
         }
     }
