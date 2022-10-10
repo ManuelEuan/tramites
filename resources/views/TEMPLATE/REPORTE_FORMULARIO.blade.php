@@ -258,9 +258,7 @@
                                 <p>
                                     @if(count($pregunta->respuestas)>0)
                                     <ul>
-                                        @foreach ($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA  as $item)
-                                            <li>{{$item->nombre}}</li>
-                                        @endforeach
+                                        <li>{{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA}}</li>
                                     @endif
                                     </ul>
                                 </p>

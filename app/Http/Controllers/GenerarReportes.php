@@ -1243,9 +1243,10 @@ class GenerarReportes extends Controller
         $response = [ 'name' => 'tramites/'.$fileNamePrincipal, 'status' => 'success'];
         return response()->json($response);
         } catch (\Throwable $th) {
+            echo $th;
             //dd($ex->getMessage());
-            $response = [ 'name' => '', 'status' => 'error'];
-            return response()->json($response);
+            /*$response = [ 'name' => '', 'status' => $th];
+            return response()->json($response);*/
         }
     }
 }

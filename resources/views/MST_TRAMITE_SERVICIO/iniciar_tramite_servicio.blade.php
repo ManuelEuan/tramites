@@ -406,6 +406,7 @@
                         @endforeach
                     @endif
                     <div class="row form p-4" id="form_0" style="display: none">
+                        {{var_dump($descripcion[0][1])}}
                         <table class="table" id="documentosP4">
                             <thead>
                               <tr>
@@ -545,24 +546,18 @@
                                             </td>
                                             <!-- Aqui -->
                                                 @if(count($descripcion)> 0)
-                                                    @if(count($descripcion) != count($tramite['configuracion']['documentos']))
-                                                        @if(isset($descripcion[$key+1][0]))
-                                                            <td>
-                                                                {{$descripcion[$key+1][0]}}
-                                                            </td>
-                                                        @else
-                                                            <td>
-                                                            </td>
+                                                    <?php $siEncontro = false ?>
+                                                    @foreach($descripcion as $d)
+                                                        @if($d[1] == $doc->TRAD_CNOMBRE)
+                                                        <td>
+                                                            {{$d[0]}}
+                                                            <?php $siEncontro = true ?>
+                                                        </td>
+                                                        @break
                                                         @endif
-                                                    @else
-                                                        @if(isset($descripcion[$key][0]))
-                                                            <td>
-                                                                {{$descripcion[$key][0]}}
-                                                            </td>
-                                                        @else
-                                                            <td>
-                                                            </td>
-                                                        @endif
+                                                    @endforeach
+                                                    @if(!$siEncontro)
+                                                        <td></td>
                                                     @endif
                                                 @else
                                                     <td></td>

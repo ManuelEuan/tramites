@@ -797,14 +797,14 @@
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Municipio</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtMunicipioParticular" name="txtMunicipioParticular" value="{{ $ObjAuth->USUA_CMUNICIPIO_PARTICULAR }}" placeholder="Mérida">
+                                                                                    <input type="text" class="form-control" id="txtMunicipioParticular" name="txtMunicipioParticular" value="{{ $ObjAuth->USUA_CMUNICIPIO_PARTICULAR }}" placeholder="Querétaro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Estado<nav>
                                                                                         </nav></label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtEstadoParticular" name="txtEstadoParticular" value="{{ $ObjAuth->USUA_CESTADO_PARTICULAR }}" placeholder="Yucatán">
+                                                                                    <input type="text" class="form-control" id="txtEstadoParticular" name="txtEstadoParticular" value="{{ $ObjAuth->USUA_CESTADO_PARTICULAR }}" placeholder="Querétaro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
@@ -880,14 +880,14 @@
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Municipio</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtMunicipioFiscal" name="txtMunicipioFiscal" value="{{ $ObjAuth->USUA_CMUNICIPIO }}" placeholder="Mérida">
+                                                                                    <input type="text" class="form-control" id="txtMunicipioFiscal" name="txtMunicipioFiscal" value="{{ $ObjAuth->USUA_CMUNICIPIO }}" placeholder="Querétaro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Estado<nav>
                                                                                         </nav></label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtEstadoFiscal" name="txtEstadoFiscal" value="{{ $ObjAuth->USUA_CESTADO }}" placeholder="Yucatán">
+                                                                                    <input type="text" class="form-control" id="txtEstadoFiscal" name="txtEstadoFiscal" value="{{ $ObjAuth->USUA_CESTADO }}" placeholder="Querétaro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
@@ -973,13 +973,13 @@
                                                                                                         <div class="form-group">
                                                                                                             <label for="cmbMunicipio_Sucursal">Municipio
                                                                                                             </label>
-                                                                                                            <input type="text" class="form-control cmbMunicipio_Sucursal" name="cmbMunicipio_Sucursal" id="{{ $IntIndex }}_cmbMunicipio_Sucursal" placeholder="Mérida" value="{{ $item->SUCU_CMUNICIPIO }}">
+                                                                                                            <input type="text" class="form-control cmbMunicipio_Sucursal" name="cmbMunicipio_Sucursal" id="{{ $IntIndex }}_cmbMunicipio_Sucursal" placeholder="Querétaro" value="{{ $item->SUCU_CMUNICIPIO }}">
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-3">
                                                                                                         <div class="form-group">
                                                                                                             <label for="cmbEstado_Sucursal">Estado</label>
-                                                                                                            <input type="text" class="form-control cmbEstado_Sucursal" name="cmbEstado_Sucursal" id="{{ $IntIndex }}_cmbEstado_Sucursal" placeholder="Yucatán" value="{{ $item->SUCU_CESTADO }}">
+                                                                                                            <input type="text" class="form-control cmbEstado_Sucursal" name="cmbEstado_Sucursal" id="{{ $IntIndex }}_cmbEstado_Sucursal" placeholder="Querétaro" value="{{ $item->SUCU_CESTADO }}">
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-3">
@@ -1048,13 +1048,13 @@
                                                                                                         <div class="form-group">
                                                                                                             <label for="cmbMunicipio_Sucursal">Municipio
                                                                                                             </label>
-                                                                                                            <input type="text" class="form-control cmbMunicipio_Sucursal" name="cmbMunicipio_Sucursal" id="cmbMunicipio_Sucursal" placeholder="Mérida" value="">
+                                                                                                            <input type="text" class="form-control cmbMunicipio_Sucursal" name="cmbMunicipio_Sucursal" id="cmbMunicipio_Sucursal" placeholder="Querétaro" value="">
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-3">
                                                                                                         <div class="form-group">
                                                                                                             <label for="cmbEstado_Sucursal">Estado</label>
-                                                                                                            <input type="text" class="form-control cmbEstado_Sucursal" name="cmbEstado_Sucursal" id="cmbEstado_Sucursal" placeholder="Yucatán" value="">
+                                                                                                            <input type="text" class="form-control cmbEstado_Sucursal" name="cmbEstado_Sucursal" id="cmbEstado_Sucursal" placeholder="Querétaro" value="">
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-3">
