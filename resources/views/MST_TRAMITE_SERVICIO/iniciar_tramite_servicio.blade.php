@@ -406,7 +406,6 @@
                         @endforeach
                     @endif
                     <div class="row form p-4" id="form_0" style="display: none">
-                        {{var_dump($descripcion[0][1])}}
                         <table class="table" id="documentosP4">
                             <thead>
                               <tr>
