@@ -1250,194 +1250,193 @@ class TramiteServicioController extends Controller
     public function reenviar(Request $request)
     {
         try{
-        $respuestas = array();
-        $respuestas_especial = array();
-        $documentos = array();
-        $secciones = array();
-        foreach ($request->all() as $key => $value) {
-            $k = substr($key, 0, 5);
-            $f = substr($key, 0, 10);
-            $e = substr($key, 0, 9);
-            $s = substr($key, 0, 5);
+            $respuestas = array();
+            $respuestas_especial = array();
+            $documentos = array();
+            $secciones = array();
+            foreach ($request->all() as $key => $value) {
+                $k = substr($key, 0, 5);
+                $f = substr($key, 0, 10);
+                $e = substr($key, 0, 9);
+                $s = substr($key, 0, 5);
 
-            //resp_ "respuestas", resp_especial_ "respuestas de pregunta especial" y docs_ "documentos"
-            if ($k == 'resp_') {
-                $respuestas[$key] = $value;
+                //resp_ "respuestas", resp_especial_ "respuestas de pregunta especial" y docs_ "documentos"
+                if ($k == 'resp_') {
+                    $respuestas[$key] = $value;
+                }
+                if ($f == 'docs_file_') {
+                    $documentos[$key] = $value;
+                }
+                if ($e == 'especial_') {
+                    $respuestas_especial[$key] = $value;
+                }
+                if ($s == 'secc_') {
+                    $secciones[$key] = $value;
+                }
             }
-            if ($f == 'docs_file_') {
-                $documentos[$key] = $value;
-            }
-            if ($e == 'especial_') {
-                $respuestas_especial[$key] = $value;
-            }
-            if ($s == 'secc_') {
-                $secciones[$key] = $value;
-            }
-        }
 
-        $exist = Cls_Usuario_Tramite::where('USTR_NIDUSUARIO', $request->txtIdUsuario)
-            ->where('USTR_NIDTRAMITE', $request->txtIdTramite)
-            ->where('USTR_CFOLIO', $request->txtFolio)
-            ->select('*')
-            ->first();
-
-        $IntIdUsuarioTramite = null;
-        $TxtFolio = null;
-        $IntIdUsuarioTramite = $exist->USTR_NIDUSUARIOTRAMITE;
-        $TxtFolio = $exist->USTR_CFOLIO;
-        //Editar bandera del tramite
-        $tram = Cls_Usuario_Tramite::where('USTR_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)
-            ->update([
-                'USTR_NBANDERA_PROCESO' => 2,
-                'USTR_NESTATUS' => 2
-            ]);
-
-        //Insertar bitacora
-        $ObjBitacora = new Cls_Bitacora();
-        $ObjBitacora->BITA_NIDUSUARIO = $request->txtIdUsuario;
-        $ObjBitacora->BITA_CMOVIMIENTO = "Trámite reenviado";
-        $ObjBitacora->BITA_CTABLA = "tram_mdv_usuariotramite";
-        $ObjBitacora->BITA_CIP = $request->ip();
-        Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-
-        //Guardar respuestas
-        foreach ($respuestas as $key => $value) {
-            $arr = explode("_", $key);
-            $obj_p = Cls_Formulario_Pregunta::where('FORM_NID', $arr[1])
+            $exist = Cls_Usuario_Tramite::where('USTR_NIDUSUARIO', $request->txtIdUsuario)
+                ->where('USTR_NIDTRAMITE', $request->txtIdTramite)
+                ->where('USTR_CFOLIO', $request->txtFolio)
                 ->select('*')
                 ->first();
 
-            //Exist
-            $valorexistt = isset( $arr[3]);
-            if($valorexistt){
-                $exist_respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
-                ->select('*')
-                ->first();
-            }else{
-                $archivoexist_respuestas = null;
-            }
-            
-            
+            $IntIdUsuarioTramite = null;
+            $TxtFolio = null;
+            $IntIdUsuarioTramite = $exist->USTR_NIDUSUARIOTRAMITE;
+            $TxtFolio = $exist->USTR_CFOLIO;
+            //Editar bandera del tramite
+            $tram = Cls_Usuario_Tramite::where('USTR_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)
+                ->update([
+                    'USTR_NBANDERA_PROCESO' => 2,
+                    'USTR_NESTATUS' => 2
+                ]);
 
-            if ($exist_respuestas == null) {
-                $resp = new Cls_Usuario_Respuesta();
-                $resp->USRE_NIDPREGUNTA = $obj_p->FORM_NID;
-                $resp->USRE_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
-                $resp->USRE_CRESPUESTA = $value;
-                $resp->USRE_CNOMBRE_PREGUNTA = $obj_p->FORM_CPREGUNTA;
-                $resp->USRE_NIDSECCION = $obj_p->FORM_NSECCIONID;
-                $resp->USRE_CNOMBRE_SECCION = Cls_Cat_Seccion::where('FORM_NID', $obj_p->FORM_NSECCIONID)
-                    ->select('*')
-                    ->first()->FORM_CNOMBRE;
-                $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
-                $resp->USRE_NESTATUS = 0;
-                $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
-                $resp->save();
-            } else {
-                Cls_Usuario_Respuesta::where(['USRE_NIDUSUARIORESP' => $exist_respuestas->USRE_NIDUSUARIORESP])
-                    ->update(['USRE_CRESPUESTA' => $value]);
-            }
-        }
+            //Insertar bitacora
+            $ObjBitacora = new Cls_Bitacora();
+            $ObjBitacora->BITA_NIDUSUARIO = $request->txtIdUsuario;
+            $ObjBitacora->BITA_CMOVIMIENTO = "Trámite reenviado";
+            $ObjBitacora->BITA_CTABLA = "tram_mdv_usuariotramite";
+            $ObjBitacora->BITA_CIP = $request->ip();
+            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
 
-        //Guardar respuestas especial
-        foreach ($respuestas_especial as $key => $value) {
-            $arr = explode("_", $key);
-            $obj_p = Cls_Formulario_Pregunta::where('FORM_NID', $arr[1])
-                ->select('*')
-                ->first();
-
-            //Exist
-            $valorExistEspecial = isset( $arr[3]);
-            if($valorExistEspecial){
-                $exist_respuestas_especial = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
-                ->select('*')
-                ->first();
-            }else{
-            $exist_respuestas_especial = null;
-            }
-            
-
-            if ($exist_respuestas_especial == null) {
-                $resp = new Cls_Usuario_Respuesta();
-                $resp->USRE_NIDPREGUNTA = $obj_p->FORM_NID;
-                $resp->USRE_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
-                $resp->USRE_CRESPUESTA = $value;
-                $resp->USRE_CNOMBRE_PREGUNTA = $obj_p->FORM_CPREGUNTA;
-                $resp->USRE_NIDSECCION = $obj_p->FORM_NSECCIONID;
-                $resp->USRE_CNOMBRE_SECCION = Cls_Cat_Seccion::where('FORM_NID', $obj_p->FORM_NSECCIONID)
-                    ->select('*')
-                    ->first()->FORM_CNOMBRE;
-                $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
-                $resp->USRE_NIDPREGUNTARESPUESTA = $arr[2];
-                $resp->USRE_NESTATUS = 0;
-                $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
-                $resp->save();
-            } else {
-                Cls_Usuario_Respuesta::where(['USRE_NIDUSUARIORESP' => $exist_respuestas_especial->USRE_NIDUSUARIORESP])
-                    ->update(['USRE_CRESPUESTA' => $value]);
-            }
-        }
-
-        //Guardar documentos
-        foreach ($documentos as $key => $value) {
-            if ($value != null) {
-                $arr_key = explode("_", $key);
-                $arr_value = explode("_", $value);
-
-                //Exist
-              
-                    $exist_docs = Cls_Usuario_Documento::where('USDO_NIDUSUARIORESP', $arr_key[3])
+            //Guardar respuestas
+            foreach ($respuestas as $key => $value) {
+                $arr = explode("_", $key);
+                $obj_p = Cls_Formulario_Pregunta::where('FORM_NID', $arr[1])
                     ->select('*')
                     ->first();
 
-               
-               
-                if ($exist_docs == null) {
-                    $doc = new Cls_Usuario_Documento();
-                    $doc->USDO_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
-                    $doc->USDO_CRUTADOC = $arr_value[0];
-                    $doc->USDO_CEXTENSION = $arr_value[1];
-                    $doc->USDO_NPESO = $arr_value[2];
-                    $doc->USDO_NESTATUS = 0;
-                    $doc->USDO_NIDTRAMITEDOCUMENTO = $arr_key[2];
-                    $doc->USDO_CDOCNOMBRE = $arr_value[3];
-                    $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
-                    $doc->save();
+                //Exist
+                $valorexistt = isset( $arr[3]);
+                if($valorexistt){
+                    $exist_respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
+                    ->select('*')
+                    ->first();
+                }else{
+                    $archivoexist_respuestas = null;
+                }
+                
+                
 
-
-
+                if ($exist_respuestas == null) {
+                    $resp = new Cls_Usuario_Respuesta();
+                    $resp->USRE_NIDPREGUNTA = $obj_p->FORM_NID;
+                    $resp->USRE_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
+                    $resp->USRE_CRESPUESTA = $value;
+                    $resp->USRE_CNOMBRE_PREGUNTA = $obj_p->FORM_CPREGUNTA;
+                    $resp->USRE_NIDSECCION = $obj_p->FORM_NSECCIONID;
+                    $resp->USRE_CNOMBRE_SECCION = Cls_Cat_Seccion::where('FORM_NID', $obj_p->FORM_NSECCIONID)
+                        ->select('*')
+                        ->first()->FORM_CNOMBRE;
+                    $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
+                    $resp->USRE_NESTATUS = 0;
+                    $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
+                    $resp->save();
                 } else {
-                    Cls_Usuario_Documento::where(['USDO_NIDUSUARIORESP' => $exist_docs->USDO_NIDUSUARIORESP])
-                        ->update(['USDO_CRUTADOC' => $arr_value[0], 'USDO_CEXTENSION' => $arr_value[1], 'USDO_NPESO' => $arr_value[2]]);
+                    Cls_Usuario_Respuesta::where(['USRE_NIDUSUARIORESP' => $exist_respuestas->USRE_NIDUSUARIORESP])
+                        ->update(['USRE_CRESPUESTA' => $value]);
                 }
             }
-        }
+
+            //Guardar respuestas especial
+            foreach ($respuestas_especial as $key => $value) {
+                $arr = explode("_", $key);
+                $obj_p = Cls_Formulario_Pregunta::where('FORM_NID', $arr[1])
+                    ->select('*')
+                    ->first();
+
+                //Exist
+                $valorExistEspecial = isset( $arr[3]);
+                if($valorExistEspecial){
+                    $exist_respuestas_especial = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIORESP', $arr[3])
+                    ->select('*')
+                    ->first();
+                }else{
+                $exist_respuestas_especial = null;
+                }
+                
+
+                if ($exist_respuestas_especial == null) {
+                    $resp = new Cls_Usuario_Respuesta();
+                    $resp->USRE_NIDPREGUNTA = $obj_p->FORM_NID;
+                    $resp->USRE_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
+                    $resp->USRE_CRESPUESTA = $value;
+                    $resp->USRE_CNOMBRE_PREGUNTA = $obj_p->FORM_CPREGUNTA;
+                    $resp->USRE_NIDSECCION = $obj_p->FORM_NSECCIONID;
+                    $resp->USRE_CNOMBRE_SECCION = Cls_Cat_Seccion::where('FORM_NID', $obj_p->FORM_NSECCIONID)
+                        ->select('*')
+                        ->first()->FORM_CNOMBRE;
+                    $resp->USRE_NIDFORMULARIO = $obj_p->FORM_NFORMULARIOID;
+                    $resp->USRE_NIDPREGUNTARESPUESTA = $arr[2];
+                    $resp->USRE_NESTATUS = 0;
+                    $resp->USRE_CFOLIO_TRAMITE = $TxtFolio;
+                    $resp->save();
+                } else {
+                    Cls_Usuario_Respuesta::where(['USRE_NIDUSUARIORESP' => $exist_respuestas_especial->USRE_NIDUSUARIORESP])
+                        ->update(['USRE_CRESPUESTA' => $value]);
+                }
+            }
+
+            //Guardar documentos
+            foreach ($documentos as $key => $value) {
+                if ($value != null) {
+                    $arr_key = explode("_", $key);
+                    $arr_value = explode("_", $value);
+
+                    //Exist
+                
+                        $exist_docs = Cls_Usuario_Documento::where('USDO_NIDUSUARIORESP', $arr_key[3])
+                        ->select('*')
+                        ->first();
+
+                
+                
+                    if ($exist_docs == null) {
+                        $doc = new Cls_Usuario_Documento();
+                        $doc->USDO_NIDUSUARIOTRAMITE = $IntIdUsuarioTramite;
+                        $doc->USDO_CRUTADOC = $arr_value[0];
+                        $doc->USDO_CEXTENSION = $arr_value[1];
+                        $doc->USDO_NPESO = $arr_value[2];
+                        $doc->USDO_NESTATUS = 0;
+                        $doc->USDO_NIDTRAMITEDOCUMENTO = $arr_key[2];
+                        $doc->USDO_CDOCNOMBRE = $arr_value[3];
+                        $doc->USDO_NIDUSUARIOBASE = $request->txtIdUsuario;
+                        $doc->save();
 
 
 
-        $tramite = Cls_Seguimiento_Servidor_Publico::obtener_tramite_usuario($IntIdUsuarioTramite);
+                    } else {
+                        Cls_Usuario_Documento::where(['USDO_NIDUSUARIORESP' => $exist_docs->USDO_NIDUSUARIORESP])
+                            ->update(['USDO_CRUTADOC' => $arr_value[0], 'USDO_CEXTENSION' => $arr_value[1], 'USDO_NPESO' => $arr_value[2]]);
+                    }
+                }
+            }
 
-        $ObjData['_correo'] = $tramite[0]->USTR_CCORREO_USUARIO;
-        $ObjData['_nombre_usuario'] = $tramite[0]->USTR_CNOMBRE_USUARIO;
-        $ObjData['_nombre_tramite'] = $tramite[0]->TRAM_CNOMBRE;
-        $ObjData['_folio_tramite'] = $tramite[0]->USTR_CFOLIO;
-        $ObjData['_homoclave_tramite'] = "H_CLAVE";
-        $ObjData['_unidad_administrativa'] = $tramite[0]->TRAM_CCENTRO;
-        $ObjData['_secretaria'] = $tramite[0]->TRAM_CCENTRO;
-        $ObjData['_fecha_hora'] = now();
-        $ObjData['_fecha_maxima'] = now();
 
-        // Mail::send('MSTP_MAIL.notificacion_subsanar', $ObjData, function ($message) use ($ObjData) {
-        //     $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
-        //     $message->to($ObjData['_correo'], '')->subject('Corrección de información sobre trámite con folio ' . $ObjData['_folio_tramite']);
-        // });
 
-        $response = [
-            'codigo' => 200,
-            'status' => "success",
-            'message' => 'Los datos se han enviado correctamente.'
-        ];
+            $tramite = Cls_Seguimiento_Servidor_Publico::obtener_tramite_usuario($IntIdUsuarioTramite);
 
+            $ObjData['_correo'] = $tramite[0]->USTR_CCORREO_USUARIO;
+            $ObjData['_nombre_usuario'] = $tramite[0]->USTR_CNOMBRE_USUARIO;
+            $ObjData['_nombre_tramite'] = $tramite[0]->TRAM_CNOMBRE;
+            $ObjData['_folio_tramite'] = $tramite[0]->USTR_CFOLIO;
+            $ObjData['_homoclave_tramite'] = "H_CLAVE";
+            $ObjData['_unidad_administrativa'] = $tramite[0]->TRAM_CCENTRO;
+            $ObjData['_secretaria'] = $tramite[0]->TRAM_CCENTRO;
+            $ObjData['_fecha_hora'] = now();
+            $ObjData['_fecha_maxima'] = now();
+
+            // Mail::send('MSTP_MAIL.notificacion_subsanar', $ObjData, function ($message) use ($ObjData) {
+            //     $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
+            //     $message->to($ObjData['_correo'], '')->subject('Corrección de información sobre trámite con folio ' . $ObjData['_folio_tramite']);
+            // });
+
+            $response = [
+                'codigo' => 200,
+                'status' => "success",
+                'message' => 'Los datos se han enviado correctamente.'
+            ];
         }
         catch (\Throwable $e) {
             $response = [
