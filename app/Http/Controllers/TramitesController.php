@@ -429,7 +429,7 @@ class TramitesController extends Controller
 
             Cls_Seguimiento_Servidor_Publico::TRAM_ACEPTAR_SECCION_FORMULARIO($request->CONF_NIDUSUARIOTRAMITE, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO);
             $this->enviar_correo_aprobacion($request->CONF_NIDUSUARIOTRAMITE);
-            Cls_UsuarioTramiteAnalista::ApruebaTramite($request->CONF_NIDUSUARIOTRAMITE);
+            //Cls_UsuarioTramiteAnalista::ApruebaTramite($request->CONF_NIDUSUARIOTRAMITE);
 
             $response = [
                 "estatus" => "success",
@@ -928,6 +928,8 @@ class TramitesController extends Controller
                 }
             }
         }
+
+        Cls_UsuarioTramiteAnalista::ApruebaTramite($request->txtIdUsuarioTramite);
 
         $response = [
             'codigo' => 200,
