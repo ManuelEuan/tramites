@@ -195,7 +195,7 @@ Route::group(['prefix' => 'gestores'], function () {
 
     Route::get('/consultar_formulario', array('uses' => 'GestorController@consultar_formulario'))->name("gestor_consultar_formulario");
     Route::get('/consultar_documento_tramite/{IntTramite}', array('uses' => 'GestorController@consultar_documento_tramite'))->name("gestor_consultar_documento_tramite");
-    Route::post('/crear', array('uses' => 'GestorController@save'))->name('gestor_crear_configuracion');
+    Route::post('/crear', 'GestorController@save')->name('gestor_crear_configuracion');
     Route::get('/consultar_configuracion_tramite/{TRAM_NIDTRAMITE_CONFIG}', array('uses' => 'GestorController@consultar_configuracion_tramite'))->name("consultar_configuracion_tramite");
     Route::get('/implementar_tramite/{TRAM_NIDTRAMITE_CONFIG}/{TRAM_NIMPLEMENTADO}', array('uses' => 'GestorController@implementar_tramite'))->name("implementar_tramite");
     Route::get('/consultar_concepto_pago/{TRAM_NIDTRAMITE_ACCEDE}', array('uses' => 'GestorController@consultar_concepto_pago'))->name("consultar_concepto_pago");
