@@ -618,6 +618,10 @@
                                                                         @endswitch
                                                                     </td>
                                                                     <td>
+                                                                    </a></div>
+                                                                    <div class="md-6 ml-2" id="btnVer"><a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$doc->TRAD_CRUTADOC}}" target="_blank"><i class="fa fa-eye p-0 m-0" ></i></a></div>
+                                                                    </td>
+                                                                    <td>
                                                                         <div id="icon_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}">
                                                                             @switch($doc->TRAD_CEXTENSION)
                                                                                 @case('jpg')
@@ -637,6 +641,8 @@
                                                                                         width="25" height="25">
                                                                                 @break
                                                                             @endswitch
+                                                                        
+                                                                    </div>
                                                                         </div>
                                                                     </td>
                                                                     <td>
