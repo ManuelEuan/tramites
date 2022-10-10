@@ -340,7 +340,7 @@ class GestorController extends Controller
                     "DataError" => $tramite[0]->TRAM_CTIPO
                 ]);
             }
-        } catch (\Throwable $e) {
+        } catch (Exception $ex) {
             DB::rollBack();
             $response = [
                 "estatus" => "error",
@@ -411,50 +411,53 @@ class GestorController extends Controller
                 $seccionesEliminadas->TRAM_SP_ELIMINAR_SECCION($TramiteID);
 
                 foreach ($listSecciones as $seccion) {
+                    try{
+                        $newSeccion = new Cls_Gestor();
+                        $newSeccion->CONF_NIDTRAMITE = $TramiteID;
+                        $newSeccion->CONF_NSECCION = $seccion['CONF_NSECCION'];
+                        $newSeccion->CONF_CNOMBRESECCION = $seccion['CONF_CNOMBRESECCION'];
+                        $newSeccion->CONF_ESTATUSSECCION = 0;
+                        $newSeccion->CONF_NDIASHABILES = is_null($seccion['CONF_NDIASHABILES']) ? 0 :  $seccion['CONF_NDIASHABILES'];
+                        $newSeccion->CONF_CDESCRIPCIONCITA = is_null($seccion['CONF_CDESCRIPCIONCITA']) ? "" : $seccion['CONF_CDESCRIPCIONCITA'];
+                        $newSeccion->CONF_CDESCRIPCIONVENTANILLA = is_null($seccion['CONF_CDESCRIPCIONVENTANILLA']) ? "" : $seccion['CONF_CDESCRIPCIONVENTANILLA'];
+                        $newSeccion->CONF_NORDEN = $seccion['CONF_NORDEN'];
+                        $SectionID = $newSeccion->TRAM_SP_AGREGAR_SECCION();
+                        $Seccion_id = $SectionID[0]->SeccionID;
 
-                    $newSeccion = new Cls_Gestor();
-                    $newSeccion->CONF_NIDTRAMITE = $TramiteID;
-                    $newSeccion->CONF_NSECCION = $seccion['CONF_NSECCION'];
-                    $newSeccion->CONF_CNOMBRESECCION = $seccion['CONF_CNOMBRESECCION'];
-                    $newSeccion->CONF_ESTATUSSECCION = 0;
-                    $newSeccion->CONF_NDIASHABILES = is_null($seccion['CONF_NDIASHABILES']) ? 0 :  $seccion['CONF_NDIASHABILES'];
-                    $newSeccion->CONF_CDESCRIPCIONCITA = is_null($seccion['CONF_CDESCRIPCIONCITA']) ? "" : $seccion['CONF_CDESCRIPCIONCITA'];
-                    $newSeccion->CONF_CDESCRIPCIONVENTANILLA = is_null($seccion['CONF_CDESCRIPCIONVENTANILLA']) ? "" : $seccion['CONF_CDESCRIPCIONVENTANILLA'];
-                    $newSeccion->CONF_NORDEN = $seccion['CONF_NORDEN'];
-                    $SectionID = $newSeccion->TRAM_SP_AGREGAR_SECCION();
-                    $Seccion_id = $SectionID[0]->SeccionID;
+                        //Agregar formulario y documentos: Se elimina documentos, edificios y conceptos antiguos en TRAM_AGREGAR_DOCUMENTO()
+                        if ($seccion['CONF_NSECCION'] === "Formulario") {
+                            $TRAM_LIST_FORMULARIO =  $seccion['CONF_LIST_FORMULARIO'];
 
-                    //Agregar formulario y documentos: Se elimina documentos, edificios y conceptos antiguos en TRAM_AGREGAR_DOCUMENTO()
-                    if ($seccion['CONF_NSECCION'] === "Formulario") {
-                        $TRAM_LIST_FORMULARIO =  $seccion['CONF_LIST_FORMULARIO'];
+                            $this->TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TramiteID);
+                            if (isset($seccion['CONF_LIST_DOCUMENTO']))
+                                $this->TRAM_AGREGAR_DOCUMENTO($seccion['CONF_LIST_DOCUMENTO'], $TramiteID);
+                        }
 
-                        $this->TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TramiteID);
-                        if (isset($seccion['CONF_LIST_DOCUMENTO']))
-                            $this->TRAM_AGREGAR_DOCUMENTO($seccion['CONF_LIST_DOCUMENTO'], $TramiteID);
-                    }
+                        //Agregas edificios
+                        if ($seccion['CONF_NSECCION'] === "Ventanilla sin cita") {
+                            $TRAM_LIST_EDIFICIO = $seccion['CONF_LIST_EDIFICIO'];
+                            $this->TRAM_AGREGAR_EDIFICIOS($TRAM_LIST_EDIFICIO, $TramiteID, $Seccion_id);
+                        }
 
-                    //Agregas edificios
-                    if ($seccion['CONF_NSECCION'] === "Ventanilla sin cita") {
-                        $TRAM_LIST_EDIFICIO = $seccion['CONF_LIST_EDIFICIO'];
-                        $this->TRAM_AGREGAR_EDIFICIOS($TRAM_LIST_EDIFICIO, $TramiteID, $Seccion_id);
-                    }
+                        //Agregar resolutivos
+                        if ($seccion['CONF_NSECCION'] === "Resolutivo electrónico") {
+                            $TRAM_LIST_RESOLUTIVO = $seccion['CONF_DATA_RESOLUTIVO'];
+                            $this->TRAM_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO, $TramiteID, $Seccion_id);
+                        }
 
-                    //Agregar resolutivos
-                    if ($seccion['CONF_NSECCION'] === "Resolutivo electrónico") {
-                        $TRAM_LIST_RESOLUTIVO = $seccion['CONF_DATA_RESOLUTIVO'];
-                        $this->TRAM_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO, $TramiteID, $Seccion_id);
-                    }
+                        //Agregar conceptos de pago
+                        if ($seccion['CONF_NSECCION'] === "Pago en línea") {
+                            $TRAM_LIST_CONCEPTO = $seccion['CONF_LIST_PAGO'];
+                            $this->TRAM_AGREGAR_CONCEPTO_PAGO_TRAMITE($TRAM_LIST_CONCEPTO, $TramiteID, $Seccion_id);
+                        }
 
-                    //Agregar conceptos de pago
-                    if ($seccion['CONF_NSECCION'] === "Pago en línea") {
-                        $TRAM_LIST_CONCEPTO = $seccion['CONF_LIST_PAGO'];
-                        $this->TRAM_AGREGAR_CONCEPTO_PAGO_TRAMITE($TRAM_LIST_CONCEPTO, $TramiteID, $Seccion_id);
-                    }
-
-                    //Valido si tiene la seccion cita y si cuenta con su detalle
-                    if ($seccion['CONF_NSECCION'] === "Citas en línea") {
-                        $citas = isset($seccion['CONF_ARRAY_DETALLE_CITA']) ? $seccion['CONF_ARRAY_DETALLE_CITA'] : [];
-                        $this->citasService->create($TramiteID, $citas);
+                        //Valido si tiene la seccion cita y si cuenta con su detalle
+                        if ($seccion['CONF_NSECCION'] === "Citas en línea") {
+                            $citas = isset($seccion['CONF_ARRAY_DETALLE_CITA']) ? $seccion['CONF_ARRAY_DETALLE_CITA'] : [];
+                            $this->citasService->create($TramiteID, $citas);
+                        }
+                    }catch(Exception $ex){
+                        dd($ex);
                     }
                 }
 
@@ -541,11 +544,8 @@ class GestorController extends Controller
 
     private function TRAM_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO, $TRAM_NIDTRAMITE, $TRAM_NIDSECCION)
     {
-        $gestor = new Cls_Gestor();
-        //dd($TRAM_LIST_RESOLUTIVO);
-
-
-        $fileName = '';
+        $gestor     = new Cls_Gestor();
+        $fileName   = '';
 
         if (!empty($TRAM_LIST_RESOLUTIVO['RESO_FILEBASE64'])) {
 
@@ -571,7 +571,8 @@ class GestorController extends Controller
 
         $TRAM_LIST_RESOLUTIVO['RESO_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
         $TRAM_LIST_RESOLUTIVO['RESO_NIDRESOLUTIVO'] = 1;
-        $documentoResolutivo =  $gestor->TRAM_SP_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO['RESO_NIDTRAMITE'], $TRAM_LIST_RESOLUTIVO['RESO_NIDRESOLUTIVO'], $TRAM_LIST_RESOLUTIVO['RESO_CNOMBRE'], $TRAM_NIDSECCION, $fileName);
+        $nombreResolutivo = isset($TRAM_LIST_RESOLUTIVO['RESO_CNOMBRE']) ? $TRAM_LIST_RESOLUTIVO['RESO_CNOMBRE'] : "";
+        $documentoResolutivo =  $gestor->TRAM_SP_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO['RESO_NIDTRAMITE'], $TRAM_LIST_RESOLUTIVO['RESO_NIDRESOLUTIVO'], $nombreResolutivo , $TRAM_NIDSECCION, $fileName);
         $documentoResolutivoId = $documentoResolutivo[0]->ResolutivoID;
         if (!empty($TRAM_LIST_RESOLUTIVO["MAPEO"])) {
             foreach ($TRAM_LIST_RESOLUTIVO["MAPEO"] as $MAPEO) {
