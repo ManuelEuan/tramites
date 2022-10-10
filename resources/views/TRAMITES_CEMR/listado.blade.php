@@ -385,13 +385,25 @@
                         render: function(data, type, row) {
                             var nombre = "";
                             if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
-                                if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
+
+                               
+                                if(data.USTR_CTIPO_PERSONA == 'FISICA'){
+
+                                    if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
                                     nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO;
-                                } else {
-                                    nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
+                                    } else {
+                                        nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
+                                    }
+                                }else{
+                                nombre = data.USTR_CRAZON_SOCIAL;
                                 }
                             } else {
-                                nombre = data.USTR_CNOMBRE_COMPLETO;
+                                if(data.USTR_CTIPO_PERSONA == 'FISICA'){
+
+                                    nombre = data.USTR_CNOMBRE_COMPLETO;
+                                }else{
+                                    nombre = data.USTR_CRAZON_SOCIAL;
+                                }
                             }
                             return nombre;
                         }
