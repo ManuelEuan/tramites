@@ -135,7 +135,7 @@
         },
         {
             id: 4,
-            nombre: "Información incompleta"
+            nombre: "Solicitud con Observaciones"
         },
         {
             id: 5,
@@ -353,7 +353,7 @@
             cmbEstatus.append('<option value="" selected>Seleccione</option>');
 
             $(estatus_seguimiento).each(function(i, v) {
-                cmbEstatus.append('<option value="' + v.id + '">' + v.nombre + '</option>');
+                cmbEstatus.append('<option value="' + v.id + '">' + v.id + '</option>');
             });
         }
 

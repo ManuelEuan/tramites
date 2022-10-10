@@ -359,7 +359,7 @@
                             }
                             
                             
-                            var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : "red");
+                            var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : (level == 3 ? "red" : "black"));
                            
                             return '<span class="dot" style="background-color:' + color + '"></span>';
                         }

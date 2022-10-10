@@ -488,9 +488,10 @@ class TramiteServicioController extends Controller
 
                                             if($resp->FORM_CVALOR == 'tram_cat_giros'){
                                                 $resp->respArray    = json_decode($_resp['USRE_CRESPUESTA']);
+                                                $resp->respArray    = is_array($resp->respArray) ? $resp->respArray : [];
                                                 $resp->respClave    = '';
-    
-                                                $respArray = [];
+                                                $respArray          = [];
+
                                                 foreach($resp->respArray as $item ){
                                                     array_push($respArray, $item->id);
                                                 }
