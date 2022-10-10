@@ -176,7 +176,7 @@
                 <div class="row">
 
                     <div class="form-group" style="width: 100%; margin: 12px;">
-                        <label for="txtCampoPlabtilla">Escriba el campo de la platitlla word</label>
+                        <label for="txtCampoPlabtilla">Escriba el campo de la plantilla word</label>
                         <input type="text" class="form-control" id="txtCampoPlabtilla" />
                     </div>
                 </div>
