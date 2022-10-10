@@ -74,7 +74,7 @@ class Cls_Seguimiento_Servidor_Publico extends Model
     }
 
     static function OBTENER_ID_POR_FECHA($inicio, $fin){
-        $sql = "SELECT USTR_NIDUSUARIOTRAMITE FROM tram_mdv_usuariotramite WHERE created_at >= '".$inicio."' AND created_at <= '".$fin."'";
+        $sql = "SELECT USTR_NIDUSUARIOTRAMITE FROM tram_mdv_usuariotramite WHERE CAST(created_at AS DATE) >= '".$inicio."' AND CAST(created_at AS DATE) <= '".$fin."'";
         $query = DB::select($sql);
         return $query;
     }
