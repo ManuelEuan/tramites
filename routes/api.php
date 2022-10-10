@@ -20,11 +20,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 ###################### Manuel Euan ######################
-Route::get('/generate_previo_resolutivo', 'TramitesController@generatePrevioResolutivo');
+
+
+
 
 /* Route::get('/getFiltros', 'GestorController@obtener_filtro');
-Route::get('/tramite_servicio_cemr/download_tramite/{id}', 'TramitesController@download_tramite'); 
+Route::get('/tramite_servicio/iniciar_tramite_servicio/{id}', 'TramiteServicioController@iniciar_tramite_servicio');
+
+Route::get('/generate_previo_resolutivo/{resolutivoId}/{tramiteId}/{tipo}', 'TramitesController@generatePrevioResolutivo');
+Route::get('/seguimiento_tramite/{id}', 'TramiteServicioController@seguimiento_tramite_servicio');
 Route::get('/tramite_servicio_cemr/obtener_tramite/{id}', 'TramitesController@obtener_tramite_seguimiento');
+Route::get('/tramite_servicio_cemr/download_tramite/{id}', 'TramitesController@download_tramite');
+Route::post('/tramite_servicio/guardar', 'TramiteServicioController@guardar');
 Route::get('/getFiltros', 'DiaInhabilController@calendario');
 Route::get('/tramite_servicio/seguimiento/{id}', 'TramitesController@seguimiento');
 
@@ -48,7 +55,7 @@ Route::group(['prefix' => 'catalogos'], function () {
 
 Route::get('/configurarTramite/{tramiteID}/{tramiteIDConfig}','GestorController@configurar_tramite');
 Route::get('/tramite_servicio/{id}','TramiteServicioController@obtener_detalle_tramite');
-Route::get('/tramite_servicio/iniciar_tramite_servicio/{id}', 'TramiteServicioController@iniciar_tramite_servicio');
+
 Route::get('/tramite_servicio_cemr/detalle/{id}', 'TramitesController@detalle');
 Route::post('/gestores/crear', 'GestorController@save');
 Route::get('/obtener_municipio/{id}','TramiteServicioController@obtener_municipio');
