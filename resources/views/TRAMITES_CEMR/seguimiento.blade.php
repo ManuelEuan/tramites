@@ -3048,7 +3048,8 @@
             "CONF_ESTATUSSECCION": 2,
             "CONF_NOTIFICACION": "",
             "CONF_NIDUSUARIOTRAMITE": parseInt("{{request()->route('id') }}"),
-            "CONF_PREGUNTAS": []
+            "CONF_PREGUNTAS": [],
+            "APROBAR_PAGO": true
         };
 
         Swal.fire({
