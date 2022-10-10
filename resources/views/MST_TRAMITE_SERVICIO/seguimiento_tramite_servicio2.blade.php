@@ -530,12 +530,12 @@
                                                                                     <?php 
                                                                                         $multiple   = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'multiple' : '';
                                                                                         $class      = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'selectCatalogos' : '';
-                                                                                        $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0';
+                                                                                        $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0_'.$resp->id;
                                                                                     ?>
 
                                                                                     @foreach ($preg->respuestas as $resp)
                                                                                         @if ($preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros')
-                                                                                            <input type="hidden" name="resp_{{$preg->FORM_NID}}_0" id="resp_{{$preg->FORM_NID}}_0_input" value="{{$resp->respString}}">
+                                                                                            <input type="hidden" name="resp_{{$preg->FORM_NID}}_0_{{ $resp->id }}" id="resp_{{$preg->FORM_NID}}_0_input" value="{{$resp->respString}}">
                                                                                         @endif
                                                                                     @endforeach
 
@@ -2429,7 +2429,7 @@
 
                 respuestas.forEach(item => {
                     let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
-                valor.push(obj);
+                    valor.push(obj);
                 });
 
                 $("#"+ id + "_input").val(JSON.stringify(valor));
@@ -2464,8 +2464,7 @@
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         //location.reload();
-                                        $(location).attr('href',
-                                            '/tramite_servicio/seguimiento_tramite/' + id);
+                                        $(location).attr('href','/tramite_servicio/seguimiento_tramite/' + id);
                                     }
                                 });
                             } else {
