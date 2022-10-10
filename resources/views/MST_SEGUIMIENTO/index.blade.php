@@ -139,7 +139,7 @@
         },
         {
             id: 4,
-            nombre: "Información incompleta"
+            nombre: "Solicitud con Observaciones"
         },
         {
             id: 5,
@@ -185,7 +185,7 @@
         },
         {
             id: 4,
-            nombre: "Información incompleta"
+            nombre: "Solicitud con Observaciones"
         },
         {
             id: 5,
