@@ -229,11 +229,19 @@
                             timer: 1500
                         })
                         window.location = response.name;
+                    }else if(response.status == 'info'){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'info',
+                            title: 'No hay registros en ese rango de fechas',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                     }else{
                         Swal.fire({
                             position: 'center',
                             icon: 'error',
-                            title: 'Ha ocurrido un error!',
+                            title: 'Ha ocurrido un error',
                             showConfirmButton: false,
                             timer: 1500
                         })
