@@ -170,6 +170,7 @@
 <script>
     var table = null;
     var registros_paginas = 10;
+    var isVencido = false;
 
     var estatus_seguimiento_antiguo = [{
             id: 1,
@@ -294,7 +295,8 @@
                     "url": "/tramite_servicio_cemr/find",
                     "type": "POST",
                     "data": function(d) {
-
+                        
+                        isVencido = false
                         return $.extend({}, d, {
                             "fecha": $('#txtFecha').val(),
                             "folio": $('#txtFolio').val(),
@@ -316,22 +318,30 @@
                             var dateMiddle = new Date(data.USTR_DFECHACREACION);
                             dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 2));
 
-
+                            var dateTwoDays = new Date(data.USTR_DFECHACREACION);
+                            dateTwoDays.setDate(parseInt(dateTwoDays.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) - 2));
                             //Fecha de notificacion
                             var currentDate = new Date();
 
                             var level = 0;
                             if(data.USTR_NESTATUS != 4){
                                 if(data.USTR_NESTATUS != 10 && data.USTR_NESTATUS != 11){
-                                    if (dateMiddle >= currentDate) {
+                                    if(currentDate > dateFromTramite){
+                                        isVencido = true
+                                        level = 4;
+                                    }else if(currentDate >= dateTwoDays){
+                                        level = 3;
+                                    }else if (dateMiddle >= currentDate) {
                                         level = 1;
                                     } else if (dateFromTramite >= currentDate) {
                                         level = 2;
                                     } else {
                                         level = 3;
                                     }
+                                }else if(data.USTR_NESTATUS == 1){
+                                    level = 1;
                                 }else{
-                                    level = 3;
+                                    level =3;
                                 }
                             }else{
                                 if(data.USTR_DFECHAESTATUS != null){
@@ -414,11 +424,19 @@
                     {
                         data: 'USTR_NESTATUS',
                         render: function(data, type, row) {
-
-                            if (type === 'display') {
-                                var status = estatus_seguimiento.find(x => x.id === parseInt(data));
-                                return status.nombre;
+                            console.log(isVencido)
+                            if(isVencido){
+                                if (type === 'display') {
+                                    var status = 'Vencido';
+                                    return status;
+                                }
+                            }else{
+                                if (type === 'display') {
+                                    var status = estatus_seguimiento.find(x => x.id === parseInt(data));
+                                    return status.nombre;
+                                }
                             }
+                            
                             return data;
                         }
                     },

@@ -409,11 +409,11 @@
                                     <p id="text_correo_oficina" class="text-white" style="margin:0px;">
                                         atencion.semilla@gmail.com</p>
                                 </li>
-                                <li class="list-group-item text-white bg-border-none">
-                                    <label class="lbl-white-bold">Información adicional</label>
+                                {{-- <li class="list-group-item text-white bg-border-none">
+                                    <label class="lbl-white-bold">Informaciónsss adicional</label>
                                     <p id="text_informacion_adicional_oficina" class="text-white" style="margin:0px;">El
                                         Parque Infantil DIF se encuentra en remodelación.</p>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                     </div>
