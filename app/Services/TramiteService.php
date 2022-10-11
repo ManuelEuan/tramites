@@ -197,18 +197,29 @@ class TramiteService
             $lugares .= $lugar->Property. ", ";
         }
         $lugares    = substr($lugares, 0, -2).".";
+        $montoFinal = 0;
         $monto      = !is_null($objTramite->StaticAmount) ? $objTramite->StaticAmount : 0;
-
+        $montoMin = !is_null($objTramite->CalculatedAmountMin) ? $objTramite->CalculatedAmountMin : 0;
+        $montoMax = !is_null($objTramite->CalculatedAmountMax) ? $objTramite->CalculatedAmountMax : 0;
+       
+        if($monto > $montoMin && $monto > $montoMax){
+            $montoFinal = $monto;
+        }else if($montoMin > $montoMax){
+            $montoFinal = $montoMin;
+        }else if($montoMax > $montoFinal){
+            $montoFinal = $montoMax;
+        }
+        
         $tramite['costo'] = [
             [
                 "titulo"        => "¿Este trámite o servicio tiene monto de derechos o aprovechamientos?",
-                "descripcion"   => $monto > 0 ? "SI" : "NO",
+                "descripcion"   => $montoFinal > 0 ? "SI" : "NO",
                 "opciones"      => [],
                 "documentos"    => []
             ],
             [
                 "titulo"        => "Costos",
-                "descripcion"   => "$".number_format(round($monto, 2, PHP_ROUND_HALF_UP), 2, ".", ""),
+                "descripcion"   => "$".number_format(round($montoFinal, 2, PHP_ROUND_HALF_UP), 2, ".", ""),
                 "opciones"      => [],
                 "documentos"    => []
             ]
