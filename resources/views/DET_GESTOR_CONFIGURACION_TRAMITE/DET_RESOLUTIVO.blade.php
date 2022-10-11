@@ -94,25 +94,6 @@
                 TRAM_FN_RENDERCAMPOSRESOLUTIVO();
 
             });
-
-
-
-
         }
-
-        if (resolutivos.length > 0) {
-
-            //alert("resolutivo");
-
-            console.log("resolutivos des",  tramite_.resolutivos[0]);
-
-            /* $('#list_resolutivos').html('');
-            $('#cmbResolutivo').selectpicker('val', resolutivos);
-
-            $.each(resolutivos, function(key, value) {
-                $('#list_resolutivos').append('<li class="list-group-item d-flex justify-content-between align-items-center">' + value + '  <span class="deleteItemResolutivo" onclick="TRAM_FN_ELIMINAR_RESOLUTIVO(' + key + ');" style="cursor:pointer;" title="Eliminar resolutivo" class="badge badge-pill"><i style="font-size:16px;" class="fas fa-times"></i></span></li>');
-            }); */
-        }
-
     });
 </script>

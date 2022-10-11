@@ -82,25 +82,26 @@
             <div class="text-right botones">
                 <a href="{{route('gestor_index')}}" class="btn btn-danger border" style="color: #fff; font-weight: 900;">Cancelar</a>
                 @if($tramite['VALIDO'])
-                @switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE)
-                @case("ADM")
-                <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
-                <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
-                @break
-                @case("ENLOF")
-                <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
-                <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
-                @break
-                @case("ADMCT")
-                <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
-                @if($tramite['TRAM_NENLACEOFICIAL'] == null || $tramite['TRAM_NENLACEOFICIAL'] ==0 )
-                <button onclick="TRAM_FN_ENVIAR_ENLACE()" class="btn btnAzul border">Enviar a Enlace Oficial</button>
-                @else
-                <button disabled class="btn btnAzul border">Enviar a Enlace Oficial</button>
-                @endif
-                @break
-                @default
-                @endswitch
+                    @switch(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE)
+                        @case("ADM")
+                            <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
+                            <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
+                            @break
+                        @case("ENLOF")
+                            <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
+                            <button onclick="TRAM_FN_IMPLEMENTAR()" class="btn btnAzul border">Implementar configuración</button>
+                            @break
+                        @case("ADMCT")
+                            <button onclick="TRAM_FN_SAVE();" class="btn btnAzul border">Guardar</button>
+                            @if($tramite['TRAM_NENLACEOFICIAL'] == null || $tramite['TRAM_NENLACEOFICIAL'] ==0 )
+                                <button onclick="TRAM_FN_ENVIAR_ENLACE()" class="btn btnAzul border">Enviar a Enlace Oficial</button>
+                            @else
+                                <button disabled class="btn btnAzul border">Enviar a Enlace Oficial</button>
+                            @endif
+                            @break
+                        @default
+                            @break
+                    @endswitch
                 @endif
             </div>
         </div>
@@ -161,10 +162,8 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="form-group" style="width: 100%; margin: 12px;">
-                        <label for="cmbFormulario">Seleccione el Formulario</label>
-                        <select class="form-control" id="cmbFormulario" onchange="TRAM_FN_CAMBIOPREGUNTA()">
-                        </select>
-                    </div>
+                        <label for="cmbFormulario">Formulario</label>
+                        <input type="text" class="form-control" id="cmbFormulario" disabled/>
                 </div>
                 <div class="row">
                     <div class="form-group" style="width: 100%; margin: 12px;">
@@ -630,7 +629,7 @@
                 cmbSection.append('<option disabled selected>Seleccione</option>');
                 $(sections_default).each(function(i, v) {
                     cmbSection.append('<option value="' + v.value + '">' + v.name + '</option>');
-                })
+                });
             }
 
             //Funcion para agregar la seccion de formulario
@@ -745,7 +744,7 @@
                         ///////////////////////////////
                     },
                     error: function(data) {
-                        console.log(data)
+                        mensajeError('error',data);
                     }
                 });
             }
@@ -859,12 +858,7 @@
                         }, 100);
                     },
                     error: function(data) {
-                        // Swal.fire({
-                        //     icon: data.status,
-                        //     title: '',
-                        //     text: data.message,
-                        //     footer: ''
-                        // });
+                        mensajeError('error',data.message);
                     }
                 });
             }
@@ -877,21 +871,14 @@
                     url: "/gestores/consultar_formulario",
                     type: "GET",
                     success: function(response) {
-
                         list_formularios = response.data;
-
                         //Cargar formulario
                         setTimeout(function() {
                             TRAM_FN_VIEWFORMULARIO();
-                        }, 250);
+                        }, 1550);
                     },
                     error: function(data) {
-                        // Swal.fire({
-                        //     icon: data.status,
-                        //     title: '',
-                        //     text: data.message,
-                        //     footer: ''
-                        // });
+                        mensajeError('error',data.data);
                     }
                 });
             }
@@ -1095,7 +1082,7 @@
                             $('#txtPlazo_diasNotificacion').val(tramite_.tramite[0].TRAM_NDIASHABILESNOTIFICACION);
                         },
                         error: function(data) {
-                            console.log(data);
+                            mensajeError('error',data);
                         }
                     });
                 }
@@ -1200,6 +1187,8 @@
                     section.dias_habiles = dias_habiles;
                 }
             });
+
+
         });
 
         function TRAM_FN_MOSTRARMODALSECCION() {
@@ -1207,39 +1196,20 @@
         }
 
         function TRAM_FN_MOSTRARMODALADDCAMPORESOLUTIVO() {
-
-            var opcionesCmbFormulario = '';
-            list_preguntas_resolutivos.forEach(function(element) {
-                opcionesCmbFormulario = opcionesCmbFormulario + '<option value="' + element.FORMID + '">' + element.FORM_CNOMBRE + '</option>';
+            list_formularios.forEach(element => {
+                if(element.FORM_NIDFORMULARIO == id_formulario){
+                    $("#cmbFormulario").val(element.FORM_CNOMBRE);
+                    TRAM_FN_CAMBIOPREGUNTA(element.FORM_NIDFORMULARIO);
+                }
             });
 
-            $("#cmbFormulario").html(opcionesCmbFormulario);
-
-            opcionesCmbFormulario = '';
-            if (list_preguntas_resolutivos.length > 0) {
-
-                list_preguntas_resolutivos[0].preguntas.forEach(function(element) {
-                    opcionesCmbFormulario = opcionesCmbFormulario + '<option value="' + element.PREID + '">' + element.FORM_CPREGUNTA + '</option>';
-                });
-
-                $("#cmbPregunta").html(opcionesCmbFormulario);
-
-            }
-
             $("#txtCampoPlabtilla").val('');
-
-
             $('#modalAddCampoResolutivo').modal('show');
         }
 
-        function TRAM_FN_CAMBIOPREGUNTA() {
-
-            var formulario = $("#cmbFormulario").val();
-
+        function TRAM_FN_CAMBIOPREGUNTA(formulario) {
             var opcionesCmbFormulario = '';
-
             var resolutivo = list_preguntas_resolutivos.find(element => element.FORMID == formulario);
-
             if (resolutivo != undefined) {
                 resolutivo.preguntas.forEach(function(element) {
                     opcionesCmbFormulario = opcionesCmbFormulario + '<option value="' + element.PREID + '">' + element.FORM_CPREGUNTA + '</option>';
@@ -1247,8 +1217,6 @@
 
                 $("#cmbPregunta").html(opcionesCmbFormulario);
             }
-
-
         }
 
         function TRAM_FN_AGREARCAMPORESOLUTIVO() {
@@ -1346,12 +1314,8 @@
         }
 
         function TRAM_FN_DELETECAMPOMAPEO(index) {
-
-            //alert("delete " + index);
-            //console.log("delete", index);
             objResolutivoEletronico.list_mapeo_resolutivo.splice(index, 1);
             TRAM_FN_RENDERCAMPOSRESOLUTIVO();
-
         }
 
         //Agregar seccion a lista de secciones
@@ -3796,7 +3760,6 @@
 
             tramite.TRAM_NDIASHABILESRESOLUCION = txtPlazo_diasResolucion;
             tramite.TRAM_NDIASHABILESNOTIFICACION = txtPlazo_diasNotificacion;
-            console.log(tramite);
 
             $('#loading_save').show();
             $.ajax({
@@ -3832,6 +3795,15 @@
             });
         }
 
+        function mensajeError(icon = 'error', message = ''){
+        console.log(message);
+        Swal.fire({
+            icon: icon,
+            title: '',
+            text: message,
+            footer: ''
+        });
+    }
 
         /******************* Variables para el calendario de citas *******************/
         var getModulos  = true
