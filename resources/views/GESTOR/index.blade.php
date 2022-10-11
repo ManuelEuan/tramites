@@ -159,8 +159,6 @@
     }
 
     function vincular(){
-
-      
         $("#btnGuardarModal").text("");
         $("#btnGuardarModal").append(`
             <div id="spinnerGuardar" class="spinner-border" role="status">
@@ -169,9 +167,12 @@
         $("#btnCerrarModal").prop('disabled', true);
         $("#btnGuardarModal").prop('disabled', true);
 
+        var name = $("#nombre").val()+" "+$("#apellidoPaterno").val()+" "+$("#apellidoMaterno").val();
+
         let data    = { "usuario_id": $("#usuario_id").val(),"gestor_id": $("#gestorID").val() };
         $.ajaxSetup({headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
 
+        
         request = $.ajax({
             url : '/gestores_solicitud/vincular',
             type: "post",
@@ -181,12 +182,13 @@
         // Callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){                
             limpiaCampos();
-            setTimeout(() => {
+           setTimeout(() => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Operación exitosa',
+                    title: 'Éxito',
+                    text: 'Aprobaste a '+name+' como tu gestor para trámites',
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 4000
                 });
                 listar();
             }, 400);
@@ -243,8 +245,8 @@
 
     function eliminar(id){
         Swal.fire({
-                title: 'Confirmar!',
-                text: "¿Desea eliminar a este usuario?",
+                title: '¡Advertencia!',
+                text: "¿Desea eliminar al Gestor?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -263,7 +265,8 @@
                     request.done(function (response, textStatus, jqXHR){
                         Swal.fire({
                             icon: 'success',
-                            title: 'Operación exitosa',
+                            title: '¡Éxito!',
+                            text: 'Acaba de eliminar al gestor',
                             showConfirmButton: false,
                             timer: 1500
                         });
