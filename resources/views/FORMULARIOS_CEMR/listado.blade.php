@@ -187,7 +187,7 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-12" style="text-align: left;">
-                        <h2 class="titulo">Secciones</h2>
+                        <h2 class="titulo">Secciones <label for="" id="divNombre"></label></h2>
                     </div>
                 </div>
 
@@ -226,7 +226,7 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-12" style="text-align: left;">
-                        <h2 class="titulo">Preguntas de formularios</h2>
+                        <h2 class="titulo">Preguntas de formularios <label id="labelNombre"></label></h2>
                     </div>
                 </div>
             </div>
@@ -411,7 +411,7 @@
                     render: function(data, type, row) {
                         let estatus = data.FORM_BACTIVO == false ? 'Activar' : 'Desactivar';
                         html = `<span>
-                                        <button type="button" onclick="cambiaVista('secciones', ${ data.FORM_NID })" title="Secciones" class="btn btn-link"><i class="fas fa-list" style="color: black"></i></button>
+                                        <button type="button" onclick="cambiaVista('secciones', ${ data.FORM_NID },'${data.FORM_CNOMBRE}')" title="Secciones" class="btn btn-link"><i class="fas fa-list" style="color: black"></i></button>
                                     </span>
                                     <span>
                                         <button type="button" onclick="abreModal(${ data.FORM_NID }, '${ data.FORM_CNOMBRE}', '${data.FORM_CDESCRIPCION }')" title="Editar" class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
@@ -839,7 +839,7 @@
         }
     }
 
-    function cambiaVista(vista, id) {
+    function cambiaVista(vista, id, nombre = '') {
         accion_pregunta = 'add';
 
         if (vista == 'secciones') {
@@ -854,7 +854,7 @@
                                     <td>${seccion.FORM_CNOMBRE}</td>
                                     <td>
                                         <span>
-                                            <button type="button" onclick="cambiaVista('preguntas',${ seccion.FORM_NID })" title="Preguntas"  class="btn btn-link">
+                                            <button type="button" onclick="cambiaVista('preguntas',${ seccion.FORM_NID }, '${nombre}')" title="Preguntas"  class="btn btn-link">
                                                 <i class="fas fa-eye" style="color: black"></i>
                                             </button>
                                         </span>
@@ -864,7 +864,8 @@
 
 
             tbody += '</tbody>';
-
+            $('#divNombre').empty();
+            $('#divNombre').append('- ' + nombre)
             $("#tblSecciones").append(tbody);
         } else {
             seccion_id = id;
@@ -883,6 +884,8 @@
             $('#preguntas').fadeToggle(500);
             $('#contenedorPeguntas').hide();
             $('#cargaPreguntas').show();
+            $('#labelNombre').empty()
+            $('#labelNombre').append('- ' + nombre)
             $("#tituloSeccion").text(seccion.FORM_CNOMBRE);
 
             $.ajaxSetup({
