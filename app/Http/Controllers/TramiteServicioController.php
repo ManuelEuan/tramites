@@ -391,6 +391,7 @@ class TramiteServicioController extends Controller
             $tramite['encuesta_contestada'] = $detalle->USTR_NENCUESTA_CONTESTADA;
             $tramite['seccion_active']      = $this->seccion_active;
             $tramite['giros']               = [];
+            $tramite['dias_resolucion']     = $detalle->TRAM_NDIASHABILESNOTIFICACION;
 
             if ($detalle->TRAM_NESTATUS_PROCESO == null || $detalle->TRAM_NESTATUS_PROCESO == 0)
                 $tramite['disabled'] = "";
