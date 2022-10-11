@@ -11,19 +11,6 @@
         <div class="form-group">
             <label for="cmbResolutivo" style="font-size: 1rem; font-weight: bold;">Indique el nombre del resolutivo electrónico que se le enviará al solicitante en esta etapa del proceso.</label>
             <select id="cmbResolutivo" class="selectpicker form-control" onchange="TRAM_FN_CAMBIORESOLUTIVO();" data-live-search="true">
-                <option value="Autorización">Autorización</option>
-
-                <option value="Permiso de acceso">Permiso de acceso</option>
-
-                <option value="Resolutivo 1">Resolutivo 1</option>
-
-                <option value="Resolutivo 2">Resolutivo 2</option>
-
-                <option value="Resolutivo 3">Resolutivo 3</option>
-
-                <option value="Resolutivo 4">Resolutivo 4</option>
-
-                <option value="Resolutivo 5">Resolutivo 5</option>
             </select>
         </div>
         <div class="form-group">
@@ -33,11 +20,8 @@
         </div>
 
     </div>
-    <div class="col-md-12" id="contenerdorCamposPlantillaResolutivo">
+    <div class="col-md-12" id="contenerdorCamposPlantillaResolutivo"> </div>
 
-
-
-    </div>
     <div class="btnContenedor" style="margin-top:2%;">
         <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="TRAM_FN_MOSTRARMODALADDCAMPORESOLUTIVO()"> Agregar Campo</button>
     </div>
@@ -56,7 +40,6 @@
 
 <script>
     $(document).ready(function() {
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -78,8 +61,6 @@
             //var selected = $('#cmbResolutivo').val();
             // TRAM_FN_AGREGAR_RESOLUTIVO(selected);
             TRAM_FN_CAMBIORESOLUTIVO();
-
-
         });
 
         if (tramite_.resolutivos.length > 0) {
@@ -123,7 +104,7 @@
 
             //alert("resolutivo");
 
-            console.log("resolutivos des", resolutivos);
+            console.log("resolutivos des",  tramite_.resolutivos[0]);
 
             /* $('#list_resolutivos').html('');
             $('#cmbResolutivo').selectpicker('val', resolutivos);
