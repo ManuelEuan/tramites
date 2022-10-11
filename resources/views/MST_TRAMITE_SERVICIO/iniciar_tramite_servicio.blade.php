@@ -1131,7 +1131,6 @@
                     let apePat = "";
                     let apeMat = "" ;
                     for(const clave in data[0]){
-                        console.log("clave: "+clave + " datos: "+ data[0][clave]);
                         if($(`[vinculacion=${clave}]`) && clave != "USUA_CNOMBRES"){
                             $(`[vinculacion=${clave}]`).val(data[0][clave]);
                         }
@@ -1148,7 +1147,6 @@
                     if($(`[vinculacion=USUA_CNOMBRES]`)){
                         $(`[vinculacion=USUA_CNOMBRES]`).val(apePat + " " + apeMat + " " + nombre);
                     }
-                    console.log(apeMat)
                 },
                 error: function(data) {
                     Swal.fire({
@@ -1771,6 +1769,11 @@
         let items   = $("#"+select).val();
         let aplica  = true;
         let html = '';
+        
+        if(items.length > 4){
+            mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
+            return;
+        }
 
         items.forEach(element => {
             let label = "";
