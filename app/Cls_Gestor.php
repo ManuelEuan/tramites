@@ -2,8 +2,8 @@
 
 namespace App;
 
+use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
 class Cls_Gestor extends Model
@@ -159,49 +159,17 @@ class Cls_Gestor extends Model
     }
 
     //Obtiene la configuración de un trámite
-    public function TRAM_CONSULTAR_CONFIGURACION_TRAMITE($TRAM_NIDTRAMITE_CONFIG)
-    {
-        $response = [
-            'tramite'       => null,
-            'secciones'     => [],
-            'formularios'   => [],
-            'documentos'    => [],
-            'edificios'     => [],
-            'resolutivos'   => [],
-            'conceptos_pago' => [],
-        ];
+    public function TRAM_CONSULTAR_CONFIGURACION_TRAMITE($TRAM_NIDTRAMITE_CONFIG) {
+        $response = array();
 
         try {
-
-            $response['tramite'] = DB::select(
-                'SELECT * FROM tram_mst_tramite where TRAM_NIDTRAMITE = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-
-            $response['secciones'] = DB::select(
-                'SELECT * FROM tram_mdv_seccion_tramite where CONF_NIDTRAMITE = ? ORDER BY CONF_NORDEN ASC ',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-
-            $response['formularios'] = DB::select(
-                'SELECT * FROM tram_mst_formulario_tramite where FORM_NIDTRAMITE = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-
-            $response['documentos'] = DB::select(
-                'SELECT * FROM tram_mdv_documento_tramite where TRAD_NIDTRAMITE = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-
-            $response['edificios'] = DB::select(
-                'SELECT * FROM tram_mst_edificio where EDIF_NIDTRAMITE = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-
-            $response['resolutivos'] = DB::select(
-                'SELECT * FROM tram_mst_resolutivo where RESO_NIDTRAMITE = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
+            $response['tramite']        = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['secciones']      = DB::table('tram_mdv_seccion_tramite')->where('CONF_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->orderBy('CONF_NORDEN', 'asc')->get();
+            $response['formularios']    = DB::table('tram_mst_formulario_tramite')->where('FORM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['documentos']     = DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['edificios']      = DB::table('tram_mst_edificio')->where('EDIF_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['conceptos_pago'] = DB::table('tram_mst_concepto_tramite')->where('CONC_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['resolutivos']    = DB::table('tram_mst_resolutivo')->where('RESO_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
 
             foreach ($response['resolutivos'] as $key => $resolutivo) {
                 $response['resolutivos'][$key]->MAPEO = DB::select(
@@ -212,14 +180,9 @@ class Cls_Gestor extends Model
                 );
             }
 
-            $response['conceptos_pago'] = DB::select(
-                'SELECT * FROM tram_mst_concepto_tramite where CONC_NIDTRAMITE = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-
             return $response;
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (Exception $ex) {
+            dd($ex);
         }
     }
 
