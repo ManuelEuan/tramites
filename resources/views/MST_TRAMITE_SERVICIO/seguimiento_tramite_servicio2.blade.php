@@ -57,6 +57,11 @@
             <div class="col-md-12">
                 <label style="font-weight: bold; font-size:20px;">Por favor ingrese la información solicitada:</label>
             </div>
+            @if($tramite['estatus'] != 1 && $tramite['estatus'] != 8 && $tramite['estatus'] != 4)
+                <div class="col-md-12 alert alert-warning" role="alert">
+                    El trámite se encuentra en proceso de revisión por la dependencia, se notificará vía sistema cuando proceda la siguiente fase.
+                </div>
+            @endif
             <div id="estatusFormulario"> </div>
         </div>
 
