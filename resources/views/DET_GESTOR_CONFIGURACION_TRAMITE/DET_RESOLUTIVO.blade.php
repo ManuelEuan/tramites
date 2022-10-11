@@ -48,7 +48,9 @@
 
         var cmbResolutivo = $('#cmbResolutivo');
         cmbResolutivo.find('option').remove();
+        let seleccionado = '';
         $(list_resolutivos_tramite).each(function(i, v) {
+            console.log(v.nombre);
             cmbResolutivo.append('<option value="' + v.nombre + '">' + v.nombre + '</option>');
         })
 
@@ -63,37 +65,40 @@
             TRAM_FN_CAMBIORESOLUTIVO();
         });
 
-        if (tramite_.resolutivos.length > 0) {
-            var firsResolutuvo = tramite_.resolutivos[0];
-            objResolutivoEletronico.nameFile = firsResolutuvo.RESO_CNAMEFILE;
-            $("#lbFileNameResolutivo").html(objResolutivoEletronico.nameFile);
+        if(tramite_ != null){
+            if (tramite_.resolutivos.length > 0) {
+                var firsResolutuvo = tramite_.resolutivos[0];
+                objResolutivoEletronico.nameFile = firsResolutuvo.RESO_CNAMEFILE;
+                $("#lbFileNameResolutivo").html(objResolutivoEletronico.nameFile);
+    
+                objResolutivoEletronico.nameResolutivo = firsResolutuvo.RESO_CNOMBRE;
+                $("#cmbResolutivo").val(objResolutivoEletronico.nameResolutivo);
+    
+                objResolutivoEletronico.list_mapeo_resolutivo = [];
+    
+                firsResolutuvo.MAPEO.forEach(function(v, i) {
+    
+                    var campo = {
+                        idFormulario: undefined,
+                        formulario: undefined,
+                        idPregunta: undefined,
+                        pregunta: undefined,
+                        campo: undefined,
+                    }
+    
+                    campo.idFormulario = v.TRAM_NIDFORMULARIO;
+                    //campo.formulario = $("#cmbFormulario option:selected").text();
+                    campo.idPregunta = v.TRAM_NIDPRGUNTA;
+                    campo.pregunta = v.FORM_CPREGUNTA;
+                    campo.campo = v.TRAM_CNOMBRECAMPO;
+    
+                    objResolutivoEletronico.list_mapeo_resolutivo.push(campo);
+    
+                    TRAM_FN_RENDERCAMPOSRESOLUTIVO();
+                });
+            }
+            console.log("resolutivos",  tramite_.resolutivos[0]);
 
-            objResolutivoEletronico.nameResolutivo = firsResolutuvo.RESO_CNOMBRE;
-            $("#cmbResolutivo").val(objResolutivoEletronico.nameResolutivo);
-
-            objResolutivoEletronico.list_mapeo_resolutivo = [];
-
-            firsResolutuvo.MAPEO.forEach(function(v, i) {
-
-                var campo = {
-                    idFormulario: undefined,
-                    formulario: undefined,
-                    idPregunta: undefined,
-                    pregunta: undefined,
-                    campo: undefined,
-                }
-
-                campo.idFormulario = v.TRAM_NIDFORMULARIO;
-                //campo.formulario = $("#cmbFormulario option:selected").text();
-                campo.idPregunta = v.TRAM_NIDPRGUNTA;
-                campo.pregunta = v.FORM_CPREGUNTA;
-                campo.campo = v.TRAM_CNOMBRECAMPO;
-
-                objResolutivoEletronico.list_mapeo_resolutivo.push(campo);
-
-                TRAM_FN_RENDERCAMPOSRESOLUTIVO();
-
-            });
         }
     });
 </script>

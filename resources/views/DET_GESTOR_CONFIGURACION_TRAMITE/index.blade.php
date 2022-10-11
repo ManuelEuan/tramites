@@ -163,7 +163,9 @@
                 <div class="row">
                     <div class="form-group" style="width: 100%; margin: 12px;">
                         <label for="cmbFormulario">Formulario</label>
+                        <input type="text" class="form-control" id="formularioId" disabled/>
                         <input type="text" class="form-control" id="cmbFormulario" disabled/>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="form-group" style="width: 100%; margin: 12px;">
@@ -1199,6 +1201,7 @@
             list_formularios.forEach(element => {
                 if(element.FORM_NIDFORMULARIO == id_formulario){
                     $("#cmbFormulario").val(element.FORM_CNOMBRE);
+                    $("#formularioId").val(element.FORM_NIDFORMULARIO);
                     TRAM_FN_CAMBIOPREGUNTA(element.FORM_NIDFORMULARIO);
                 }
             });
@@ -1228,9 +1231,9 @@
                 pregunta: undefined,
                 campo: undefined,
             }
-
-            campo.idFormulario = $("#cmbFormulario").val();
-            campo.formulario = $("#cmbFormulario option:selected").text();
+            console.log("ptm",  $("#formularioId").val());
+            campo.idFormulario = $("#formularioId").val();
+            campo.formulario = $("#cmbFormulario").val();
             campo.idPregunta = $("#cmbPregunta").val();
             campo.pregunta = $("#cmbPregunta option:selected").text();
             campo.campo = $("#txtCampoPlabtilla").val();
@@ -1273,7 +1276,7 @@
 
         function TRAM_FN_CAMBIORESOLUTIVO() {
 
-            var resulitivoSelected = $("#cmbFormulario").val();
+            var resulitivoSelected = $("#formularioId").val();
 
             objResolutivoEletronico.nameResolutivo = resulitivoSelected;
 
