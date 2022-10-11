@@ -1241,7 +1241,7 @@ class TramiteServicioController extends Controller
         $response = [
             'codigo' => 200,
             'status' => "success",
-            'message' => 'Tu solicitud se ha enviado, te recordamos que los horarios de atención son de Lunes a Viernes de 08:30 a 15:30 hrs. en días hábiles. Si tu solicitud fue enviada en día inhábil o fuera de horario laboral, esta será atendida hasta en el próximo día laboral, en el horario señalado.',
+            'message' => 'Tu solicitud se ha enviado, te recordamos que los horarios de atención son de Lunes a Viernes de 08:30 a 15:00 hrs. en días hábiles. Si tu solicitud fue enviada en día inhábil o fuera de horario laboral, esta será atendida hasta en el próximo día laboral, en el horario señalado.',
             'data' => $IntIdUsuarioTramite
         ];
 
