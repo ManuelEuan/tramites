@@ -29,8 +29,10 @@
                     <div class="col-12">
                         <!-- <div class="bg-white rounded-lg p-5 shadow"> -->
                         <div>
+                            @if($tramite['estatus'] != 1 && $tramite['estatus'] != 2)
                             <h2 class="h6 font-weight-bold text-center mb-4">Avance de Trámite</h2>
                             <!-- Progress bar 1 -->
+                            
                             <div class="progress_circle mx-auto" data-value='0'>
                                 <span class="progress_circle-left">
                                     <span class="progress_circle-bar border-primary"></span>
@@ -46,6 +48,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
                             <!-- END -->
                         </div>
                     </div>
@@ -57,6 +60,16 @@
             <div class="col-md-12">
                 <label style="font-weight: bold; font-size:20px;">Por favor ingrese la información solicitada:</label>
             </div>
+            @if($tramite['estatus'] == 4)
+            <div class="col-md-12 alert alert-warning" role="alert">
+                    Estimado usuario, su trámite tiene observaciones por parte de la dependencia, le recordamos que cuenta con un plazo de {{$tramite['dias_resolucion']}} días, a partir de recibir esta notificación, para poder atender las observaciones, le recordamos que en caso de no atender estas observaciones su trámite será cancelado.
+                </div>
+            @endif
+            @if($tramite['estatus'] != 1 && $tramite['estatus'] != 8 && $tramite['estatus'] != 4)
+                <div class="col-md-12 alert alert-warning" role="alert">
+                    El trámite se encuentra en proceso de revisión por la dependencia, se notificará vía sistema cuando proceda la siguiente fase.
+                </div>
+            @endif
             <div id="estatusFormulario"> </div>
         </div>
 
@@ -2697,8 +2710,13 @@
             let aplica  = true;
             let html    = '';
             let json    = null;
-
             let valor   = {"id": select, "valor": $("#"+select+"_input").val()} ;
+
+            if(items.length > 4){
+                mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
+                return;
+            }
+
             if(valor != ""){
                 json = JSON.parse(valor.valor);
             }
