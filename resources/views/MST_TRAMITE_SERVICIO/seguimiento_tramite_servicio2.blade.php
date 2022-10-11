@@ -2697,8 +2697,13 @@
             let aplica  = true;
             let html    = '';
             let json    = null;
-
             let valor   = {"id": select, "valor": $("#"+select+"_input").val()} ;
+
+            if(items.length > 4){
+                mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
+                return;
+            }
+
             if(valor != ""){
                 json = JSON.parse(valor.valor);
             }
