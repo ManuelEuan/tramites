@@ -15,6 +15,7 @@ composer.lock
 
 /public/codigosQR
 /public/docts
+/public/reps
 /public/files
 /public/tramites
 /logErrores
