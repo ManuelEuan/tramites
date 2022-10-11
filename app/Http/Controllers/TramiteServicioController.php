@@ -391,6 +391,7 @@ class TramiteServicioController extends Controller
             $tramite['encuesta_contestada'] = $detalle->USTR_NENCUESTA_CONTESTADA;
             $tramite['seccion_active']      = $this->seccion_active;
             $tramite['giros']               = [];
+            $tramite['dias_resolucion']     = $detalle->TRAM_NDIASHABILESNOTIFICACION;
 
             if ($detalle->TRAM_NESTATUS_PROCESO == null || $detalle->TRAM_NESTATUS_PROCESO == 0)
                 $tramite['disabled'] = "";
@@ -1241,7 +1242,7 @@ class TramiteServicioController extends Controller
         $response = [
             'codigo' => 200,
             'status' => "success",
-            'message' => 'Tu solicitud se ha enviado, te recordamos que los horarios de atención son de Lunes a Viernes de 08:30 a 15:30 hrs. en días hábiles. Si tu solicitud fue enviada en día inhábil o fuera de horario laboral, esta será atendida hasta en el próximo día laboral, en el horario señalado.',
+            'message' => 'Tu solicitud se ha enviado, te recordamos que los horarios de atención son de Lunes a Viernes de 08:30 a 15:00 hrs. en días hábiles. Si tu solicitud fue enviada en día inhábil o fuera de horario laboral, esta será atendida hasta en el próximo día laboral, en el horario señalado.',
             'data' => $IntIdUsuarioTramite
         ];
 
