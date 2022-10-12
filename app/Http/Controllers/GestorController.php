@@ -135,48 +135,44 @@ class GestorController extends Controller
     //Vista donde se realiza configuración del trámite
     public function configurar_tramite($tramiteID, $tramiteIDConfig)
     {
-        try {
-            $tramite        = [];
-            $objTramite     = $this->tramiteService->getTramite($tramiteID);
-            $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
-            $datosGenerales = $this->tramiteService->valoresDefaulTramite($arrayDetalle, $objTramite);
-            $edificios      = $datosGenerales['oficinas'];
-    
-            #################### Configuraciones anteriores ####################
-            $tramites   = new Cls_Gestor();
-            $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
-    
-            if (count($registro) > 0) {
-                $tramite['VALIDO'] = true;
-                $tramite['TRAM_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE;
-                $tramite['ACCE_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-                $tramite['ACCE_CLAVE_INTERNA']  = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-                $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
-                $tramite['EDIFICIOS']           = $registro[0]->TRAM_CNOMBRE;
-                $tramite['TRAM_NIMPLEMENTADO']  = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
-                $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
+        $tramite        = [];
+        $objTramite     = $this->tramiteService->getTramite($tramiteID);
+        $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
+        $datosGenerales = $this->tramiteService->valoresDefaulTramite($arrayDetalle, $objTramite);
+        $edificios      = $datosGenerales['oficinas'];
+
+        #################### Configuraciones anteriores ####################
+        $tramites   = new Cls_Gestor();
+        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
+
+        if (count($registro) > 0) {
+            $tramite['VALIDO'] = true;
+            $tramite['TRAM_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE;
+            $tramite['ACCE_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['ACCE_CLAVE_INTERNA']  = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
+            $tramite['EDIFICIOS']           = $registro[0]->TRAM_CNOMBRE;
+            $tramite['TRAM_NIMPLEMENTADO']  = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
+            $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
+        } else {
+
+            if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
+                $tramite['VALIDO'] = false;
+                $tramite['TRAM_ID_TRAMITE'] = NULL;
+                $tramite['ACCE_ID_TRAMITE'] = NULL;
+                $tramite['ACCE_CLAVE_INTERNA'] = "";
+                $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE EN ACCEDE.";
+                $tramite['TRAM_NIMPLEMENTADO'] = null;
+                $tramite['TRAM_NENLACEOFICIAL'] = null;
             } else {
-    
-                if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
-                    $tramite['VALIDO'] = false;
-                    $tramite['TRAM_ID_TRAMITE'] = NULL;
-                    $tramite['ACCE_ID_TRAMITE'] = NULL;
-                    $tramite['ACCE_CLAVE_INTERNA'] = "";
-                    $tramite['ACCE_NOMBRE_TRAMITE'] = "NO SE ENCONTRÓ EL TRÁMITE EN ACCEDE.";
-                    $tramite['TRAM_NIMPLEMENTADO'] = null;
-                    $tramite['TRAM_NENLACEOFICIAL'] = null;
-                } else {
-                    $tramite['VALIDO'] = true;
-                    $tramite['TRAM_ID_TRAMITE']     = 0;
-                    $tramite['ACCE_ID_TRAMITE']     =  $objTramite->remtisId;
-                    $tramite['ACCE_CLAVE_INTERNA']  = 'Clave interna: ' . $objTramite->Id;
-                    $tramite['ACCE_NOMBRE_TRAMITE'] = $objTramite->Name;
-                    $tramite['TRAM_NIMPLEMENTADO']  = null;
-                    $tramite['TRAM_NENLACEOFICIAL'] = null;
-                }
+                $tramite['VALIDO'] = true;
+                $tramite['TRAM_ID_TRAMITE']     = 0;
+                $tramite['ACCE_ID_TRAMITE']     =  $objTramite->remtisId;
+                $tramite['ACCE_CLAVE_INTERNA']  = 'Clave interna: ' . $objTramite->Id;
+                $tramite['ACCE_NOMBRE_TRAMITE'] = $objTramite->Name;
+                $tramite['TRAM_NIMPLEMENTADO']  = null;
+                $tramite['TRAM_NENLACEOFICIAL'] = null;
             }
-        } catch (Exception $ex) {
-            dd($ex);
         }
 
         return view('DET_GESTOR_CONFIGURACION_TRAMITE.index',  compact('tramite', 'edificios'));
