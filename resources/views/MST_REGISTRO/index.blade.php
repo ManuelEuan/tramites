@@ -1016,6 +1016,8 @@
 
         //RFC
         $('#txtRfc').change(function(){
+            $("#resultadoValidText").html("");
+            $("#resultadoExistRfc").html("");
             var value = $( this ).val();
             TRAM_FN_VALIDAR_INPUT_RFC(value);
             if(rfcCorrecto ){
@@ -1579,7 +1581,7 @@
                             $("#iconRfc_Valido").hide();
                             $("#txtRfc").attr("aria-invalid", "true");
                             $("#txtRfc").addClass("error");
-                            $("#resultadoExistRfc").html("<span style='color: red;'> El RFC ya existe en el sistema, por favor ingresa con tu usuario y contraseña.</span>");
+                            $("#resultadoExistRfc").html("<span style='color: red;'> El RFC ya se registró en otra cuenta.</span>");
                         }
                     }else {
                         if(tipo == 'curp'){
