@@ -118,7 +118,8 @@
                                 <div class="col-md-8 divRazon_Social">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Razón Social <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="txtRazon_Social" id="txtRazon_Social" maxlength="100" placeholder="Razón Social">
+                                        <input type="text" class="form-control" name="txtRazon_Social" id="txtRazon_Social"
+                                            placeholder="Razón Social">
                                         <span class="resultadoValidTextRaSocial" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
