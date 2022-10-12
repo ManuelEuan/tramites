@@ -49,9 +49,12 @@
         var cmbResolutivo = $('#cmbResolutivo');
         cmbResolutivo.find('option').remove();
         let seleccionado = '';
+        
         $(list_resolutivos_tramite).each(function(i, v) {
-            console.log(v.nombre);
-            cmbResolutivo.append('<option value="' + v.nombre + '">' + v.nombre + '</option>');
+            if(tramite_ != null){
+                seleccionado =  tramite_.resolutivos[0].RESO_CNOMBRE == v.nombre ? 'selected' : '';
+            }
+            cmbResolutivo.append(`<option ${seleccionado} value="${v.nombre}"> ${v.nombre} </option>`);
         })
 
         $('#cmbResolutivo').selectpicker({
