@@ -2122,11 +2122,12 @@
     function TRAM_AJX_GUARDAR() {
         $("#btnSubmit").prop("disabled", true);
         TRAM_FN_ENABLED_INPUT();
-        if (!$("#frmForm").valid()) {
-            
+        var validator = $('#frmForm').validate({onkeyup: false});
+
+        if (!validator.form()) {
             $('#telefonoPersonaAutorizada-error').html('<b style="color: red;">Favor de poner en el formato (999) 999-9999</b>');
             $('.listError').hide();
-            var validator = $('#frmForm').validate();
+           
             var htmlError =
                 "<div class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Los siguientes datos son obligatorios:</strong> <br/>";
             $.each(validator.errorList, function(index, value) {
@@ -2145,6 +2146,7 @@
                 scrollTop: 0
             }, "slow");
             TRAM_FN_DISABLED_INPUT();
+
             return;
         }
         
