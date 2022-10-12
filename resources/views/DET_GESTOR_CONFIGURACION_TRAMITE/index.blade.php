@@ -163,7 +163,7 @@
                 <div class="row">
                     <div class="form-group" style="width: 100%; margin: 12px;">
                         <label for="cmbFormulario">Formulario</label>
-                        <input type="text" class="form-control" id="formularioId" disabled/>
+                        <input type="hidden" class="form-control" id="formularioId" disabled/>
                         <input type="text" class="form-control" id="cmbFormulario" disabled/>
                     </div>
                 </div>

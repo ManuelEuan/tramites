@@ -1517,7 +1517,7 @@
                                                             <div class="form-group">`;
                                                                 value_pregunta.respuestas.forEach(value => {
                                                                     value.FORM_CVALOR_RESPUESTA.forEach(element => {
-                                                                        let html = typeof element?.fecha !== 'undefined' ? `<label style="font-size: 11px;">  Fecha ${element.fecha}</label>` : '';
+                                                                        let html = typeof element?.fecha !== 'undefined' ? ` Fecha ${element.fecha}` : '';
                                                                         collapse_detalle += `<div class="form-check">
                                                                                 <ul>
                                                                                     <li class='titulo_pequeno'>${element?.nombre} ${html}</li>
