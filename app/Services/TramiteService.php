@@ -90,7 +90,7 @@ class TramiteService
                     ->join('procedurecategories as prcat', 'p.Id', '=', 'prcat.ProcedureId')
                     ->join('categories as cat', 'prcat.CategoryId', '=', 'cat.Id')
                     ->join('requesttypes as retyp', 'p.IdRequestType', '=', 'retyp.Id')
-                    ->join('targettypes as tartyp', 'p.IdTargetType', '=', 'tartyp.Id')
+                    ->leftJoin('targettypes as tartyp', 'p.IdTargetType', '=', 'tartyp.Id')
                     ->leftJoin('daysrange as v','p.idVigencyRange', '=', 'v.id')
                     ->select('p.*', 'p.iId as remtisId','d.name as nameDependencia', 'p.CitizenDescription' ,'d.iId as dependenciaId' 
                     ,'i.Name as nameInstrumento', 'v.Name as tipoVigencia', 'c.Name as community', 'cat.Name as categories'
