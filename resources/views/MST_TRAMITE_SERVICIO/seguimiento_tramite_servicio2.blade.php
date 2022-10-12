@@ -986,14 +986,16 @@
                                                 </div>
                                             @endif
                                             @if (count($confsec->resolutivos) > 0)
-                                                <div class="row col-md-12" style="color: black;">
-                                                    <div class="col-md-2">
-                                                        <h6 style="font-weight:bold;">Resolutivo Digital: </h6>
+                                                @if(Auth::user()->TRAM_CAT_ROL->ROL_NIDROL != 2)
+                                                    <div class="row col-md-12" style="color: black;">
+                                                        <div class="col-md-2">
+                                                            <h6 style="font-weight:bold;">Resolutivo Digital: </h6>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $reso->RESO_NID, 'tramiteId' => $tramite['idusuariotramite'], 'tipo' => 1])}}">Generar</a>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $reso->RESO_NID, 'tramiteId' => $tramite['idusuariotramite'], 'tipo' => 1])}}">Generar</a>
-                                                    </div>
-                                                </div>
+                                                @endif
                                             @endif
                                             <hr />
                                         @endforeach
@@ -2722,10 +2724,12 @@
             }
 
             items.forEach(element => {
-                let label = "";
+                let label       = "";
+                let nombreGiro  = "";
                 catGiros.forEach(giro => {
                     if(giro.id == parseInt(element)){
-                        label = giro.clave;
+                        label       = giro.clave;
+                        nombreGiro  = giro.nombre;
                     }
                 });
 
@@ -2739,7 +2743,7 @@
                 }
 
                 html += `<div>
-                    <label id= 'label_${element}' for="">Giro-${label}</label>
+                    <label id= 'label_${element}' for="">Giro-${label}, ${nombreGiro}</label>
                     <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" value="${fecha}" required/> <br />
                 </div>`;
             });

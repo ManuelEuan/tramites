@@ -1776,15 +1776,17 @@
         }
 
         items.forEach(element => {
-            let label = "";
+            let label       = "";
+            let nombreGiro  = "";
             catGiros.forEach(giro => {
                 if(giro.id == parseInt(element)){
-                    label = giro.clave;
+                    label       = giro.clave;
+                    nombreGiro  = giro.nombre;
                 }
             });
 
             html += `<div>
-                <label id='label_${element}' for="">Giro-${label}</label>
+                <label id='label_${element}' for="">Giro-${label}, ${nombreGiro}</label>
                 <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" required/> <br />
             </div>`;
         });
