@@ -307,8 +307,8 @@ class GestorController extends Controller
         try {
             DB::beginTransaction();
             $tramite = $this->TRAM_SP_AGREGAR_TRAMITE($request);
-            if ($tramite->TRAM_CTIPO == "Creación" || $tramite->TRAM_CTIPO == "Actualización") {
 
+            if ($tramite->TRAM_CTIPO == "Creación" || $tramite->TRAM_CTIPO == "Actualización") {
                 $resultSecciones = $this->TRAM_SP_AGREGAR_SECCIONES($request->TRAM_LIST_SECCION, $tramite->TRAM_NIDTRAMITE_CONFIG);
                 if ($resultSecciones['codigo'] == 200) {
                     $rutaNew    = route('gestor_configurar_tramite', ['tramiteID' =>  $tramite->TRAM_NIDTRAMITE_ACCEDE, 'tramiteIDConfig' => $tramite->TRAM_NIDTRAMITE_CONFIG]);
@@ -457,7 +457,7 @@ class GestorController extends Controller
                             $this->citasService->create($TramiteID, $citas);
                         }
                     }catch(Exception $ex){
-                        dd($ex);
+                        dd($ex,$seccion);
                     }
                 }
 
@@ -665,9 +665,7 @@ class GestorController extends Controller
 
         foreach ($formularios as $key => $formulario) {
             $preguntas = array();
-
             foreach ($formulariosPreguntas as $fkey => $formularioPreguntas) {
-
                 if ($formulario["FORMID"] == $formularioPreguntas->FORMID) {
                     $preguntas[] = array(
                         "PREID" => $formularioPreguntas->PREID,
@@ -679,9 +677,6 @@ class GestorController extends Controller
 
             $formularios[$key]["preguntas"] = $preguntas;
         }
-
-
-
 
         return response()->json($formularios);
     }

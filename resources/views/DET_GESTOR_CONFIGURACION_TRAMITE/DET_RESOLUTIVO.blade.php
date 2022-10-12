@@ -11,19 +11,6 @@
         <div class="form-group">
             <label for="cmbResolutivo" style="font-size: 1rem; font-weight: bold;">Indique el nombre del resolutivo electrónico que se le enviará al solicitante en esta etapa del proceso.</label>
             <select id="cmbResolutivo" class="selectpicker form-control" onchange="TRAM_FN_CAMBIORESOLUTIVO();" data-live-search="true">
-                <option value="Autorización">Autorización</option>
-
-                <option value="Permiso de acceso">Permiso de acceso</option>
-
-                <option value="Resolutivo 1">Resolutivo 1</option>
-
-                <option value="Resolutivo 2">Resolutivo 2</option>
-
-                <option value="Resolutivo 3">Resolutivo 3</option>
-
-                <option value="Resolutivo 4">Resolutivo 4</option>
-
-                <option value="Resolutivo 5">Resolutivo 5</option>
             </select>
         </div>
         <div class="form-group">
@@ -33,11 +20,8 @@
         </div>
 
     </div>
-    <div class="col-md-12" id="contenerdorCamposPlantillaResolutivo">
+    <div class="col-md-12" id="contenerdorCamposPlantillaResolutivo"> </div>
 
-
-
-    </div>
     <div class="btnContenedor" style="margin-top:2%;">
         <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="TRAM_FN_MOSTRARMODALADDCAMPORESOLUTIVO()"> Agregar Campo</button>
     </div>
@@ -56,7 +40,6 @@
 
 <script>
     $(document).ready(function() {
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -65,8 +48,13 @@
 
         var cmbResolutivo = $('#cmbResolutivo');
         cmbResolutivo.find('option').remove();
+        let seleccionado = '';
+        
         $(list_resolutivos_tramite).each(function(i, v) {
-            cmbResolutivo.append('<option value="' + v.nombre + '">' + v.nombre + '</option>');
+            if(tramite_ != null){
+                seleccionado =  tramite_.resolutivos[0].RESO_CNOMBRE == v.nombre ? 'selected' : '';
+            }
+            cmbResolutivo.append(`<option ${seleccionado} value="${v.nombre}"> ${v.nombre} </option>`);
         })
 
         $('#cmbResolutivo').selectpicker({
@@ -78,60 +66,42 @@
             //var selected = $('#cmbResolutivo').val();
             // TRAM_FN_AGREGAR_RESOLUTIVO(selected);
             TRAM_FN_CAMBIORESOLUTIVO();
-
-
         });
 
-        if (tramite_.resolutivos.length > 0) {
-            var firsResolutuvo = tramite_.resolutivos[0];
-            objResolutivoEletronico.nameFile = firsResolutuvo.RESO_CNAMEFILE;
-            $("#lbFileNameResolutivo").html(objResolutivoEletronico.nameFile);
-
-            objResolutivoEletronico.nameResolutivo = firsResolutuvo.RESO_CNOMBRE;
-            $("#cmbResolutivo").val(objResolutivoEletronico.nameResolutivo);
-
-            objResolutivoEletronico.list_mapeo_resolutivo = [];
-
-            firsResolutuvo.MAPEO.forEach(function(v, i) {
-
-                var campo = {
-                    idFormulario: undefined,
-                    formulario: undefined,
-                    idPregunta: undefined,
-                    pregunta: undefined,
-                    campo: undefined,
-                }
-
-                campo.idFormulario = v.TRAM_NIDFORMULARIO;
-                //campo.formulario = $("#cmbFormulario option:selected").text();
-                campo.idPregunta = v.TRAM_NIDPRGUNTA;
-                campo.pregunta = v.FORM_CPREGUNTA;
-                campo.campo = v.TRAM_CNOMBRECAMPO;
-
-                objResolutivoEletronico.list_mapeo_resolutivo.push(campo);
-
-                TRAM_FN_RENDERCAMPOSRESOLUTIVO();
-
-            });
-
-
-
+        if(tramite_ != null){
+            if (tramite_.resolutivos.length > 0) {
+                var firsResolutuvo = tramite_.resolutivos[0];
+                objResolutivoEletronico.nameFile = firsResolutuvo.RESO_CNAMEFILE;
+                $("#lbFileNameResolutivo").html(objResolutivoEletronico.nameFile);
+    
+                objResolutivoEletronico.nameResolutivo = firsResolutuvo.RESO_CNOMBRE;
+                $("#cmbResolutivo").val(objResolutivoEletronico.nameResolutivo);
+    
+                objResolutivoEletronico.list_mapeo_resolutivo = [];
+    
+                firsResolutuvo.MAPEO.forEach(function(v, i) {
+    
+                    var campo = {
+                        idFormulario: undefined,
+                        formulario: undefined,
+                        idPregunta: undefined,
+                        pregunta: undefined,
+                        campo: undefined,
+                    }
+    
+                    campo.idFormulario = v.TRAM_NIDFORMULARIO;
+                    //campo.formulario = $("#cmbFormulario option:selected").text();
+                    campo.idPregunta = v.TRAM_NIDPRGUNTA;
+                    campo.pregunta = v.FORM_CPREGUNTA;
+                    campo.campo = v.TRAM_CNOMBRECAMPO;
+    
+                    objResolutivoEletronico.list_mapeo_resolutivo.push(campo);
+    
+                    TRAM_FN_RENDERCAMPOSRESOLUTIVO();
+                });
+            }
+            console.log("resolutivos",  tramite_.resolutivos[0]);
 
         }
-
-        if (resolutivos.length > 0) {
-
-            //alert("resolutivo");
-
-            console.log("resolutivos des", resolutivos);
-
-            /* $('#list_resolutivos').html('');
-            $('#cmbResolutivo').selectpicker('val', resolutivos);
-
-            $.each(resolutivos, function(key, value) {
-                $('#list_resolutivos').append('<li class="list-group-item d-flex justify-content-between align-items-center">' + value + '  <span class="deleteItemResolutivo" onclick="TRAM_FN_ELIMINAR_RESOLUTIVO(' + key + ');" style="cursor:pointer;" title="Eliminar resolutivo" class="badge badge-pill"><i style="font-size:16px;" class="fas fa-times"></i></span></li>');
-            }); */
-        }
-
     });
 </script>

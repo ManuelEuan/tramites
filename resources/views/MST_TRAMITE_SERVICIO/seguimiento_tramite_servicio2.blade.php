@@ -29,8 +29,10 @@
                     <div class="col-12">
                         <!-- <div class="bg-white rounded-lg p-5 shadow"> -->
                         <div>
+                            @if($tramite['estatus'] != 1 && $tramite['estatus'] != 2)
                             <h2 class="h6 font-weight-bold text-center mb-4">Avance de Trámite</h2>
                             <!-- Progress bar 1 -->
+                            
                             <div class="progress_circle mx-auto" data-value='0'>
                                 <span class="progress_circle-left">
                                     <span class="progress_circle-bar border-primary"></span>
@@ -46,6 +48,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
                             <!-- END -->
                         </div>
                     </div>
@@ -57,6 +60,16 @@
             <div class="col-md-12">
                 <label style="font-weight: bold; font-size:20px;">Por favor ingrese la información solicitada:</label>
             </div>
+            @if($tramite['estatus'] == 4)
+            <div class="col-md-12 alert alert-warning" role="alert">
+                    Estimado usuario, su trámite tiene observaciones por parte de la dependencia, le recordamos que cuenta con un plazo de {{$tramite['dias_resolucion']}} días, a partir de recibir esta notificación, para poder atender las observaciones, le recordamos que en caso de no atender estas observaciones su trámite será cancelado.
+                </div>
+            @endif
+            @if($tramite['estatus'] != 1 && $tramite['estatus'] != 8 && $tramite['estatus'] != 4)
+                <div class="col-md-12 alert alert-warning" role="alert">
+                    El trámite se encuentra en proceso de revisión por la dependencia, se notificará vía sistema cuando proceda la siguiente fase.
+                </div>
+            @endif
             <div id="estatusFormulario"> </div>
         </div>
 
@@ -973,14 +986,16 @@
                                                 </div>
                                             @endif
                                             @if (count($confsec->resolutivos) > 0)
-                                                <div class="row col-md-12" style="color: black;">
-                                                    <div class="col-md-2">
-                                                        <h6 style="font-weight:bold;">Resolutivo Digital: </h6>
+                                                @if(Auth::user()->TRAM_CAT_ROL->ROL_NIDROL != 2)
+                                                    <div class="row col-md-12" style="color: black;">
+                                                        <div class="col-md-2">
+                                                            <h6 style="font-weight:bold;">Resolutivo Digital: </h6>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $reso->RESO_NID, 'tramiteId' => $tramite['idusuariotramite'], 'tipo' => 1])}}">Generar</a>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <a class="btn btn-success" target="_blank" href="{{route('generate_previo_resolutivo', ['resolutivoId' => $reso->RESO_NID, 'tramiteId' => $tramite['idusuariotramite'], 'tipo' => 1])}}">Generar</a>
-                                                    </div>
-                                                </div>
+                                                @endif
                                             @endif
                                             <hr />
                                         @endforeach
@@ -2697,17 +2712,24 @@
             let aplica  = true;
             let html    = '';
             let json    = null;
-
             let valor   = {"id": select, "valor": $("#"+select+"_input").val()} ;
+
+            if(items.length > 4){
+                mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
+                return;
+            }
+
             if(valor != ""){
                 json = JSON.parse(valor.valor);
             }
 
             items.forEach(element => {
-                let label = "";
+                let label       = "";
+                let nombreGiro  = "";
                 catGiros.forEach(giro => {
                     if(giro.id == parseInt(element)){
-                        label = giro.clave;
+                        label       = giro.clave;
+                        nombreGiro  = giro.nombre;
                     }
                 });
 
@@ -2721,7 +2743,7 @@
                 }
 
                 html += `<div>
-                    <label id= 'label_${element}' for="">Giro-${label}</label>
+                    <label id= 'label_${element}' for="">Giro-${label}, ${nombreGiro}</label>
                     <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" value="${fecha}" required/> <br />
                 </div>`;
             });
