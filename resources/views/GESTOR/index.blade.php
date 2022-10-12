@@ -324,6 +324,9 @@
 
             for (let i = 0; i < gestores.length; i++) {
                 let estatus = gestores[i].GES_CESTATUS == undefined ? "" : gestores[i].GES_CESTATUS ;
+                if(estatus == 'Autorizado'){
+                    estatus = 'Gestor activo';
+                }
                 html+= `<tr role='row' class'odd>
                             <td> ${ gestores[i].USUA_CCURP } </td>
                             <td> ${ gestores[i].USUA_CRFC } </td>
