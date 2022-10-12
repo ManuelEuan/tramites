@@ -219,7 +219,7 @@
                                                 <div class="col-md-4">
                                                     <label for="bus-txt-centro-trabajo">Teléfono <span class="text-danger">*</span> <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('telefonoPersonaAutorizada', 1);"></i></label>
                                                     <div class="form-group">
-                                                        <input type="tel" class="form-control" id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" value="{{ $ObjAuth->USUA_CTEL_CELULAR_NOTIFICACION }}" placeholder="999999999" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" placeholder="No. de teléfono" required disabled>
+                                                        <input type="tel" class="form-control" id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" value="{{ $ObjAuth->USUA_CTEL_CELULAR_NOTIFICACION }}" placeholder="999999999" pattern="[(]{1}[0-9]{3}[) ]{2}[0-9]{3}[-]{1}[0-9]{4}" placeholder="No. de teléfono" required disabled>
                                                     </div>
                                                 </div>
 
@@ -2123,6 +2123,8 @@
         $("#btnSubmit").prop("disabled", true);
         TRAM_FN_ENABLED_INPUT();
         if (!$("#frmForm").valid()) {
+            
+            $('#telefonoPersonaAutorizada-error').html('<b style="color: red;">Favor de poner en el formato (999) 999-9999</b>');
             $('.listError').hide();
             var validator = $('#frmForm').validate();
             var htmlError =
