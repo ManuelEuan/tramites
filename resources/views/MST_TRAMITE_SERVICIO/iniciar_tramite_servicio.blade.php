@@ -536,12 +536,12 @@
                                             
                                             <?php echo $otrotest;?>
                                             {{$doc->TRAD_CNOMBRE}}
-                                            
-                                            
 
                                                 @if($doc->TRAD_NOBLIGATORIO == 1 )
                                                     <span class="text-danger">*</span>
                                                 @endif
+                                            <br>
+                                            <p style="font-size: 12px;color: red;"><b>5Mb máximo</b></p>
                                             </td>
                                             <!-- Aqui -->
                                                 @if(count($descripcion)> 0)
@@ -1303,8 +1303,27 @@
             var doctype = $(this).data("doctype");
             var formData = new FormData();
             var files = $("#" + id)[0].files[0];
+            var size = $("#" + id)[0].files[0].size;
+            var kb = (size / 1024)
+            var mb = (kb / 1024)
+ 
             formData.append('file',files);
             formData.append('doctype',doctype);
+            if(mb.toFixed(3) > 5){
+                return  Swal.fire({ 
+                            title: 'Error!',
+                            text: 'El archivo debe de pesar menos de 5Mb',
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        })
+            }
+            Swal.fire({
+                position: 'center',
+                icon: 'info',
+                title: 'Cargando documento',
+                showConfirmButton: false,
+                timer: 1500
+            })
 
             $.ajax({
                 url: '/tramite_servicio/subir_documento',
@@ -1314,6 +1333,13 @@
                 processData: false,
                 success: function(response) {
                     if(response.extension=="pdf"){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Listo!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         $("#docs_" + id).val(response.path + "_" + response.extension + "_" + response.size+"_"+response.typename);
                         $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
                         
