@@ -1131,7 +1131,6 @@
                     let apePat = "";
                     let apeMat = "" ;
                     for(const clave in data[0]){
-                        console.log("clave: "+clave + " datos: "+ data[0][clave]);
                         if($(`[vinculacion=${clave}]`) && clave != "USUA_CNOMBRES"){
                             $(`[vinculacion=${clave}]`).val(data[0][clave]);
                         }
@@ -1148,7 +1147,6 @@
                     if($(`[vinculacion=USUA_CNOMBRES]`)){
                         $(`[vinculacion=USUA_CNOMBRES]`).val(apePat + " " + apeMat + " " + nombre);
                     }
-                    console.log(apeMat)
                 },
                 error: function(data) {
                     Swal.fire({
@@ -1797,17 +1795,24 @@
         let items   = $("#"+select).val();
         let aplica  = true;
         let html = '';
+        
+        if(items.length > 4){
+            mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
+            return;
+        }
 
         items.forEach(element => {
-            let label = "";
+            let label       = "";
+            let nombreGiro  = "";
             catGiros.forEach(giro => {
                 if(giro.id == parseInt(element)){
-                    label = giro.clave;
+                    label       = giro.clave;
+                    nombreGiro  = giro.nombre;
                 }
             });
 
             html += `<div>
-                <label id='label_${element}' for="">Giro-${label}</label>
+                <label id='label_${element}' for="">Giro-${label}, ${nombreGiro}</label>
                 <input type="date" id="fechaGiro_${element}" name="fechaGiro_${element}" class="form-control txt_abierta" placeholder="Fecha" required/> <br />
             </div>`;
         });

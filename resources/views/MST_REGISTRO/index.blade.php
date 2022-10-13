@@ -115,11 +115,12 @@
                                     </span>
                                 </div>
 
-                                <div class="col-md-4 divRazon_Social">
+                                <div class="col-md-8 divRazon_Social">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Razón Social <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="txtRazon_Social" id="txtRazon_Social"
                                             placeholder="Razón Social">
+                                        <span class="resultadoValidTextRaSocial" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
                                 <!--
@@ -631,10 +632,11 @@
                         maxlength: 100,
                         soloLetras: ""
                     },
+                    /*
                     txtRazon_Social :{
                         minlength: 2,
                         maxlength: 100,
-                    },
+                    },*/
                     txtNumeroTelefono : {
                         minlength : 10
                     },
@@ -756,11 +758,11 @@
                     txtCurpFisica: {
                         required: ""
                     },
-                    txtRazon_Social: {
+                    /*txtRazon_Social: {
                         required: "",
                         minlength: "El tamaño del campo debe contener mínimo 2 dígitos.",
                         maxlength: "El tamaño del campo debe contener máximo 100.",
-                    },
+                    },*/
                     txtCurp: {
                         required: ""
                     },
@@ -1000,7 +1002,7 @@
 
                 $('#txtCurpFisica').prop('required',false);
                 $('#txtCurpMoral').prop('required',true);
-                $('#txtRazon_Social').prop('required',true);
+                //$('#txtRazon_Social').prop('required',true);
                 $('#txtCorreo_Electronico').prop('required',false);
                 $('#txtCorreo_ElectronicoMoral').prop('required',true);
                 $('#txtConfirmacionCorreo_ElectronicoFisica').prop('required',false);
@@ -1014,11 +1016,25 @@
 
         //RFC
         $('#txtRfc').change(function(){
+            $("#resultadoValidText").html("");
+            $("#resultadoExistRfc").html("");
             var value = $( this ).val();
             TRAM_FN_VALIDAR_INPUT_RFC(value);
             if(rfcCorrecto ){
                 TRAM_AJX_VALIDAR_RFC(value, 'rfc');
             }
+        });
+
+        //RAZON SOCIAL
+        $('#txtRazon_Social').change(function(){
+            var value = $( this ).val().length;
+            if(value < 2 || value > 100){
+                $(".resultadoValidTextRaSocial").html("<span style='color: red;'>El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.</span>");
+            }else{
+                $(".resultadoValidTextRaSocial").html("");
+            }
+            console.log(value);
+            
         });
 
         //CURP
@@ -1565,7 +1581,7 @@
                             $("#iconRfc_Valido").hide();
                             $("#txtRfc").attr("aria-invalid", "true");
                             $("#txtRfc").addClass("error");
-                            $("#resultadoExistRfc").html("<span style='color: red;'> El RFC ya existe en el sistema, por favor ingresa con tu usuario y contraseña.</span>");
+                            $("#resultadoExistRfc").html("<span style='color: red;'> El RFC ya se registró en otra cuenta.</span>");
                         }
                     }else {
                         if(tipo == 'curp'){
@@ -1574,7 +1590,7 @@
                                 $("#resultadoExistRfc").html("");
                             }
                             else{
-                                $(".resultadoValidTextCurpMoral").html("<span style='color: red;'> El CURP no esta dado de alta en el sistema.</span>");
+                                $(".resultadoValidTextCurpMoral").html("<span style='color: red;'> El CURP no tiene un registro previo, es necesario que primero se registre el representante legal como persona física.</span>");
                             }
                         }
                         else{
