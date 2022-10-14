@@ -375,4 +375,59 @@ class TramiteService
     public function getRetys($tabla, $uuid){
         return DB::connection('mysql2')->table($tabla)->where('Id', $uuid)->first();
     }
+
+    /**
+     * Lista los tramites los cuales estan en proceso de seguimiento
+     * @param Request $request
+     * @return
+     */
+    public function listadoSeguimiento(Request $request){
+        $usuario    = Auth::user();
+        $rol        = $usuario->TRAM_CAT_ROL;
+
+        $query = DB::table('tram_vw_tramite_seguimiento as v')
+                    ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
+                    ->select('v.*');
+
+        if($rol->ROL_CCLAVE != 'ADM'){
+           
+            $depPertenece   = DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
+            $uniPertenece   = DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
+            $tramPertenece  = DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
+
+            $query->whereIn('t.TRAM_NIDCENTRO', $depPertenece->pluck('DEPUP_NIDDEPENCIA'))
+                   /* ->whereIn('t.TRAM_NIDUNIDADADMINISTRATIVA', $uniPertenece->pluck('UNIDUP_NIDUNIDAD')) */
+                     ->whereIn('v.USTR_NIDTRAMITE_ACCEDE', $tramPertenece->pluck('TRAMUP_NIDTRAMITE'));
+        }
+        
+        //Parametros de busqueda
+        if(!is_null($request->fecha))
+            $query->where('v.USTR_DFECHACREACION', 'like','%'.$request->fecha.'%');
+        if(!is_null($request->folio))
+            $query->where('v.USTR_CFOLIO','like','%'.$request->folio.'%');
+        /* if(!is_null($request->tramite) || $request->tramite == 0 )
+            $query->where('USTR_NIDTRAMITE', $request->tramite); */
+        if(!is_null($request->razonSocial))
+            $query->where('v.USTR_CRAZON_SOCIAL','like','%'.$request->razonSocial.'%');
+        if(!is_null($request->nombre))
+            $query->where('v.USTR_CNOMBRE_COMPLETO','like','%'.$request->nombre.'%');
+        if(!is_null($request->rfc))
+            $query->where('v.USTR_CRFC','like','%'.$request->rfc.'%');
+        if(!is_null($request->curp))
+            $query->where('v.USTR_CCURP','like','%'.$request->curp.'%');
+        if(!is_null($request->estatus) && $request->estatus != "0")
+            $query->where('v.USTR_NESTATUS', $request->estatus);
+
+
+        $registros  = !is_null($request->length) ? $request->length : 10; 
+        $order      = isset($request->order[0]['dir']) ? $request->order[0]['dir'] : 'desc';
+        $order      = $request->order[0]['column'] == 0 ? 'desc' : 'asc';
+        $order_by   = $request->columns[$request->order[0]['column']]['data'];
+        $order_by   = !is_null($order_by)  ? $order_by : "v.USTR_DFECHACREACION";
+        $start      = !is_null($request->start) ? $request->start : 0;
+        $total      = $query->count();
+        $resultado  = $query->orderBy($order_by, $order)->offset($start)->limit($registros)->get();
+
+        return [ "result" => $resultado, "total" =>  $total];
+    }
 }
