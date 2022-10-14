@@ -204,7 +204,7 @@ class TramitesController extends Controller
                 'mensaje'   => 'Ocurrió un error al obtener trámites',
             ];
         }
-    /* dd("lol",$response); */
+
         return response()->json($response);
     }
 
