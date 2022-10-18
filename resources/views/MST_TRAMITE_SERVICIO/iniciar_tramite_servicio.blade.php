@@ -188,17 +188,21 @@
                                             <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" 
                                             style="border-top-left-radius: 15px; border-bottom-left-radius: 15px;"> 
                                             <span>{{$sec->FORM_CNOMBRE}} </span> </div>
+                                            <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                         @elseif($cont == $total - 1)
                                             @if(count($tramite['configuracion']['documentos']) == 0)
                                                 <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" 
                                                 style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> 
                                                 <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                                <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                             @else
                                                 <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> 
                                                     <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                                    <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                             @endif
                                         @else
                                             <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                            <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                         @endif
                                         <?php $cont++; ?>
                                     @endif
@@ -208,6 +212,7 @@
                     @endif
                     @if(count($tramite['configuracion']['documentos'])> 0)
                         <div class="step" id="seccion_0" data-seccion="0" style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> <span>Documentos</span> </div>
+                        <input class="full" type="hidden" value="0">
                     @endif
                 </div>
             </div>
@@ -1538,6 +1543,20 @@
             }
         });
         if (!$("#frmForm").valid()){
+            const full  = document.getElementsByClassName('full');
+            const arr   = [...full].map(input => input.value);
+            console.log(arr)
+            var divVal = "";
+            arr.forEach(function(idDiv) {
+                divVal = $('#form_'+idDiv+' :input').valid()
+                if(!divVal){
+                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                }else{
+                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                }
+
+            })
+
             $("#btnEnviar").hide();
             Swal.fire({
                 title: '¡Aviso!',
@@ -1565,7 +1584,19 @@
         $("#loading-text").html("Guardando...");
         $('#loading_save').show();
         $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
-       
+        const full  = document.getElementsByClassName('full');
+            const arr   = [...full].map(input => input.value);
+            console.log(arr)
+            var divVal = "";
+            arr.forEach(function(idDiv) {
+                divVal = $('#form_'+idDiv+' :input').valid()
+                if(!divVal){
+                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                }else{
+                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                }
+
+            })
         catalogos.forEach(element => {
             let respuestas  = element.respuesta;
             let id          = element.pregunta;
