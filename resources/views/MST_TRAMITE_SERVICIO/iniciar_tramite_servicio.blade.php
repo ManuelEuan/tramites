@@ -1568,6 +1568,19 @@
             });
             return;
         }else {
+            const full  = document.getElementsByClassName('full');
+            const arr   = [...full].map(input => input.value);
+            console.log(arr)
+            var divVal = "";
+            arr.forEach(function(idDiv) {
+                divVal = $('#form_'+idDiv+' :input').valid()
+                if(!divVal){
+                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                }else{
+                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                }
+
+            })
             Swal.fire({
                 title: '',
                 text: 'El formulario ha sido completado, y está listo para enviar a revisión.',
