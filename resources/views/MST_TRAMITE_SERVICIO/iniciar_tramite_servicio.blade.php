@@ -172,7 +172,7 @@
         </div>
     </div>
     <br>
-
+    <?php $arrayClabe = array('Clabe', 'interbancaria', '18', 'clabe', 'clave'); ?>
     <div class="row seccion-tramite" style="display: none !important;">
         <div class="card" style="width: 100%; border-radius:20px;" id="sec_form">
             <div class="card-header" style="background-color: #ffffff; border-top-left-radius: 20px; border-top-right-radius: 20px;">
@@ -349,7 +349,12 @@
                                                                                             <div class="form-group">
                                                                                                 @if($resp->respuestas_especial > 0)
                                                                                                     @foreach($resp->respuestas_especial as $resp_esp)
+                                                                                                    <?php $division = explode(" ", $resp->FORM_CVALOR); ?>
+                                                                                                        @if(in_array($division[0], $arrayClabe) || in_array($division[1], $arrayClabe) || in_array($division[2], $arrayClabe) || in_array($division[3], $arrayClabe))
+                                                                                                        <input type="text" pattern="\d*" class="form-control" name="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" id="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" placeholder="{{$resp->FORM_CVALOR}}" maxlength="18" onkeyup="this.value=this.value.replace(/[^\d]/,'')" required>
+                                                                                                        @else
                                                                                                         <input type="number" class="form-control" name="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" id="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" placeholder="{{$resp->FORM_CVALOR}}" required>
+                                                                                                        @endif
                                                                                                     @endforeach
                                                                                                 @endif
                                                                                             </div>
