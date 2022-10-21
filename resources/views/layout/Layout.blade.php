@@ -291,14 +291,14 @@
     <script>
         $(document).ready(function () {
 
-            $('#sidebarCollapse').on('click', function () {
+           /* $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
-            });
+            });*/
 
         });
         $(function() {
             getNotificaciones();
-            const isMobile = navigator.userAgentData.mobile;
+            /*const isMobile = navigator.userAgentData.mobile;
             var tamanio = document.getElementById("divValidacion");
             if(isMobile){
                 tamanio.style.removeProperty("min-width");
@@ -307,7 +307,7 @@
                 tamanio.style.removeProperty("max-width");
                 tamanio.style.removeProperty("padding");
                 tamanio.style = "max-width: 480px; min-width: 480px; padding: 0;";
-            }
+            }*/
         });
 
         function formateo(date) {

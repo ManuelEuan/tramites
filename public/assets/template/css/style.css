@@ -281,6 +281,12 @@ span {
 }
 
 #sidebar {
+    position: fixed;
+    width: 250px;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
     min-width: 250px;
     max-width: 250px;
     background: #0d2c58;
@@ -289,7 +295,10 @@ span {
 }
 
 #sidebar.active {
-    margin-left: -250px;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+    background-color: #f2f2f2;
 }
 
 #sidebar.active .sidebar-header .navbar-text,
@@ -426,12 +435,18 @@ a.article:hover {
 ----------------------------------------------------- */
 
 #content {
-    width: 100%;
+    width: calc(100% - 250px);
     min-height: 100vh;
     transition: all 0.3s;
+    position: absolute;
     top: 0;
     right: 0;
 }
+
+#content.active {
+    width: calc(100% - 80px);
+}
+
 
 /* ---------------------------------------------------
     MEDIAQUERIES
