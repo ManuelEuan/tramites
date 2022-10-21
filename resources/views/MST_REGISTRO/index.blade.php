@@ -1070,7 +1070,7 @@
             var tipo = 'MORAL';
             // var tipoPersona = $('.rdbTipo_Persona').val();
             // console.log(tipoPersona);
-            emailRegex = /^([a-zA-Z0-9_.+-])+\@((gmail|hotmail|outlook)+\.)+([a-zA-Z0-9]{2,4})+$/i;
+            emailRegex = /^([a-zA-Z0-9_.+-])+\@(\.)+([a-zA-Z0-9]{2,4})+$/i;
             console.log(emailRegex.test(value));
             if(value != ""){
                 if (!emailRegex.test(value)) {
