@@ -424,7 +424,6 @@
                     {
                         data: 'USTR_NESTATUS',
                         render: function(data, type, row) {
-                            console.log(isVencido)
                             if(isVencido){
                                 if (type === 'display') {
                                     var status = 'Vencido';

@@ -66,7 +66,7 @@ return [
         'mysql2' => [
             'driver'    => 'mysql',
             'url'       => env('DATABASE_URL'),
-            'host'      => env('DB_HOST2', 'esz-manuel.mysql.database.azure.com'),
+            'host'      => env('DB_HOST2', 'eszmanuel2.mysql.database.azure.com'),
             'port'      => env('DB_POR2', '3306'),
             'database'  => env('DB_DATABASE2', 'eszmanuel2.mysql.database.azure.com'),
             'username'  => env('DB_USERNAME2', 'angelica@eszmanuel2'),
