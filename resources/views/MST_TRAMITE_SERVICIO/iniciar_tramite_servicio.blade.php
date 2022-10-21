@@ -350,7 +350,7 @@
                                                                                                 @if($resp->respuestas_especial > 0)
                                                                                                     @foreach($resp->respuestas_especial as $resp_esp)
                                                                                                     <?php $division = explode(" ", $resp->FORM_CVALOR); ?>
-                                                                                                        @if(in_array($division[0], $arrayClabe) || in_array($division[1], $arrayClabe) || in_array($division[2], $arrayClabe) || in_array($division[3], $arrayClabe))
+                                                                                                        @if(in_array('Clabe', $division) || in_array('interbancaria', $division) || in_array('clabe', $division) || in_array('clave', $division))
                                                                                                         <input type="text" pattern="\d*" class="form-control" name="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" id="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" placeholder="{{$resp->FORM_CVALOR}}" maxlength="18" onkeyup="this.value=this.value.replace(/[^\d]/,'')" required>
                                                                                                         @else
                                                                                                         <input type="number" class="form-control" name="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" id="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" placeholder="{{$resp->FORM_CVALOR}}" required>
