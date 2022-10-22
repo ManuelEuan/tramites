@@ -64,7 +64,7 @@
                         <!-- Material form register -->
                         <form action="{{url('/login')}}" method="POST" id="frmLogin">
                             {{ csrf_field() }}
-                            
+
                             <p class="h4 medium text-center pt-4 pb-2">
                                 <img src="assets/template/img/login.png" height="80px" /><br>
                                 <span class="pt-3">Trámites en Línea</span>
@@ -105,13 +105,12 @@
                             <div class="g-recaptcha" data-sitekey="6LcDyushAAAAABST2RiXMMksc4pwjP_nwJHD_Vib"></div>
                             @if ($errors->has('recaptcha'))
                                 <span class="error-constant">¡Error! </span> <span class="error-valid"> {{ $errors->first('recaptcha') }}</span>
+                            @endif
 
-                            @endif 
                             @if (Request::has('previous'))
                                 <input type="hidden" name="previous_url" value="{{ Request::get('previous_url') }}">
                             @else
                                 <input type="hidden" name="previous_url" value="{{ URL::previous() }}">
-
                             @endif
                             <div class="text-center mt-3">
                                 <button class="btn btn-primary" type="submit">Iniciar sesión</button>
