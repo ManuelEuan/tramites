@@ -177,7 +177,7 @@ Route::group(['prefix' => 'general'], function () {
 
 
 Route::group(['prefix' => 'gestores'], function () {
-    Route::get('/', array('uses' => 'GestorController@index'))->name('gestor_index')->middleware("permiso");
+    Route::get('/', array('uses' => 'GestorController@index'))->name('gestor_index');
     Route::post('/consultar', array('uses' => 'GestorController@consultar'))->name('gestor_consultar');
     Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@configurar_tramite'))->name("gestor_configurar_tramite");
     Route::get('/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
