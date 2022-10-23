@@ -32,9 +32,7 @@ class LoginController extends Controller
 	}
 
 	//Login
-	public function login(Request $request)
-    {
-		//dd($request);
+	public function login(Request $request) {
 		$validator = Validator::make($request->all(), [
 			'Usuario' => 'required',
 			'Contraseña' => 'required',
@@ -156,8 +154,8 @@ class LoginController extends Controller
 			$ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
 			$ObjBitacora->BITA_CIP = $request->ip();
 			Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-			$cookie = Cookie::forever("rol_clave", Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE);
-			Cookie::queue($cookie);
+			/* $cookie = Cookie::forever("rol_clave", Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE);
+			Cookie::queue($cookie); */
 
 			/* $getCookie = Cookie::get("rol_clave");
 			Cookie::queue($getCookie); */
@@ -175,9 +173,11 @@ class LoginController extends Controller
 					return Redirect::to('/gestores')->withCookie($cookie);
 					break;
 			} */
+			/* $cookie = $request->cookie('retys');
+			dd($cookie); */
 
 			return Redirect::to('/gestores');
-			
+
 			/* if($cookie){
 				Cookie::queue($getCookie);
 				switch($cookie->name){
