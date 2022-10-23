@@ -161,18 +161,20 @@ class LoginController extends Controller
 			Cookie::queue($getCookie); */
 
 
-			/* switch( Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
+			switch( Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
 				case "CDNS":
 					if(str_ends_with($request->previous_url,"logout")){
-						return Redirect::to('/tramite_servicio')->withCookie($cookie);
+						return Redirect::to('/tramite_servicio');
 					}else{
 						return Redirect::to($request->previous_url);
 					}
 					break;
+				case "ADM":
+					return Redirect::to('/gestores');
 				default:
-					return Redirect::to('/gestores')->withCookie($cookie);
+					return Redirect::to('/gestores');
 					break;
-			} */
+			}
 			/* $cookie = $request->cookie('retys');
 			dd($cookie); */
 
