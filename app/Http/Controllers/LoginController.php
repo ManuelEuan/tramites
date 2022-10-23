@@ -176,7 +176,7 @@ class LoginController extends Controller
 			/* $cookie = $request->cookie('retys');
 			dd($cookie); */
 
-			return Redirect::to('/gestores');
+			return Redirect::to('/tramite_servicio');
 
 			/* if($cookie){
 				Cookie::queue($getCookie);
