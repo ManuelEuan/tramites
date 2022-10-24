@@ -20,7 +20,7 @@ class PerfilController extends Controller
     } */
 
     public function index(Request $request) {
-        $usuario        = User::find(70); //Auth::user();
+        $usuario        = Auth::user();
         $docsUser       = Cls_Usuario::getTipoDocs($usuario->USUA_NTIPO_PERSONA);
         $docsUpdates    = Cls_Usuario::getDocsUser($usuario->USUA_NIDUSUARIO);
         $hoy            = date('Y-m-d');
@@ -58,19 +58,18 @@ class PerfilController extends Controller
         return view('MST_PERFIL.index', compact('usuario'));
     }
     public function listarDocs(){
-
-
-        $ObjAuth = User::find(70);//Auth::user();
-        $docsUser = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
+        $ObjAuth    = Auth::user();
+        $docsUser   = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
         $docsUpdates = Cls_Usuario::getDocsUser($ObjAuth->USUA_NIDUSUARIO);
-        $data = array();
-        $hoy = date('Y-m-d');
+        $data       = array();
+        $hoy        = date('Y-m-d');
+
         foreach ($docsUser as $key => $i) {
-            $tiene = false;
-            $peso = '';
-            $estatus = '';
-            $icono = '';
-            $idDoc = '';
+            $tiene  = false;
+            $peso   = '';
+            $estatus= '';
+            $icono  = '';
+            $idDoc  = '';
             $btnRemplazar = '';
             $vencido = '';
 
