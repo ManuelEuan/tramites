@@ -164,7 +164,7 @@ class LoginController extends Controller
 
 			switch( Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
 				case "CDNS":
-					return Redirect::to('/tramite_servicio');
+					return Redirect::to('/tramite_servicio'); 
 					/* if(str_ends_with($request->previous_url,"logout")){
 						return Redirect::to('/tramite_servicio');  
 					}else{
