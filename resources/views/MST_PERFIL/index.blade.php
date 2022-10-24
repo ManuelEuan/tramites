@@ -49,8 +49,8 @@
                                         <div class="MensajeSuccess"></div>
 
 
-                                        <input type="hidden" name="txtIdUsuario" value="{{ $ObjAuth->USUA_NIDUSUARIO }}" />
-                                        <input type="hidden" name="rdbTipo_Persona" value="{{ $ObjAuth->USUA_NTIPO_PERSONA }}" />
+                                        <input type="hidden" name="txtIdUsuario" value="{{ $usuario->USUA_NIDUSUARIO }}" />
+                                        <input type="hidden" name="rdbTipo_Persona" value="{{ $usuario->USUA_NTIPO_PERSONA }}" />
                                         <div id="frmRegistro">
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -63,7 +63,7 @@
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">RFC <span class="text-danger">*</span> <span class="text-primary">Se compone de 13
                                                                 caracteres</span></label>
-                                                        <input type="text" class="form-control" id="txtRfc" name="txtRfc" placeholder="RFC" value="{{ $ObjAuth->USUA_CRFC }}" required disabled>
+                                                        <input type="text" class="form-control" id="txtRfc" name="txtRfc" placeholder="RFC" value="{{ $usuario->USUA_CRFC }}" required disabled>
                                                         <span id="resultadoValidText" style="font-size: 12px;"></span>
                                                         <span id="resultadoExistRfc" style="font-size: 12px;"></span>
                                                     </div>
@@ -72,14 +72,14 @@
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">CURP<span class="text-danger">*</span><span class="text-primary">Se compone de 18 caracteres</span>
                                                             <span>&nbsp;&nbsp; <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCurpFisica', 1);"></i></span></label>
-                                                        <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpFisica" placeholder="CURP" value="{{ $ObjAuth->USUA_CCURP }}" disabled>
+                                                        <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpFisica" placeholder="CURP" value="{{ $usuario->USUA_CCURP }}" disabled>
                                                         <span class="resultadoValidTextCurp" style="font-size: 12px;"></span>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 divRazon_Social">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Razón Social <span class="text-danger">*</span> <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtRazon_Social', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtRazon_Social" id="txtRazon_Social" placeholder="Razón Social" value="{{ $ObjAuth->USUA_CRAZON_SOCIAL }}" disabled>
+                                                        <input type="text" class="form-control" name="txtRazon_Social" id="txtRazon_Social" placeholder="Razón Social" value="{{ $usuario->USUA_CRAZON_SOCIAL }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -90,11 +90,11 @@
                                                     <label for="bus-txt-centro-trabajo">Sexo <span class="text-danger">*</span><i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('rdbSexo', 2);"></i></span></label>
                                                     <div class="form-group">
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input rdbSexo" type="radio" value="F" name="rdbSexo" {{ $ObjAuth->USUA_NTIPO_SEXO == 'F' ? 'checked' : '' }} required disabled>
+                                                            <input class="form-check-input rdbSexo" type="radio" value="F" name="rdbSexo" {{ $usuario->USUA_NTIPO_SEXO == 'F' ? 'checked' : '' }} required disabled>
                                                             <label class="form-check-label">Mujer</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input rdbSexo" type="radio" value="M" name="rdbSexo" {{ $ObjAuth->USUA_NTIPO_SEXO == 'M' ? 'checked' : '' }} required disabled>
+                                                            <input class="form-check-input rdbSexo" type="radio" value="M" name="rdbSexo" {{ $usuario->USUA_NTIPO_SEXO == 'M' ? 'checked' : '' }} required disabled>
                                                             <label class="form-check-label">Hombre</label>
                                                         </div>
                                                     </div>
@@ -109,7 +109,7 @@
                                                             <div class="form-group">
                                                                 <label for="bus-txt-centro-trabajo">CURP <span class="text-danger">*</span><span class="text-primary">Se compone de 18
                                                                         caracteres</span> <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCurpMoral', 1);"></i></span></label>
-                                                                <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpMoral" placeholder="CURP" value="{{ $ObjAuth->USUA_CCURP }}" disabled>
+                                                                <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpMoral" placeholder="CURP" value="{{ $usuario->USUA_CCURP }}" disabled>
                                                                 <span class="resultadoValidTextCurp" style="font-size: 12px;"></span>
                                                             </div>
                                                         </div>
@@ -120,20 +120,20 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Nombre (s) <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtNombres', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtNombres" id="txtNombres" placeholder="Nombre (s)" value="{{ $ObjAuth->USUA_CNOMBRES }}" required disabled>
+                                                        <input type="text" class="form-control" name="txtNombres" id="txtNombres" placeholder="Nombre (s)" value="{{ $usuario->USUA_CNOMBRES }}" required disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Primer apellido <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtPrimer_Apellido', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtPrimer_Apellido" id="txtPrimer_Apellido" placeholder="Primer apellido" value="{{ $ObjAuth->USUA_CPRIMER_APELLIDO }}" required disabled>
+                                                        <input type="text" class="form-control" name="txtPrimer_Apellido" id="txtPrimer_Apellido" placeholder="Primer apellido" value="{{ $usuario->USUA_CPRIMER_APELLIDO }}" required disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Segundo apellido
                                                             <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtSegundo_Apellido', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtSegundo_Apellido" id="txtSegundo_Apellido" placeholder="Segundo apellido" value="{{ $ObjAuth->USUA_CSEGUNDO_APELLIDO }}" disabled>
+                                                        <input type="text" class="form-control" name="txtSegundo_Apellido" id="txtSegundo_Apellido" placeholder="Segundo apellido" value="{{ $usuario->USUA_CSEGUNDO_APELLIDO }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,7 +146,7 @@
                                                         <label for="bus-txt-centro-trabajo">Fecha de Nacimiento: <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('fechaNacimientoFisica', 1);"></i>
                                                         </label>
                                                         <br>
-                                                        <input type="date" id="fechaNacimientoFisica" name="fechaNacimientoFisica" value="{{ $ObjAuth->USUA_DFECHA_NACIMIENTO }}" disabled>
+                                                        <input type="date" id="fechaNacimientoFisica" name="fechaNacimientoFisica" value="{{ $usuario->USUA_DFECHA_NACIMIENTO }}" disabled>
                                                     </div>
                                                 </div>
 
@@ -168,7 +168,7 @@
                                                                 <label for="bus-txt-centro-trabajo">Correo electronico
                                                                     <span class="text-danger">*</span>
                                                                     <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreo', 1);"></i></span></label>
-                                                                <input type="text" class="form-control" name="txtCorreo" id="txtCorreo" placeholder="ejemplo@correo.com" value="{{ $ObjAuth->USUA_CCORREO_ELECTRONICO }}" disabled>
+                                                                <input type="text" class="form-control" name="txtCorreo" id="txtCorreo" placeholder="ejemplo@correo.com" value="{{ $usuario->USUA_CCORREO_ELECTRONICO }}" disabled>
                                                             </div>
 
                                                         </div>
@@ -177,7 +177,7 @@
                                                             <div class="form-group">
                                                                 <label for="bus-txt-centro-trabajo">Correo electronico
                                                                     alternativo <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreoAlternativo', 1);"></i></span></label>
-                                                                <input type="text" class="form-control" name="txtCorreoAlternativo" id="txtCorreoAlternativo" placeholder="alternativo@correo.com" value="{{ $ObjAuth->USUA_CCORREO_ALTERNATIVO }}" disabled>
+                                                                <input type="text" class="form-control" name="txtCorreoAlternativo" id="txtCorreoAlternativo" placeholder="alternativo@correo.com" value="{{ $usuario->USUA_CCORREO_ALTERNATIVO }}" disabled>
                                                             </div>
 
                                                         </div>
@@ -200,7 +200,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control rdbTelefono" name="txtTelefono" id="txtTelefono" placeholder="9999999999" value="{{ $ObjAuth->USUA_NTELEFONO }}" disabled>
+                                                        <input type="text" class="form-control rdbTelefono" name="txtTelefono" id="txtTelefono" placeholder="9999999999" value="{{ $usuario->USUA_NTELEFONO }}" disabled>
                                                     </div>
                                                 </div>
 
@@ -212,21 +212,21 @@
                                                 <div class="col-md-4">
                                                     <label for="bus-txt-centro-trabajo">Nombre (s) <span class="text-danger">*</span> <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('nombrePersonaAutorizada', 1);"></i></label>
                                                     <div class="form-group">
-                                                        <input class="form-control" type="text" id="nombrePersonaAutorizada" name="nombrePersonaAutorizada" value="{{ $ObjAuth->USUA_CNOMBRE_NOTIFICACION }}" placeholder="Nombre (s)" required disabled>
+                                                        <input class="form-control" type="text" id="nombrePersonaAutorizada" name="nombrePersonaAutorizada" value="{{ $usuario->USUA_CNOMBRE_NOTIFICACION }}" placeholder="Nombre (s)" required disabled>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <label for="bus-txt-centro-trabajo">Teléfono <span class="text-danger">*</span> <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('telefonoPersonaAutorizada', 1);"></i></label>
                                                     <div class="form-group">
-                                                        <input type="tel" class="form-control" id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" value="{{ $ObjAuth->USUA_CTEL_CELULAR_NOTIFICACION }}" placeholder="999999999" pattern="[(]{1}[0-9]{3}[) ]{2}[0-9]{3}[-]{1}[0-9]{4}" placeholder="No. de teléfono" required disabled>
+                                                        <input type="tel" class="form-control" id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" value="{{ $usuario->USUA_CTEL_CELULAR_NOTIFICACION }}" placeholder="999999999" pattern="[(]{1}[0-9]{3}[) ]{2}[0-9]{3}[-]{1}[0-9]{4}" placeholder="No. de teléfono" required disabled>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <label for="bus-txt-centro-trabajo">Correo <span class="text-danger">*</span> <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('correoPersonaAutorizada', 1);"></i></label>
                                                     <div class="form-group">
-                                                        <input class="form-control" type="text" id="correoPersonaAutorizada" name="correoPersonaAutorizada" value="{{ $ObjAuth->USUA_CCORREO_NOTIFICACION }}" placeholder="Correo" required disabled>
+                                                        <input class="form-control" type="text" id="correoPersonaAutorizada" name="correoPersonaAutorizada" value="{{ $usuario->USUA_CCORREO_NOTIFICACION }}" placeholder="Correo" required disabled>
                                                     </div>
                                                 </div>
 
@@ -243,26 +243,26 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Calle <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCalle_Particular', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtCalle_Particular" id="txtCalle_Particular" placeholder="Calle" value="{{ $ObjAuth->USUA_CCALLE_PARTICULAR }}" disabled>
+                                                        <input type="text" class="form-control" name="txtCalle_Particular" id="txtCalle_Particular" placeholder="Calle" value="{{ $usuario->USUA_CCALLE_PARTICULAR }}" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Número interior
                                                             <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtNumero_Interior_Particular', 1);"></i></span></label>
-                                                        <input type="number" class="form-control" name="txtNumero_Interior_Particular" id="txtNumero_Interior_Particular" placeholder="Número interior" value="{{ $ObjAuth->USUA_NNUMERO_INTERIOR_PARTICULAR }}" disabled>
+                                                        <input type="number" class="form-control" name="txtNumero_Interior_Particular" id="txtNumero_Interior_Particular" placeholder="Número interior" value="{{ $usuario->USUA_NNUMERO_INTERIOR_PARTICULAR }}" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Número exterior <span class="text-danger">*</span> <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtNumero_Exterior_Particular', 1);"></i></span></label>
-                                                        <input type="number" class="form-control" name="txtNumero_Exterior_Particular" id="txtNumero_Exterior_Particular" placeholder="Número exterior" value="{{ $ObjAuth->USUA_NNUMERO_EXTERIOR_PARTICULAR }}">
+                                                        <input type="number" class="form-control" name="txtNumero_Exterior_Particular" id="txtNumero_Exterior_Particular" placeholder="Número exterior" value="{{ $usuario->USUA_NNUMERO_EXTERIOR_PARTICULAR }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">C.P. <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCP_Particular', 1);"></i></span></label>
-                                                        <input type="number" class="form-control" name="txtCP_Particular" id="txtCP_Particular" placeholder="C.P." value="{{ $ObjAuth->USUA_NCP_PARTICULAR }}" disabled>
+                                                        <input type="number" class="form-control" name="txtCP_Particular" id="txtCP_Particular" placeholder="C.P." value="{{ $usuario->USUA_NCP_PARTICULAR }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -271,19 +271,19 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="cmbColonia_Particular">Colonia <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('cmbColonia_Particular', 1);"></i></span></label>
-                                                        <select class="combobox form-control" name="cmbColonia_Particular" id="cmbColonia_Particular" title="Colonia" value="{{ $ObjAuth->USUA_CCOLONIA_PARTICULAR }}" disabled>
+                                                        <select class="combobox form-control" name="cmbColonia_Particular" id="cmbColonia_Particular" title="Colonia" value="{{ $usuario->USUA_CCOLONIA_PARTICULAR }}" disabled>
                                                             <option value="">Seleccione...</option>
-                                                            <option value="Zona Centro" {{ $ObjAuth->USUA_CCOLONIA_PARTICULAR == 'Zona Centro' ? 'selected' : '' }}>
+                                                            <option value="Zona Centro" {{ $usuario->USUA_CCOLONIA_PARTICULAR == 'Zona Centro' ? 'selected' : '' }}>
                                                                 Zona Centro</option>
-                                                            <option value="San Pedro" {{ $ObjAuth->USUA_CCOLONIA_PARTICULAR == 'San Pedro' ? 'selected' : '' }}>
+                                                            <option value="San Pedro" {{ $usuario->USUA_CCOLONIA_PARTICULAR == 'San Pedro' ? 'selected' : '' }}>
                                                                 San Pedro</option>
-                                                            <option value="Sector Bolívar" {{ $ObjAuth->USUA_CCOLONIA_PARTICULAR == 'Sector Bolívar' ? 'selected' : '' }}>
+                                                            <option value="Sector Bolívar" {{ $usuario->USUA_CCOLONIA_PARTICULAR == 'Sector Bolívar' ? 'selected' : '' }}>
                                                                 Sector Bolívar</option>
-                                                            <option value="Nava" {{ $ObjAuth->USUA_CCOLONIA_PARTICULAR == 'Nava' ? 'selected' : '' }}>
+                                                            <option value="Nava" {{ $usuario->USUA_CCOLONIA_PARTICULAR == 'Nava' ? 'selected' : '' }}>
                                                                 Nava</option>
-                                                            <option value="Nogales Norte" {{ $ObjAuth->USUA_CCOLONIA_PARTICULAR == 'Nogales Norte' ? 'selected' : '' }}>
+                                                            <option value="Nogales Norte" {{ $usuario->USUA_CCOLONIA_PARTICULAR == 'Nogales Norte' ? 'selected' : '' }}>
                                                                 Nogales Norte</option>
-                                                            <option value="Pátzcuaro" {{ $ObjAuth->USUA_CCOLONIA_PARTICULAR == 'Pátzcuaro' ? 'selected' : '' }}>
+                                                            <option value="Pátzcuaro" {{ $usuario->USUA_CCOLONIA_PARTICULAR == 'Pátzcuaro' ? 'selected' : '' }}>
                                                                 Pátzcuaro</option>
                                                         </select>
                                                     </div>
@@ -293,9 +293,9 @@
                                                         <label for="cmbMunicipio_Particular">Municipio <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('cmbMunicipio_Particular', 1);"></i></span></label>
                                                         <select class="combobox form-control" name="cmbMunicipio_Particular" id="cmbMunicipio_Particular" title="Municipio" disabled>
                                                             <option value="">Seleccione...</option>
-                                                            <option value="Chihuahua" {{ $ObjAuth->USUA_CMUNICIPIO_PARTICULAR == 'Chihuahua' ? 'selected' : '' }}>
+                                                            <option value="Chihuahua" {{ $usuario->USUA_CMUNICIPIO_PARTICULAR == 'Chihuahua' ? 'selected' : '' }}>
                                                                 Chihuahua</option>
-                                                            <option value="Juárez" {{ $ObjAuth->USUA_CMUNICIPIO_PARTICULAR == 'Juárez' ? 'selected' : '' }}>
+                                                            <option value="Juárez" {{ $usuario->USUA_CMUNICIPIO_PARTICULAR == 'Juárez' ? 'selected' : '' }}>
                                                                 Juárez</option>
                                                         </select>
                                                     </div>
@@ -305,7 +305,7 @@
                                                         <label for="cmbEstado_Particular">Estado <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('cmbEstado_Particular', 1);"></i></span></label>
                                                         <select class="combobox form-control" name="cmbEstado_Particular" id="cmbEstado_Particular" title="Estado" disabled>
                                                             <option value="">Seleccione...</option>
-                                                            <option value="Chihuahua" {{ $ObjAuth->USUA_CESTADO_PARTICULAR == 'Chihuahua' ? 'selected' : '' }}>
+                                                            <option value="Chihuahua" {{ $usuario->USUA_CESTADO_PARTICULAR == 'Chihuahua' ? 'selected' : '' }}>
                                                                 Chihuahua</option>
                                                         </select>
                                                     </div>
@@ -315,7 +315,7 @@
                                                         <label for="cmbPais_Particular">País <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('cmbPais_Particular', 1);"></i></span></label>
                                                         <select class="combobox form-control" name="cmbPais_Particular" id="cmbPais_Particular" title="País" disabled>
                                                             <option value="">Seleccione...</option>
-                                                            <option value="México" {{ $ObjAuth->USUA_CPAIS_PARTICULAR == 'México' ? 'selected' : '' }}>
+                                                            <option value="México" {{ $usuario->USUA_CPAIS_PARTICULAR == 'México' ? 'selected' : '' }}>
                                                                 México</option>
                                                         </select>
                                                     </div>
@@ -347,28 +347,28 @@
                                                                             <div class="form-group">
                                                                                 <label for="bus-txt-centro-trabajo">Calle <span class="text-danger asterisco" id="asterisco">*</span> <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCalle_Fiscal', 1);"></i></span></label>
                                                                                 <input type="text" class="form-control" name="txtCalle_Fiscal" id="txtCalle_Fiscal"
-                                                                                    placeholder="Calle" value="{{ $ObjAuth->USUA_CCALLE }}" disabled>
+                                                                                    placeholder="Calle" value="{{ $usuario->USUA_CCALLE }}" disabled>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
                                                                                 <label for="bus-txt-centro-trabajo">Número interior <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtNumero_Interior_Fiscal', 1);"></i></span></label>
                                                                                 <input type="number" class="form-control" name="txtNumero_Interior_Fiscal" id="txtNumero_Interior_Fiscal"
-                                                                                    placeholder="Número interior" value="{{ $ObjAuth->USUA_NNUMERO_INTERIOR }}" disabled>
+                                                                                    placeholder="Número interior" value="{{ $usuario->USUA_NNUMERO_INTERIOR }}" disabled>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
                                                                                 <label for="bus-txt-centro-trabajo">Número exterior <span class="text-danger asterisco" id="asterisco">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtNumero_Exterior_Fiscal', 1);"></i></span></label>
                                                                                 <input type="number" class="form-control" name="txtNumero_Exterior_Fiscal" id="txtNumero_Exterior_Fiscal" pattern="[0-9]+"
-                                                                                    placeholder="Número exterior" value="{{ $ObjAuth->USUA_NNUMERO_EXTERIOR }}" disabled>
+                                                                                    placeholder="Número exterior" value="{{ $usuario->USUA_NNUMERO_EXTERIOR }}" disabled>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
                                                                                 <label for="bus-txt-centro-trabajo">C.P. <span class="text-danger asterisco" id="asterisco">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCP_Fiscal', 1);"></i></span></label>
                                                                                 <input type="number" class="form-control" name="txtCP_Fiscal" id="txtCP_Fiscal"
-                                                                                    placeholder="C.P." value="{{ $ObjAuth->USUA_NCP }}" disabled>
+                                                                                    placeholder="C.P." value="{{ $usuario->USUA_NCP }}" disabled>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -380,12 +380,12 @@
                                                                                 <select class="combobox form-control" name="cmbColonia_Fiscal"
                                                                                     id="cmbColonia_Fiscal" title="Colonia" disabled>
                                                                                     <option value="">Seleccione...</option>
-                                                                                    <option value="Zona Centro" {{ $ObjAuth->USUA_CCOLONIA == 'Zona Centro' ? 'selected' : '' }}>Zona Centro</option>
-                                                                                    <option value="San Pedro" {{ $ObjAuth->USUA_CCOLONIA == 'San Pedro' ? 'selected' : '' }}>San Pedro</option>
-                                                                                    <option value="Sector Bolívar" {{ $ObjAuth->USUA_CCOLONIA == 'Sector Bolívar' ? 'selected' : '' }}>Sector Bolívar</option>
-                                                                                    <option value="Nava" {{ $ObjAuth->USUA_CCOLONIA == 'Nava' ? 'selected' : '' }}>Nava</option>
-                                                                                    <option value="Nogales Norte" {{ $ObjAuth->USUA_CCOLONIA == 'Nogales Norte' ? 'selected' : '' }}>Nogales Norte</option>
-                                                                                    <option value="Pátzcuaro" {{ $ObjAuth->USUA_CCOLONIA == 'Pátzcuaro' ? 'selected' : '' }}>Pátzcuaro</option>
+                                                                                    <option value="Zona Centro" {{ $usuario->USUA_CCOLONIA == 'Zona Centro' ? 'selected' : '' }}>Zona Centro</option>
+                                                                                    <option value="San Pedro" {{ $usuario->USUA_CCOLONIA == 'San Pedro' ? 'selected' : '' }}>San Pedro</option>
+                                                                                    <option value="Sector Bolívar" {{ $usuario->USUA_CCOLONIA == 'Sector Bolívar' ? 'selected' : '' }}>Sector Bolívar</option>
+                                                                                    <option value="Nava" {{ $usuario->USUA_CCOLONIA == 'Nava' ? 'selected' : '' }}>Nava</option>
+                                                                                    <option value="Nogales Norte" {{ $usuario->USUA_CCOLONIA == 'Nogales Norte' ? 'selected' : '' }}>Nogales Norte</option>
+                                                                                    <option value="Pátzcuaro" {{ $usuario->USUA_CCOLONIA == 'Pátzcuaro' ? 'selected' : '' }}>Pátzcuaro</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
@@ -395,8 +395,8 @@
                                                                                 <select class="combobox form-control" name="cmbMunicipio_Fiscal"
                                                                                     id="cmbMunicipio_Fiscal" title="Municipio" disabled>
                                                                                     <option value="">Seleccione...</option>
-                                                                                    <option value="Chihuahua" {{ $ObjAuth->USUA_CMUNICIPIO == 'Chihuahua' ? 'selected' : '' }}>Chihuahua</option>
-                                                                                    <option value="Juárez" {{ $ObjAuth->USUA_CMUNICIPIO == 'Juárez' ? 'selected' : '' }}>Juárez</option>
+                                                                                    <option value="Chihuahua" {{ $usuario->USUA_CMUNICIPIO == 'Chihuahua' ? 'selected' : '' }}>Chihuahua</option>
+                                                                                    <option value="Juárez" {{ $usuario->USUA_CMUNICIPIO == 'Juárez' ? 'selected' : '' }}>Juárez</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
@@ -406,7 +406,7 @@
                                                                                 <select class="combobox form-control" name="cmbEstado_Fiscal"
                                                                                     id="cmbEstado_Fiscal" title="Estado" disabled>
                                                                                     <option value="">Seleccione...</option>
-                                                                                    <option value="Chihuahua" {{ $ObjAuth->USUA_CESTADO == 'Chihuahua' ? 'selected' : '' }}>Chihuahua</option>
+                                                                                    <option value="Chihuahua" {{ $usuario->USUA_CESTADO == 'Chihuahua' ? 'selected' : '' }}>Chihuahua</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
@@ -416,7 +416,7 @@
                                                                                 <select class="combobox form-control" name="cmbPais_Fiscal"
                                                                                     id="cmbPais_Fiscal" title="País" disabled>
                                                                                     <option value="">Seleccione...</option>
-                                                                                    <option value="México" {{ $ObjAuth->USUA_CPAIS == 'México' ? 'selected' : '' }}>México</option>
+                                                                                    <option value="México" {{ $usuario->USUA_CPAIS == 'México' ? 'selected' : '' }}>México</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
@@ -429,8 +429,8 @@
                                                                                 <h5 class="font-weight-bold">Agregar sucursal <span class="circle" data-repeater-create>+</span></h5>
                                                                                 <div data-repeater-list="lstSucursal">
                                                                                     <?php $IntIndex = 0; ?>
-                                                                                    @if (count($ObjAuth->TRAM_MDV_SUCURSAL) > 0)
-    @foreach ($ObjAuth->TRAM_MDV_SUCURSAL as $item)
+                                                                                    @if (count($usuario->TRAM_MDV_SUCURSAL) > 0)
+    @foreach ($usuario->TRAM_MDV_SUCURSAL as $item)
     <div data-repeater-item>
                                                                                                 <div class="row">
                                                                                                     <div class="col-md-11">
@@ -622,7 +622,7 @@
                                                                             <div class="form-group">
                                                                                 <label for="bus-txt-centro-trabajo">Correo electrónico <span class="text-danger">*</span> <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreo_Electronico', 1);"></i></span></label>
                                                                                 <input type="email" class="form-control" name="txtCorreo_Electronico" id="txtCorreo_Electronico"
-                                                                                    placeholder="Correo electrónico" value="{{ $ObjAuth->USUA_CCORREO_ELECTRONICO }}" required disabled>
+                                                                                    placeholder="Correo electrónico" value="{{ $usuario->USUA_CCORREO_ELECTRONICO }}" required disabled>
                                                                                 <span id="resultadoExistCorreo" style="font-size: 12px;"></span>
                                                                             </div>
                                                                         </div>
@@ -630,7 +630,7 @@
                                                                             <div class="form-group">
                                                                                 <label for="bus-txt-centro-trabajo">Correo electrónico alternativo <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreo_Alternativo', 1);"></i></span></label>
                                                                                 <input type="email" class="form-control" name="txtCorreo_Alternativo" id="txtCorreo_Alternativo"
-                                                                                    placeholder="Correo electrónico alternativo" value="{{ $ObjAuth->USUA_CCORREO_ALTERNATIVO }}" disabled>
+                                                                                    placeholder="Correo electrónico alternativo" value="{{ $usuario->USUA_CCORREO_ALTERNATIVO }}" disabled>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -736,7 +736,7 @@
 
                                             <br>
 
-                                     
+
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-12" id="accordion">
@@ -758,27 +758,27 @@
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Calle</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtCalleParticular" name="txtCalleParticular" value="{{ $ObjAuth->USUA_CCALLE_PARTICULAR }}" placeholder="21">
+                                                                                    <input type="text" class="form-control" id="txtCalleParticular" name="txtCalleParticular" value="{{ $usuario->USUA_CCALLE_PARTICULAR }}" placeholder="21">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Número
                                                                                         interior</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroInteriorParticular" name="txtNumeroInteriorParticular" value="{{ $ObjAuth->USUA_NNUMERO_INTERIOR_PARTICULAR }}" placeholder="Número interior">
+                                                                                    <input type="number" class="form-control" id="txtNumeroInteriorParticular" name="txtNumeroInteriorParticular" value="{{ $usuario->USUA_NNUMERO_INTERIOR_PARTICULAR }}" placeholder="Número interior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Número
                                                                                         exterior</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroExteriorParticular" name="txtNumeroExteriorParticular" value="{{ $ObjAuth->USUA_NNUMERO_EXTERIOR_PARTICULAR }}" placeholder="Número exterior">
+                                                                                    <input type="number" class="form-control" id="txtNumeroExteriorParticular" name="txtNumeroExteriorParticular" value="{{ $usuario->USUA_NNUMERO_EXTERIOR_PARTICULAR }}" placeholder="Número exterior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">C.P.</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroCPParticular" name="txtNumeroCPParticular" value="{{ $ObjAuth->USUA_NCP_PARTICULAR }}" placeholder="97000">
+                                                                                    <input type="number" class="form-control" id="txtNumeroCPParticular" name="txtNumeroCPParticular" value="{{ $usuario->USUA_NCP_PARTICULAR }}" placeholder="97000">
                                                                                 </div>
 
                                                                             </div>
@@ -791,26 +791,26 @@
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Colonia</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtColoniaParticular" name="txtColoniaParticular" value="{{ $ObjAuth->USUA_CCOLONIA_PARTICULAR }}" placeholder="Centro">
+                                                                                    <input type="text" class="form-control" id="txtColoniaParticular" name="txtColoniaParticular" value="{{ $usuario->USUA_CCOLONIA_PARTICULAR }}" placeholder="Centro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Municipio</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtMunicipioParticular" name="txtMunicipioParticular" value="{{ $ObjAuth->USUA_CMUNICIPIO_PARTICULAR }}" placeholder="Querétaro">
+                                                                                    <input type="text" class="form-control" id="txtMunicipioParticular" name="txtMunicipioParticular" value="{{ $usuario->USUA_CMUNICIPIO_PARTICULAR }}" placeholder="Querétaro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Estado<nav>
                                                                                         </nav></label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtEstadoParticular" name="txtEstadoParticular" value="{{ $ObjAuth->USUA_CESTADO_PARTICULAR }}" placeholder="Querétaro">
+                                                                                    <input type="text" class="form-control" id="txtEstadoParticular" name="txtEstadoParticular" value="{{ $usuario->USUA_CESTADO_PARTICULAR }}" placeholder="Querétaro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Pais</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtPaisParticular" name="txtPaisParticular" value="{{ $ObjAuth->USUA_CPAIS_PARTICULAR }}" placeholder="México">
+                                                                                    <input type="text" class="form-control" id="txtPaisParticular" name="txtPaisParticular" value="{{ $usuario->USUA_CPAIS_PARTICULAR }}" placeholder="México">
                                                                                 </div>
 
                                                                             </div>
@@ -841,27 +841,27 @@
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Calle</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtCalleFiscal" name="txtCalleFiscal" value="{{ $ObjAuth->USUA_CCALLE }}" placeholder="21">
+                                                                                    <input type="text" class="form-control" id="txtCalleFiscal" name="txtCalleFiscal" value="{{ $usuario->USUA_CCALLE }}" placeholder="21">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Número
                                                                                         interior</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroInteriorFiscal" name="txtNumeroInteriorFiscal" value="{{ $ObjAuth->USUA_NNUMERO_INTERIOR }}" placeholder="Número interior">
+                                                                                    <input type="number" class="form-control" id="txtNumeroInteriorFiscal" name="txtNumeroInteriorFiscal" value="{{ $usuario->USUA_NNUMERO_INTERIOR }}" placeholder="Número interior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Número
                                                                                         exterior</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroExteriorFiscal" name="txtNumeroExteriorFiscal" value="{{ $ObjAuth->USUA_NNUMERO_EXTERIOR }}" placeholder="Número exterior">
+                                                                                    <input type="number" class="form-control" id="txtNumeroExteriorFiscal" name="txtNumeroExteriorFiscal" value="{{ $usuario->USUA_NNUMERO_EXTERIOR }}" placeholder="Número exterior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">C.P.</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtCPFiscal" name="txtCPFiscal" value="{{ $ObjAuth->USUA_NCP }}" placeholder="97000">
+                                                                                    <input type="number" class="form-control" id="txtCPFiscal" name="txtCPFiscal" value="{{ $usuario->USUA_NCP }}" placeholder="97000">
                                                                                 </div>
 
                                                                             </div>
@@ -874,26 +874,26 @@
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Colonia</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtColoniaFiscal" name="txtColoniaFiscal" value="{{ $ObjAuth->USUA_CCOLONIA }}" placeholder="Centro">
+                                                                                    <input type="text" class="form-control" id="txtColoniaFiscal" name="txtColoniaFiscal" value="{{ $usuario->USUA_CCOLONIA }}" placeholder="Centro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Municipio</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtMunicipioFiscal" name="txtMunicipioFiscal" value="{{ $ObjAuth->USUA_CMUNICIPIO }}" placeholder="Querétaro">
+                                                                                    <input type="text" class="form-control" id="txtMunicipioFiscal" name="txtMunicipioFiscal" value="{{ $usuario->USUA_CMUNICIPIO }}" placeholder="Querétaro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Estado<nav>
                                                                                         </nav></label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtEstadoFiscal" name="txtEstadoFiscal" value="{{ $ObjAuth->USUA_CESTADO }}" placeholder="Querétaro">
+                                                                                    <input type="text" class="form-control" id="txtEstadoFiscal" name="txtEstadoFiscal" value="{{ $usuario->USUA_CESTADO }}" placeholder="Querétaro">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Pais</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtPaisFiscal" name="txtPaisFiscal" value="{{ $ObjAuth->USUA_CPAIS }}" placeholder="México">
+                                                                                    <input type="text" class="form-control" id="txtPaisFiscal" name="txtPaisFiscal" value="{{ $usuario->USUA_CPAIS }}" placeholder="México">
                                                                                 </div>
 
                                                                             </div>
@@ -927,8 +927,8 @@
                                                                                 </h5>
                                                                                 <div data-repeater-list="lstSucursal">
                                                                                     <?php $IntIndex = 0; ?>
-                                                                                    @if (count($ObjAuth->TRAM_MDV_SUCURSAL) > 0)
-                                                                                    @foreach ($ObjAuth->TRAM_MDV_SUCURSAL as $item)
+                                                                                    @if (count($usuario->TRAM_MDV_SUCURSAL) > 0)
+                                                                                    @foreach ($usuario->TRAM_MDV_SUCURSAL as $item)
                                                                                     <div data-repeater-item>
                                                                                         <div class="row">
                                                                                             <div class="col-md-11">
@@ -1093,6 +1093,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Div Documentos -->
                                 <div class="tab-pane fade" id="documentos" role="tabpanel" aria-labelledby="documentos-tab">
                                     <nav>
@@ -1241,7 +1242,7 @@
                         <div class="listErrorCambiarContrasena"></div>
                         <p class="m-0">Completa el formulario para realizar el cambio de contraseña.</p>
                         <form id="frmFormCmabiar_Contrasena" name="frmFormCmabiar_Contrasena">
-                            <input type="hidden" name="txtIntIdUsuario" value="{{ $ObjAuth->USUA_NIDUSUARIO }}">
+                            <input type="hidden" name="txtIntIdUsuario" value="{{ $usuario->USUA_NIDUSUARIO }}">
                             <input type="hidden" name="txtIntTipo" value="1">
                             <div class="form-group">
                                 <label>Ingresa nueva contraseña</label>
@@ -1322,9 +1323,9 @@
     }
 
     $(document).ready(function() {
-        var StrTipoPersona = '{{ $ObjAuth->USUA_NTIPO_PERSONA }}';
-        var BolSucursal = '{{ count($ObjAuth->TRAM_MDV_SUCURSAL) > 0 ? false : true }}';
-        var rolCat = '{{ $ObjAuth->TRAM_CAT_ROL->ROL_CCLAVE }}';
+        var StrTipoPersona = '{{ $usuario->USUA_NTIPO_PERSONA }}';
+        var BolSucursal = '{{ count($usuario->TRAM_MDV_SUCURSAL) > 0 ? false : true }}';
+        var rolCat = '{{ $usuario->TRAM_CAT_ROL->ROL_CCLAVE }}';
         GET_VISTA_PREDIOS()
 
         $('#frmForm').on('submit', function(e) {
@@ -2031,6 +2032,7 @@
                 type: "get",
                 dataType: "json",
                 error: function(e) {
+                    console.log("manuel", e);
                     console.log(e.responseText);
                 }
             },
@@ -2127,7 +2129,7 @@
         if (!validator.form()) {
             $('#telefonoPersonaAutorizada-error').html('<b style="color: red;">Favor de poner en el formato (999) 999-9999</b>');
             $('.listError').hide();
-           
+
             var htmlError =
                 "<div class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Los siguientes datos son obligatorios:</strong> <br/>";
             $.each(validator.errorList, function(index, value) {
@@ -2149,7 +2151,7 @@
 
             return;
         }
-        
+
         $.ajax({
             data: $('#frmForm').serialize(),
             url: "/perfil/modificar",
@@ -2234,7 +2236,7 @@
         }
 
 
-        var rolCat = '{{ $ObjAuth->TRAM_CAT_ROL->ROL_CCLAVE }}';
+        var rolCat = '{{ $usuario->TRAM_CAT_ROL->ROL_CCLAVE }}';
         if (rolCat == "CDNS") {
             //para ciudadanos
 
@@ -2460,7 +2462,7 @@
     };
 
     function TRAM_FN_VALIDAR_INPUT_RFC_RECUPERAR_CONTRASENA(input) {
-        var rolCat = '{{ $ObjAuth->TRAM_CAT_ROL->ROL_CCLAVE }}';
+        var rolCat = '{{ $usuario->TRAM_CAT_ROL->ROL_CCLAVE }}';
         //Validar valor
         if (input == null || input == undefined || input == "") {} else {
             var newValue = input;
