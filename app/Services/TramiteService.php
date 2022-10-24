@@ -155,6 +155,7 @@ class TramiteService
         ################ Documentos ################
         $arrayDocumentos = [];
         foreach($arrayDetalle['documentos'] as $key => $documento) {
+
             if(isset($arrayDetalle['requisitos'][$key]->Description)){
                 $desc = $arrayDetalle['requisitos'][$key]->Description;
             }else{
