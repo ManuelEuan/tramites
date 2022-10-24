@@ -33,6 +33,7 @@ class LoginController extends Controller
 
 	//Login
 	public function login(Request $request) {
+		//dd($request);
 		$validator = Validator::make($request->all(), [
 			'Usuario' => 'required',
 			'Contraseña' => 'required',
@@ -51,7 +52,7 @@ class LoginController extends Controller
 			if($ArrRecaptcha["success"] != '1') {
 				$validator->after(function($validator){
 					$validator->errors()->add('recaptcha', ' El campo No soy un robot es requerido.');
-				});
+				}); 
 				return Redirect::back()->withErrors($validator);
 			}
 
@@ -164,7 +165,7 @@ class LoginController extends Controller
 			switch( Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
 				case "CDNS":
 					if(str_ends_with($request->previous_url,"logout")){
-						return Redirect::to('/tramite_servicio');
+						return Redirect::to('/tramite_servicio');  
 					}else{
 						return Redirect::to($request->previous_url);
 					}
@@ -175,10 +176,12 @@ class LoginController extends Controller
 					return Redirect::to('/gestores');
 					break;
 			}
-			/* $cookie = $request->cookie('retys');
-			dd($cookie); */
+			
 
 			return Redirect::to('/tramite_servicio');
+
+			/* $cookie = $request->cookie('retys');
+			dd($cookie); */
 
 			/* if($cookie){
 				Cookie::queue($getCookie);

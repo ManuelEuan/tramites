@@ -66,10 +66,10 @@ return [
         'mysql2' => [
             'driver'    => 'mysql',
             'url'       => env('DATABASE_URL'),
-            'host'      => env('DB_HOST2', 'eszmanuel2.mysql.database.azure.com'),
+            'host'      => env('DB_HOST2', 'esz-devqa.mysql.database.azure.com'),
             'port'      => env('DB_POR2', '3306'),
-            'database'  => env('DB_DATABASE2', 'eszmanuel2.mysql.database.azure.com'),
-            'username'  => env('DB_USERNAME2', 'angelica@eszmanuel2'),
+            'database'  => env('DB_DATABASE2', 'remtys-qro-prod'),
+            'username'  => env('DB_USERNAME2', 'Angelica@esz-devqa'),
             'password'  => env('DB_PASSWORD2', 'Michoacan548.'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset'   => 'utf8mb4',
