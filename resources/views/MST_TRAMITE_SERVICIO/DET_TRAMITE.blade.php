@@ -80,8 +80,8 @@
                                                                 {{ $documento['presentacion'] }}</span>
                                                             <span style="width: 100%;"><b>Observaciones:</b>
                                                                 {{ $documento['observaciones'] }}</span>
-                                                            <span style="width: 100%;"><b>Información Complementaria:</b>
-                                                                {{ $documento['informacionComplementaria'] }}</span>
+                                                            <!--<span style="width: 100%;"><b>Información Complementaria:</b>
+                                                                {{ $documento['informacionComplementaria'] }}</span> -->
                                                             <span style="width: 100%;"><b>Tipo:</b>
                                                                 {{ $documento['tipo'] }}</span>
                                                         </div>
