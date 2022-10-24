@@ -187,21 +187,21 @@
                                         @if($cont == 0)
                                             <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" 
                                             style="border-top-left-radius: 15px; border-bottom-left-radius: 15px;"> 
-                                            <span>{{$sec->FORM_CNOMBRE}} </span> </div>
+                                            <span>{{$sec->FORM_CNOMBRE}} </span> <span id="span_{{$sec->FORM_NID}}"></span> </div>
                                             <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                         @elseif($cont == $total - 1)
                                             @if(count($tramite['configuracion']['documentos']) == 0)
                                                 <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" 
                                                 style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> 
-                                                <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                                <span>{{$sec->FORM_CNOMBRE}}</span> <span id="span_{{$sec->FORM_NID}}"></span> </div>
                                                 <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                             @else
                                                 <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> 
-                                                    <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                                    <span>{{$sec->FORM_CNOMBRE}}</span> <span id="span_{{$sec->FORM_NID}}"></span> </div>
                                                     <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                             @endif
                                         @else
-                                            <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                            <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> <span>{{$sec->FORM_CNOMBRE}}</span> <span id="span_{{$sec->FORM_NID}}"></span> </div>
                                             <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                         @endif
                                         <?php $cont++; ?>
@@ -211,7 +211,7 @@
                         @endforeach
                     @endif
                     @if(count($tramite['configuracion']['documentos'])> 0)
-                        <div class="step" id="seccion_0" data-seccion="0" style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> <span>Documentos</span> </div>
+                        <div class="step" id="seccion_0" data-seccion="0" style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> <span>Documentos</span> <span id="span_0"></span> </div>
                         <input class="full" type="hidden" value="0">
                     @endif
                 </div>
@@ -1554,10 +1554,11 @@
             var divVal = "";
             arr.forEach(function(idDiv) {
                 divVal = $('#form_'+idDiv+' :input').valid()
+                $("#span_"+idDiv).empty();
                 if(!divVal){
-                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
                 }else{
-                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
                 }
 
             })
@@ -1579,10 +1580,11 @@
             var divVal = "";
             arr.forEach(function(idDiv) {
                 divVal = $('#form_'+idDiv+' :input').valid()
+                $("#span_"+idDiv).empty();
                 if(!divVal){
-                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
                 }else{
-                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
                 }
 
             })
@@ -1608,10 +1610,11 @@
             var divVal = "";
             arr.forEach(function(idDiv) {
                 divVal = $('#form_'+idDiv+' :input').valid()
+                $("#span_"+idDiv).empty();
                 if(!divVal){
-                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
                 }else{
-                    $("#seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
                 }
 
             })
