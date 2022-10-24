@@ -112,6 +112,9 @@ class TramiteService
                             ->select('r.*', 'r.iId as Id' ,'n.Name as tipoDocumento', 'np.Name as presentacion')
                             ->where(['pr.IdProcedure' => $tramiteID, 'r.IsDeleted' => false])
                             ->groupBy('r.Id','n.Name', 'np.Name')->get();
+        $requisitos = DB::connection('mysql2')->table('procedurerequisit as pr')
+                            ->select('pr.Description')
+                            ->where(['pr.IdProcedure' => $tramiteID])->get();
 
         $oficinas   = DB::connection('mysql2')->table('procedureoffices as po')
                             ->join('administrativeunitbuildings as a', 'po.IdAdministrativeUnitBuilding', '=', 'a.Id' )
@@ -137,7 +140,7 @@ class TramiteService
                                             ->orWhere("pc.property", "like","%Tienda%");
                                 })->get();
 
-        return ["documentos" => $documentos, "oficinas" => $oficinas, "horario" => $horarios, "funcionarios" => $funcionarios, "lugaresPago" => $lugaresPago];
+        return ["documentos" => $documentos, "requisitos" => $requisitos, "oficinas" => $oficinas, "horario" => $horarios, "funcionarios" => $funcionarios, "lugaresPago" => $lugaresPago];
     }
 
     /**
@@ -151,12 +154,13 @@ class TramiteService
 
         ################ Documentos ################
         $arrayDocumentos = [];
-        foreach($arrayDetalle['documentos'] as $documento) {
+        foreach($arrayDetalle['documentos'] as $key => $documento) {
             $array = array(
                 "nombre"        => $documento->Name,
                 "presentacion"  => $documento->presentacion,
                 "observaciones" => $documento->Description,
                 "tipo"          => $documento->tipoDocumento,
+                "rDesc"         => $arrayDetalle['requisitos'][$key],
                 "informacionComplementaria" => "." //"informacionComplementaria",
             );
             array_push($arrayDocumentos, $array);
@@ -219,7 +223,7 @@ class TramiteService
             ],
             [
                 "titulo"        => "Costos",
-                "descripcion"   => "$".number_format(round($montoFinal, 2, PHP_ROUND_HALF_UP), 2, ".", ""),
+                "descripcion"   => number_format(round($montoFinal, 2, PHP_ROUND_HALF_UP), 2, ".", ""),
                 "opciones"      => [],
                 "documentos"    => []
             ]
