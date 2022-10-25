@@ -155,20 +155,20 @@ class LoginController extends Controller
 			$ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
 			$ObjBitacora->BITA_CIP = $request->ip();
 			Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-			/* $cookie = Cookie::forever("rol_clave", Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE);
-			Cookie::queue($cookie); */
+			Cookie::forever("rol_clave", Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE);
+			$ruta 	= session('retys');
+			session()->forget('retys');
 
 			/* $getCookie = Cookie::get("rol_clave");
 			Cookie::queue($getCookie); */
 
-
 			switch( Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
 				case "CDNS":
-					if(str_ends_with($request->previous_url,"logout")){
-						return Redirect::to('/tramite_servicio');  
-					}else{
-						return Redirect::to($request->previous_url);
-					}
+					if(is_null($ruta))
+						return Redirect::to('/tramite_servicio');
+					else
+						return Redirect::to("/".$ruta);
+
 					break;
 				case "ADM":
 					return Redirect::to('/gestores');
@@ -176,12 +176,6 @@ class LoginController extends Controller
 					return Redirect::to('/gestores');
 					break;
 			}
-			
-
-			return Redirect::to('/tramite_servicio');
-
-			/* $cookie = $request->cookie('retys');
-			dd($cookie); */
 
 			/* if($cookie){
 				Cookie::queue($getCookie);
