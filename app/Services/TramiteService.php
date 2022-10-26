@@ -394,9 +394,17 @@ class TramiteService
         $usuario    = Auth::user();
         $rol        = $usuario->TRAM_CAT_ROL;
 
-        $query = DB::table('tram_vw_tramite_seguimiento as v')
+        if($rol->ROL_CCLAVE == 'CDNS'){
+            $query = DB::table('tram_vw_tramite_seguimiento as v')
+            ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
+            ->select('v.*');
+        }else{
+            $query = DB::table('tram_vw_tramite_seguimiento as v')
                     ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
+                    ->where('v.USTR_NESTATUS','!=',1)
                     ->select('v.*');
+        }
+        
 
         if($rol->ROL_CCLAVE != 'ADM'){
            
