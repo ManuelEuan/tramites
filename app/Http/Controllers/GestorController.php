@@ -133,8 +133,22 @@ class GestorController extends Controller
 
 
     //Vista donde se realiza configuración del trámite
-    public function configurar_tramite($tramiteID, $tramiteIDConfig)
-    {
+    /**
+     * Valida si el tramite de retys se encuentra bien configurado
+     * @param Request $request
+     * @return Response
+     */
+    public function validaTramite (Request $request){
+        $objTramite     = $this->tramiteService->getTramite($request->tramiteId);
+        $objTramite     = $this->tramiteService->getTramite(1);
+        if(is_null($objTramite)){
+            return response()->json(["error" => "La configución de RETYS no esta completya, favor de validar el tramite."], 403);
+        }
+        else
+            return response()->json(["message" => "Correcto"], 200);
+    }
+
+    public function configurar_tramite($tramiteID, $tramiteIDConfig) {
         $tramite        = [];
         $objTramite     = $this->tramiteService->getTramite($tramiteID);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);

@@ -34,18 +34,19 @@ Route::get('/registrar/localidades/{Strlocalidad}', array('uses' => 'RegistroCon
 Route::get('/registrar/estados', array('uses' => 'RegistroController@estados'));
 Route::get('/registrar/municipios', array('uses' => 'RegistroController@municipios'));
 
-
-Route::get('/perfil', array('uses' => 'PerfilController@index'));
-Route::post('/perfil/modificar', array('uses' => 'PerfilController@modificar'));
-Route::post('/perfil/confirmar', array('uses' => 'PerfilController@confirmar'));
-Route::post('/perfil/confirmarServidor', array('uses' => 'PerfilController@confirmarServidor'));
-Route::post('/perfil/guardarDocs', array('uses' => 'PerfilController@guardarDocs'));
-Route::post('/perfil/eliminarDoc', array('uses' => 'PerfilController@eliminarDoc'));
-Route::get('/perfil/getHistory', array('uses' => 'PerfilController@getDocsHistory'));
-Route::get('/perfil/getDocsHistoryExpediente/{id}', array('uses' => 'PerfilController@getDocsHistoryExpediente'));
-Route::get('/perfil/listarDocs', array('uses' => 'PerfilController@listarDocs'));
-Route::get('/perfil/listarResolutivos', array('uses' => 'PerfilController@listarResolutivos'));
-Route::post('/perfil/setActual', array('uses' => 'PerfilController@setActual'));
+Route::group(['prefix' => 'perfil'], function () {
+    Route::get('/', 'PerfilController@index');
+    Route::post('/modificar', 'PerfilController@modificar');
+    Route::post('/confirmar', 'PerfilController@confirmar');
+    Route::post('/confirmarServidor', 'PerfilController@confirmarServidor');
+    Route::post('/guardarDocs', 'PerfilController@guardarDocs');
+    Route::post('/eliminarDoc', 'PerfilController@eliminarDoc');
+    Route::get('/getHistory','PerfilController@getDocsHistory');
+    Route::get('/getDocsHistoryExpediente/{id}', 'PerfilController@getDocsHistoryExpediente');
+    Route::get('/listarDocs', 'PerfilController@listarDocs');
+    Route::get('/listarResolutivos', 'PerfilController@listarResolutivos');
+    Route::post('/setActual', 'PerfilController@setActual');
+});
 
 Route::get('/bitacora', array('uses' => 'BitacoraController@index'));
 Route::get('/bitacora/consultar', array('uses' => 'BitacoraController@consultar'));
@@ -178,7 +179,8 @@ Route::group(['prefix' => 'general'], function () {
 
 Route::group(['prefix' => 'gestores'], function () {
     Route::get('/', array('uses' => 'GestorController@index'))->name('gestor_index');
-    Route::post('/consultar', array('uses' => 'GestorController@consultar'))->name('gestor_consultar');
+    Route::get('/validaTramite', 'GestorController@validaTramite');
+    Route::post('/consultar', 'GestorController@consultar')->name('gestor_consultar');
     Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@configurar_tramite'))->name("gestor_configurar_tramite");
     Route::get('/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
     Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@consultar_tramite'))->name("gestor_consultar_tramite");
@@ -208,15 +210,15 @@ Route::group(['prefix' => 'gestores'], function () {
 });
 
 Route::group(['prefix' => 'servidorespublicos'], function () {
-    Route::get('/', array('uses' => 'ServidorPublicoController@index'))->middleware("permiso");
-    Route::get('/listar', array('uses' => 'ServidorPublicoController@listar'));
-    Route::get('/consultar', array('uses' => 'ServidorPublicoController@consultar'));
-    Route::get('/crear', array('uses' => 'ServidorPublicoController@crear'));
-    Route::post('/agregar', array('uses' => 'ServidorPublicoController@agregar'));
-    Route::get('/editar/{id}', array('uses' => 'ServidorPublicoController@editar'));
-    Route::post('/modificar', array('uses' => 'ServidorPublicoController@modificar'));
-    Route::get('/detalle/{id}', array('uses' => 'ServidorPublicoController@detalle'));
-    Route::get('/validar_correo/{StrCorreo}', array('uses' => 'ServidorPublicoController@validar_correo'));
+    Route::get('/', 'ServidorPublicoController@index')->middleware("permiso");
+    Route::get('/listar', 'ServidorPublicoController@listar');
+    Route::get('/consultar', 'ServidorPublicoController@consultar');
+    Route::get('/crear', 'ServidorPublicoController@crear');
+    Route::post('/agregar', 'ServidorPublicoController@agregar');
+    Route::get('/editar/{id}', 'ServidorPublicoController@editar');
+    Route::post('/modificar', 'ServidorPublicoController@modificar');
+    Route::get('/detalle/{id}', 'ServidorPublicoController@detalle');
+    Route::get('/validar_correo/{StrCorreo}', 'ServidorPublicoController@validar_correo');
     
     //Rutas Funcionarios
     Route::get('/getDepencencias', array('uses' => 'ServidorPublicoController@getDepencencias'));
