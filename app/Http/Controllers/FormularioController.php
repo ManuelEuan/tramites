@@ -8,10 +8,13 @@ use Illuminate\Http\Request;
 
 use App\Models\Cls_Formulario;
 use App\Models\Cls_Cat_Seccion;
+use App\Cls_Rol;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Models\Cls_Formulario_Pregunta_Respuesta;
 use App\Models\Cls_Formulario_Respuesta_Especial;
+
+use App\Cls_SeccionFormRol;
 
 class FormularioController extends Controller
 {
@@ -112,6 +115,16 @@ class FormularioController extends Controller
 
     public function secciones(){
         $items = Cls_Cat_Seccion::where('FORM_BACTIVO', true)->get();
+        return response()->json($items);
+    }
+
+    public function roles(){
+        $items = Cls_Rol::TRAM_SP_CONSULTARROL();
+        return response()->json($items);
+    }
+
+    public function seccion_roles($FORM_NID){
+        $items = Cls_SeccionFormRol::SeccionRoles($FORM_NID);
         return response()->json($items);
     }
 
@@ -581,5 +594,11 @@ class FormularioController extends Controller
         } catch (Exception $ex) {
             return response()->json($ex, 403);
         }
+    }
+
+    public function seccion_rol_asigna(Request $request){//Request $request
+        $respuesta = Cls_SeccionFormRol::AsignarSecRol($request);
+        
+        return $respuesta;
     }
 }

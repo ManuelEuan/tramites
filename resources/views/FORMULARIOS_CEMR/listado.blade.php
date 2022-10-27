@@ -274,6 +274,34 @@
 
         </div>
     </div>
+    
+    <div class="modal" id="asignarRolSeccionModal" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Asignación de Rol - Sección</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 mb-3" id="tipoId" >
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label style="font-size: 1rem; font-weight: bold;"><span id="lblSelect">Roles</span></label>
+                                <div id="htmlsecrol">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success" onclick="asignaSecRoles()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 <br />
@@ -314,6 +342,7 @@
         getCuestionarios();
         getSecciones();
         getCatalogos();
+        getRoles();
 
         $("#descripcion").keyup(function() {
             if ($(this).val() != undefined && $(this).val() != null) {
@@ -356,6 +385,156 @@
             });
         });
     }
+
+    
+
+    /////////nuevas funciones////////////
+    var lstRoles = [];
+    var gform_nid = 0;
+
+    function getRoles() {
+        request = $.ajax({
+            url: "/formulario/roles",
+            type: "get"
+        });
+
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            roles = response;
+        });
+
+        // Callback handler that will be called on failure
+        request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
+
+    function openSecRol(FORM_NID){
+        gform_nid = FORM_NID;
+        request = $.ajax({
+            url: "/formulario/seccion_roles/"+FORM_NID,
+            type: "get"
+        });
+
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            seccion_roles = response;
+
+            var html = '<select id="cmbRoles" class="selectpicker form-control" multiple>';
+            roles.forEach(roles => {
+                let select = '';
+                seccion_roles.forEach(element => {
+                    if(element.ROL_NIDROL == roles.ROL_NIDROL){
+                        select      =   'selected';
+                        /*
+                        let option  =   `<div class="group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-12 text-center">
+                                                    <span class="text-dark"> ${ value.Description } </span>
+                                                </div>
+                                            </div>
+                                        </div`;*/
+
+                        lstRoles.push(roles.ROL_NIDROL);
+                    }
+                });
+                html += `<option ${select} value="${ roles.ROL_NIDROL }"> ${ roles.ROL_CNOMBRE } </option>`;
+            });
+            html += '</select>';
+            $("#htmlsecrol").html(html);
+
+            $('#cmbRoles').selectpicker({
+                noneSelectedText: 'Roles',
+                noneResultsText: 'No se encontraron resultados',
+            });
+
+            $('#cmbRoles').on('change', function(e) { 
+                console.log("entro");
+                selected = $('#cmbRoles').val();
+                console.log(selected);
+                lstRoles = [];
+
+                //$('#list_roles').html('');
+                
+                $.each(selected, function(key, value) {
+                    lstRoles.push(value);
+                    //var text =  $("#cmbRoles option[value='" + value + "']")[0].innerText;
+                    //$('#list_roles').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
+                });
+            });
+
+            $('#asignarRolSeccionModal').modal('show');
+
+        });
+
+         // Callback handler that will be called on failure
+         request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
+
+    function asignaSecRoles(){
+        var htmlid = $("#idTramite").val();
+        console.log(lstRoles);
+        var envio = {
+                FORM_NID: gform_nid,
+                listROL: lstRoles,
+                USUA_NIDUSUARIOREGISTRO: 0,
+            };
+
+            console.log(envio);
+        /*
+        $.ajax({
+            data: envio,
+            type: 'POST',
+            url: "tramite_servicio_cemr/asignar_tramite", 
+            success: function(result){
+                $("#asignarFuncionarioModal").modal('hide');
+
+                if(envio.USUA_NIDUSUARIO == 0){
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa fa-users");
+                    $("#icon-"+htmlid).attr("title", "Asignar funcionario");
+                }else{
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).attr("title", "Reasignar funcionario");
+                }
+
+                //fa-solid fa-user-check
+                Swal.fire({
+                    icon: result.estatus,
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+            },
+            error: function(result) {
+                Swal.fire({
+                    icon: "error",
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 3000
+                });
+            }
+        });
+        */
+    }
+
+    ///////////////////////////////////7
 
     function listaFormularios() {
         $.ajaxSetup({
@@ -859,9 +1038,18 @@
                                             </button>
                                         </span>
                                     </td>
+                                    <td>
+                                        <button type="button" onclick="openSecRol(${ seccion.FORM_NID })" title="Asignar Roles" class="btn btn-link">
+                                            <i class="fa-solid fa-user-check" style="color: black"></i>
+                                        </button>
+                                    </td>
+
+
+
+
+                                    
                                 </tr>`;
             });
-
 
             tbody += '</tbody>';
             $('#divNombre').empty();
