@@ -210,15 +210,15 @@ Route::group(['prefix' => 'gestores'], function () {
 });
 
 Route::group(['prefix' => 'servidorespublicos'], function () {
-    Route::get('/', array('uses' => 'ServidorPublicoController@index'))->middleware("permiso");
-    Route::get('/listar', array('uses' => 'ServidorPublicoController@listar'));
-    Route::get('/consultar', array('uses' => 'ServidorPublicoController@consultar'));
-    Route::get('/crear', array('uses' => 'ServidorPublicoController@crear'));
-    Route::post('/agregar', array('uses' => 'ServidorPublicoController@agregar'));
-    Route::get('/editar/{id}', array('uses' => 'ServidorPublicoController@editar'));
-    Route::post('/modificar', array('uses' => 'ServidorPublicoController@modificar'));
-    Route::get('/detalle/{id}', array('uses' => 'ServidorPublicoController@detalle'));
-    Route::get('/validar_correo/{StrCorreo}', array('uses' => 'ServidorPublicoController@validar_correo'));
+    Route::get('/', 'ServidorPublicoController@index')->middleware("permiso");
+    Route::get('/listar', 'ServidorPublicoController@listar');
+    Route::get('/consultar', 'ServidorPublicoController@consultar');
+    Route::get('/crear', 'ServidorPublicoController@crear');
+    Route::post('/agregar', 'ServidorPublicoController@agregar');
+    Route::get('/editar/{id}', 'ServidorPublicoController@editar');
+    Route::post('/modificar', 'ServidorPublicoController@modificar');
+    Route::get('/detalle/{id}', 'ServidorPublicoController@detalle');
+    Route::get('/validar_correo/{StrCorreo}', 'ServidorPublicoController@validar_correo');
     
     //Rutas Funcionarios
     Route::get('/getDepencencias', array('uses' => 'ServidorPublicoController@getDepencencias'));
