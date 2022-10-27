@@ -1732,6 +1732,13 @@
             var moduloselected = "{{ $tramite['modulo'] }}";
             localStorage.setItem("IdModuloSelected", moduloselected);
 
+            var estatusTram = "{{ $tramite['estatus'] }}";
+            var rolUser = "{{Auth::user()->TRAM_CAT_ROL->ROL_NIDROL}}";
+            if(estatusTram == 1 && rolUser == 2){
+                setInterval(function () {
+                    TRAM_AJX_AUTOGUARDAR()
+                }, 30000);
+            }
             // existeCita(idusuario, id, idtramiteAccede);
 
             if ($('#sincita_edificios') != undefined) {
@@ -2365,6 +2372,39 @@
                         footer: ''
                     });
                     $('#loading_save').hide();
+                }
+            });
+        };
+
+        function TRAM_AJX_AUTOGUARDAR() {
+            //$("#loading-text").html("Guardando...");
+            //$('#loading_save').show();
+
+            catalogos.forEach(element => {
+                let respuestas  = element.respuesta;
+                let id          = element.pregunta;
+                let valor       = [];
+
+                respuestas.forEach(item => {
+                    let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                    valor.push(obj);
+                });
+
+                $("#"+ id + "_input").val(JSON.stringify(valor));
+            });
+
+            $.ajax({
+                data: $('#frmForm').serialize(),
+                url: "/tramite_servicio/guardar",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    //console.log("guardado");
+                    //$('#loading_save').hide();
+                },
+                error: function(data) {
+                    //console.log("error guardar");
+                    //$('#loading_save').hide();
                 }
             });
         };
