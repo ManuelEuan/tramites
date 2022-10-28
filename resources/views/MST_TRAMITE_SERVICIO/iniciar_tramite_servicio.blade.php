@@ -24,9 +24,9 @@
                 <div class="col-12">
                     <!-- <div class="bg-white rounded-lg p-5 shadow"> -->
                     <div>
-                        <h2 class="h6 font-weight-bold text-center mb-4">Avance de Trámite</h2>
+                        <!--<h2 class="h6 font-weight-bold text-center mb-4">Avance de Trámite</h2>-->
                         <!-- Progress bar 1 -->
-                        <div class="progress_circle mx-auto" data-value='0'>
+                        <!--<div class="progress_circle mx-auto" data-value='0'>
                             <span class="progress_circle-left">
                                 <span class="progress_circle-bar border-primary"></span>
                             </span>
@@ -36,7 +36,7 @@
                             <div class="progress_circle-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
                                 <div class="h2 font-weight-bold" style="color:#03A9F4 !important;">0<sup class="small">%</sup></div>
                             </div>
-                        </div>
+                        </div>-->
                         <!-- END -->
                     </div>
                 </div>
@@ -1550,7 +1550,7 @@
         if (!$("#frmForm").valid()){
             const full  = document.getElementsByClassName('full');
             const arr   = [...full].map(input => input.value);
-            console.log(arr)
+
             var divVal = "";
             arr.forEach(function(idDiv) {
                 divVal = $('#form_'+idDiv+' :input').valid()
@@ -1576,7 +1576,7 @@
         }else {
             const full  = document.getElementsByClassName('full');
             const arr   = [...full].map(input => input.value);
-            console.log(arr)
+
             var divVal = "";
             arr.forEach(function(idDiv) {
                 divVal = $('#form_'+idDiv+' :input').valid()
@@ -1606,7 +1606,7 @@
         $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
         const full  = document.getElementsByClassName('full');
             const arr   = [...full].map(input => input.value);
-            console.log(arr)
+
             var divVal = "";
             arr.forEach(function(idDiv) {
                 divVal = $('#form_'+idDiv+' :input').valid()
