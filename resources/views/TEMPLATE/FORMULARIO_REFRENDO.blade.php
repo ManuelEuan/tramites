@@ -305,17 +305,26 @@
                                             <p>
                                                 @if(count($pregunta->respuestas)>0)
                                                 <ul>
-                                                    <li>
-                                                        @if(isset($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->fecha))
-                                                        <label><b>Nombre:</b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->nombre}}, <b>Fecha: </b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->fecha}}</label>
-                                                        @else
-                                                        <label><b>Nombre:</b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->nombre}}</label>
+                                                        @if(isset($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]))
+                                                            @foreach($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA as $v)
+                                                            <li>
+                                                                @if(isset($v->fecha))
+                                                                    <label><b>Nombre:</b> {{$v->nombre}}, <b>Fecha:</b> {{$v->fecha}}</label>
+                                                                    <br>
+                                                                    <label><b>Descripción</b> {{$v->descripcion}}</label>
+                                                                    <br>
+                                                                @else
+                                                                    <label><b>Nombre:</b> {{$v->nombre}}</label>
+                                                                    <br>
+                                                                    <label><b>Descripción</b> {{$v->descripcion}}</label>
+                                                                    <br>
+                                                                @endif
+                                                            </li>
+                                                            @endforeach
                                                         @endif
-                                                        <br>
-                                                        <label><b>Descripción:</b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->descripcion}}</label>
-                                                    </li>
-                                                @endif
                                                 </ul>
+                                                @endif
+                                                
                                             </p>
                                         @endforeach
                                     </div>
