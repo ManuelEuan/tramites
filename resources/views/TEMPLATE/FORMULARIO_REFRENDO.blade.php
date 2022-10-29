@@ -138,6 +138,7 @@
             </thead>
         </table>
         <br>
+        <?php $tipoPer = Auth::user()->USUA_NTIPO_PERSONA; ?>
         <table style="width:100%;">
             <thead>
                 <tr>
@@ -151,13 +152,13 @@
                     <td>
                         <div style="padding-left: 50px;">
                             <label>Inscripción</label><input type="checkbox">
-                            <label>Refrendo</label><input type="checkbox">
+                            <label>Refrendo</label><input type="checkbox" checked>
                         </div>
                     </td>
                     <td>
                         <div style="padding-left: 50px;">
-                            <label>Persona Física</label><input type="checkbox">
-                            <label>Persona Moral</label><input type="checkbox">
+                            <label>Persona Física</label><input type="checkbox" <?php if ($tipoPer == 'FISICA') { echo 'checked';  } ?>>
+                            <label>Persona Moral</label><input type="checkbox" <?php if ($tipoPer == 'MORAL') { echo 'checked';  } ?>>
                         </div>
                     </td>
                     <td>
