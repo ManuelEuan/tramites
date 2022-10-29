@@ -508,7 +508,7 @@
                                                     </form>
 
                                                     @if($seccion->SSEGTRA_PAGADO == 0)
-                                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
+                                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == "ANTA")
                                                             <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;" {{($tramite->USTR_NESTATUS != 5)? "disabled" : ""}}>Guardar</button>
                                                         @else
                                                             <button type="submit" class="btn btn-success float-right" style="margin-right:10px;" disabled title="No disponible">Guardar</button>
@@ -589,7 +589,7 @@
                                                                 <div class="col-md-12">
                                                                     <div class="col-md-12 mt-5 contenedorBtn">
                                                                         <div class="text-right botones">
-                                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
+                                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == "ANTA")
                                                                                 <button onclick="TRAM_FN_APROBAR_PAGO({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" class="btn btn-success border btnLetras">Aprobar</button>
                                                                             @else
                                                                                 <button  class="btn btn-success border btnLetras" disabled title="No disponible">Aprobar</button>
