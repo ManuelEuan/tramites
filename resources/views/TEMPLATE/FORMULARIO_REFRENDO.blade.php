@@ -107,7 +107,7 @@
 
 
         .formulario_ {
-            background-color: #e0e0e0;
+            
             border: 1px solid #dddddd;
             text-align: left;
             padding: 8px;
@@ -132,7 +132,7 @@
         <table>
             <thead>
                 <tr>
-                    <th style="padding-right: 150px;">logo</th>
+                    <th style="padding-right: 150px;"><img src="{{ asset('assets/template/img/logopdf.png') }}" width="200 " height="47"></th>
                     <th><center>{{$tramite->USTR_CNOMBRE_TRAMITE}}</center></th>
                 </tr>
             </thead>
@@ -141,7 +141,7 @@
         <table style="width:100%;">
             <thead>
                 <tr>
-                    <th style="font-size:18px;"><center>Inscripcion</center></th>
+                    <th style="font-size:18px;"><center>Inscripción</center></th>
                     <th style="font-size:18px;"><center>Contribuyente</center></th>
                     <th style="font-size:18px;"><center>Ubicación</center></th>
                 </tr>
@@ -151,7 +151,7 @@
                     <td>
                         <div style="padding-left: 50px;">
                             <label>Inscripción</label><input type="checkbox">
-                            <label>Inscripción</label><input type="checkbox">
+                            <label>Refrendo</label><input type="checkbox">
                         </div>
                     </td>
                     <td>
@@ -305,13 +305,15 @@
                                             <p>
                                                 @if(count($pregunta->respuestas)>0)
                                                 <ul>
-                                                    @foreach ($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA  as $item)
-                                                        @if(isset($item->fecha))
-                                                            <li>{{$item->nombre}}, fecha: {{$item->fecha}} </li>
+                                                    <li>
+                                                        @if(isset($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->fecha))
+                                                        <label><b>Nombre:</b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->nombre}}, <b>Fecha: </b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->fecha}}</label>
                                                         @else
-                                                            <li>{{$item->nombre}}</li>
+                                                        <label><b>Nombre:</b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->nombre}}</label>
                                                         @endif
-                                                    @endforeach
+                                                        <br>
+                                                        <label><b>Descripción:</b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->descripcion}}</label>
+                                                    </li>
                                                 @endif
                                                 </ul>
                                             </p>

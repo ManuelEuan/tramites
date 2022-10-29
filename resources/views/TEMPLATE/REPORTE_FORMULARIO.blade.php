@@ -258,7 +258,15 @@
                                 <p>
                                     @if(count($pregunta->respuestas)>0)
                                     <ul>
-                                        <li>{{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA}}</li>
+                                        <li>
+                                            @if(isset($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->fecha))
+                                            <label><b>Nombre:</b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->nombre}}, <b>Fecha: </b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->fecha}}</label>
+                                            @else
+                                            <label><b>Nombre:</b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->nombre}}</label>
+                                            @endif
+                                            <br>
+                                            <label><b>Descripción:</b> {{$pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]->descripcion}}</label>
+                                        </li>
                                     @endif
                                     </ul>
                                 </p>
