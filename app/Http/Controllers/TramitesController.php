@@ -1136,7 +1136,7 @@ class TramitesController extends Controller
             $folio = $folio[0] . '_' . $folio[1];
             //$fileName = 'TRAM_' . $folio  . '.zip';
             $fileName = 'TRAM_' . $tramite->USTR_CRFC  . '.zip';
-
+            File::delete($pathPdf . '/' . $fileName);
 
             //Obtenemos documentos del trámite
             $listDocumentos = DB::select('SELECT * FROM tram_mdv_usuariordocumento WHERE USDO_NIDUSUARIOTRAMITE = ?', array($id));
