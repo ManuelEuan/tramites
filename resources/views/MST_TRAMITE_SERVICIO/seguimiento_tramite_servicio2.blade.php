@@ -209,6 +209,7 @@
                                                                                     width="20" height="20"></span>
                                                                             @endif
                                                                         </span>
+                                                                        <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                                                     </div>
                                                                 @elseif($_cont == $total_sec_form - 1)
                                                                     @if (count($tramite['configuracion']['documentos']) == 0)
@@ -233,6 +234,7 @@
                                                                                 @endif
 
                                                                             </span>
+                                                                            <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                                                         </div>
                                                                     @else
                                                                         <div class="step step_form"
@@ -266,6 +268,7 @@
                                                                                     @endif
                                                                                 @endif
                                                                             </span>
+                                                                            <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                                                         </div>
                                                                     @endif
                                                                 @else
@@ -284,6 +287,7 @@
                                                                                         width="20" height="20"></span>
                                                                             @endif
                                                                         </span>
+                                                                        <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                                                     </div>
                                                                 @endif
                                                                 <?php $_cont++; ?>
@@ -313,6 +317,7 @@
                                                             <span><img src="{{ asset('assets/template/img/check.png') }}"
                                                                     width="20" height="20"></span>
                                                         @endif
+                                                        <input class="full" type="hidden" value="0">
                                                     </span>
                                                 </div>
                                             @endif
@@ -1732,6 +1737,13 @@
             var moduloselected = "{{ $tramite['modulo'] }}";
             localStorage.setItem("IdModuloSelected", moduloselected);
 
+            var estatusTram = "{{ $tramite['estatus'] }}";
+            var rolUser = "{{Auth::user()->TRAM_CAT_ROL->ROL_NIDROL}}";
+            if(estatusTram == 1 && rolUser == 2){
+                setInterval(function () {
+                    TRAM_AJX_AUTOGUARDAR()
+                }, 30000);
+            }
             // existeCita(idusuario, id, idtramiteAccede);
 
             if ($('#sincita_edificios') != undefined) {
@@ -2269,6 +2281,7 @@
             $(".txtEnriquecido").each(function() {
                 var id = this.id;
                 var editor_val = CKEDITOR.instances[id].getData();
+                
 
                 if (editor_val == "" || editor_val == null) {
                     $("#error_" + id).html('<label><span style="color: red;">¡Error!</span> Es requerido</label>');
@@ -2277,6 +2290,20 @@
                 }
             });
             if (!$("#frmForm").valid()) {
+                const full  = document.getElementsByClassName('full');
+                const arr   = [...full].map(input => input.value);
+                var divVal = "";
+                arr.forEach(function(idDiv) {
+                    divVal = $('#form_'+idDiv+' :input').valid()
+                    $("#form_seccion_"+idDiv).empty();
+                    if(!divVal){
+                        $("#form_seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                    }else{
+                        $("#form_seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                    }
+
+                })
+
                 $(".btnEnviar").hide();
                 Swal.fire({
                     title: '¡Aviso!',
@@ -2288,6 +2315,23 @@
                 });
                 return;
             } else {
+
+                const full  = document.getElementsByClassName('full');
+                const arr   = [...full].map(input => input.value);
+                console.log("arr " + arr)
+                var divVal = "";
+                arr.forEach(function(idDiv) {
+                    console.log("idDiv " + idDiv)
+                    divVal = $('#form_'+idDiv+' :input').valid()
+                    $("#form_seccion_"+idDiv).empty();
+                    if(!divVal){
+                        $("#form_seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                    }else{
+                        $("#form_seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                    }
+
+                })
+
                 Swal.fire({
                     title: '',
                     text: 'El formulario ha sido completado, y está listo para enviar a revisión.',
@@ -2330,6 +2374,21 @@
             $("#loading-text").html("Guardando...");
             $('#loading_save').show();
 
+            const full  = document.getElementsByClassName('full');
+            const arr   = [...full].map(input => input.value);
+
+            var divVal = "";
+            arr.forEach(function(idDiv) {
+                divVal = $('#form_'+idDiv+' :input').valid()
+                $("#form_seccion_"+idDiv).empty();
+                if(!divVal){
+                    $("#form_seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                }else{
+                    $("#form_seccion_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                }
+
+            })
+
             catalogos.forEach(element => {
                 let respuestas  = element.respuesta;
                 let id          = element.pregunta;
@@ -2365,6 +2424,39 @@
                         footer: ''
                     });
                     $('#loading_save').hide();
+                }
+            });
+        };
+
+        function TRAM_AJX_AUTOGUARDAR() {
+            //$("#loading-text").html("Guardando...");
+            //$('#loading_save').show();
+
+            catalogos.forEach(element => {
+                let respuestas  = element.respuesta;
+                let id          = element.pregunta;
+                let valor       = [];
+
+                respuestas.forEach(item => {
+                    let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                    valor.push(obj);
+                });
+
+                $("#"+ id + "_input").val(JSON.stringify(valor));
+            });
+
+            $.ajax({
+                data: $('#frmForm').serialize(),
+                url: "/tramite_servicio/guardar",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    //console.log("guardado");
+                    //$('#loading_save').hide();
+                },
+                error: function(data) {
+                    //console.log("error guardar");
+                    //$('#loading_save').hide();
                 }
             });
         };
