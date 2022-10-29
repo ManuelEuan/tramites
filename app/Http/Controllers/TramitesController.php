@@ -1018,7 +1018,8 @@ class TramitesController extends Controller
             $tramite_ = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
             $configuracion =  $tramite_;
             $USTR_NIDUSUARIOTRAMITE = $tramite_['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
-
+            //ObtenerTipoPersona
+            $arrayPer['tipoPer'] = $tramite_['tramite'][0]->USTR_CTIPO_PERSONA;
             //Respuestas
             $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->orderBy('USRE_NIDUSUARIORESP','DESC')->get();
             foreach ($configuracion['formularios'] as $form) {
@@ -1111,9 +1112,9 @@ class TramitesController extends Controller
             $pdf->getDomPDF()->set_option("enable_php", true);
             $pdf->setPaper("letter", "portrait");
             if($tramite->USTR_CNOMBRE_TRAMITE == $nombreT){
-                $pdf->loadView('TEMPLATE.FORMULARIO_REFRENDO', compact('tramite', 'formularios'));
+                $pdf->loadView('TEMPLATE.FORMULARIO_REFRENDO', compact('tramite', 'formularios', 'arrayPer'));
             }else{
-                $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios'));
+                $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios', 'arrayPer'));
             }
             
             //return $pdf->download('Formulario.pdf');

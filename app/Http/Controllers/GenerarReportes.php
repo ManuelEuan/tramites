@@ -1099,6 +1099,7 @@ class GenerarReportes extends Controller
                         $tramite_ = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id->USTR_NIDUSUARIOTRAMITE);
                         $configuracion =  $tramite_;
                         $USTR_NIDUSUARIOTRAMITE = $tramite_['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
+                        $arrayPer['tipoPer'] = $tramite_['tramite'][0]->USTR_CTIPO_PERSONA;
         
                         $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->orderBy('USRE_NIDUSUARIORESP','DESC')->get();
         
@@ -1177,9 +1178,9 @@ class GenerarReportes extends Controller
                         $pdf->setPaper("letter", "portrait");
                         //$pdf->loadHTML('<h1>Styde.net</h1>');
                         if($tramite->USTR_CNOMBRE_TRAMITE == $nombreT){
-                            $pdf->loadView('TEMPLATE.FORMULARIO_REFRENDO', compact('tramite', 'formularios'));
+                            $pdf->loadView('TEMPLATE.FORMULARIO_REFRENDO', compact('tramite', 'formularios', 'arrayPer'));
                         }else{
-                            $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios'));
+                            $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios', 'arrayPer'));
                         }
                         //return $pdf->download('Formulario.pdf');
         

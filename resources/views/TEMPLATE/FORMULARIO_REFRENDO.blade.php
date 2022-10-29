@@ -138,7 +138,8 @@
             </thead>
         </table>
         <br>
-        <?php $tipoPer = Auth::user()->USUA_NTIPO_PERSONA; ?>
+        <?php $tipoPer = $arrayPer['tipoPer'] ?? ''; ?>
+
         <table style="width:100%;">
             <thead>
                 <tr>
