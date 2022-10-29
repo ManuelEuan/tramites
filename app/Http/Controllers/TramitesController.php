@@ -51,7 +51,7 @@ class TramitesController extends Controller
         try {
 
             ## Read value
-            $draw = $request->get('draw');
+            /* $draw = $request->get('draw');
             $start = $request->get("start");
             $rowperpage = $request->get("length"); // Rows display per page
 
@@ -102,17 +102,19 @@ class TramitesController extends Controller
             $tramite_seguimiento->direccionOrden = $filter['StrOrdenColumna'] === null ? 'desc' :  $filter['StrOrdenDir'];
 
             //Validar tipo de usuario
+            */
+            $tramite_seguimiento = new Cls_Seguimiento_Servidor_Publico();
             if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE === 'ADM') {
                 $tramite_seguimiento->UsuarioID = 0;
             } else {
                 $tramite_seguimiento->UsuarioID = Auth::user()->USUA_NIDUSUARIO;
             }
-            /**
-             * !parte de la busqueda de las solicitudes
-             */
-            $result = $tramite_seguimiento->TRAM_SP_CONSULTAR_TRAMITES_SEGUIMIENTO();
-            $tramites = $result['result'];
-            $totalRegistros = $result['total'][0]->TotalRegistros;
+
+           // $result = $tramite_seguimiento->TRAM_SP_CONSULTAR_TRAMITES_SEGUIMIENTO();
+            $result         =  $this->tramiteService->listadoSeguimiento($request);
+
+            $tramites       = $result['result'];
+            $totalRegistros = $result['total'];
             $mostrar=[];
 
             if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE === 'ANTA'){
@@ -188,19 +190,18 @@ class TramitesController extends Controller
                 }
             }
             
-
             $response = [
-                'recordsTotal' => $totalRegistros,
-                'recordsFiltered' => $searchValue === null ? $totalRegistros : count($tramites),
-                'data' =>  $tramites,
-                'asignados' => $asignados
+                'recordsTotal'      => $totalRegistros,
+                'recordsFiltered'   => $totalRegistros,
+                'data'              =>  $tramites,
+                'asignados'         => $asignados
             ];
         } catch (\Throwable $th) {
             $response = [
-                'data' => [],
-                'error' => $th->getMessage(),
-                'code' => 400,
-                'mensaje' => 'Ocurrió un error al obtener trámites',
+                'data'      => [],
+                'error'     => $th->getMessage(),
+                'code'      => 400,
+                'mensaje'   => 'Ocurrió un error al obtener trámites',
             ];
         }
 
@@ -1104,12 +1105,17 @@ class TramitesController extends Controller
 
             $tramite        = $configuracion['tramite'][0];
             $formularios    =  $configuracion['formularios'][0];
-
+            $nombreT = "Refrendo al Padrón de Proveedores y Prestadores de Servicios del Poder Ejecutivo del Estado de Querétaro (Personas Físicas)";
             //Creacion de pdf
             $pdf = app('dompdf.wrapper');
             $pdf->getDomPDF()->set_option("enable_php", true);
             $pdf->setPaper("letter", "portrait");
-            $pdf->loadView('TEMPLATE.FORMULARIO_TRAMITE', compact('tramite', 'formularios'));
+            if($tramite->USTR_CNOMBRE_TRAMITE == $nombreT){
+                $pdf->loadView('TEMPLATE.FORMULARIO_REFRENDO', compact('tramite', 'formularios'));
+            }else{
+                $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios'));
+            }
+            
             //return $pdf->download('Formulario.pdf');
 
             //Se guardar el pdf
@@ -1130,7 +1136,7 @@ class TramitesController extends Controller
             $folio = $folio[0] . '_' . $folio[1];
             //$fileName = 'TRAM_' . $folio  . '.zip';
             $fileName = 'TRAM_' . $tramite->USTR_CRFC  . '.zip';
-
+            File::delete($pathPdf . '/' . $fileName);
 
             //Obtenemos documentos del trámite
             $listDocumentos = DB::select('SELECT * FROM tram_mdv_usuariordocumento WHERE USDO_NIDUSUARIOTRAMITE = ?', array($id));

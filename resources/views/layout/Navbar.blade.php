@@ -1,4 +1,4 @@
-<nav id="sidebar">
+<nav id="sidebar" class="">
     <div class="sidebar-header">
         <a class="navbar-brand" href="/">
             <img src="{{ asset('assets/template/img/menu.png') }}" width="40" height="40" class="align-top" alt="">

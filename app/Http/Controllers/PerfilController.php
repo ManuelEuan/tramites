@@ -2,83 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\User;
+use DateTime;
+use Exception;
 use App\Cls_Rol;
 use App\Cls_Usuario;
-use App\Cls_Usuario_Documento;
-use App\Cls_Sucursal;
 use App\Cls_Bitacora;
-use Exception;
+use App\Cls_Sucursal;
+use Illuminate\Http\Request;
+use App\Cls_Usuario_Documento;
+use Illuminate\Support\Facades\Auth;
 
 class PerfilController extends Controller
-{ 
-    public function index(Request $request)
-    {
-        $ObjAuth = Auth::user();
-        if ($ObjAuth == null) {
-            return view('MSTP_LOGIN.index');
-        }
-        $docsUser = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
-        $docsUpdates = Cls_Usuario::getDocsUser($ObjAuth->USUA_NIDUSUARIO);
-        $hoy = date('Y-m-d');
-        $data = array();
+{
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
+    public function index(Request $request) {
+        $usuario        = Auth::user();
+        $docsUser       = Cls_Usuario::getTipoDocs($usuario->USUA_NTIPO_PERSONA);
+        $docsUpdates    = Cls_Usuario::getDocsUser($usuario->USUA_NIDUSUARIO);
+        $hoy            = date('Y-m-d');
+        $data           = array();
+
         foreach ($docsUser as $key => $i) {
-            $tiene = false;
-            $peso = '';
-            $estatus = '';
-            $idDoc = '';
+            $tiene  = false;
+            $peso   = '';
+            $estatus= '';
+            $idDoc  = '';
+
             foreach ($docsUpdates as $key => $j) {
                 if ($j->ID_CDOCUMENTOS == $i->id) {
-                    $tiene = true;
-                    $peso = $j->PESO;
-                    $estatus = $j->estatus;
-                    $idDoc = $j->id;
+                    $tiene      = true;
+                    $peso       = $j->PESO;
+                    $estatus    = $j->estatus;
+                    $idDoc      = $j->id;
                 }
             }
+
             $data[] = array(
-                'id' => $i->id,
-                'tipo' => $i->NOMBRE,
+                'id'        => $i->id,
+                'tipo'      => $i->NOMBRE,
                 'extension' => 'pdf',
                 'obligatorio' => '',
-                'ruta' => '',
-                'tiene' => $tiene,
-                'peso' => $peso,
-                'estatus' => $estatus,
-                'idDoc' => $idDoc
+                'ruta'      => '',
+                'tiene'     => $tiene,
+                'peso'      => $peso,
+                'estatus'   => $estatus,
+                'idDoc'     => $idDoc
             );
         }
-        $ObjAuth['documentos'] = $data;
-        // var_dump(($ObjAuth['documentos']));
-        // exit();
-        return view('MST_PERFIL.index', compact('ObjAuth')); 
+
+        $usuario['documentos'] = $data;
+        return view('MST_PERFIL.index', compact('usuario'));
     }
     public function listarDocs(){
-
-    
-        $ObjAuth = Auth::user();
-        $docsUser = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
+        $ObjAuth    = Auth::user();
+        $docsUser   = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
         $docsUpdates = Cls_Usuario::getDocsUser($ObjAuth->USUA_NIDUSUARIO);
-        $data = array();
-        $hoy = date('Y-m-d');
+        $data       = array();
+        $hoy        = date('Y-m-d');
+
         foreach ($docsUser as $key => $i) {
-            $tiene = false;
-            $peso = '';
-            $estatus = '';
-            $icono = '';
-            $idDoc = '';
+            $tiene  = false;
+            $peso   = '';
+            $estatus= '';
+            $icono  = '';
+            $idDoc  = '';
             $btnRemplazar = '';
             $vencido = '';
 
-            
+
             foreach ($docsUpdates as $key => $j) {
                 if ($j->ID_CDOCUMENTOS == $i->id) {
                     $tiene = true;
-                    $peso = (intval($j->PESO) / 1024).' KB';
+                    $peso = round((intval($j->PESO) / 1024),2).' KB';
                     $estatus = $j->estatus;
                     $idDoc = $j->id;
                     $url = $j->ruta;
-                    
+
                     ///ESTATUS ultimo dosc actualizado
                     $estatusDOCSa='';$id_docs_ACT='';$idusrBase='';
                     $docs_u = Cls_Usuario::getTipoDocsACT($j->ID_USUARIO, $i->NOMBRE);
@@ -99,7 +102,7 @@ class PerfilController extends Controller
                     if($j->isActual == 1){
                         if($j->VIGENCIA_FIN != ''){
                             if($j->VIGENCIA_FIN < $hoy){
-                                $btnRemplazar = '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
+                                $btnRemplazar = '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" />
                                 <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'"
                                  class="btn btn-success"><i class="fa fa-plus"></i></button>';
                                 $vencido = '<span>Vencido</span><br>'.$vg_FIN;
@@ -124,22 +127,23 @@ class PerfilController extends Controller
                         $det_btn_click = 'style="opacity:0"';
                     };
                     //$icono = $icono.'-->'.$iiii;
-                    
+
                 }
             }
+
             $data[] = array(
                 '0' => $i->NOMBRE,
                 '1' => $peso,
                 '2' => $icono,
                 '3' => $vencido,
-                '4' => ($tiene) ? $btnRemplazar.' 
+                '4' => ($tiene) ? $btnRemplazar.'
                 <button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button>
-                <a class="btn btn-primary" href="/'.$url.'" Target="_blank"><i class="fa fa-eye"></i></a> 
                 <button '.$det_btn_click.' title="Eliminar documento" class="btn '.$det_btn_color.'"><i class="fa fa-times"></i></button>
-                </td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
+                </td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" />
                 <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>'
             );
         }
+
         $results = array(
             "sEcho"=>1, //Información para el datatables
             "iTotalRecords"=>count($data), //enviamos el total registros al datatable
@@ -149,7 +153,7 @@ class PerfilController extends Controller
         return json_encode($results);
     }
     /**
-     * 
+     *
      */
     public function listarResolutivos(){
         $ObjAuth = Auth::user();
@@ -167,7 +171,7 @@ class PerfilController extends Controller
             // $vencido = '';
             $peso = $i->USRE_NPESO / 8000;
             $peso = number_format($peso, 2);
-            
+
             $data[] = array(
                 '0' => date("d-m-Y", strtotime($i->created_at)),
                 '1' => '<p>'.$i->TRAM_CNOMBRE.'</p>',
@@ -182,10 +186,10 @@ class PerfilController extends Controller
             //     '1' => $peso,
             //     '2' => $icono,
             //     '3' => $vencido,
-            //     '4' => ($tiene) ? $btnRemplazar.' 
-            //     <button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button> 
+            //     '4' => ($tiene) ? $btnRemplazar.'
+            //     <button title="Ver archivo" class="btn btn-primary" onclick="verHDocs('.$i->id.')"><i class="fa fa-eye"></i></button>
             //     <button '.$det_btn_click.' title="Eliminar documento" class="btn '.$det_btn_color.'"><i class="fa fa-times"></i></button>
-            //     </td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" /> 
+            //     </td>': '<input class="fileadd" type="file" name="doc'.$i->id.'" style="display:none;" />
             //     <button type="button" onclick="guardarDoc('.$i->id.',event)" title="Guardar archivo" id="btn'.$i->id.'" class="btn btn-success"><i class="fa fa-plus"></i></button>'
             // );
         }
@@ -197,6 +201,7 @@ class PerfilController extends Controller
 
         return json_encode($results);
     }
+    
     public function modificar(Request $request)
     {
         $response = [];
@@ -249,7 +254,7 @@ class PerfilController extends Controller
                 'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " . $e->getMessage()
             ];
         }
-        
+
 
         return Response()->json($response);
     }
@@ -394,10 +399,10 @@ class PerfilController extends Controller
              if($P_NESTATUS==1){$TXT_STAT='Rechazado';};
              if($P_NESTATUS==2){$TXT_STAT='';};
             $data[] = array(
-                '0' => $numero, 
+                '0' => $numero,
                 '1' => '<a href="'.asset('').$i->USDO_CRUTADOC. '" target="_blank">'.$i->USDO_CDOCNOMBRE.'</a>',
-                '2' => $TXT_STAT,  
-                '3' => '' 
+                '2' => $TXT_STAT,
+                '3' => ''
             );
         }
         $results = array(
@@ -418,10 +423,11 @@ class PerfilController extends Controller
             $nombre = explode("/", $i->ruta);
             $ultimo = count($nombre) - 1;
             $numero = $key + 1;
+            $fecha = new DateTime($i->create_at);
             $data[] = array(
                 '0' => $numero,
                 '1' => '<a href="' . asset('').$i->ruta . '" target="_blank">'. $nombre[$ultimo] . '</a>',
-                '2' => $i->create_at,
+                '2' => $fecha->format('d-m-Y'),
             );
         }
         $results = array(

@@ -24,9 +24,9 @@
                 <div class="col-12">
                     <!-- <div class="bg-white rounded-lg p-5 shadow"> -->
                     <div>
-                        <h2 class="h6 font-weight-bold text-center mb-4">Avance de Trámite</h2>
+                        <!--<h2 class="h6 font-weight-bold text-center mb-4">Avance de Trámite</h2>-->
                         <!-- Progress bar 1 -->
-                        <div class="progress_circle mx-auto" data-value='0'>
+                        <!--<div class="progress_circle mx-auto" data-value='0'>
                             <span class="progress_circle-left">
                                 <span class="progress_circle-bar border-primary"></span>
                             </span>
@@ -36,7 +36,7 @@
                             <div class="progress_circle-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
                                 <div class="h2 font-weight-bold" style="color:#03A9F4 !important;">0<sup class="small">%</sup></div>
                             </div>
-                        </div>
+                        </div>-->
                         <!-- END -->
                     </div>
                 </div>
@@ -172,7 +172,7 @@
         </div>
     </div>
     <br>
-
+    <?php $arrayClabe = array('Clabe', 'interbancaria', '18', 'clabe', 'clave'); ?>
     <div class="row seccion-tramite" style="display: none !important;">
         <div class="card" style="width: 100%; border-radius:20px;" id="sec_form">
             <div class="card-header" style="background-color: #ffffff; border-top-left-radius: 20px; border-top-right-radius: 20px;">
@@ -187,18 +187,22 @@
                                         @if($cont == 0)
                                             <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" 
                                             style="border-top-left-radius: 15px; border-bottom-left-radius: 15px;"> 
-                                            <span>{{$sec->FORM_CNOMBRE}} </span> </div>
+                                            <span>{{$sec->FORM_CNOMBRE}} </span> <span id="span_{{$sec->FORM_NID}}"></span> </div>
+                                            <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                         @elseif($cont == $total - 1)
                                             @if(count($tramite['configuracion']['documentos']) == 0)
                                                 <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}" 
                                                 style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> 
-                                                <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                                <span>{{$sec->FORM_CNOMBRE}}</span> <span id="span_{{$sec->FORM_NID}}"></span> </div>
+                                                <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                             @else
                                                 <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> 
-                                                    <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                                    <span>{{$sec->FORM_CNOMBRE}}</span> <span id="span_{{$sec->FORM_NID}}"></span> </div>
+                                                    <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                             @endif
                                         @else
-                                            <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> <span>{{$sec->FORM_CNOMBRE}}</span> </div>
+                                            <div class="step" id="seccion_{{$sec->FORM_NID}}" data-seccion="{{$sec->FORM_NID}}"> <span>{{$sec->FORM_CNOMBRE}}</span> <span id="span_{{$sec->FORM_NID}}"></span> </div>
+                                            <input class="full" type="hidden" value="{{$sec->FORM_NID}}">
                                         @endif
                                         <?php $cont++; ?>
                                     @endif
@@ -207,7 +211,8 @@
                         @endforeach
                     @endif
                     @if(count($tramite['configuracion']['documentos'])> 0)
-                        <div class="step" id="seccion_0" data-seccion="0" style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> <span>Documentos</span> </div>
+                        <div class="step" id="seccion_0" data-seccion="0" style="border-top-right-radius: 15px; border-bottom-right-radius: 15px;"> <span>Documentos</span> <span id="span_0"></span> </div>
+                        <input class="full" type="hidden" value="0">
                     @endif
                 </div>
             </div>
@@ -344,7 +349,12 @@
                                                                                             <div class="form-group">
                                                                                                 @if($resp->respuestas_especial > 0)
                                                                                                     @foreach($resp->respuestas_especial as $resp_esp)
+                                                                                                    <?php $division = explode(" ", $resp->FORM_CVALOR); ?>
+                                                                                                        @if(in_array('Clabe', $division) || in_array('interbancaria', $division) || in_array('clabe', $division) || in_array('clave', $division))
+                                                                                                        <input type="text" pattern="\d*" class="form-control" name="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" id="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" placeholder="{{$resp->FORM_CVALOR}}" maxlength="18" onkeyup="this.value=this.value.replace(/[^\d]/,'')" required>
+                                                                                                        @else
                                                                                                         <input type="number" class="form-control" name="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" id="especial_{{$preg->FORM_NID}}_{{$resp->FORM_NID}}" placeholder="{{$resp->FORM_CVALOR}}" required>
+                                                                                                        @endif
                                                                                                     @endforeach
                                                                                                 @endif
                                                                                             </div>
@@ -536,12 +546,12 @@
                                             
                                             <?php echo $otrotest;?>
                                             {{$doc->TRAD_CNOMBRE}}
-                                            
-                                            
 
                                                 @if($doc->TRAD_NOBLIGATORIO == 1 )
                                                     <span class="text-danger">*</span>
                                                 @endif
+                                            <br>
+                                            <p style="font-size: 12px;color: red;"><b>5Mb máximo</b></p>
                                             </td>
                                             <!-- Aqui -->
                                                 @if(count($descripcion)> 0)
@@ -1301,8 +1311,27 @@
             var doctype = $(this).data("doctype");
             var formData = new FormData();
             var files = $("#" + id)[0].files[0];
+            var size = $("#" + id)[0].files[0].size;
+            var kb = (size / 1024)
+            var mb = (kb / 1024)
+ 
             formData.append('file',files);
             formData.append('doctype',doctype);
+            if(mb.toFixed(3) > 5){
+                return  Swal.fire({ 
+                            title: 'Error!',
+                            text: 'El archivo debe de pesar menos de 5Mb',
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        })
+            }
+            Swal.fire({
+                position: 'center',
+                icon: 'info',
+                title: 'Cargando documento',
+                showConfirmButton: false,
+                timer: 1500
+            })
 
             $.ajax({
                 url: '/tramite_servicio/subir_documento',
@@ -1312,6 +1341,13 @@
                 processData: false,
                 success: function(response) {
                     if(response.extension=="pdf"){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Listo!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         $("#docs_" + id).val(response.path + "_" + response.extension + "_" + response.size+"_"+response.typename);
                         $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
                         
@@ -1512,6 +1548,21 @@
             }
         });
         if (!$("#frmForm").valid()){
+            const full  = document.getElementsByClassName('full');
+            const arr   = [...full].map(input => input.value);
+
+            var divVal = "";
+            arr.forEach(function(idDiv) {
+                divVal = $('#form_'+idDiv+' :input').valid()
+                $("#span_"+idDiv).empty();
+                if(!divVal){
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                }else{
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                }
+
+            })
+
             $("#btnEnviar").hide();
             Swal.fire({
                 title: '¡Aviso!',
@@ -1523,6 +1574,20 @@
             });
             return;
         }else {
+            const full  = document.getElementsByClassName('full');
+            const arr   = [...full].map(input => input.value);
+
+            var divVal = "";
+            arr.forEach(function(idDiv) {
+                divVal = $('#form_'+idDiv+' :input').valid()
+                $("#span_"+idDiv).empty();
+                if(!divVal){
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                }else{
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                }
+
+            })
             Swal.fire({
                 title: '',
                 text: 'El formulario ha sido completado, y está listo para enviar a revisión.',
@@ -1539,7 +1604,20 @@
         $("#loading-text").html("Guardando...");
         $('#loading_save').show();
         $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
-       
+        const full  = document.getElementsByClassName('full');
+            const arr   = [...full].map(input => input.value);
+
+            var divVal = "";
+            arr.forEach(function(idDiv) {
+                divVal = $('#form_'+idDiv+' :input').valid()
+                $("#span_"+idDiv).empty();
+                if(!divVal){
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                }else{
+                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                }
+
+            })
         catalogos.forEach(element => {
             let respuestas  = element.respuesta;
             let id          = element.pregunta;

@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Cls_Citas_Calendario;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use App\Models\Cls_PersonaFisicaMoral;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Cls_Seguimiento_Servidor_Publico;
@@ -50,6 +49,7 @@ class TramiteServicioController extends Controller
      * Construct Gestor
      */
     public function __construct() {
+        session(['retys' => request()->path()]);
         $this->middleware('auth');
         $this->tramiteService   = new TramiteService();
         $this->gestorService    = new GestorService();
@@ -229,8 +229,13 @@ class TramiteServicioController extends Controller
         $objTramite     = $this->tramiteService->getTramite($detalle->TRAM_NIDTRAMITE_ACCEDE);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
         $arrayDocumentos = [];
-        foreach($arrayDetalle['documentos'] as $documento) {
-            $array = array($documento->Description, $documento->Name);
+        foreach($arrayDetalle['documentos'] as $key => $documento) {
+            if(isset($arrayDetalle['requisitos'][$key]->Description)){
+                $desc = $arrayDetalle['requisitos'][$key]->Description;
+            }else{
+                $desc = $documento->Description;
+            }
+            $array = array($desc, $documento->Name);
             array_push($arrayDocumentos, $array);
         }
         $descripcion = $arrayDocumentos;

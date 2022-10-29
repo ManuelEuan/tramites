@@ -37,11 +37,11 @@
     <div class="wrapper">
         @if(Auth::user() != null)
         @include('layout.Navbar')
-
+ 
         <div id="content">
-            <nav class="navbar navbar-expand-lg navbar-light lighten-4 ">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="float-left" id="sidebarCollapse">
-                    <a class="button-collapse" href="#!" data-activates="slide-out"><i class="fas fa-bars fa-lg"></i></a>
+                    <a class="button-collapse" href="#" data-toggle="collapse" data-activates="slide-out" class="dropdown-toggle"><i class="fas fa-bars fa-lg"></i></a>
                 </div>
 
                 <!-- Breadcrumb-->
@@ -67,7 +67,7 @@
                                 <i class="far fa-bell"></i>
                                 <span id="spanNotificacion" class="badge badge-warning navbar-badge" style="font-size: .6rem; font-weight: 300; padding: 2px 4px; position: absolute; left: 16px; top: 9px;"></span>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right" style="max-width: 480px; min-width: 480px; padding: 0;">
+                            <div id="divValidacion" class="dropdown-menu dropdown-menu-right" style="max-width: 480px; min-width: 480px; padding: 0;">
                                 <div style="max-height: 420px; overflow: auto;">
                                     <div id="seccionNotificacion" style="margin-top: 50px; margin-bottom:50px;text-align: center"> Sin Notificaciones </div>
                                 </div>
@@ -289,8 +289,25 @@
         </noscript>
             
     <script>
+        $(document).ready(function () {
+
+           /* $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });*/
+
+        });
         $(function() {
             getNotificaciones();
+            /*const isMobile = navigator.userAgentData.mobile;
+            var tamanio = document.getElementById("divValidacion");
+            if(isMobile){
+                tamanio.style.removeProperty("min-width");
+            }else{
+                tamanio.style.removeProperty("min-width");
+                tamanio.style.removeProperty("max-width");
+                tamanio.style.removeProperty("padding");
+                tamanio.style = "max-width: 480px; min-width: 480px; padding: 0;";
+            }*/
         });
 
         function formateo(date) {
