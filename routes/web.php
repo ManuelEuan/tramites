@@ -241,6 +241,7 @@ Route::get('/generar', 'GenerarReportes@gentreporte');
 Route::post('/generarZip', 'GenerarReportes@generarZip');
 
 Route::post('/validar_pago_queretaro', 'TramiteServicioController@validarPagoQueretaro');
+Route::post('/generar_orden_pago', 'TramiteServicioController@generarOrdenPagoQueretaro');
 
 
 /**
