@@ -1020,7 +1020,7 @@ class TramitesController extends Controller
             $USTR_NIDUSUARIOTRAMITE = $tramite_['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
 
             //Respuestas
-            $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->orderBy('USRE_NIDUSUARIORESP','DESC')->get();
+            $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->orderBy('created_at','ASC')->get();
             foreach ($configuracion['formularios'] as $form) {
                 foreach ($form->secciones as $sec) {
                     foreach ($sec->preguntas as $preg) {
