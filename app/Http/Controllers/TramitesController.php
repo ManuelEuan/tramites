@@ -1107,11 +1107,15 @@ class TramitesController extends Controller
             $tramite        = $configuracion['tramite'][0];
             $formularios    =  $configuracion['formularios'][0];
             $nombreT = "Refrendo al Padrón de Proveedores y Prestadores de Servicios del Poder Ejecutivo del Estado de Querétaro (Personas Físicas)";
+            $nombreT2 = "Refrendo al Padrón de Proveedores y Prestadores de Servicios del Poder Ejecutivo del Estado de Querétaro (Persona Moral)";
+            $nombreT3 = "Inscripción al Padrón de Proveedores y Prestadores de Servicios del Poder Ejecutivo del Estado de Querétaro (Persona moral)";
+            $nombreT4 = "Inscripción al Padrón de Proveedores y Prestadores de Servicios del Poder Ejecutivo del Estado de Querétaro (Persona física)";
+                        
             //Creacion de pdf
             $pdf = app('dompdf.wrapper');
             $pdf->getDomPDF()->set_option("enable_php", true);
             $pdf->setPaper("letter", "portrait");
-            if($tramite->USTR_CNOMBRE_TRAMITE == $nombreT){
+            if(($tramite->USTR_CNOMBRE_TRAMITE == $nombreT) || ($tramite->USTR_CNOMBRE_TRAMITE == $nombreT2) ||($tramite->USTR_CNOMBRE_TRAMITE == $nombreT3) || ($tramite->USTR_CNOMBRE_TRAMITE == $nombreT4) ){
                 $pdf->loadView('TEMPLATE.FORMULARIO_REFRENDO', compact('tramite', 'formularios', 'arrayPer'));
             }else{
                 $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios', 'arrayPer'));

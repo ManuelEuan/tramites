@@ -145,15 +145,21 @@
                 <tr>
                     <th style="font-size:18px;"><center>Inscripción</center></th>
                     <th style="font-size:18px;"><center>Contribuyente</center></th>
-                    <th style="font-size:18px;"><center>Ubicación</center></th>
+                    <!-- <th style="font-size:18px;"><center>Ubicación</center></th> -->
+                    <th style="font-size:18px;"><center></center></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <div style="padding-left: 50px;">
-                            <label>Inscripción</label><input type="checkbox">
-                            <label>Refrendo</label><input type="checkbox" checked>
+                    <div style="padding-left: 50px;">
+                            @if(str_starts_with($tramite->USTR_CNOMBRE_TRAMITE,'Refrendo'))
+                                <label>Inscripción</label><input type="checkbox">
+                                <label>Refrendo</label><input type="checkbox" checked>
+                            @else
+                                <label>Inscripción</label><input type="checkbox" checked>
+                                <label>Refrendo</label><input type="checkbox">
+                            @endif
                         </div>
                     </td>
                     <td>
@@ -163,10 +169,10 @@
                         </div>
                     </td>
                     <td>
-                        <div style="padding-left: 50px;">
+                        <!-- <div style="padding-left: 50px;">
                             <label>Local</label><input type="checkbox">
                             <label>Foráneo</label><input type="checkbox">
-                        </div>
+                        </div> -->
                     </td>
                 </tr>
             </tbody>
