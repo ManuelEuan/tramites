@@ -13,6 +13,7 @@ use App\Cls_Tramite_Servicio;
 use App\Cls_Usuario_Concepto;
 use App\Cls_Usuario_Documento;
 use App\Cls_Usuario_Respuesta;
+use App\Cls_Pago_Tramite;
 use App\Models\Cls_Cat_Seccion;
 use App\Services\GestorService;
 use App\Services\VariosService;
@@ -570,6 +571,7 @@ class TramiteServicioController extends Controller
             }
         }
         /* dd($tramite['configuracion']['formularios'][0]->secciones); */
+        //dd($tramite);
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 
@@ -1924,6 +1926,89 @@ class TramiteServicioController extends Controller
 
         $responseJson["estatusPago"] = $response["estatusPago"];
         $responseJson["mensajePago"] = $response["mensajePago"];
+
+        return response()->json($responseJson);
+
+    }
+
+    
+    public function generarOrdenPagoQueretaro(Request $request){
+
+
+        /* echo $request->input('PERIODO');
+        echo $request->input('NUMERO_TRANSACCION');
+        echo $request->input('TRAMITE_ID');
+        exit; */
+
+        $objUsuario     = Auth::user();
+        $tramites       = new Cls_Tramite_Servicio();
+        $detalle        = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE_SEGUIMIENTO($request->input('USUARIO_TRAMITE_ID'));
+
+        $claveTramitePago =  $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_CONCEPTO($detalle->TRAM_NIDTRAMITE_ACCEDE);
+        $clavePago = is_null($claveTramitePago ) ? "0" : intval($claveTramitePago->Referencia);
+
+        //dd($objUsuario);
+
+        $client = new Client();
+        $headers = [
+        'Content-Type' => 'application/json'
+        ];
+
+        //"idTramite":'.$clavePago.',
+        $body = '{
+        "folioSeguimiento": "PlaTra",
+        "idTramite":'.$clavePago.',
+        "importe": 5540.0,
+        "nombre": "'.$objUsuario->USUA_CNOMBRES.'",
+        "apaterno": "'.$objUsuario->USUA_CPRIMER_APELLIDO.'",
+        "amaterno": "'.$objUsuario->USUA_CSEGUNDO_APELLIDO.'",
+        "rfc": "'.$objUsuario->USUA_CRFC.'", 
+        "curp": "'.$objUsuario->USUA_CCURP.'", 
+        "estado": "'.$objUsuario->USUA_CESTADO_PARTICULAR.'",
+        "municipio": "'.$objUsuario->USUA_CMUNICIPIO_PARTICULAR.'",
+        "poblacion": "'.$objUsuario->USUA_CMUNICIPIO_PARTICULAR.'",
+        "colonia": "'.$objUsuario->USUA_CCOLONIA_PARTICULAR.'",
+        "calle": "'.$objUsuario->USUA_CCALLE_PARTICULAR.'",
+        "numero": "'.$objUsuario->USUA_NNUMERO_EXTERIOR_PARTICULAR.'",
+        "cp": "'.$objUsuario->USUA_NCP_PARTICULAR.'",
+        "telefono": "'.$objUsuario->USUA_NTELEFONO.'", 
+        "correo": "'.$objUsuario->USUA_CCORREO_ELECTRONICO.'",
+        "usuario": "wspagospt",
+        "contrasena": "*wsp4g0spt*"
+        }';
+        //dd($body);
+        $requestQueretaro = new \GuzzleHttp\Psr7\Request('POST', 'http://qroprodev.queretaro.gob.mx:8085/wsPagosPT/servicios/generaFormatoPagoReferenciado', $headers, $body);
+        $res = $client->sendAsync($requestQueretaro)->wait();
+
+      
+        $response = json_decode($res->getBody(), true);
+        //echo $res->getBody();
+        /* $response["estatusPago"] = 1;
+        $response["mensajePago"] = "Pagado"; */
+
+         if($response["codigo"] == 0){
+            $referenciaPago = new Cls_Pago_Tramite();
+            $referenciaPago->USTR_NIDUSUARIOTRAMITE = $request->input('USUARIO_TRAMITE_ID');
+            $referenciaPago->FolioSeguimiento = $response["folioSeguimiento"];
+            $referenciaPago->FolioControlEstado = $response["folioControlEstado"];
+            $referenciaPago->LineaCaptura = $response["lineaCaptura"];
+           // $referenciaPago->FechaVencimiento = date(strtotime($response["fechaVencimiento"]),'Y-m-d');
+            $referenciaPago->Importe = $response["importe"];
+            $referenciaPago->UrlFormatoPago = $response["urlFormatoPago"];
+            $referenciaPago->Codigo = $response["codigo"];
+            $referenciaPago->Mensaje = $response["mensaje"];
+            $referenciaPago->NoTransaccion = $response["noTransaccion"];
+            $referenciaPago->save();
+
+        } 
+
+
+        $responseJson["estatusPago"] = $response["codigo"];
+        $responseJson["mensajePago"] = $response["mensaje"];
+        $responseJson["urlFormatoPago"] = $response["urlFormatoPago"];
+        $responseJson["folioControlEstado"] = $response["folioControlEstado"];
+        $responseJson["lineaCaptura"] = $response["lineaCaptura"];
+        $responseJson["fechaVencimiento"] = $response["fechaVencimiento"];
 
         return response()->json($responseJson);
 

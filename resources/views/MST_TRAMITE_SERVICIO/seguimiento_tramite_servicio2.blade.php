@@ -1075,32 +1075,13 @@
                                                 id="linkPago_{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"
                                                 class="btn btn-success float-right">Pagar</a> -->
                                             @if($confsec->SSEGTRA_PAGADO == 0)
-                                                                        <!-- <a  rel="noopener noreferrer"
-                                                                    onClick="$PagosManaguer.mostarModal();"
-                                                                    class="btn btn-success float-right">Pagar</a> -->
+                                                                                                    
+                                                <div class="row" id="seccionOrdenPago">
 
-                                                <form method="post" action="https://www.recaudanet.gob.mx/derechosGEQ/liquidacionOpciones.jsp" target="_blank" enctype="application/x-www-form-urlencoded">
-                                                    <input type="hidden" name="usuario" value="SR799556" />
-                                                    <input type="hidden" name="password" value="Uk114@" />
-                                                    <input type="hidden" name="rfc" value="{{ $tramite['rfcUser'] }}" />
-                                                    @if ($tramite['tipoPersona'] == 'FISICA')
-                                                        <input type="hidden" name="nombre" value="{{ $tramite['nombreUsuario'] }}" />
-                                                        <input type="hidden" name="apaterno" value="{{ $tramite['apellidoPUsuario'] }}" />
-                                                        <input type="hidden" name="amaterno" value="{{ $tramite['apellidoMUsuario'] }}" />
-                                                    @endif
+                                                    <button onClick="generar_orden_pago({{ $tramite['idusuariotramite'] }},{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }});" class="btn btn-primary">Generar Orden de Pago</button>
 
-                                                    @if ($tramite['tipoPersona'] == 'MORAL')
-                                                        <input type="hidden" name="razon" value="{{ $tramite['razonSocioal'] }}" />
-                                                    @endif
-
-                                                    <input type="hidden" name="observaciones" value="" />
-                                                    <input type="hidden" name="email" value="{{ $tramite['correoUsuario'] }}" />
-                                                    <input type="hidden" name="usoCfdi" value="CP01" />
-                                                    <input type="hidden" name="idPeticionCliente" value="{{ $tramite['idTramitePago']+time() }}" />
-                                                    <input type="hidden" name="cliente" value="SR_GOBDIG_TRA" />
-                                                    <input type="hidden" name="claveTramites" value="{{$tramite['clavePago']}};0" />
-                                                    <input type="submit" value="Ir a la ventana de Pago" class="btn btn-primary"/>
-                                                </form>
+                                                </div>
+                                                
                                                 <br/>
                                                 <br/>
                                                 <h6 style="font-size: 1rem; font-weight:bold;">Si ya pagaste, captura tu referencia de pago</h6>
@@ -1670,6 +1651,53 @@
                 loadModulos(idtramiteAccede, selectedVentanilla);
                 cargarMapaModulos(idtramiteAccede, selectedValue, 'mapaEdificios');
             //}
+        }
+
+        //actualizar pago
+        function generar_orden_pago(idUsuarioTramite,idSeccionPago){
+            
+
+            var jsonobject = {
+                    USUARIO_TRAMITE_ID: idUsuarioTramite,
+                    SECCION_PAGO_ID: idSeccionPago
+            };
+
+            $.ajax({
+                    data: JSON.stringify(jsonobject),
+                    url: "/generar_orden_pago",
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function(data) {
+                        if(data.estatusPago == 0){
+                            $("#alertValidatePago").html('<div class="alert alert-success" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
+                            //location.reload(); 
+
+                            $("#seccionOrdenPago").html(`
+                            <div class="col-12"> 
+                            <p style="color: #000;">
+                            <b style="font-weight: 600;">Folio Control Estado: </b>`+data.folioControlEstado+` </br>
+                            <b style="font-weight: 600;">Linea de Captura: </b>`+data.lineaCaptura+` </br>
+                            <b style="font-weight: 600;">Fecha de Vencimiento: </b>`+data.fechaVencimiento+` </br> 
+                            </p>
+                            </div>
+                            <div class="col-12"> 
+                            <a href="`+data.urlFormatoPago+`" target="_blank"  class="btn btn-primary">Ver Formato de Pago</a>
+                            </div>
+                            `);
+                            
+
+                        }else{
+                            $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
+                            return;
+
+                        }
+
+
+                    },
+                        error: function(data) {}
+
+                });
         }
 
         //actualizar pago
