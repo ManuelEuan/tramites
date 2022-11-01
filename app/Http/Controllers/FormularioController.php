@@ -127,6 +127,14 @@ class FormularioController extends Controller
         $items = Cls_SeccionFormRol::SeccionRoles($FORM_NID);
         return response()->json($items);
     }
+    public function areasXDependencia($FORM_NID){
+        $items = Cls_SeccionFormRol::areasXDependencia($FORM_NID);
+        return response()->json($items);
+    }
+    public function dependencias_formulario($FORM_NID){
+        $items = Cls_SeccionFormRol::dependenciaForm($FORM_NID);
+        return response()->json($items);
+    }
 
     public function store(Request $request){
         $item = new Cls_Formulario();
@@ -596,9 +604,77 @@ class FormularioController extends Controller
         }
     }
 
-    public function seccion_rol_asigna(Request $request){//Request $request
-        $respuesta = Cls_SeccionFormRol::AsignarSecRol($request);
+    public function seccion_asigna_dependencia(Request $request){//Request $request
+        // $respuesta = Cls_SeccionFormRol::AsignarSecRol($request->FORM_NID, 1, $request->USUA_NIDUSUARIOREGISTRO);
+        // $FORM_NID, $ROL_NIDROL, $USUA_NIDUSUARIOREGISTRO
+        // try {
+        //     $respuesta = [];
+        //     //code...
+        //     foreach ($request->LISTROL as $key => $value) {
+        //         $respuesta = Cls_SeccionFormRol::AsignarSecRol($request->FORM_NID, $value, $request->USUA_NIDUSUARIOREGISTRO);
+        //         # code...
+        //     }
+        //     return response()->json($respuesta);
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     return reponse()->json($th);
+        // }
+            
+        $prueba = [];
+        try {
+            //code...
+            foreach ($request->LISTDEPENDENCIA as $key => $value) {
+                # code...
+                $respuesta = Cls_SeccionFormRol::AsignarDependencia($request->FORM_NID, intval($value), intval($request->USUA_NIDUSUARIOREGISTRO));
+                array_push($prueba, intval($value));
+            }
+            return response()->json($respuesta);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json($th);
+        }
         
-        return $respuesta;
+        
+        
+    }
+    public function seccion_rol_asigna(Request $request){//Request $request
+        
+            
+        $prueba = [];
+        try {
+            //code...
+            foreach ($request->LISTROL as $key => $value) {
+                # code...
+                $respuesta = Cls_SeccionFormRol::AsignarSecRol($request->FORM_NID, intval($value), intval($request->USUA_NIDUSUARIOREGISTRO));
+                array_push($prueba, intval($value));
+            }
+            return response()->json($respuesta);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json($th);
+        }
+        
+        
+        
+    }
+    public function dependencia_asigna_area(Request $request){//Request $request
+        
+            
+        $prueba = [];
+        try {
+            //code...
+            foreach ($request->LSTAREAS as $key => $value) {
+                # code...
+                $respuesta = Cls_SeccionFormRol::dependencia_asigna_area($request->FORM_NID, intval($value), intval($request->ID_DEPENDENCIA));
+                array_push($prueba, intval($value));
+            }
+            return response()->json($respuesta);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json($th);
+        }
+        
+        
+        
     }
 }
