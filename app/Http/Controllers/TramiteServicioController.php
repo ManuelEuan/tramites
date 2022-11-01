@@ -360,6 +360,9 @@ class TramiteServicioController extends Controller
             $configaracion  = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($detalle->TRAM_NIDTRAMITE, $detalle->USTR_NIDUSUARIOTRAMITE);
             $resolutivosConfig = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($detalle->TRAM_NIDTRAMITE);
 
+            $pagoTramite = Cls_Pago_Tramite::where([['USTR_NIDUSUARIOTRAMITE','=',$id],['Activo','=',1]])->first();
+            
+
             //Verificar seccion seguiente, para activar
             foreach ($configaracion['secciones'] as $item) {
                 if (isset($item->SSEGTRA_NIDSECCION_SEGUIMIENTO)) {
@@ -398,6 +401,22 @@ class TramiteServicioController extends Controller
             $tramite['seccion_active']      = $this->seccion_active;
             $tramite['giros']               = [];
             $tramite['dias_resolucion']     = $detalle->TRAM_NDIASHABILESNOTIFICACION;
+
+            if(!$pagoTramite){
+                $tramite['tienePago'] = 0;
+            }else{
+                $tramite['tienePago'] = 1;
+               
+                $folioSlit = explode("/",$pagoTramite->FolioControlEstado);
+                $tramite['datosPago'] = [
+                    'FolioControlEstado' => $pagoTramite->FolioControlEstado,
+                    'Periodo' => $folioSlit[0],
+                    'Folio' => $folioSlit[1],
+                    'LineaCaptura' =>  $pagoTramite->LineaCaptura,
+                    'FechaVencimiento' =>  $pagoTramite->StrFechaVencimiento,
+                    'UrlFormatoPago' =>  $pagoTramite->UrlFormatoPago,
+                ];
+            }
 
             if ($detalle->TRAM_NESTATUS_PROCESO == null || $detalle->TRAM_NESTATUS_PROCESO == 0)
                 $tramite['disabled'] = "";
@@ -1908,24 +1927,37 @@ class TramiteServicioController extends Controller
 
         $client = new Client();
         $headers = [
-        'usuario' => 'SR799556',
-        'password' => 'Uk114@'
+        'usuario' => env('USUARIO_VALIDAR_PAGOS_QUERETARO'),
+        'password' => env('PASSWORD_VALIDAR_PAGOS_QUERETARO')
         ];
-        $requestQueretaro = new \GuzzleHttp\Psr7\Request('GET', $this->host_pagos_queretaro.'?noPeriodo='.$request->input('PERIODO').'&noTransaccion='.$request->input('NUMERO_TRANSACCION'), $headers);
+        $requestQueretaro = new \GuzzleHttp\Psr7\Request('GET', env('HOST_VALIDAR_PAGOS_QUERETARO').'?noPeriodo='.$request->input('PERIODO').'&noTransaccion='.$request->input('NUMERO_TRANSACCION'), $headers);
         $res = $client->sendAsync($requestQueretaro)->wait();
 
         $response = json_decode($res->getBody(), true);
-        //echo $res->getBody();
-        /* $response["estatusPago"] = 1;
+        //dd($response); 
+       /*  $response["estatusPago"] = 1;
         $response["mensajePago"] = "Pagado"; */
+       /*  $response["estatusPago"] = 0;
+        $response["mensajePago"] = "Falta Pago"; */
 
-        if($response["estatusPago"] == 1){
-            Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $request->input('TRAMITE_ID')])->update(['SSEGTRA_PAGADO' => 1]);
+        
+
+
+        if(isset($response["estatusPago"])){
+            if($response["estatusPago"] == 1){
+                Cls_Seccion_Seguimiento::where(['SSEGTRA_NIDSECCION_SEGUIMIENTO' => $request->input('TRAMITE_ID')])->update(['SSEGTRA_PAGADO' => 1]);
+            }
+            $responseJson["estatusPago"] = $response["estatusPago"];
+            $responseJson["mensajePago"] = $response["mensajePago"];
+        }else{
+            $responseJson["estatusPago"] = 0;
+            if(isset($response["respuestaSimple"]["mensaje"])){
+                $responseJson["mensajePago"] = $response["respuestaSimple"]["mensaje"];
+            }else{
+                $responseJson["mensajePago"] = "Ocurrio un error al consultar este pago en RecaudaNet";
+            }
         }
-
-
-        $responseJson["estatusPago"] = $response["estatusPago"];
-        $responseJson["mensajePago"] = $response["mensajePago"];
+        
 
         return response()->json($responseJson);
 
@@ -1973,11 +2005,11 @@ class TramiteServicioController extends Controller
         "cp": "'.$objUsuario->USUA_NCP_PARTICULAR.'",
         "telefono": "'.$objUsuario->USUA_NTELEFONO.'", 
         "correo": "'.$objUsuario->USUA_CCORREO_ELECTRONICO.'",
-        "usuario": "wspagospt",
-        "contrasena": "*wsp4g0spt*"
+        "usuario": "'.env('USUARIO_GENERAR_ORDEN_PAGO_QUERETARO').'",
+        "contrasena": "'.env('PASSWORD_GENERAR_ORDEN_PAGO_QUERETARO').'"
         }';
         //dd($body);
-        $requestQueretaro = new \GuzzleHttp\Psr7\Request('POST', 'http://qroprodev.queretaro.gob.mx:8085/wsPagosPT/servicios/generaFormatoPagoReferenciado', $headers, $body);
+        $requestQueretaro = new \GuzzleHttp\Psr7\Request('POST', env('HOST_GENERAR_ORDEN_PAGO_QUERETARO'), $headers, $body);
         $res = $client->sendAsync($requestQueretaro)->wait();
 
       
@@ -1985,30 +2017,43 @@ class TramiteServicioController extends Controller
         //echo $res->getBody();
         /* $response["estatusPago"] = 1;
         $response["mensajePago"] = "Pagado"; */
+        //$response["urlFormatoPago"] = "";
 
-         if($response["codigo"] == 0){
+        $responseJson = array();
+
+         if(!empty($response["urlFormatoPago"])){
+
+            Cls_Pago_Tramite::where('USTR_NIDUSUARIOTRAMITE',$request->input('USUARIO_TRAMITE_ID'))->update(['Activo'=>0]);
+
             $referenciaPago = new Cls_Pago_Tramite();
             $referenciaPago->USTR_NIDUSUARIOTRAMITE = $request->input('USUARIO_TRAMITE_ID');
             $referenciaPago->FolioSeguimiento = $response["folioSeguimiento"];
             $referenciaPago->FolioControlEstado = $response["folioControlEstado"];
             $referenciaPago->LineaCaptura = $response["lineaCaptura"];
-           // $referenciaPago->FechaVencimiento = date(strtotime($response["fechaVencimiento"]),'Y-m-d');
+           // $referenciaPago->FechaVencimiento = date(strtotime($response["fechaVencimiento"]),'Y-m-d'); 
+            $referenciaPago->StrFechaVencimiento =$response["fechaVencimiento"];
             $referenciaPago->Importe = $response["importe"];
             $referenciaPago->UrlFormatoPago = $response["urlFormatoPago"];
             $referenciaPago->Codigo = $response["codigo"];
             $referenciaPago->Mensaje = $response["mensaje"];
             $referenciaPago->NoTransaccion = $response["noTransaccion"];
+            $referenciaPago->Activo = 1;
             $referenciaPago->save();
 
-        } 
+            $responseJson["estatusPago"] = 1;
+            $responseJson["mensajePago"] = $response["mensaje"];
+            $responseJson["urlFormatoPago"] = $response["urlFormatoPago"];
+            $responseJson["folioControlEstado"] = $response["folioControlEstado"];
+            $responseJson["lineaCaptura"] = $response["lineaCaptura"];
+            $responseJson["fechaVencimiento"] = $response["fechaVencimiento"];
+
+        }else{
+            $responseJson["estatusPago"] = 0;
+            $responseJson["mensajePago"] = "No se pudo generar la orden intente de nuevo mas tarde";
+        }
 
 
-        $responseJson["estatusPago"] = $response["codigo"];
-        $responseJson["mensajePago"] = $response["mensaje"];
-        $responseJson["urlFormatoPago"] = $response["urlFormatoPago"];
-        $responseJson["folioControlEstado"] = $response["folioControlEstado"];
-        $responseJson["lineaCaptura"] = $response["lineaCaptura"];
-        $responseJson["fechaVencimiento"] = $response["fechaVencimiento"];
+        
 
         return response()->json($responseJson);
 
