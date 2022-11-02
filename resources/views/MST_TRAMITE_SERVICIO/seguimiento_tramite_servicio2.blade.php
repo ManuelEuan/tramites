@@ -1053,7 +1053,7 @@
                                                     <tr>
                                                         <th scope="col">Referencia</th>
                                                         <th scope="col">Concepto</th>
-                                                        <th scope="col">Cantidad</th>
+                                                        <th scope="col"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -1066,7 +1066,7 @@
                                                                 {{ $con->USCON_NREFERENCIA }}
                                                             </td>
                                                             <td>{{ $con->USCON_CONCEPTO }}</td>
-                                                            <td>{{ $con->USCON_NCANTIDAD }}</td>
+                                                            <td></td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -1078,35 +1078,29 @@
                                                                                                     
                                                 <div class="row" id="seccionOrdenPago">
 
-                                                    <button onClick="generar_orden_pago({{ $tramite['idusuariotramite'] }},{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }});" class="btn btn-primary">Generar Orden de Pago</button>
+                                                @if($tramite['tienePago'] == 0)
 
+                                                    <button onClick="generar_orden_pago({{ $tramite['idusuariotramite'] }},{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }});" class="btn btn-primary">Generar Orden de Pago</button>
+                                                @else
+                                                <div class="col-12"> 
+                                                <p style="color: #000;">
+                                                <b style="font-weight: 600;">Folio Control Estado: </b>{{$tramite["datosPago"]["FolioControlEstado"]}} </br>
+                                                <b style="font-weight: 600;">Linea de Captura: </b>{{$tramite["datosPago"]["LineaCaptura"]}} </br>
+                                                <b style="font-weight: 600;">Fecha de Vencimiento: </b>{{$tramite["datosPago"]["FechaVencimiento"]}} </br> 
+                                                </p>
+                                                </div>
+                                                <div class="col-12"> 
+                                                <a href="{{$tramite["datosPago"]["UrlFormatoPago"]}}" target="_blank"  class="btn btn-primary">Ver Formato de Pago</a>
+                                                <button onClick="generar_orden_pago({{ $tramite['idusuariotramite'] }},{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }});" class="btn btn-primary">Generar Nueva Orden de Pago</button>
+                                                <input type="hidden" id="idSeccionSeguimientoPago" value="{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"/>
+                                                </div>
+                                                   
+                                                @endif
                                                 </div>
                                                 
                                                 <br/>
                                                 <br/>
-                                                <h6 style="font-size: 1rem; font-weight:bold;">Si ya pagaste, captura tu referencia de pago</h6>
-                                                <div class="row">
-                                                    <div class="col-md-2">
-                                                        <div class="form-group ">
-                                                            <label for="pago_periodo">Periodo</label>
-
-                                                            <input type="text" class="form-control" name="pago_periodo" id="pago_periodo" placeholder="Periodo" value="" required="">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3">
-                                                        <div class="form-group ">
-                                                            <label for="numero_transacion">Número de transacción</label>
-
-                                                            <input type="text" class="form-control" name="numero_transacion" id="numero_transacion" placeholder="Número de transacción" value="" required="">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" style="margin-top: 1em;">
-                                                    <button onClick="actualizar_pago({{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }});" class="btn btn-primary">Validar Pago</button>
-                                                    <!--  <input type="submit" value="Validar Pago" class="btn btn-primary" /> -->
-                                                    </div>
-                                                </div>
+                                              
 
                                                 <div class="row" id="alertValidatePago"> </div>
                                             <!--  <iframe id="PagosIframe" name="PagosIframe" src="" width="100%" height="800"></iframe> -->
@@ -1629,6 +1623,14 @@
         var conceptos_pagos =  <?php echo json_encode($tramite['configuracion']['conceptos']); ?>;
         var ubicacion_ventanilla_sin_cita = {};
 
+        //variables para validacion de pago 
+        var tienePago = <?= $tramite['tienePago'] ?>;
+        @if($tramite['tienePago'] == 1)
+        var periodoPago = <?= $tramite['datosPago']['Periodo'] ?>;
+        var noTransaccionPago = <?= $tramite['datosPago']['Folio'] ?>;
+        @endif
+
+
         //Unicamente se muestra el modal cuando el tramite esta finalizado y cuando el usuario no haya respondido la encuesta de satisfaccion
         // if (estatus_tram == 8) {
         //     if (encuesta_contestada == null || encuesta_contestada == 0) {
@@ -1669,7 +1671,7 @@
                     dataType: 'json',
                     contentType: 'application/json',
                     success: function(data) {
-                        if(data.estatusPago == 0){
+                        if(data.estatusPago == 1){
                             $("#alertValidatePago").html('<div class="alert alert-success" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
                             //location.reload(); 
 
@@ -1701,36 +1703,18 @@
         }
 
         //actualizar pago
-        function actualizar_pago(id){
-            var periodo = $("#pago_periodo").val();
-            var numeroTransacion = $("#numero_transacion").val();
+        function actualizar_pago(){
 
-            if(periodo.length === 0){
-                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el periodo</div>');
-                return;
-            }
+            //console.log("actualizando pago");
 
-            if(numeroTransacion.length === 0){
-                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Captura el número de transacción</div>');
-                return;
-            }
+            $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Validando pago, no recargue la pagina</div>');
 
-            if(isNaN(periodo)){
-                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El Periodo debe ser un número</div>');
-                return;
-
-            }
-
-            if(isNaN(numeroTransacion)){
-                $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">El número de transacción debe ser un número</div>');
-                return;
-
-            }
-
+            var idSeccionSeguimientoPago = $('#idSeccionSeguimientoPago').val();
+            
             var jsonobject = {
-                    PERIODO: periodo,
-                    NUMERO_TRANSACCION:numeroTransacion,
-                    TRAMITE_ID: id
+                    PERIODO: periodoPago,
+                    NUMERO_TRANSACCION:noTransaccionPago,
+                    TRAMITE_ID: idSeccionSeguimientoPago
             };
 
             $.ajax({
@@ -1742,7 +1726,7 @@
                     success: function(data) {
                         if(data.estatusPago == 1){
                             $("#alertValidatePago").html('<div class="alert alert-success" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
-                            location.reload();
+                            //location.reload();
 
                         }else{
                             $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
@@ -1752,7 +1736,12 @@
 
 
                     },
-                        error: function(data) {}
+                        error: function(data) {
+
+                            $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">Servicio de validacion no disponible, intente mas tarde</div>');
+                            return;
+
+                        }
 
                 });
         }
@@ -2153,6 +2142,13 @@
                 });
             }
             getGiros();
+
+
+            if(tienePago == 1){
+                actualizar_pago();
+            }
+
+
         });
 
         function TRAM_FN_SUBIR_DOCUMENTO_MULTIPLE(val) {
@@ -3256,6 +3252,16 @@
             window.location.reload();
         });
 
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            
+
+        });
+
     </script>
+    
+
+
 
 @endsection
