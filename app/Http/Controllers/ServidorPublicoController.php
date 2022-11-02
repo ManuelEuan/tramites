@@ -170,13 +170,13 @@ class ServidorPublicoController extends Controller
 
         //Areas pertenece
         $objUsuario->lstDependenciaPertenece    = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE($id);
-        $objUsuario->lstUnidadPertence          = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE($id);
+        $objUsuario->lstUnidadPertence          = Cls_Usuario::getUnidadPertenece($id);
         $objUsuario->lstTramitePertence         = Cls_Usuario::CONSULTAR_TRAMITE_USUARIO_PERTENECE($id);
         $objUsuario->lstEdificioPertence        = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE($id);
 
         //Areas acceso
         $objUsuario->lstDependenciaAcceso   = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id);
-        $objUsuario->lstUnidadAcceso        = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id);
+        $objUsuario->lstUnidadAcceso        = Cls_Usuario::getUnidadAcceso($id);
         $objUsuario->lstTramiteAcceso       = Cls_Usuario::CONSULTAR_TRAMITE_USUARIO_ACCESO($id);
         $objUsuario->lstEdificioAcceso      = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id);
 
@@ -297,146 +297,151 @@ class ServidorPublicoController extends Controller
         $Obj            =  Cls_Usuario::TRAM_SP_OBTENER_USUARIO($id);
         $dependencias   = $this->servidoresService->getDependencias();
 
-        //Areas pertenece
-        $Obj->lstDependenciaPertenece = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE($id);
-        $num_dependen = count($Obj->lstDependenciaPertenece);
-
-        foreach($Obj->lstDependenciaPertenece as $value){
-            $value->DEPUP_CNOMBRE = "";
-            foreach($dependencias as $item){
-                if($value->DEPUP_NIDDEPENCIA == $item->iId){
-                    $value->DEPUP_CNOMBRE = $item->Name;
+        try {
+            //Areas pertenece
+            $Obj->lstDependenciaPertenece = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE($id);
+            $num_dependen = count($Obj->lstDependenciaPertenece);
+    
+            foreach($Obj->lstDependenciaPertenece as $value){
+                $value->DEPUP_CNOMBRE = "";
+                foreach($dependencias as $item){
+                    if($value->DEPUP_NIDDEPENCIA == $item->iId){
+                        $value->DEPUP_CNOMBRE = $item->Name;
+                    }
                 }
             }
-        }
-
-        if(sizeof($Obj->lstDependenciaPertenece) > 0){
-            $dependenciasId = "";
-            foreach($Obj->lstDependenciaPertenece as $item){
-                $dependenciasId .= $dependenciasId.",".$item->DEPUP_NIDDEPENCIA;
+    
+            if(sizeof($Obj->lstDependenciaPertenece) > 0){
+                $dependenciasId = "";
+                foreach($Obj->lstDependenciaPertenece as $item){
+                    $dependenciasId .= $dependenciasId.",".$item->DEPUP_NIDDEPENCIA;
+                }
+    
+                $params         = (object)["dependencia_id" => null];
+                $data_unidad    = $this->servidoresService->getUnidadesAdministrativas($params);
             }
-
-            $params         = (object)["dependencia_id" => null];
-            $data_unidad    = $this->servidoresService->getUnidadesAdministrativas($params);
-        }
-
-        $Obj->lstUnidadPertence = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE($id);
-        $num_unidades =  $num_unidades  + count($Obj->lstUnidadPertence);
-        foreach($Obj->lstUnidadPertence as $value){
-            $value->UNIDUP_CNOMBRE = "";
-            foreach($data_unidad as $item){
-                if($value->UNIDUP_NIDUNIDAD == $item->iId){
-                    $value->UNIDUP_CNOMBRE = $item->Name;
-                    $value->ID_DEPENDENCIA = $item->IdDependency;
+    
+            $Obj->lstUnidadPertence = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE($id);
+            $num_unidades =  $num_unidades  + count($Obj->lstUnidadPertence);
+            foreach($Obj->lstUnidadPertence as $value){
+                $value->UNIDUP_CNOMBRE = "";
+                foreach($data_unidad as $item){
+                    if($value->UNIDUP_NIDUNIDAD == $item->iId){
+                        $value->UNIDUP_CNOMBRE = $item->Name;
+                        $value->ID_DEPENDENCIA = $item->IdDependency;
+                    }
                 }
             }
-        }
-
-        $params                     = (object)["tipo" => 'all', 'unidad_id' => null];
-        $data_edificios             = $this->servidoresService->getEdificios($params);
-        $Obj->lstTramitePertence    = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE($id);
-        $Obj->lstEdificioPertence   = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE($id);
-        $num_tramites               = $num_tramites + count($Obj->lstTramitePertence);
-        $num_edificios              = $num_edificios + count($Obj->lstEdificioPertence);
-
-        foreach($Obj->lstEdificioPertence as $value){
-            $value->EDIFUP_CNOMBRE = "";
-            foreach($data_edificios as $item){
-                if($value->EDIFUP_NIDEDIFICIO == $item->iId){
-                    $value->EDIFUP_CNOMBRE = $item->Name;
+    
+            $params                     = (object)["tipo" => 'all', 'unidad_id' => null];
+            $data_edificios             = $this->servidoresService->getEdificios($params);
+            $Obj->lstTramitePertence    = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE($id);
+            $Obj->lstEdificioPertence   = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE($id);
+            $num_tramites               = $num_tramites + count($Obj->lstTramitePertence);
+            $num_edificios              = $num_edificios + count($Obj->lstEdificioPertence);
+            dd($Obj->lstEdificioPertence);
+            foreach($Obj->lstEdificioPertence as $value){
+                $value->EDIFUP_CNOMBRE = "";
+                foreach($data_edificios as $item){
+                    if($value->EDIFUP_NIDEDIFICIO == $item->iId){
+                        $value->EDIFUP_CNOMBRE = $item->Name;
+                    }
                 }
             }
-        }
-
-        //Areas acceso
-        $Obj->lstDependenciaAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id);
-        $num_dependen =  $num_dependen  + count($Obj->lstDependenciaAcceso);
-        foreach($Obj->lstDependenciaAcceso as $value){
-            $value->DEPUA_CNOMBRE = "";
-            foreach($dependencias as $item){
-                if($value->DEPUA_NIDDEPENCIA == $item->ID_CENTRO){
-                    $value->DEPUA_CNOMBRE = $item->DESCRIPCION;
+    
+            //Areas acceso
+            $Obj->lstDependenciaAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id);
+            $num_dependen =  $num_dependen  + count($Obj->lstDependenciaAcceso);
+            foreach($Obj->lstDependenciaAcceso as $value){
+                $value->DEPUA_CNOMBRE = "";
+                foreach($dependencias as $item){
+                    if($value->DEPUA_NIDDEPENCIA == $item->iId){
+                        $value->DEPUA_CNOMBRE = $item->Name;
+                    }
                 }
             }
-        }
-
-        if(sizeof($Obj->lstDependenciaAcceso) > 0){
-            $data["dependencia_id"] = "0";
-            $data["tipo"]           = "multiple";
-
-            foreach ($Obj->lstDependenciaAcceso as $dependencia) {
-                $data["dependencia_id"] = $data["dependencia_id"].",".(string)$dependencia->DEPUA_NIDDEPENCIA;
+    
+            if(sizeof($Obj->lstDependenciaAcceso) > 0){
+                $data["dependencia_id"] = "0";
+                $data["tipo"]           = "multiple";
+    
+                foreach ($Obj->lstDependenciaAcceso as $dependencia) {
+                    $data["dependencia_id"] = $data["dependencia_id"].",".(string)$dependencia->DEPUA_NIDDEPENCIA;
+                }
+               
+                /* $params         = (object)["dependencia_id" => null];
+                $data_unidad    = $this->servidoresService->getUnidadesAdministrativas($params); */
             }
-           
-            /* $params         = (object)["dependencia_id" => null];
-            $data_unidad    = $this->servidoresService->getUnidadesAdministrativas($params); */
-        }
-
-        $Obj->lstUnidadAcceso   = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id);
-        $num_unidades           =  $num_unidades  + count($Obj->lstUnidadAcceso);
-
-        foreach($Obj->lstUnidadAcceso as $value){
-            $value->UNIDUA_CNOMBRE = "";
-            foreach($data_unidad as $item){
-                if($value->UNIDUA_NIDUNIDAD == $item->iId){
-                    $value->UNIDUA_CNOMBRE = $item->Name;
-                    $value->ID_DEPENDENCIA = $item->IdDependency;
+    
+            $Obj->lstUnidadAcceso   = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id);
+            $num_unidades           =  $num_unidades  + count($Obj->lstUnidadAcceso);
+    
+            foreach($Obj->lstUnidadAcceso as $value){
+                $value->UNIDUA_CNOMBRE = "";
+                foreach($data_unidad as $item){
+                    if($value->UNIDUA_NIDUNIDAD == $item->iId){
+                        $value->UNIDUA_CNOMBRE = $item->Name;
+                        $value->ID_DEPENDENCIA = $item->IdDependency;
+                    }
                 }
             }
-        }
-
-        $Obj->lstTramiteAcceso  = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_ACCESO($id);
-        $Obj->lstEdificioAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id);
-        $num_tramites           = $num_tramites + count($Obj->lstTramiteAcceso);
-        $num_edificios          = $num_edificios + count($Obj->lstEdificioAcceso);
-
-        $data["unidad_id"]  = "0";
-        $data["tipo"]       = "all";
-
-        foreach ($Obj->lstTramiteAcceso as $tramite) {
-            $data["unidad_id"] = $data["unidad_id"].",".(string)$tramite->ID_UNIDAD;
-        }
-        
-        $params         = (object)["tipo" => 'all'];
-        $data_tramite   = $this->servidoresService->getTramites($params);
-        $temp_tramite   = [];
-        $qw             = [];
-        
-        foreach($Obj->lstEdificioAcceso as $value){
-            $value->EDIFUA_CNOMBRE  = "";
-            $value->unida_id        = "";
-            foreach($data_edificios as $item){
-                if($value->EDIFUA_NIDEDIFICIO == $item->iId){
-                    $value->EDIFUP_CNOMBRE = $item->EDIFICIO;
-                }
-            }
-
+    
+            $Obj->lstTramiteAcceso  = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_ACCESO($id);
+            $Obj->lstEdificioAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id);
+            $num_tramites           = $num_tramites + count($Obj->lstTramiteAcceso);
+            $num_edificios          = $num_edificios + count($Obj->lstEdificioAcceso);
+    
+            $data["unidad_id"]  = "0";
+            $data["tipo"]       = "all";
+    
             foreach ($Obj->lstTramiteAcceso as $tramite) {
-                foreach ($data_tramite as $item) {
-                    if( $item->ID_TRAM == $tramite->TRAMUA_NIDTRAMITE){ 
-                        $temp = ["ID_TRAM" => $item->ID_TRAM, "ID_CENTRO" => $item->ID_CENTRO, "ID_UNIDAD" => $item->ID_UNIDAD, "EDIFICIOS" => $item->EDIFICIOS ];
-                        array_push($temp_tramite, $temp);
-                    }
-                } 
+                $data["unidad_id"] = $data["unidad_id"].",".(string)$tramite->ID_UNIDAD;
             }
-        }
-
-        foreach ($Obj->lstEdificioAcceso as $aa) {
-            foreach ($temp_tramite as $key) {
-                $edificios = explode("||", $key["EDIFICIOS"]);
-                foreach ($edificios as $e ) {
-                    if($e == $aa->EDIFUA_NIDEDIFICIO){
-                        $aa->unidad_id = $key["ID_UNIDAD"];
-                        array_push($qw, $key["ID_UNIDAD"]);
+            
+            $params         = (object)["tipo" => 'all'];
+            $data_tramite   = $this->servidoresService->getTramites($params);
+            $temp_tramite   = [];
+            $qw             = [];
+            
+            foreach($Obj->lstEdificioAcceso as $value){
+                $value->EDIFUA_CNOMBRE  = "";
+                $value->unida_id        = "";
+                foreach($data_edificios as $item){
+                    if($value->EDIFUA_NIDEDIFICIO == $item->iId){
+                        $value->EDIFUP_CNOMBRE = $item->Name;
+                    }
+                }
+    
+                foreach ($Obj->lstTramiteAcceso as $tramite) {
+                    foreach ($data_tramite as $item) {
+                        if( $item->iId == $tramite->TRAMUA_NIDTRAMITE){ 
+                            // $temp = ["ID_TRAM" => $item->iId, "ID_CENTRO" => $item->ID_CENTRO, "ID_UNIDAD" => $item->ID_UNIDAD, "EDIFICIOS" => $item->EDIFICIOS ];
+                            $temp = ["ID_TRAM" => $item->iId, "ID_CENTRO" => 1, "ID_UNIDAD" => 1, "EDIFICIOS" => 1 ];
+                            array_push($temp_tramite, $temp);
+                        }
+                    } 
+                }
+            }
+    
+            foreach ($Obj->lstEdificioAcceso as $aa) {
+                foreach ($temp_tramite as $key) {
+                    $edificios = explode("||", $key["EDIFICIOS"]);
+                    foreach ($edificios as $e ) {
+                        if($e == $aa->EDIFUA_NIDEDIFICIO){
+                            $aa->unidad_id = $key["ID_UNIDAD"];
+                            array_push($qw, $key["ID_UNIDAD"]);
+                        }
                     }
                 }
             }
+    
+            $Obj->num_dependen  = $num_dependen;
+            $Obj->num_unidades  = $num_unidades;
+            $Obj->num_tramites  = $num_tramites;
+            $Obj->num_edificios = $num_edificios;
+        } catch (Exception $ex) {
+            dd($ex);
         }
-
-        $Obj->num_dependen  = $num_dependen;
-        $Obj->num_unidades  = $num_unidades;
-        $Obj->num_tramites  = $num_tramites;
-        $Obj->num_edificios = $num_edificios;
 
         return view('CAT_SERVIDOR_PUBLICO.detalle', compact('Obj'));
     }

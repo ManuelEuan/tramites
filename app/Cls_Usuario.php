@@ -364,6 +364,25 @@ class Cls_Usuario extends Model
         );
     }
 
+
+    static function getUnidadPertenece($usuarioId) {
+       $registros = DB::table('tram_aux_unidad_usuario_pertenece')
+                        ->select('UNIDUP_NIDUNIDAD', 'UNIDUP_NIDUSUARIO')
+                        ->where('UNIDUP_NIDUSUARIO', $usuarioId)
+                        ->groupBy('UNIDUP_NIDUNIDAD', 'UNIDUP_NIDUSUARIO')
+                        ->get();
+        return $registros;
+    }
+
+    static function getUnidadAcceso($usuarioId) {
+        $registros = DB::table('tram_aux_unidad_usuario_acceso')
+                         ->select('UNIDUA_NIDUNIDAD', 'UNIDUA_NIDUSUARIO')
+                         ->where('UNIDUA_NIDUSUARIO', $usuarioId)
+                         ->groupBy('UNIDUA_NIDUNIDAD', 'UNIDUA_NIDUSUARIO')
+                         ->get();
+         return $registros;
+     }
+
     static function TRAM_SP_OBTENER_USUARIO($IntIdUsuario)
     {
         $Obj = DB::selectOne(
