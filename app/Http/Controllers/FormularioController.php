@@ -8,10 +8,13 @@ use Illuminate\Http\Request;
 
 use App\Models\Cls_Formulario;
 use App\Models\Cls_Cat_Seccion;
+use App\Cls_Rol;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cls_Formulario_Pregunta;
 use App\Models\Cls_Formulario_Pregunta_Respuesta;
 use App\Models\Cls_Formulario_Respuesta_Especial;
+
+use App\Cls_SeccionFormRol;
 
 class FormularioController extends Controller
 {
@@ -112,6 +115,24 @@ class FormularioController extends Controller
 
     public function secciones(){
         $items = Cls_Cat_Seccion::where('FORM_BACTIVO', true)->get();
+        return response()->json($items);
+    }
+
+    public function roles(){
+        $items = Cls_Rol::TRAM_SP_CONSULTARROL();
+        return response()->json($items);
+    }
+
+    public function seccion_roles($FORM_NID){
+        $items = Cls_SeccionFormRol::SeccionRoles($FORM_NID);
+        return response()->json($items);
+    }
+    public function areasXDependencia($FORM_NID){
+        $items = Cls_SeccionFormRol::areasXDependencia($FORM_NID);
+        return response()->json($items);
+    }
+    public function dependencias_formulario($FORM_NID){
+        $items = Cls_SeccionFormRol::dependenciaForm($FORM_NID);
         return response()->json($items);
     }
 
@@ -581,5 +602,79 @@ class FormularioController extends Controller
         } catch (Exception $ex) {
             return response()->json($ex, 403);
         }
+    }
+
+    public function seccion_asigna_dependencia(Request $request){//Request $request
+        // $respuesta = Cls_SeccionFormRol::AsignarSecRol($request->FORM_NID, 1, $request->USUA_NIDUSUARIOREGISTRO);
+        // $FORM_NID, $ROL_NIDROL, $USUA_NIDUSUARIOREGISTRO
+        // try {
+        //     $respuesta = [];
+        //     //code...
+        //     foreach ($request->LISTROL as $key => $value) {
+        //         $respuesta = Cls_SeccionFormRol::AsignarSecRol($request->FORM_NID, $value, $request->USUA_NIDUSUARIOREGISTRO);
+        //         # code...
+        //     }
+        //     return response()->json($respuesta);
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     return reponse()->json($th);
+        // }
+            
+        $prueba = [];
+        try {
+            //code...
+            foreach ($request->LISTDEPENDENCIA as $key => $value) {
+                # code...
+                $respuesta = Cls_SeccionFormRol::AsignarDependencia($request->FORM_NID, intval($value), intval($request->USUA_NIDUSUARIOREGISTRO));
+                array_push($prueba, intval($value));
+            }
+            return response()->json($respuesta);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json($th);
+        }
+        
+        
+        
+    }
+    public function seccion_rol_asigna(Request $request){//Request $request
+        
+            
+        $prueba = [];
+        try {
+            //code...
+            foreach ($request->LISTROL as $key => $value) {
+                # code...
+                $respuesta = Cls_SeccionFormRol::AsignarSecRol($request->FORM_NID, intval($value), intval($request->USUA_NIDUSUARIOREGISTRO));
+                array_push($prueba, intval($value));
+            }
+            return response()->json($respuesta);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json($th);
+        }
+        
+        
+        
+    }
+    public function dependencia_asigna_area(Request $request){//Request $request
+        
+            
+        $prueba = [];
+        try {
+            //code...
+            foreach ($request->LSTAREAS as $key => $value) {
+                # code...
+                $respuesta = Cls_SeccionFormRol::dependencia_asigna_area($request->FORM_NID, intval($value), intval($request->ID_DEPENDENCIA));
+                array_push($prueba, intval($value));
+            }
+            return response()->json($respuesta);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json($th);
+        }
+        
+        
+        
     }
 }

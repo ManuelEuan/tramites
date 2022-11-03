@@ -220,6 +220,49 @@
             </div>
         </div>
     </div>
+    <div id="dependencias" style="display: none;">
+        {{-- openSecDependencias --}}
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12" style="text-align: left;">
+                        <h2 class="titulo">Dependencias <label for="" id="nombreDependencias"></label></h2>
+                    </div>
+                    <div class="col-md-12 btnContenedor">
+                        <button class="btn btn-primary bntGeneral btnLetras" type="button" onclick="openSecDependencias()">Agregar Dependencia</button>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body body">
+                                <div class="seguimiento">
+                                    <div class="row">
+                                        <div class="col-12" id="contenedorDependencias">
+                                            <table id="tblDependencias" class="table table-bordered" style="width: 100%">
+                                                <thead class="bg-gob">
+                                                    <tr>
+                                                        <th>Dependencia</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="btnContenedorRegresar">
+                                <button class="btn btn-link btnRegresar" type="button" onclick="regresar('formularios')"> Regresar </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="preguntas" style="display: none;">
         <div class="row">
@@ -274,7 +317,88 @@
 
         </div>
     </div>
-
+    
+    <div class="modal" id="asignarRolSeccionModal" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Asignación de Rol - Sección</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 mb-3" id="tipoId" >
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label style="font-size: 1rem; font-weight: bold;"><span id="lblSelect">Roles</span></label>
+                                <div id="htmlsecrol">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success" onclick="asignaSecRoles()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="asignarAreaPorDependencia" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Asignación de Area por Dependencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 mb-3" id="tipoId" >
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label style="font-size: 1rem; font-weight: bold;"><span id="lblAreaDependencia">Areas</span></label>
+                                <div id="htmlareadep">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success" onclick="asignaAreaPorDependencia()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="asignarDependenciaModal" tabindex="-1" aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Asignación de Dependencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 mb-3" id="tipoId" >
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label style="font-size: 1rem; font-weight: bold;"><span id="lblSelectDependencia">Dependencia</span></label>
+                                <div id="htmldependencia">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success" onclick="asignaDependencia()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <br />
 @endsection
@@ -298,7 +422,8 @@
     var formularios = [];
     var eliminados = [];
     var cuestionarios = [];
-
+    var dependencias = "";
+    var AreasAdministrativas = "";
     /* Variables para las preguntas */
     var pregunda_id = 1;
     var respuesta_id = 1;
@@ -308,13 +433,16 @@
     var editores = [];
     var validatePreguntas = false;
     var accion_pregunta = "add";
-
+    var find_by_id = "";
+    var id_dependencia_int = "";
     $(document).ready(function() {
         listaFormularios();
         getCuestionarios();
         getSecciones();
         getCatalogos();
-
+        getRoles();
+        getDependencias();
+        
         $("#descripcion").keyup(function() {
             if ($(this).val() != undefined && $(this).val() != null) {
                 if ($(this).val().length < 2 || $(this).val().length > 1000) {
@@ -356,6 +484,516 @@
             });
         });
     }
+
+    
+
+    /////////nuevas funciones////////////
+    var lstRoles = [];
+    var lstAreas = [];
+    var lstDependencias = [];
+    var gform_nid = 0;
+
+    function getRoles() {
+        request = $.ajax({
+            url: "/formulario/roles",
+            type: "get"
+        });
+
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            roles = response;
+        });
+
+        // Callback handler that will be called on failure
+        request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
+    function getDependencias() {
+        request = $.ajax({
+            url: "/servidorespublicos/getDepencencias",
+            type: "get"
+        });
+
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            dependencias = response;
+            // console.log(dependencias);
+        });
+
+        // Callback handler that will be called on failure
+        request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
+    function getAreas(id) {
+        request = $.ajax({
+            url: "/servidorespublicos/getUnity",
+            type: "get",
+            data: {"tipo":"multiple","dependencia_id": id.toString() ?? '0' }
+        });
+
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            AreasAdministrativas = response;
+            // console.log(dependencias);
+        });
+
+        // Callback handler that will be called on failure
+        request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
+
+    function openSecRol(FORM_NID){
+        gform_nid = FORM_NID;
+        request = $.ajax({
+            url: "/formulario/seccion_roles/"+FORM_NID,
+            type: "get"
+        });
+
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            seccion_roles = response;
+
+            var html = '<select id="cmbRoles" class="selectpicker form-control" multiple>';
+            roles.forEach(roles => {
+                let select = '';
+                seccion_roles.forEach(element => {
+                    if(element.ROL_NIDROL == roles.ROL_NIDROL){
+                        select      =   'selected';
+                        /*
+                        let option  =   `<div class="group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-12 text-center">
+                                                    <span class="text-dark"> ${ value.Description } </span>
+                                                </div>
+                                            </div>
+                                        </div`;*/
+
+                        lstRoles.push(roles.ROL_NIDROL);
+                    }
+                });
+                html += `<option ${select} value="${ roles.ROL_NIDROL }"> ${ roles.ROL_CNOMBRE } </option>`;
+            });
+            html += '</select>';
+            $("#htmlsecrol").html(html);
+
+            $('#cmbRoles').selectpicker({
+                noneSelectedText: 'Roles',
+                noneResultsText: 'No se encontraron resultados',
+            });
+
+            $('#cmbRoles').on('change', function(e) { 
+                console.log("entro");
+                selected = $('#cmbRoles').val();
+                console.log(selected);
+                lstRoles = [];
+
+                //$('#list_roles').html('');
+                
+                $.each(selected, function(key, value) {
+                    lstRoles.push(value);
+                    //var text =  $("#cmbRoles option[value='" + value + "']")[0].innerText;
+                    //$('#list_roles').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
+                });
+            });
+
+            $('#asignarRolSeccionModal').modal('show');
+
+        });
+
+         // Callback handler that will be called on failure
+         request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
+
+    //!FUNCION PARA BUSCAR AREAS POR DEPENDENCIA
+    function openAsignarArea(FORM_NID, dependencia_id, int_id_dependencia){
+        id_dependencia_int=int_id_dependencia;
+        gform_nid = FORM_NID;
+        getAreas(dependencia_id);
+        request = $.ajax({
+            url: "/formulario/areasXDependencia/"+FORM_NID,
+            type: "get"
+        });
+
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            areasPorDependencia = response;
+            console.log(areasPorDependencia);
+            var html = '<select id="cmbArea" class="selectpicker form-control" multiple>';
+            AreasAdministrativas.forEach(area => {
+                let select = '';
+                areasPorDependencia.forEach(element => {
+                    if(element.NID_AREA_ADMINISTRATIVA == area.iId){
+                        select      =   'selected';
+                        /*
+                        let option  =   `<div class="group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-12 text-center">
+                                                    <span class="text-dark"> ${ value.Description } </span>
+                                                </div>
+                                            </div>
+                                        </div`;*/
+
+                        lstAreas.push(element.NID_AREA_ADMINISTRATIVA);
+                    }
+                });
+                html += `<option ${select} value="${ area.iId }"> ${ area.Name } </option>`;
+            });
+            html += '</select>';
+            $("#htmlareadep").html(html);
+
+            $('#cmbArea').selectpicker({
+                noneSelectedText: 'Roles',
+                noneResultsText: 'No se encontraron resultados',
+            });
+
+            $('#cmbArea').on('change', function(e) { 
+                console.log("entro");
+                selected = $('#cmbArea').val();
+                console.log(selected);
+                lstAreas = [];
+
+                //$('#list_roles').html('');
+                
+                $.each(selected, function(key, value) {
+                    lstAreas.push(value);
+                    //var text =  $("#cmbRoles option[value='" + value + "']")[0].innerText;
+                    //$('#list_roles').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
+                });
+            });
+
+            $('#asignarAreaPorDependencia').modal('show');
+
+        });
+
+         // Callback handler that will be called on failure
+         request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
+
+    function asignaAreaPorDependencia(){
+        var htmlid = $("#idTramite").val();
+        console.log(lstAreas);
+        var envio = {
+                FORM_NID: gform_nid,
+                LSTAREAS: lstAreas,
+                ID_DEPENDENCIA: id_dependencia_int,
+            };
+            
+            $.ajax({
+                url: '/formulario/dependencia_asigna_area',
+                type: 'post',
+                data: envio,
+                success: function (data) {
+                    console.log(data);
+                    // Swal.fire({
+                    //     title: '¡Éxito!',
+                    //     text: "Reservación completada con éxito",
+                    //     icon: 'success',
+                    //     showCancelButton: false,
+                    //     confirmButtonColor: '#3085d6',
+                    //     confirmButtonText: 'Aceptar'
+                    //     }).then((result) => {
+                    //     if (result.isConfirmed) {
+                    //         location.reload();
+                    //     }
+                    // });
+                },
+                error: function (xhr, error) {
+                    console.log(xhr.responseText);
+                }
+            });
+            console.log(envio);
+        /*
+        $.ajax({
+            data: envio,
+            type: 'POST',
+            url: "tramite_servicio_cemr/asignar_tramite", 
+            success: function(result){
+                $("#asignarFuncionarioModal").modal('hide');
+
+                if(envio.USUA_NIDUSUARIO == 0){
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa fa-users");
+                    $("#icon-"+htmlid).attr("title", "Asignar funcionario");
+                }else{
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).attr("title", "Reasignar funcionario");
+                }
+
+                //fa-solid fa-user-check
+                Swal.fire({
+                    icon: result.estatus,
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+            },
+            error: function(result) {
+                Swal.fire({
+                    icon: "error",
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 3000
+                });
+            }
+        });
+        */
+    }
+    function asignaSecRoles(){
+        var htmlid = $("#idTramite").val();
+        console.log(lstRoles);
+        var envio = {
+                FORM_NID: gform_nid,
+                LISTROL: lstRoles,
+                USUA_NIDUSUARIOREGISTRO: 0,
+            };
+            
+            $.ajax({
+                url: '/formulario/seccion_rol_asigna',
+                type: 'post',
+                data: envio,
+                success: function (data) {
+                    console.log(data);
+                    // Swal.fire({
+                    //     title: '¡Éxito!',
+                    //     text: "Reservación completada con éxito",
+                    //     icon: 'success',
+                    //     showCancelButton: false,
+                    //     confirmButtonColor: '#3085d6',
+                    //     confirmButtonText: 'Aceptar'
+                    //     }).then((result) => {
+                    //     if (result.isConfirmed) {
+                    //         location.reload();
+                    //     }
+                    // });
+                },
+                error: function (xhr, error) {
+                    console.log(xhr.responseText);
+                }
+            });
+            console.log(envio);
+        /*
+        $.ajax({
+            data: envio,
+            type: 'POST',
+            url: "tramite_servicio_cemr/asignar_tramite", 
+            success: function(result){
+                $("#asignarFuncionarioModal").modal('hide');
+
+                if(envio.USUA_NIDUSUARIO == 0){
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa fa-users");
+                    $("#icon-"+htmlid).attr("title", "Asignar funcionario");
+                }else{
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).attr("title", "Reasignar funcionario");
+                }
+
+                //fa-solid fa-user-check
+                Swal.fire({
+                    icon: result.estatus,
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+            },
+            error: function(result) {
+                Swal.fire({
+                    icon: "error",
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 3000
+                });
+            }
+        });
+        */
+    }
+    function asignaDependencia(){
+        var htmlid = $("#idTramite").val();
+        console.log(lstDependencias);
+        var envio = {
+                FORM_NID: gform_nid,
+                LISTDEPENDENCIA: lstDependencias,
+                USUA_NIDUSUARIOREGISTRO: 0,
+            };
+            
+            $.ajax({
+                url: '/formulario/seccion_asigna_dependencia',
+                type: 'post',
+                data: envio,
+                success: function (data) {
+                    console.log(data);
+                    // Swal.fire({
+                    //     title: '¡Éxito!',
+                    //     text: "Reservación completada con éxito",
+                    //     icon: 'success',
+                    //     showCancelButton: false,
+                    //     confirmButtonColor: '#3085d6',
+                    //     confirmButtonText: 'Aceptar'
+                    //     }).then((result) => {
+                    //     if (result.isConfirmed) {
+                    //         location.reload();
+                    //     }
+                    // });
+                },
+                error: function (xhr, error) {
+                    console.log(xhr.responseText);
+                }
+            });
+            console.log(envio);
+        /*
+        $.ajax({
+            data: envio,
+            type: 'POST',
+            url: "tramite_servicio_cemr/asignar_tramite", 
+            success: function(result){
+                $("#asignarFuncionarioModal").modal('hide');
+
+                if(envio.USUA_NIDUSUARIO == 0){
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa fa-users");
+                    $("#icon-"+htmlid).attr("title", "Asignar funcionario");
+                }else{
+                    $("#icon-"+htmlid).removeClass("fa fa-users");
+                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
+                    $("#icon-"+htmlid).attr("title", "Reasignar funcionario");
+                }
+
+                //fa-solid fa-user-check
+                Swal.fire({
+                    icon: result.estatus,
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+            },
+            error: function(result) {
+                Swal.fire({
+                    icon: "error",
+                    title: '',
+                    text: result.mensaje,
+                    footer: '',
+                    timer: 3000
+                });
+            }
+        });
+        */
+    }
+    function openViewDependencias(FORM_NID) {
+        
+    }
+    function openSecDependencias(){
+        gform_nid = find_by_id;
+        request = $.ajax({
+            url: "/formulario/dependencias_formulario/"+find_by_id,
+            type: "get"
+        });
+
+        // Callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            seccion_dependencia = response;
+            
+            var html = '<select id="cmbDependencias" class="selectpicker form-control" multiple>';
+            dependencias.forEach(dependencia => {
+                let select = '';
+                // console.log(dependencia);
+                seccion_dependencia.forEach(element => {
+                    if(element.FORM_NIDDEPENDENCIA == dependencia.iId){
+                        select      =   'selected';
+                        /*
+                        let option  =   `<div class="group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-12 text-center">
+                                                    <span class="text-dark"> ${ value.Description } </span>
+                                                </div>
+                                            </div>
+                                        </div`;*/
+
+                        lstRoles.push(dependencia.iId);
+                    }
+                });
+                html += `<option ${select} value="${ dependencia.iId }"> ${ dependencia.Name } </option>`;
+            });
+            html += '</select>';
+            console.log(html);
+            $("#htmldependencia").html(html);
+
+            $('#cmbDependencias').selectpicker({
+                noneSelectedText: 'Dependencias',
+                noneResultsText: 'No se encontraron resultados',
+            });
+
+            $('#cmbDependencias').on('change', function(e) { 
+                console.log("entro");
+                selected = $('#cmbDependencias').val();
+                console.log(selected);
+                lstDependencias = [];
+
+                //$('#list_roles').html('');
+                
+                $.each(selected, function(key, value) {
+                    lstDependencias.push(value);
+                    //var text =  $("#cmbRoles option[value='" + value + "']")[0].innerText;
+                    //$('#list_roles').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
+                });
+            });
+
+            $('#asignarDependenciaModal').modal('show');
+
+        });
+
+         // Callback handler that will be called on failure
+         request.fail(function(jqXHR, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'se presento el siguiente error: ' + errorThrown
+            });
+        });
+    }
+    ///////////////////////////////////7
 
     function listaFormularios() {
         $.ajaxSetup({
@@ -413,6 +1051,11 @@
                         html = `<span>
                                         <button type="button" onclick="cambiaVista('secciones', ${ data.FORM_NID },'${data.FORM_CNOMBRE}')" title="Secciones" class="btn btn-link"><i class="fas fa-list" style="color: black"></i></button>
                                     </span>
+                                    <span>
+                                            <button type="button" onclick="cambiaVista('dependencias', ${ data.FORM_NID },'${data.FORM_CNOMBRE}')" title="Asignar Roles" class="btn btn-link">
+                                            <i class="fa-solid fa-code-compare" style="color: black"></i>
+                                            </button>
+                                        </span>
                                     <span>
                                         <button type="button" onclick="abreModal(${ data.FORM_NID }, '${ data.FORM_CNOMBRE}', '${data.FORM_CDESCRIPCION }')" title="Editar" class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
                                     </span>
@@ -840,12 +1483,18 @@
     }
 
     function cambiaVista(vista, id, nombre = '') {
+        console.log(vista)
+        find_by_id = id;
         accion_pregunta = 'add';
-
+        formulario_id = id;
+        
         if (vista == 'secciones') {
             $("#tbody").remove();
             $('#formulario').fadeToggle(500);
-            $('#secciones').fadeToggle(500);
+            $('#dependencias').fadeToggle(500);
+            $('#dependencias').hide();
+            // $('#secciones').fadeToggle(500);
+            $('#secciones').show();
             formulario_id = id;
 
             let tbody = '<tbody id="tbody">';
@@ -859,377 +1508,441 @@
                                             </button>
                                         </span>
                                     </td>
+                                    <td>
+                                        <button type="button" onclick="openSecRol(${ seccion.FORM_NID })" title="Asignar Roles" class="btn btn-link">
+                                            <i class="fa-solid fa-user-check" style="color: black"></i>
+                                        </button>
+                                    </td>
+
+
+
+
+                                    
                                 </tr>`;
             });
-
 
             tbody += '</tbody>';
             $('#divNombre').empty();
             $('#divNombre').append('- ' + nombre)
             $("#tblSecciones").append(tbody);
-        } else {
-            seccion_id = id;
+        } 
+        if(vista == "preguntas") {
+                seccion_id = id;
 
-            let divPreguntas = Array.prototype.slice.call(document.getElementsByClassName("contenedorPregunta"), 0);
-            let divHr = Array.prototype.slice.call(document.getElementsByClassName("hr"), 0);
-            for (element of divPreguntas) {
-                element.remove();
-            }
-            for (element of divHr) {
-                element.remove();
-            }
-
-            const seccion = secciones.find(seccion => seccion.FORM_NID == seccion_id);
-            $('#secciones').fadeToggle(500);
-            $('#preguntas').fadeToggle(500);
-            $('#contenedorPeguntas').hide();
-            $('#cargaPreguntas').show();
-            $('#labelNombre').empty()
-            $('#labelNombre').append('- ' + nombre)
-            $("#tituloSeccion").text(seccion.FORM_CNOMBRE);
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                let divPreguntas = Array.prototype.slice.call(document.getElementsByClassName("contenedorPregunta"), 0);
+                let divHr = Array.prototype.slice.call(document.getElementsByClassName("hr"), 0);
+                for (element of divPreguntas) {
+                    element.remove();
                 }
-            });
-            request = $.ajax({
-                url: "/formulario/detalle",
-                type: "get",
-                data: {
-                    "formulario_id": formulario_id,
-                    "seccion_id": seccion_id
+                for (element of divHr) {
+                    element.remove();
                 }
-            });
 
-            request.done(function(response, textStatus, jqXHR) {
-                if (response.length == 0) {
-                    /**
-                     * !parte para poder realizar la vinculacion del campo segun lo requerido en el tipo
-                     * TODO: tipoVinculacion_ es el nombre del campo
-                     */
-                    $("#contenedorPreguntas").append(
-                        `<div class="form-row contenedorPregunta" id="div_pregunta_${pregunda_id}">
-                                <div class=" col-md-4 mb-3">
-                                    <label for="pregunta_${pregunda_id}">Pregunta</label>
-                                    <div class="input-group">
-                                        <input type="text" minlength="2" maxlength="100" class="form-control" name="pregunta_${pregunda_id}" id="pregunta_${pregunda_id}" placeholder="Pregunta" aria-describedby="inputGroupPrepend2" required>
+                const seccion = secciones.find(seccion => seccion.FORM_NID == seccion_id);
+                $('#secciones').fadeToggle(500);
+                $('#preguntas').fadeToggle(500);
+                $('#contenedorPeguntas').hide();
+                $('#cargaPreguntas').show();
+                $('#labelNombre').empty()
+                $('#labelNombre').append('- ' + nombre)
+                $("#tituloSeccion").text(seccion.FORM_CNOMBRE);
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                request = $.ajax({
+                    url: "/formulario/detalle",
+                    type: "get",
+                    data: {
+                        "formulario_id": formulario_id,
+                        "seccion_id": seccion_id
+                    }
+                });
+
+                request.done(function(response, textStatus, jqXHR) {
+                    if (response.length == 0) {
+                        /**
+                         * !parte para poder realizar la vinculacion del campo segun lo requerido en el tipo
+                         * TODO: tipoVinculacion_ es el nombre del campo
+                         */
+                        $("#contenedorPreguntas").append(
+                            `<div class="form-row contenedorPregunta" id="div_pregunta_${pregunda_id}">
+                                    <div class=" col-md-4 mb-3">
+                                        <label for="pregunta_${pregunda_id}">Pregunta</label>
+                                        <div class="input-group">
+                                            <input type="text" minlength="2" maxlength="100" class="form-control" name="pregunta_${pregunda_id}" id="pregunta_${pregunda_id}" placeholder="Pregunta" aria-describedby="inputGroupPrepend2" required>
+                                        </div>
+                                        <em class="text-danger" id="error_${pregunda_id}"></em>
                                     </div>
-                                    <em class="text-danger" id="error_${pregunda_id}"></em>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="tipoRespuesta_${pregunda_id}">Tipo respuesta</label>
-                                    <select name="tipoRespuesta_${pregunda_id}" id="tipoRespuesta_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
-                                        <option value= 'abierta' selected>Respuesta abierta</option>
-                                        <option value= 'unica'>Selección única</option>
-                                        <option value= 'multiple'>Seleccción múltiple</option>
-                                        <option value= 'enriquecido'>Texto enriquecido</option>
-                                        <option value= 'especial'>Especial</option>
-                                        <option value= 'catalogo'>Catalogo</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="resolutivo_${pregunda_id}">¿Es resolutivo?</label>
-                                    <select name="resolutivo_${pregunda_id}" id="resolutivo" class="form-control" onchange="cambiaTipoRespuesta(this);">
-                                        <option value= '1' selected>SI</option>
-                                        <option value= '0'>NO</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-2 mb-3">
-                                <span  style="margin-top: 1%;">
-                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${pregunda_id}')">
-                                        <i class="far fa-trash-alt" style="color: black"></i>
-                                    </button>
-                                    <br>
-                                    <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion_${pregunda_id}" nameVinculo="tipoVinculacion_${pregunda_id}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
-                                </span>
-                                </div>
-                                <br>
-                                <div class="col-md-4 mb-3">
-                                <label for="tipoVinculacion_${pregunda_id}" hidden>Tipo de Vinculación</label>
-                                <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" hidden>
-                                    <option value= 'USUA_CRFC' selected>RFC</option>
-                                    <option value= 'USUA_CCURP'>CURP</option>
-                                    <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
-                                    <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
-                                    <option value= 'USUA_CNOMBRES'>Nombre Ciudadano</option>
-                                    <option value= 'USUA_CCALLE'>Calle Persona Moral</option>
-                                    <option value= 'USUA_NCP'>Código Postal Persona Moral</option>
-                                    <option value= 'USUA_NNUMERO_EXTERIOR'>Número Exterior Persona Moral</option>
-                                    <option value= 'USUA_NNUMERO_INTERIOR'>Número Interior Persona Moral</option>
-                                    <option value= 'USUA_CCOLONIA'>Colonia Persona Moral</option>
-                                    <option value= 'USUA_CMUNICIPIO'>Municipio Persona Moral</option>
-                                    <option value= 'USUA_CESTADO'>Estado Persona Moral</option>
-                                    <option value= 'USUA_CPAIS'>Pais Persona Moral</option>
-                                    <option value= 'USUA_CCORREO_ELECTRONICO'>Correo Electronico</option>
-                                    <option value= 'USUA_CCORREO_ALTERNATIVO'>Correo Alternativo</option>
-                                    <option value= 'USUA_CCALLE_PARTICULAR'>Calle Particular Persona Física</option>
-                                    <option value= 'USUA_NCP_PARTICULAR'>Código Postal Particular Persona Física</option>
-                                    <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR'>Número Exterior Particular Persona Física</option>
-                                    <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR'>Número Interior Particular Persona Física</option>
-                                    <option value= 'USUA_CCOLONIA_PARTICULAR'>Colonia Persona Física</option>
-                                    <option value= 'USUA_CMUNICIPIO_PARTICULAR'>Municio Persona Física</option>
-                                    <option value= 'USUA_CESTADO_PARTICULAR'>Estado Persona Física</option>
-                                    <option value= 'USUA_CPAIS_PARTICULAR'>Pais Persona Física</option>
-                                    <option value= 'USUA_NTELEFONO'>Telefono</option>
-                                    <option value= 'USUA_DFECHA_NACIMIENTO'>Fecha De Nacimiento</option>
-                                    <option value= 'USUA_CTEL_LOCAL'>Número De Teléfono Fijo</option>
-                                    <option value= 'USUA_CTEL_CELULAR'>Número De Teléfono Celular</option>
-                                </select>
-                                </div>
-                                <div class="col-md-8 mb-9">
-                                    <div class="form-group" id="contenedorRespuestas_${pregunda_id}"> </div>
-                                </div>
-                                
-                            </div> <hr class="hr">`
-                    );
-                } else {
-                    accion_pregunta = 'update'
-                    response.forEach(element => {
-                        let tipo_respuesta = element.respuestas.length > 0 ? element.respuestas[0].FORM_CTIPORESPUESTA : "abierta";
-                        let nom_pregunta = element.FORM_CPREGUNTA;
-                        let resol = element.FORM_BRESOLUTIVO;
-                        let preguntas = `<div class="form-row contenedorPregunta" id="div_pregunta_update${element.FORM_NID}">
-                                <div class=" col-md-4 mb-3">
-                                    <label for="update_pregunta_${element.FORM_NID}">Pregunta</label>
-                                    <div class="input-group">
-                                        <input type="text" minlength="2" maxlength="100" value='${nom_pregunta}' class="form-control" name="update_pregunta_${element.FORM_NID}" id="pregunta_${element.FORM_NID}" placeholder="Pregunta" aria-describedby="inputGroupPrepend2" required>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="tipoRespuesta_${pregunda_id}">Tipo respuesta</label>
+                                        <select name="tipoRespuesta_${pregunda_id}" id="tipoRespuesta_${pregunda_id}" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                            <option value= 'abierta' selected>Respuesta abierta</option>
+                                            <option value= 'unica'>Selección única</option>
+                                            <option value= 'multiple'>Seleccción múltiple</option>
+                                            <option value= 'enriquecido'>Texto enriquecido</option>
+                                            <option value= 'especial'>Especial</option>
+                                            <option value= 'catalogo'>Catalogo</option>
+                                        </select>
                                     </div>
-                                    <em class="text-danger" id="error_${element.FORM_NID}"></em>
-                                </div>
-                                
-                                <div class="col-md-3 mb-3">
-                                    <label for="tipoRespuesta_update_${element.FORM_NID}">Tipo respuesta</label>
-                                    <select name="tipoRespuesta_update_${element.FORM_NID}" id="tipoRespuesta_update_${element.FORM_NID}" class="form-control" onchange="cambiaTipoRespuesta(this);">
-                                        <option value= 'abierta'     ${tipo_respuesta   == 'abierta' ? 'selected': ''}>Respuesta abierta</option>
-                                        <option value= 'unica'       ${tipo_respuesta   == 'unica' ? 'selected': ''}>Selección única</option>
-                                        <option value= 'multiple'    ${tipo_respuesta   == 'multiple' ? 'selected': ''}>Seleccción múltiple</option>
-                                        <option value= 'enriquecido' ${tipo_respuesta   == 'enriquecido' ? 'selected': ''}>Texto enriquecido</option>
-                                        <option value= 'especial'    ${tipo_respuesta   == 'especial' ? 'selected': ''}>Especial</option>
-                                        <option value= 'catalogo'    ${tipo_respuesta   == 'catalogo' ? 'selected': ''}>Catalogo</option>
-                                    </select>
-                                </div>
-                                
-                                <div class=" col-md-3 mb-3">
-                                    <label for="update_resolutivo_${element.FORM_NID}">¿Es resolutivo?</label>
-                                    <select name="update_resolutivo_${element.FORM_NID}" id="update_resolutivo_${element.FORM_NID}" class="form-control" onchange="cambiaTipoRespuesta(this);">
-                                        <option value= '1'     ${resol   == 1 ? 'selected': ''}>SI</option>
-                                        <option value= '0'       ${resol   == 0 ? 'selected': ''}>NO</option>
-                                        
-                                    </select>
-                                    <em class="text-danger" id="error_${element.FORM_NID}"></em>
-                                </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="resolutivo_${pregunda_id}">¿Es resolutivo?</label>
+                                        <select name="resolutivo_${pregunda_id}" id="resolutivo" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                            <option value= '1' selected>SI</option>
+                                            <option value= '0'>NO</option>
+                                        </select>
+                                    </div>
 
-                                <div class="col-md-2 mb-3">
-                                <span  style="margin-top: 1%;">
-                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_update${element.FORM_NID}', true)">
-                                        <i class="far fa-trash-alt" style="color: black"></i>
-                                    </button>
+                                    <div class="col-md-2 mb-3">
+                                    <span  style="margin-top: 1%;">
+                                        <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_${pregunda_id}')">
+                                            <i class="far fa-trash-alt" style="color: black"></i>
+                                        </button>
+                                        <br>
+                                        <label class="ml-3"><input type="checkbox" name="asignacion_${pregunda_id}" id="asignacion_${pregunda_id}" nameVinculo="tipoVinculacion_${pregunda_id}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
+                                    </span>
+                                    </div>
                                     <br>
-                                    <label class="ml-3"><input type="checkbox" name="update_asignacion_${element.FORM_NID}" id="update_asignacion_${element.FORM_NID}" nameVinculo="update_tipoVinculacion_${element.FORM_NID}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
-                                </span>
-                                </div>
-                                <br>
-                                <div class="col-md-4 mb-3">
-                                <label for="tipoVinculacion_${element.FORM_NID}" ${element.FORM_BTIENEASIGNACION == 1 ? "": "hidden"}>Tipo de Vinculación</label>
-                                <select name="update_tipoVinculacion_${element.FORM_NID}" id="update_tipoVinculacion_${element.FORM_NID}" class="form-control" ${element.FORM_BTIENEASIGNACION == 1 ? "": "hidden"}>
-                                    <option value= 'USUA_CRFC' ${element.FORM_CVALORASIGNACION == "USUA_CRFC" ? "selected": ""}>RFC</option>
-                                    <option value= 'USUA_CCURP' ${element.FORM_CVALORASIGNACION == "USUA_CCURP" ? "selected": ""}>CURP</option>
-                                    <option value= 'USUA_NTIPO_SEXO' ${element.FORM_CVALORASIGNACION == "USUA_NTIPO_SEXO" ? "selected": ""}>Sexo</option>
-                                    <option value= 'USUA_CRAZON_SOCIAL' ${element.FORM_CVALORASIGNACION == "USUA_CRAZON_SOCIAL" ? "selected": ""}>Razón Social</option>
-                                    <option value= 'USUA_CNOMBRES' ${element.FORM_CVALORASIGNACION == "USUA_CNOMBRES" ? "selected": ""}>Nombre Ciudadano</option>
-                                    <option value= 'USUA_CCALLE' ${element.FORM_CVALORASIGNACION == "USUA_CCALLE" ? "selected": ""}>Calle Persona Moral</option>
-                                    <option value= 'USUA_NCP' ${element.FORM_CVALORASIGNACION == "USUA_NCP" ? "selected": ""}>Código Postal Persona Moral</option>
-                                    <option value= 'USUA_NNUMERO_EXTERIOR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_EXTERIOR" ? "selected": ""}>Número Exterior Persona Moral</option>
-                                    <option value= 'USUA_NNUMERO_INTERIOR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_INTERIOR" ? "selected": ""}>Número Interior Persona Moral</option>
-                                    <option value= 'USUA_CCOLONIA' ${element.FORM_CVALORASIGNACION == "USUA_CCOLONIA" ? "selected": ""}>Colonia Persona Moral</option>
-                                    <option value= 'USUA_CMUNICIPIO' ${element.FORM_CVALORASIGNACION == "USUA_CMUNICIPIO" ? "selected": ""}>Municipio Persona Moral</option>
-                                    <option value= 'USUA_CESTADO' ${element.FORM_CVALORASIGNACION == "USUA_CESTADO" ? "selected": ""}>Estado Persona Moral</option>
-                                    <option value= 'USUA_CPAIS' ${element.FORM_CVALORASIGNACION == "USUA_CPAIS" ? "selected": ""}>Pais Persona Moral</option>
-                                    <option value= 'USUA_CCORREO_ELECTRONICO' ${element.FORM_CVALORASIGNACION == "USUA_CCORREO_ELECTRONICO" ? "selected": ""}>Correo Electronico</option>
-                                    <option value= 'USUA_CCORREO_ALTERNATIVO' ${element.FORM_CVALORASIGNACION == "USUA_CCORREO_ALTERNATIVO" ? "selected": ""}>Correo Alternativo</option>
-                                    <option value= 'USUA_CCALLE_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CCALLE_PARTICULAR" ? "selected": ""}>Calle Particular Persona Física</option>
-                                    <option value= 'USUA_NCP_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NCP_PARTICULAR" ? "selected": ""}>Código Postal Particular Persona Física</option>
-                                    <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_EXTERIOR_PARTICULAR" ? "selected": ""}>Número Exterior Particular Persona Física</option>
-                                    <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_INTERIOR_PARTICULAR" ? "selected": ""}>Número Interior Particular Persona Física</option>
-                                    <option value= 'USUA_CCOLONIA_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CCOLONIA_PARTICULAR" ? "selected": ""}>Colonia Persona Física</option>
-                                    <option value= 'USUA_CMUNICIPIO_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CMUNICIPIO_PARTICULAR" ? "selected": ""}>Municio Persona Física</option>
-                                    <option value= 'USUA_CESTADO_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CESTADO_PARTICULAR" ? "selected": ""}>Estado Persona Física</option>
-                                    <option value= 'USUA_CPAIS_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CPAIS_PARTICULAR" ? "selected": ""}>Pais Persona Física</option>
-                                    <option value= 'USUA_NTELEFONO' ${element.FORM_CVALORASIGNACION == "USUA_NTELEFONO" ? "selected": ""}>Telefono</option>
-                                    <option value= 'USUA_DFECHA_NACIMIENTO' ${element.FORM_CVALORASIGNACION == "USUA_DFECHA_NACIMIENTO" ? "selected": ""}>Fecha De Nacimiento</option>
-                                    <option value= 'USUA_CTEL_LOCAL' ${element.FORM_CVALORASIGNACION == "USUA_CTEL_LOCAL" ? "selected": ""}>Número De Teléfono Fijo</option>
-                                    <option value= 'USUA_CTEL_CELULAR' ${element.FORM_CVALORASIGNACION == "USUA_CTEL_CELULAR" ? "selected": ""}>Número De Teléfono Celular</option>
-                                </select>
-                                </div>
-                                <div class="col-md-8">
-                                
-                                    <div class="form-group" id="contenedorRespuestas_update_${element.FORM_NID}">`;
+                                    <div class="col-md-4 mb-3">
+                                    <label for="tipoVinculacion_${pregunda_id}" hidden>Tipo de Vinculación</label>
+                                    <select name="tipoVinculacion_${pregunda_id}" id="tipoVinculacion_${pregunda_id}" class="form-control" hidden>
+                                        <option value= 'USUA_CRFC' selected>RFC</option>
+                                        <option value= 'USUA_CCURP'>CURP</option>
+                                        <option value= 'USUA_NTIPO_SEXO'>Sexo</option>
+                                        <option value= 'USUA_CRAZON_SOCIAL'>Razón Social</option>
+                                        <option value= 'USUA_CNOMBRES'>Nombre Ciudadano</option>
+                                        <option value= 'USUA_CCALLE'>Calle Persona Moral</option>
+                                        <option value= 'USUA_NCP'>Código Postal Persona Moral</option>
+                                        <option value= 'USUA_NNUMERO_EXTERIOR'>Número Exterior Persona Moral</option>
+                                        <option value= 'USUA_NNUMERO_INTERIOR'>Número Interior Persona Moral</option>
+                                        <option value= 'USUA_CCOLONIA'>Colonia Persona Moral</option>
+                                        <option value= 'USUA_CMUNICIPIO'>Municipio Persona Moral</option>
+                                        <option value= 'USUA_CESTADO'>Estado Persona Moral</option>
+                                        <option value= 'USUA_CPAIS'>Pais Persona Moral</option>
+                                        <option value= 'USUA_CCORREO_ELECTRONICO'>Correo Electronico</option>
+                                        <option value= 'USUA_CCORREO_ALTERNATIVO'>Correo Alternativo</option>
+                                        <option value= 'USUA_CCALLE_PARTICULAR'>Calle Particular Persona Física</option>
+                                        <option value= 'USUA_NCP_PARTICULAR'>Código Postal Particular Persona Física</option>
+                                        <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR'>Número Exterior Particular Persona Física</option>
+                                        <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR'>Número Interior Particular Persona Física</option>
+                                        <option value= 'USUA_CCOLONIA_PARTICULAR'>Colonia Persona Física</option>
+                                        <option value= 'USUA_CMUNICIPIO_PARTICULAR'>Municio Persona Física</option>
+                                        <option value= 'USUA_CESTADO_PARTICULAR'>Estado Persona Física</option>
+                                        <option value= 'USUA_CPAIS_PARTICULAR'>Pais Persona Física</option>
+                                        <option value= 'USUA_NTELEFONO'>Telefono</option>
+                                        <option value= 'USUA_DFECHA_NACIMIENTO'>Fecha De Nacimiento</option>
+                                        <option value= 'USUA_CTEL_LOCAL'>Número De Teléfono Fijo</option>
+                                        <option value= 'USUA_CTEL_CELULAR'>Número De Teléfono Celular</option>
+                                    </select>
+                                    </div>
+                                    <div class="col-md-8 mb-9">
+                                        <div class="form-group" id="contenedorRespuestas_${pregunda_id}"> </div>
+                                    </div>
                                     
-                        if (tipo_respuesta == 'abierta') {
-                            let prim_res = element.respuestas.length > 0 ? element.respuestas[0].FORM_NID : 0;
-                            preguntas += ``;
-                        } else if (tipo_respuesta == 'unica') {
-                            element.respuestas.forEach(res => {
-                                preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
-                                                    <input type="radio"  name="radio_${element.FORM_NID}_${res.FORM_NID}">
-                                                    <input type="text" class="form-control inputRespuesta" name="update_respuesta_${element.FORM_NID}_${res.FORM_NID}" id="respuesta_${element.FORM_NID}_${res.FORM_NID}" value='${res.FORM_CVALOR}' required>
-                                                    <span>
-                                                        <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_resp_update${res.FORM_NID}', true)">
-                                                            <i class="far fa-trash-alt" style="color: black"></i>
-                                                        </button>
-                                                    </span>
+                                </div> <hr class="hr">`
+                        );
+                    } else {
+                        accion_pregunta = 'update'
+                        response.forEach(element => {
+                            let tipo_respuesta = element.respuestas.length > 0 ? element.respuestas[0].FORM_CTIPORESPUESTA : "abierta";
+                            let nom_pregunta = element.FORM_CPREGUNTA;
+                            let resol = element.FORM_BRESOLUTIVO;
+                            let preguntas = `<div class="form-row contenedorPregunta" id="div_pregunta_update${element.FORM_NID}">
+                                    <div class=" col-md-4 mb-3">
+                                        <label for="update_pregunta_${element.FORM_NID}">Pregunta</label>
+                                        <div class="input-group">
+                                            <input type="text" minlength="2" maxlength="100" value='${nom_pregunta}' class="form-control" name="update_pregunta_${element.FORM_NID}" id="pregunta_${element.FORM_NID}" placeholder="Pregunta" aria-describedby="inputGroupPrepend2" required>
+                                        </div>
+                                        <em class="text-danger" id="error_${element.FORM_NID}"></em>
+                                    </div>
+                                    
+                                    <div class="col-md-3 mb-3">
+                                        <label for="tipoRespuesta_update_${element.FORM_NID}">Tipo respuesta</label>
+                                        <select name="tipoRespuesta_update_${element.FORM_NID}" id="tipoRespuesta_update_${element.FORM_NID}" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                            <option value= 'abierta'     ${tipo_respuesta   == 'abierta' ? 'selected': ''}>Respuesta abierta</option>
+                                            <option value= 'unica'       ${tipo_respuesta   == 'unica' ? 'selected': ''}>Selección única</option>
+                                            <option value= 'multiple'    ${tipo_respuesta   == 'multiple' ? 'selected': ''}>Seleccción múltiple</option>
+                                            <option value= 'enriquecido' ${tipo_respuesta   == 'enriquecido' ? 'selected': ''}>Texto enriquecido</option>
+                                            <option value= 'especial'    ${tipo_respuesta   == 'especial' ? 'selected': ''}>Especial</option>
+                                            <option value= 'catalogo'    ${tipo_respuesta   == 'catalogo' ? 'selected': ''}>Catalogo</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class=" col-md-3 mb-3">
+                                        <label for="update_resolutivo_${element.FORM_NID}">¿Es resolutivo?</label>
+                                        <select name="update_resolutivo_${element.FORM_NID}" id="update_resolutivo_${element.FORM_NID}" class="form-control" onchange="cambiaTipoRespuesta(this);">
+                                            <option value= '1'     ${resol   == 1 ? 'selected': ''}>SI</option>
+                                            <option value= '0'       ${resol   == 0 ? 'selected': ''}>NO</option>
+                                            
+                                        </select>
+                                        <em class="text-danger" id="error_${element.FORM_NID}"></em>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                    <span  style="margin-top: 1%;">
+                                        <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_pregunta_update${element.FORM_NID}', true)">
+                                            <i class="far fa-trash-alt" style="color: black"></i>
+                                        </button>
+                                        <br>
+                                        <label class="ml-3"><input type="checkbox" name="update_asignacion_${element.FORM_NID}" id="update_asignacion_${element.FORM_NID}" nameVinculo="update_tipoVinculacion_${element.FORM_NID}" onclick="muestraCampoVinculacion(this)"> ¿Tiene asignación?</label>
+                                    </span>
+                                    </div>
+                                    <br>
+                                    <div class="col-md-4 mb-3">
+                                    <label for="tipoVinculacion_${element.FORM_NID}" ${element.FORM_BTIENEASIGNACION == 1 ? "": "hidden"}>Tipo de Vinculación</label>
+                                    <select name="update_tipoVinculacion_${element.FORM_NID}" id="update_tipoVinculacion_${element.FORM_NID}" class="form-control" ${element.FORM_BTIENEASIGNACION == 1 ? "": "hidden"}>
+                                        <option value= 'USUA_CRFC' ${element.FORM_CVALORASIGNACION == "USUA_CRFC" ? "selected": ""}>RFC</option>
+                                        <option value= 'USUA_CCURP' ${element.FORM_CVALORASIGNACION == "USUA_CCURP" ? "selected": ""}>CURP</option>
+                                        <option value= 'USUA_NTIPO_SEXO' ${element.FORM_CVALORASIGNACION == "USUA_NTIPO_SEXO" ? "selected": ""}>Sexo</option>
+                                        <option value= 'USUA_CRAZON_SOCIAL' ${element.FORM_CVALORASIGNACION == "USUA_CRAZON_SOCIAL" ? "selected": ""}>Razón Social</option>
+                                        <option value= 'USUA_CNOMBRES' ${element.FORM_CVALORASIGNACION == "USUA_CNOMBRES" ? "selected": ""}>Nombre Ciudadano</option>
+                                        <option value= 'USUA_CCALLE' ${element.FORM_CVALORASIGNACION == "USUA_CCALLE" ? "selected": ""}>Calle Persona Moral</option>
+                                        <option value= 'USUA_NCP' ${element.FORM_CVALORASIGNACION == "USUA_NCP" ? "selected": ""}>Código Postal Persona Moral</option>
+                                        <option value= 'USUA_NNUMERO_EXTERIOR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_EXTERIOR" ? "selected": ""}>Número Exterior Persona Moral</option>
+                                        <option value= 'USUA_NNUMERO_INTERIOR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_INTERIOR" ? "selected": ""}>Número Interior Persona Moral</option>
+                                        <option value= 'USUA_CCOLONIA' ${element.FORM_CVALORASIGNACION == "USUA_CCOLONIA" ? "selected": ""}>Colonia Persona Moral</option>
+                                        <option value= 'USUA_CMUNICIPIO' ${element.FORM_CVALORASIGNACION == "USUA_CMUNICIPIO" ? "selected": ""}>Municipio Persona Moral</option>
+                                        <option value= 'USUA_CESTADO' ${element.FORM_CVALORASIGNACION == "USUA_CESTADO" ? "selected": ""}>Estado Persona Moral</option>
+                                        <option value= 'USUA_CPAIS' ${element.FORM_CVALORASIGNACION == "USUA_CPAIS" ? "selected": ""}>Pais Persona Moral</option>
+                                        <option value= 'USUA_CCORREO_ELECTRONICO' ${element.FORM_CVALORASIGNACION == "USUA_CCORREO_ELECTRONICO" ? "selected": ""}>Correo Electronico</option>
+                                        <option value= 'USUA_CCORREO_ALTERNATIVO' ${element.FORM_CVALORASIGNACION == "USUA_CCORREO_ALTERNATIVO" ? "selected": ""}>Correo Alternativo</option>
+                                        <option value= 'USUA_CCALLE_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CCALLE_PARTICULAR" ? "selected": ""}>Calle Particular Persona Física</option>
+                                        <option value= 'USUA_NCP_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NCP_PARTICULAR" ? "selected": ""}>Código Postal Particular Persona Física</option>
+                                        <option value= 'USUA_NNUMERO_EXTERIOR_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_EXTERIOR_PARTICULAR" ? "selected": ""}>Número Exterior Particular Persona Física</option>
+                                        <option value= 'USUA_NNUMERO_INTERIOR_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_NNUMERO_INTERIOR_PARTICULAR" ? "selected": ""}>Número Interior Particular Persona Física</option>
+                                        <option value= 'USUA_CCOLONIA_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CCOLONIA_PARTICULAR" ? "selected": ""}>Colonia Persona Física</option>
+                                        <option value= 'USUA_CMUNICIPIO_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CMUNICIPIO_PARTICULAR" ? "selected": ""}>Municio Persona Física</option>
+                                        <option value= 'USUA_CESTADO_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CESTADO_PARTICULAR" ? "selected": ""}>Estado Persona Física</option>
+                                        <option value= 'USUA_CPAIS_PARTICULAR' ${element.FORM_CVALORASIGNACION == "USUA_CPAIS_PARTICULAR" ? "selected": ""}>Pais Persona Física</option>
+                                        <option value= 'USUA_NTELEFONO' ${element.FORM_CVALORASIGNACION == "USUA_NTELEFONO" ? "selected": ""}>Telefono</option>
+                                        <option value= 'USUA_DFECHA_NACIMIENTO' ${element.FORM_CVALORASIGNACION == "USUA_DFECHA_NACIMIENTO" ? "selected": ""}>Fecha De Nacimiento</option>
+                                        <option value= 'USUA_CTEL_LOCAL' ${element.FORM_CVALORASIGNACION == "USUA_CTEL_LOCAL" ? "selected": ""}>Número De Teléfono Fijo</option>
+                                        <option value= 'USUA_CTEL_CELULAR' ${element.FORM_CVALORASIGNACION == "USUA_CTEL_CELULAR" ? "selected": ""}>Número De Teléfono Celular</option>
+                                    </select>
+                                    </div>
+                                    <div class="col-md-8">
+                                    
+                                        <div class="form-group" id="contenedorRespuestas_update_${element.FORM_NID}">`;
+                                        
+                            if (tipo_respuesta == 'abierta') {
+                                let prim_res = element.respuestas.length > 0 ? element.respuestas[0].FORM_NID : 0;
+                                preguntas += ``;
+                            } else if (tipo_respuesta == 'unica') {
+                                element.respuestas.forEach(res => {
+                                    preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
+                                                        <input type="radio"  name="radio_${element.FORM_NID}_${res.FORM_NID}">
+                                                        <input type="text" class="form-control inputRespuesta" name="update_respuesta_${element.FORM_NID}_${res.FORM_NID}" id="respuesta_${element.FORM_NID}_${res.FORM_NID}" value='${res.FORM_CVALOR}' required>
+                                                        <span>
+                                                            <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_resp_update${res.FORM_NID}', true)">
+                                                                <i class="far fa-trash-alt" style="color: black"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>`;
+                                });
+                                preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
+                                                <div class="btnContenedor">
+                                                    <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('unica', '${element.FORM_NID}')"> Agregar respuesta</button>
                                                 </div>`;
-                            });
-                            preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
-                                            <div class="btnContenedor">
-                                                <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('unica', '${element.FORM_NID}')"> Agregar respuesta</button>
-                                            </div>`;
-                        } else if (tipo_respuesta == 'multiple') {
-                            element.respuestas.forEach(res => {
-                                preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
-                                                    <input type="checkbox"  name="checkbox_${element.FORM_NID}_${res.FORM_NID}">
-                                                    <input type="text" class="form-control inputRespuesta" name="update_respuesta_${element.FORM_NID}_${res.FORM_NID}" id="respuesta_${element.FORM_NID}_${res.FORM_NID}" value='${res.FORM_CVALOR}' required>
-                                                    
-                                                    <input type="checkbox" name="bloqueo_${element.FORM_NID}_${res.FORM_NID}" ${res.FORM_BBLOQUEAR == null ? '' : 'checked'}>
-                                                    <label class="form-check-label" for="bloqueo_${element.FORM_NID}_${res.FORM_NID}">Bloquear</label>
+                            } else if (tipo_respuesta == 'multiple') {
+                                element.respuestas.forEach(res => {
+                                    preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
+                                                        <input type="checkbox"  name="checkbox_${element.FORM_NID}_${res.FORM_NID}">
+                                                        <input type="text" class="form-control inputRespuesta" name="update_respuesta_${element.FORM_NID}_${res.FORM_NID}" id="respuesta_${element.FORM_NID}_${res.FORM_NID}" value='${res.FORM_CVALOR}' required>
+                                                        
+                                                        <input type="checkbox" name="bloqueo_${element.FORM_NID}_${res.FORM_NID}" ${res.FORM_BBLOQUEAR == null ? '' : 'checked'}>
+                                                        <label class="form-check-label" for="bloqueo_${element.FORM_NID}_${res.FORM_NID}">Bloquear</label>
 
-                                                    <span>
-                                                        <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_resp_update${res.FORM_NID}', true)">
-                                                            <i class="far fa-trash-alt" style="color: black"></i>
-                                                        </button>
-                                                    </span>
+                                                        <span>
+                                                            <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_resp_update${res.FORM_NID}', true)">
+                                                                <i class="far fa-trash-alt" style="color: black"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>`;
+                                });
+                                preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
+                                                <div class="btnContenedor">
+                                                    <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('multiple', '${element.FORM_NID}')"> Agregar respuesta</button>
                                                 </div>`;
-                            });
-                            preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
-                                            <div class="btnContenedor">
-                                                <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('multiple', '${element.FORM_NID}')"> Agregar respuesta</button>
-                                            </div>`;
-                        } else if (tipo_respuesta == 'enriquecido') {
-                            element.respuestas.forEach(res => {
-                                preguntas += `<textarea class="form-control inputRespuesta2" name="update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}"  id="update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}" rows="5"></textarea>`;
-                                setTimeout(() => {
-                                    let ck = CKEDITOR.replace(`update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}`);
-                                    let array = {
-                                        "id": `respuesta_${element.FORM_NID}_${res.FORM_NID}`,
-                                        "value": ck
-                                    };
-                                    editores.push(array);
-                                    array.value.setData(res.FORM_CVALOR);
-                                }, 300);
-                            });
-                        } else if (tipo_respuesta == 'especial') {
-                            element.respuestas.forEach(res => {
-                                preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
-                                                    <div class="row">
-                                                        <div class="col-md-3">
-                                                            <div class="form-group">
-                                                                <label for="respuesta_${element.FORM_NID}_${res.FORM_NID}">Encabezado</label>
-                                                                <input type="text" minlength="2" maxlength="100" class="form-control"  name="update_respuesta_${element.FORM_NID}_${res.FORM_NID}" id="respuesta_${element.FORM_NID}_${res.FORM_NID}" value='${res.FORM_CVALOR}' required>
-                                                                <em class="text-danger" id="error_${element.FORM_NID}_${res.FORM_NID}"></em>
-                                                            </div>
-                                                        </div>`;
-
-
-                                if (res.especial.length > 0) {
-                                    let tipo_especial = res.especial[0].FORM_CTIPORESPUESTA;
-                                    preguntas += `<div class="col-md-3">
+                            } else if (tipo_respuesta == 'enriquecido') {
+                                element.respuestas.forEach(res => {
+                                    preguntas += `<textarea class="form-control inputRespuesta2" name="update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}"  id="update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}" rows="5"></textarea>`;
+                                    setTimeout(() => {
+                                        let ck = CKEDITOR.replace(`update_respuesta_${element.FORM_NID}_${element.respuestas[0].FORM_NID}`);
+                                        let array = {
+                                            "id": `respuesta_${element.FORM_NID}_${res.FORM_NID}`,
+                                            "value": ck
+                                        };
+                                        editores.push(array);
+                                        array.value.setData(res.FORM_CVALOR);
+                                    }, 300);
+                                });
+                            } else if (tipo_respuesta == 'especial') {
+                                element.respuestas.forEach(res => {
+                                    preguntas += `<div class="col-md-12" id="div_resp_update${res.FORM_NID}">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label for="encabezado_${res.FORM_NID}"></label>
-                                                                    <select class="form-control mt-3" name="update_select_${element.FORM_NID}_${res.FORM_NID}" id="select_${element.FORM_NID}_${res.FORM_NID}" onchange="cambiaEspecial(this,'update');">
-                                                                        <option value="simple"      ${tipo_especial == 'simple' ? 'selected': ''} >Texto simple</option>
-                                                                        <option value="numerico"    ${tipo_especial == 'numerico' ? 'selected': ''}>Númerico</option>
-                                                                        <option value="opciones"    ${tipo_especial == 'opciones' ? 'selected': ''}>Seleccion</option>
-                                                                    </select>
+                                                                    <label for="respuesta_${element.FORM_NID}_${res.FORM_NID}">Encabezado</label>
+                                                                    <input type="text" minlength="2" maxlength="100" class="form-control"  name="update_respuesta_${element.FORM_NID}_${res.FORM_NID}" id="respuesta_${element.FORM_NID}_${res.FORM_NID}" value='${res.FORM_CVALOR}' required>
+                                                                    <em class="text-danger" id="error_${element.FORM_NID}_${res.FORM_NID}"></em>
                                                                 </div>
                                                             </div>`;
 
-                                    if (tipo_especial == 'opciones') {
-                                        preguntas += `<div class="col-md-3" id="contenedorRespuestaEspecial_update_${element.FORM_NID}_${res.FORM_NID}">`;
-                                    } else {
-                                        preguntas += `<div class="col-md-0" id="contenedorRespuestaEspecial_update_${element.FORM_NID}_${res.FORM_NID}">`;
-                                    }
 
-                                    if (tipo_especial == 'opciones') {
-                                        res.especial.forEach(esp => {
-                                            preguntas += `<div class="row" id="div_especial_update${esp.FORM_NID}" style="margin-top: 2.2%;">
-                                                                        <div class="col-md-7">
-                                                                            <input type="text" class="form-control" name="update_opcionEspecial_${element.FORM_NID}_${res.FORM_NID}_${esp.FORM_NID}" id="respuesta_${esp.FORM_NID}" value=" ${esp.FORM_CVALOR}" required>
-                                                                        </div>
-                                                                        <div class="col-md-3">
-                                                                            <span style="margin-top:1%;">
-                                                                                <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_especial_update${esp.FORM_NID}', true)">
-                                                                                    <i class="far fa-trash-alt" style="color: black"></i>
-                                                                                </button>
-                                                                            </span>
-                                                                        </div>
-                                                                    </div>`;
-                                        });
-
-                                        preguntas += `<div id="agregaEspecial_${element.FORM_NID}_${res.FORM_NID}"></div>
-                                                                <button type="button" class="btn btn-success btn-circle" onclick="agregaMasEspecial(${element.FORM_NID},${res.FORM_NID})">
-                                                                    <i class="fas fa-plus"></i>
-                                                                </button>`;
-                                    } else if (tipo_especial == 'numerico') {
-                                        /* preguntas += ` <button type="button" class="btn btn-link" disabled  style="margin-left:20%;">
-                                            <i class="fas fa-plus-square iconoEspecial"></i>
-                                        </button>
-
-                                        <button type="button" class="btn btn-link" disabled style="margin-left:30px;">
-                                            <i class="fas fa-minus-square iconoEspecial"></i>
-                                        </button>`; */
-                                    } else if (tipo_especial == 'simple') {
-                                        /*  preguntas += `<label for="encabezado_${element.FORM_NID}_${res.FORM_NID}"></label>
-                                         <input type="text" class="form-control" id="encabezado_${element.FORM_NID}_${res.FORM_NID}" value="Texto simple" disabled >`; */
-                                    }
-
-                                    preguntas += `</div><span style="margin-top:1%;">
-                                                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_resp_update${res.FORM_NID}', true)">
-                                                                        <i class="far fa-trash-alt" style="color: black"></i>
-                                                                    </button>
-                                                                </span>
-                                                            </div>`;
-                                }
-                                preguntas += `</div>`;
-                            });
-                            preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
-                                            <div class="btnContenedor">
-                                                <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('especial', '${element.FORM_NID}')"> Agregar respuesta</button>
-                                            </div>`;
-                        } else if (tipo_respuesta == 'catalogo') {
-                            element.respuestas.forEach(res => {
-                                let id = `update_respuesta_${res.FORM_NPREGUNTAID}_${res.FORM_NID}`;
-                                let select = '';
-                                preguntas += `<div class="col-md-4">
-                                                                    <label> Catálogo</label>
-                                                                    <select name="${id}" id="${id}" class="form-control" required>
-                                                                        <option value="0">Seleccionar</option>`;
-                                catalogos.forEach(element => {
-                                    select = element.tabla == res.FORM_CVALOR ? 'selected' : '';
-                                    preguntas += `<option value="${element.tabla}" ${select}>${element.nombre}</option>`;
-                                });
-                                preguntas += `</select>
+                                    if (res.especial.length > 0) {
+                                        let tipo_especial = res.especial[0].FORM_CTIPORESPUESTA;
+                                        preguntas += `<div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label for="encabezado_${res.FORM_NID}"></label>
+                                                                        <select class="form-control mt-3" name="update_select_${element.FORM_NID}_${res.FORM_NID}" id="select_${element.FORM_NID}_${res.FORM_NID}" onchange="cambiaEspecial(this,'update');">
+                                                                            <option value="simple"      ${tipo_especial == 'simple' ? 'selected': ''} >Texto simple</option>
+                                                                            <option value="numerico"    ${tipo_especial == 'numerico' ? 'selected': ''}>Númerico</option>
+                                                                            <option value="opciones"    ${tipo_especial == 'opciones' ? 'selected': ''}>Seleccion</option>
+                                                                        </select>
+                                                                    </div>
                                                                 </div>`;
-                            });
-                        }
-                        /**
-                         * !aqui finaliza el div
-                        */
-                        preguntas += `</div>
-                                </div>
-                            </div> <hr class="hr">`
 
-                        $("#contenedorPreguntas").append(preguntas);
-                        if(element.FORM_BTIENEASIGNACION == 1){
-                            $(`#update_asignacion_${element.FORM_NID}`).attr("checked",true);
-                        }
+                                        if (tipo_especial == 'opciones') {
+                                            preguntas += `<div class="col-md-3" id="contenedorRespuestaEspecial_update_${element.FORM_NID}_${res.FORM_NID}">`;
+                                        } else {
+                                            preguntas += `<div class="col-md-0" id="contenedorRespuestaEspecial_update_${element.FORM_NID}_${res.FORM_NID}">`;
+                                        }
+
+                                        if (tipo_especial == 'opciones') {
+                                            res.especial.forEach(esp => {
+                                                preguntas += `<div class="row" id="div_especial_update${esp.FORM_NID}" style="margin-top: 2.2%;">
+                                                                            <div class="col-md-7">
+                                                                                <input type="text" class="form-control" name="update_opcionEspecial_${element.FORM_NID}_${res.FORM_NID}_${esp.FORM_NID}" id="respuesta_${esp.FORM_NID}" value=" ${esp.FORM_CVALOR}" required>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <span style="margin-top:1%;">
+                                                                                    <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_especial_update${esp.FORM_NID}', true)">
+                                                                                        <i class="far fa-trash-alt" style="color: black"></i>
+                                                                                    </button>
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>`;
+                                            });
+
+                                            preguntas += `<div id="agregaEspecial_${element.FORM_NID}_${res.FORM_NID}"></div>
+                                                                    <button type="button" class="btn btn-success btn-circle" onclick="agregaMasEspecial(${element.FORM_NID},${res.FORM_NID})">
+                                                                        <i class="fas fa-plus"></i>
+                                                                    </button>`;
+                                        } else if (tipo_especial == 'numerico') {
+                                            /* preguntas += ` <button type="button" class="btn btn-link" disabled  style="margin-left:20%;">
+                                                <i class="fas fa-plus-square iconoEspecial"></i>
+                                            </button>
+
+                                            <button type="button" class="btn btn-link" disabled style="margin-left:30px;">
+                                                <i class="fas fa-minus-square iconoEspecial"></i>
+                                            </button>`; */
+                                        } else if (tipo_especial == 'simple') {
+                                            /*  preguntas += `<label for="encabezado_${element.FORM_NID}_${res.FORM_NID}"></label>
+                                            <input type="text" class="form-control" id="encabezado_${element.FORM_NID}_${res.FORM_NID}" value="Texto simple" disabled >`; */
+                                        }
+
+                                        preguntas += `</div><span style="margin-top:1%;">
+                                                                        <button type="button" title="Eliminar" class="btn btn-link" onclick="eliminaRespuesta('div_resp_update${res.FORM_NID}', true)">
+                                                                            <i class="far fa-trash-alt" style="color: black"></i>
+                                                                        </button>
+                                                                    </span>
+                                                                </div>`;
+                                    }
+                                    preguntas += `</div>`;
+                                });
+                                preguntas += ` <div class="" id="agregaMas_${element.FORM_NID}"></div>                    
+                                                <div class="btnContenedor">
+                                                    <button type="button" class="btn btn-success border btnLetras btnAgregaRespuesta" onclick="agregaRespuestas('especial', '${element.FORM_NID}')"> Agregar respuesta</button>
+                                                </div>`;
+                            } else if (tipo_respuesta == 'catalogo') {
+                                element.respuestas.forEach(res => {
+                                    let id = `update_respuesta_${res.FORM_NPREGUNTAID}_${res.FORM_NID}`;
+                                    let select = '';
+                                    preguntas += `<div class="col-md-4">
+                                                                        <label> Catálogo</label>
+                                                                        <select name="${id}" id="${id}" class="form-control" required>
+                                                                            <option value="0">Seleccionar</option>`;
+                                    catalogos.forEach(element => {
+                                        select = element.tabla == res.FORM_CVALOR ? 'selected' : '';
+                                        preguntas += `<option value="${element.tabla}" ${select}>${element.nombre}</option>`;
+                                    });
+                                    preguntas += `</select>
+                                                                    </div>`;
+                                });
+                            }
+                            /**
+                             * !aqui finaliza el div
+                            */
+                            preguntas += `</div>
+                                    </div>
+                                </div> <hr class="hr">`
+
+                            $("#contenedorPreguntas").append(preguntas);
+                            if(element.FORM_BTIENEASIGNACION == 1){
+                                $(`#update_asignacion_${element.FORM_NID}`).attr("checked",true);
+                            }
+                        });
+                    }
+                    $('#cargaPreguntas').hide();
+                    $('#contenedorPeguntas').show()
+                });
+
+                request.fail(function(jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'se presento el siguiente error: ' + errorThrown
                     });
+                });
+
+        }
+        if(vista == 'dependencias'){
+            
+            $("#tbody").remove();
+            $('#formulario').fadeToggle(500);
+            $('#dependencias').show();
+            // $('#dependencias').fadeToggle(500); 
+            // $('#secciones').hide();
+            request = $.ajax({
+                url: "/formulario/dependencias_formulario/"+find_by_id,
+                type: "get"
+            });
+            request.done(function(response, textStatus, jqXHR) {
+                seccion_dependencia = response;
+                console.log(dependencias);
+                let tbody = '<tbody id="tbody">';
+                
+                if(seccion_dependencia.length > 0){
+                    dependencias.forEach(dependencia => {
+                        seccion_dependencia.forEach(element =>{
+                            if(element.FORM_NIDDEPENDENCIA == dependencia.iId){
+                                    tbody += `
+                                    <tr role=""row class="odd">
+                                        <td>${dependencia.Name}</td>
+                                        <td>
+                                            <button type="button" onclick="openAsignarArea(${element.FORM_NIDDEPENDENCIA }, '${dependencia.Id}', ${dependencia.iId})" title="Asignar Roles" class="btn btn-link">
+                                                <i class="fa-solid fa-user-check" style="color: black"></i>
+                                            </button>
+                                        </td>
+                                    </tr>`;
+                            }
+                        });
+                    });
+                }else{
+
                 }
-                $('#cargaPreguntas').hide();
-                $('#contenedorPeguntas').show()
+                tbody += '</tbody>';
+                $('#nombreDependencias').empty();
+                $('#nombreDependencias').append('- ' + nombre)
+                $("#tblDependencias").append(tbody);
+
+
+            
             });
 
+         // Callback handler that will be called on failure
             request.fail(function(jqXHR, textStatus, errorThrown) {
                 Swal.fire({
                     icon: 'error',
@@ -1237,8 +1950,8 @@
                     text: 'se presento el siguiente error: ' + errorThrown
                 });
             });
-
         }
+        
         $("#form_preguntas").removeClass("was-validated");
     }
 
