@@ -480,7 +480,9 @@
                                                                 <th scope="col">Referencia</th>
                                                                 <th scope="col">Concepto</th>
                                                                 <th scope="col">¿Aplica?</th>
-                                                                <th scope="col">Cantidad</th>
+                                                                <th scope="col"></th>
+                                                                <!-- <th scope="col">¿Aplica?</th>
+                                                                <th scope="col">Cantidad</th> -->
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -491,13 +493,13 @@
                                                                         <td>{{$con->USCON_CONCEPTO}}</td>
                                                                         <td>
                                                                             <div class="custom-control custom-checkbox">
-                                                                                <input class="custom-control-input" type="checkbox" name="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NIDUSUARIOCONCEPTO}}" {{$con->USCON_NACTIVO == 1 ? 'checked' : ''}}>
+                                                                                <input class="custom-control-input" type="checkbox" name="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NIDUSUARIOCONCEPTO}}" checked  disabled/>
                                                                                 <label class="custom-control-label" for="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}"></label>
                                                                             </div>
                                                                         </td>
                                                                         <td>
                                                                             <div class="form-group">
-                                                                                <input type="number" class="form-control" name="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NCANTIDAD}}">
+                                                                                <input type="hidden" class="form-control" name="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NCANTIDAD}}">
                                                                             </div>
                                                                         </td>
                                                                     </tr>
