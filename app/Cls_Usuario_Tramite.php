@@ -23,14 +23,14 @@ class Cls_Usuario_Tramite extends Model
     }
     static function ACTUALIZAR_STATUS($folio){
         $rsp = DB::table('tram_mdv_usuariotramite')
-        ->where('USTR_CFOLIO', $folio)
-        ->update(['USTR_NESTATUS' => 10]);
+                    ->where('USTR_CFOLIO', $folio)
+                    ->update(['USTR_NESTATUS' => 10]);
         return $rsp;
     }
     static function ACTUALIZAR_STATUS_VENCIDO($folio){
         $rsp = DB::table('tram_mdv_usuariotramite')
-        ->where('USTR_CFOLIO', $folio)
-        ->update(['USTR_NESTATUS' => 11]);
+                    ->where('USTR_CFOLIO', $folio)
+                    ->update(['USTR_NESTATUS' => 11]);
         return $rsp;
     }
 }

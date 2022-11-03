@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\User;
 use App\Models\Cls_Tramite;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class TramiteService
 {
@@ -396,8 +397,8 @@ class TramiteService
 
         if($rol->ROL_CCLAVE == 'CDNS'){
             $query = DB::table('tram_vw_tramite_seguimiento as v')
-            ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
-            ->select('v.*');
+                        ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
+                        ->select('v.*');
         }else{
             $query = DB::table('tram_vw_tramite_seguimiento as v')
                     ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
@@ -407,13 +408,11 @@ class TramiteService
         
 
         if($rol->ROL_CCLAVE != 'ADM'){
-           
             $depPertenece   = DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
             $uniPertenece   = DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
             $tramPertenece  = DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
 
             $query->whereIn('t.TRAM_NIDCENTRO', $depPertenece->pluck('DEPUP_NIDDEPENCIA'))
-                   /* ->whereIn('t.TRAM_NIDUNIDADADMINISTRATIVA', $uniPertenece->pluck('UNIDUP_NIDUNIDAD')) */
                      ->whereIn('v.USTR_NIDTRAMITE_ACCEDE', $tramPertenece->pluck('TRAMUP_NIDTRAMITE'));
         }
         
@@ -446,5 +445,48 @@ class TramiteService
         $resultado  = $query->orderBy($order_by, $order)->offset($start)->limit($registros)->get();
 
         return [ "result" => $resultado, "total" =>  $total];
+    }
+
+    /**
+     * Retorna los tramites de consulta en base al usuario 
+     */
+    public function consultarSeguimiento(Request $request){
+        $orderBy    = 'v.USTR_DFECHAMODIFICADO'; 
+        $order      = "desc";
+        $usuario    = Auth::user();
+
+
+        $query = DB::table('tram_vw_tramite_seguimiento as v')
+                    ->select('USTR_NIDUSUARIOTRAMITE','v.USTR_NIDUSUARIO','v.USTR_NIDTRAMITE','v.USTR_CTIPO_PERSONA','v.USTR_NIDTRAMITE_ACCEDE', 'v.USTR_CNOMBRE_COMPLETO',
+                    'v.USTR_CNOMBRE_TRAMITE', 'v.USTR_NESTATUS','v.USTR_DFECHACREACION', 'v.USTR_CCENTRO','v.USTR_CFOLIO', 'v.USTR_NDIASHABILESRESOLUCION')
+                    ->where('USTR_NIDUSUARIO', $usuario->USUA_NIDUSUARIO);
+
+        if(!is_null($request->dteFechaInicio))
+            $query->where('v.USTR_DFECHACREACION', 'like','%'.$request->USTR_DFECHACREACION.'%');
+        if(!is_null($request->txtNombre))
+            $query->where('v.USTR_CNOMBRE_TRAMITE','like','%'.$request->txtNombre.'%');
+        if(!is_null($request->cmbDependenciaEntidad))
+            $query->where('v.USTR_NIDCENTRO', $request->cmbDependenciaEntidad);
+        if(!is_null($request->cmbEstatus))
+            $query->where('v.USTR_NESTATUS', $request->cmbEstatus);
+        
+        
+        /* Parametros para la paginanacion y el orden */
+        if(!is_null($request->order)){
+            $order = $request->order == 'asc'? "asc" : "desc";
+        }
+        if(!is_null($request->orderBy)){
+            switch ($request->orderBy) {
+                case 'fecha'    : $orderBy = "v.USTR_DFECHAMODIFICADO";   break;
+                case 'folio'    : $orderBy = 'v.USTR_CFOLIO'; break;
+                case 'usuario'  : $orderBy = 'v.USTR_NIDUSUARIO';   break;
+                case 'nombre'   : $orderBy = 'v.USTR_CNOMBRE_TRAMITE';   break;
+                case 'estatus'  : $orderBy = 'v.USTR_NESTATUS';   break;
+                case 'dependencia'   : $orderBy = 'v.USTR_NIDCENTRO';   break;
+                default         : $orderBy = 'v.USTR_DFECHAMODIFICADO';       break;
+            }
+        }
+
+        return $query->orderBy($orderBy, $order)->get();
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Cls_Usuario_Tramite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Services\TramiteService;
 use Illuminate\Support\Facades\DB;
-use App\Cls_Usuario_Tramite;
 use Illuminate\Support\Facades\Auth;
 
 class SeguimientoSolicitudController extends Controller
@@ -15,57 +16,39 @@ class SeguimientoSolicitudController extends Controller
         return view('MST_SEGUIMIENTO.index');
     }
 
-    public function consultar(Request $request)
-    {
-        // $list = [];
-
-        // for ($i = 0; $i < 25; $i++) {
-
-        //     //Generate a timestamp using mt_rand.
-        //     $timestamp = mt_rand(1, time());
-
-        //     //Format that timestamp into a readable date string.
-        //     $randomDate = date("d M, Y", $timestamp);
-
-        //     $item = $i + 1;
-
-        //     $list[$i]['id'] = $item;
-        //     $list[$i]['nombre'] = "Trámite " . $item;
-        //     $list[$i]['dependencia'] = $request->cmbDependenciaEntidad > 0 ? "Dependencia " . $request->cmbDependenciaEntidad : "Dependencia " . rand(1, 5);
-        //     $list[$i]['fecha'] = is_null($request->dteFechaInicio) ? $randomDate : date("d M, Y", strtotime($request->dteFechaInicio));
-        //     $list[$i]['estatus'] = $request->cmbEstatus > 0 ? $request->cmbEstatus : rand(1, 9);
-        // }
-
-        //dd($request);
-        $data = Cls_Usuario_Tramite::TRAM_SP_CONSULTAR_SEGUIMIENTO_TRAMITE_USUARIO(Auth::user()->USUA_NIDUSUARIO, $request->txtNombre, $request->cmbEstatus, $request->cmbDependenciaEntidad, $request->dteFechaInicio);
-
+    public function consultar(Request $request) {
+        $servicio   = new TramiteService();
+        $data       = $servicio->consultarSeguimiento($request);
+        //$data       = Cls_Usuario_Tramite::TRAM_SP_CONSULTAR_SEGUIMIENTO_TRAMITE_USUARIO(Auth::user()->USUA_NIDUSUARIO, $request->txtNombre, $request->cmbEstatus, $request->cmbDependenciaEntidad, $request->dteFechaInicio);
+        
         foreach ($data as $key => $t) {
             $diasH = $t->USTR_NDIASHABILESRESOLUCION;
             $hoy = date('Y-m-d');
             $fechaFinal = date('Y-m-d', strtotime($t->USTR_DFECHACREACION. ' + '.$diasH.' days'));
-                if($t->USTR_NESTATUS == 4){
-                    if(!empty($t->USTR_DFECHAESTATUS)){
-                        $diasN = $t->USTR_NDIASHABILESNOTIFICACION;
-                        $fechaFinalNotificacion = date('Y-m-d', strtotime($t->USTR_DFECHAESTATUS. ' + '.$diasN.' days'));
-                        if($hoy > $fechaFinalNotificacion){
-                            $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
-                        }
-                    }elseif($t->USTR_NESTATUS != 10){
-                       /* if($hoy > $fechaFinal){
-                            //$tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
-                        }*/
+            if($t->USTR_NESTATUS == 4){ 
+                if(!empty($t->USTR_DFECHAESTATUS)){
+                    $diasN = $t->USTR_NDIASHABILESNOTIFICACION;
+                    $fechaFinalNotificacion = date('Y-m-d', strtotime($t->USTR_DFECHAESTATUS. ' + '.$diasN.' days'));
+                    if($hoy > $fechaFinalNotificacion){
+                        Cls_Usuario_Tramite::ACTUALIZAR_STATUS($t->USTR_CFOLIO);
                     }
-                }else{
-                    /*if($hoy > $fechaFinal){
-                        Cls_Usuario_Tramite::ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
+                }elseif($t->USTR_NESTATUS != 10){
+                    /* if($hoy > $fechaFinal){
+                        //$tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
                     }*/
                 }
+            }else{
+                /*if($hoy > $fechaFinal){
+                    Cls_Usuario_Tramite::ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
+                }*/
+            }
         }
-        $response = [
-            'data' =>  Cls_Usuario_Tramite::TRAM_SP_CONSULTAR_SEGUIMIENTO_TRAMITE_USUARIO(Auth::user()->USUA_NIDUSUARIO, $request->txtNombre, $request->cmbEstatus, $request->cmbDependenciaEntidad, $request->dteFechaInicio),
-        ];
 
-        return response()->json($response);
+        /* $response = [
+            'data' =>  Cls_Usuario_Tramite::TRAM_SP_CONSULTAR_SEGUIMIENTO_TRAMITE_USUARIO(70, $request->txtNombre, $request->cmbEstatus, $request->cmbDependenciaEntidad, $request->dteFechaInicio),
+        ]; */
+
+        return response()->json([ 'data' =>  $data ]);
     }
 
     public function obtener_dependencias_unidad()
