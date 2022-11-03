@@ -559,9 +559,8 @@ class TramiteServicioController extends Controller
         }
 
         //Obtener detalles del tramite
-        $tramiteService = new TramiteService();
-        $objTramite     = $tramiteService->getTramite($tramite['idtramiteaccede']);
-        $result = $tramiteService->getDetalle($objTramite->Id);
+        $objTramite     = $this->tramiteService->getTramite($tramite['idtramiteaccede']);
+        $result         = $this->tramiteService->getDetalle($objTramite->Id);
 
         $tramite['infoModulo'] = (array) $result['oficinas'][0];
         $cita = Cls_Citas_Calendario::where([
