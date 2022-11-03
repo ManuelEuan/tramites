@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\User;
+use DateTime;
 use App\Models\Cls_Tramite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -452,29 +453,25 @@ class TramiteService
      */
     public function consultarSeguimiento(Request $request){
         $orderBy    = 'v.USTR_DFECHAMODIFICADO'; 
-        $order      = "desc";
         $usuario    = Auth::user();
-
+        $result     = [];
 
         $query = DB::table('tram_vw_tramite_seguimiento as v')
                     ->select('USTR_NIDUSUARIOTRAMITE','v.USTR_NIDUSUARIO','v.USTR_NIDTRAMITE','v.USTR_CTIPO_PERSONA','v.USTR_NIDTRAMITE_ACCEDE', 'v.USTR_CNOMBRE_COMPLETO',
                     'v.USTR_CNOMBRE_TRAMITE', 'v.USTR_NESTATUS','v.USTR_DFECHACREACION', 'v.USTR_CCENTRO','v.USTR_CFOLIO', 'v.USTR_NDIASHABILESRESOLUCION')
                     ->where('USTR_NIDUSUARIO', $usuario->USUA_NIDUSUARIO);
 
-        if(!is_null($request->dteFechaInicio))
-            $query->where('v.USTR_DFECHACREACION', 'like','%'.$request->USTR_DFECHACREACION.'%');
-        if(!is_null($request->txtNombre))
-            $query->where('v.USTR_CNOMBRE_TRAMITE','like','%'.$request->txtNombre.'%');
-        if(!is_null($request->cmbDependenciaEntidad))
-            $query->where('v.USTR_NIDCENTRO', $request->cmbDependenciaEntidad);
-        if(!is_null($request->cmbEstatus))
-            $query->where('v.USTR_NESTATUS', $request->cmbEstatus);
+        if(!is_null($request->fecha))
+            $query->where('v.USTR_DFECHACREACION', 'like','%'.$request->fecha.'%');
+        if(!is_null($request->nombre))
+            $query->where('v.USTR_CNOMBRE_TRAMITE','like','%'.$request->nombre.'%');
+        if(!is_null($request->dependencia))
+            $query->where('v.TRAM_NIDCENTRO', $request->dependencia);
+        if(!is_null($request->estatus))
+            $query->where('v.USTR_NESTATUS', $request->estatus);
         
         
         /* Parametros para la paginanacion y el orden */
-        if(!is_null($request->order)){
-            $order = $request->order == 'asc'? "asc" : "desc";
-        }
         if(!is_null($request->orderBy)){
             switch ($request->orderBy) {
                 case 'fecha'    : $orderBy = "v.USTR_DFECHAMODIFICADO";   break;
@@ -487,6 +484,23 @@ class TramiteService
             }
         }
 
-        return $query->orderBy($orderBy, $order)->get();
+        $order = is_null($request->order) ? "desc" : $request->order == 'asc' ? "asc" : "desc";
+        $query->orderBy($orderBy, $order);
+
+        if(is_null($request->paginate) || $request->paginate == "true" ){
+            $resultados = !is_null($request->items_to_show) ? $request->items_to_show : 10;
+            $result = $query->paginate($resultados);
+        }
+        else{
+            $result = $query->get();
+            return response()->json(["data" => $result], 200);
+        }
+
+        foreach ($result as $key => $value) {
+            $format = new DateTime($value->USTR_DFECHACREACION);
+            $value->USTR_DFECHACREACION = $format->format('d-m-Y H:i:s');
+        }
+
+        return $result;
     }
 }

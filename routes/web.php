@@ -99,7 +99,7 @@ Route::group(['prefix' => 'tramite_servicio'], function () {
 
 Route::get('/seguimiento_solicitud', 'SeguimientoSolicitudController@index')->middleware("permiso");
 Route::group(['prefix' => 'seguimiento'], function () {
-    Route::post('/consultar', 'SeguimientoSolicitudController@consultar');
+    Route::get('/consultar', 'SeguimientoSolicitudController@consultar');
     Route::get('/obtener_dependencias_unidad', 'SeguimientoSolicitudController@obtener_dependencias_unidad');
     Route::get('/detalle_seguimiento/{id}', 'SeguimientoSolicitudController@obtener_detalle_seguimiento')->name('detalle_seguimiento');
     Route::get('/detalle_notificacion/{id}', 'SeguimientoSolicitudController@detalle_notificacion')->name("detalle_notificacion");

@@ -48,7 +48,7 @@ class SeguimientoSolicitudController extends Controller
             'data' =>  Cls_Usuario_Tramite::TRAM_SP_CONSULTAR_SEGUIMIENTO_TRAMITE_USUARIO(70, $request->txtNombre, $request->cmbEstatus, $request->cmbDependenciaEntidad, $request->dteFechaInicio),
         ]; */
 
-        return response()->json([ 'data' =>  $data ]);
+        return response()->json($data);
     }
 
     public function obtener_dependencias_unidad()

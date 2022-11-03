@@ -524,127 +524,101 @@
     }
 
     $('th').click(function() {
-            var table   = $(this).parents('table').eq(0)
-            var rows    = []
-            var column  = table.context.innerText;
+        var table   = $(this).parents('table').eq(0)
+        var rows    = []
+        var column  = table.context.innerText;
 
-            this.asc = !this.asc
-            if (!this.asc) {
-                rows = rows.reverse()
-            }
-            setIcon($(this), this.asc, column);
-        })
+        this.asc = !this.asc
+        if (!this.asc) {
+            rows = rows.reverse()
+        }
+        setIcon($(this), this.asc, column);
+    })
 
-        function setIcon(element, asc, column) {
-            $("th").each(function(index) {
-                $(this).removeClass("sorting");
-                $(this).removeClass("asc");
-                $(this).removeClass("desc");
-            });
-            element.addClass("sorting");
-            if (asc) element.addClass("asc");
-            else element.addClass("desc");
+    function setIcon(element, asc, column) {
+        $("th").each(function(index) {
+            $(this).removeClass("sorting");
+            $(this).removeClass("asc");
+            $(this).removeClass("desc");
+        });
+        element.addClass("sorting");
+        if (asc) element.addClass("asc");
+        else element.addClass("desc");
 
 
-            let order_by = 'u.USUA_NIDUSUARIO';
-            let order   = asc == true ? 'asc' : 'desc';
+        let order_by = 'u.USUA_NIDUSUARIO';
+        let order   = asc == true ? 'asc' : 'desc';
 
-            switch (column) {
-                case 'Usuario':
-                    order_by = 'u.USUA_CUSUARIO';
-                    break;
-                case 'Nombre':
-                    order_by = 'u.USUA_CNOMBRES';
-                    break;
-                case 'Primer apellido':
-                    order_by = 'u.USUA_CPRIMER_APELLIDO';
-                    break;
-                case 'Segundo apellido':
-                    order_by = 'u.USUA_CSEGUNDO_APELLIDO';
-                    break;
-                case 'Rol':
-                    order_by = 'rol.ROL_CNOMBRE';
-                    break;
-                default:
-                    break;
-            }
-
-            if(column !== 'Acciones'){
-                varPaginacion.order     = order;
-                varPaginacion.order_by  = order_by;
-                listar();
-            }
+        switch (column) {
+            case 'Usuario':
+                order_by = 'u.USUA_CUSUARIO';
+                break;
+            case 'Nombre':
+                order_by = 'u.USUA_CNOMBRES';
+                break;
+            case 'Primer apellido':
+                order_by = 'u.USUA_CPRIMER_APELLIDO';
+                break;
+            case 'Segundo apellido':
+                order_by = 'u.USUA_CSEGUNDO_APELLIDO';
+                break;
+            case 'Rol':
+                order_by = 'rol.ROL_CNOMBRE';
+                break;
+            default:
+                break;
         }
 
-        function cambiaEstatus(id){
-            Swal.fire({
-                title: '¿Esta seguro de realizar la operación?',
-                text: "",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar',
-                cancelButtonText: 'Cancelar',
-            }).then((result) => {
-                if (result.isConfirmed){
-                    $.ajaxSetup({
-                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-                    });
-
-                    request = $.ajax({
-                        url: '/personasfsicasmorales/status',
-                        type: "post",
-                        data: {"id": id}
-                    });
-
-                    request.done(function (response, textStatus, jqXHR){
-                        console.log(response);
-                        listar();
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Operación exitosa',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    });
-
-                    request.fail(function (jqXHR, textStatus, errorThrown){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'se presento el siguiente error: ' + errorThrown
-                        });
-                    });
-                }
-            });
+        if(column !== 'Acciones'){
+            varPaginacion.order     = order;
+            varPaginacion.order_by  = order_by;
+            listar();
         }
+    }
+
+    function cambiaEstatus(id){
+        Swal.fire({
+            title: '¿Esta seguro de realizar la operación?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed){
+                $.ajaxSetup({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                });
+
+                request = $.ajax({
+                    url: '/personasfsicasmorales/status',
+                    type: "post",
+                    data: {"id": id}
+                });
+
+                request.done(function (response, textStatus, jqXHR){
+                    console.log(response);
+                    listar();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Operación exitosa',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+
+                request.fail(function (jqXHR, textStatus, errorThrown){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'se presento el siguiente error: ' + errorThrown
+                    });
+                });
+            }
+        });
+    }
 
 </script>
 @endsection
-
-<style>
-    /*  Css para ordenamiento de tablas */
-    table tr th {
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-
-    .sorting {
-        background-color: #D4D4D4;
-    }
-
-    .asc:after {
-        content: ' ↑';
-    }
-
-    .desc:after {
-        content: " ↓";
-    }
-    .dataTables_info{
-        text-align: left !important;
-    }
-</style>
