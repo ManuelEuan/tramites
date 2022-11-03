@@ -258,15 +258,26 @@
                                 <p>
                                     @if(count($pregunta->respuestas)>0)
                                     <ul>
-                                        @foreach ($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA  as $item)
-                                            @if(isset($item->fecha))
-                                                <li>{{$item->nombre}}, fecha: {{$item->fecha}} </li>
-                                            @else
-                                                <li>{{$item->nombre}}</li>
+                                            @if(isset($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]))
+                                                @foreach($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA as $v)
+                                                <li>
+                                                    @if(isset($v->fecha))
+                                                        <label><b>Nombre:</b> {{$v->nombre}}, <b>Fecha:</b> {{$v->fecha}}</label>
+                                                        <br>
+                                                        <label><b>Descripción</b> {{$v->descripcion}}</label>
+                                                        <br>
+                                                    @else
+                                                        <label><b>Nombre:</b> {{$v->nombre}}</label>
+                                                        <br>
+                                                        <label><b>Descripción</b> {{$v->descripcion}}</label>
+                                                        <br>
+                                                    @endif
+                                                </li>
+                                                @endforeach
                                             @endif
-                                        @endforeach
-                                    @endif
                                     </ul>
+                                    @endif
+                                    
                                 </p>
                             @endforeach
                         </div>

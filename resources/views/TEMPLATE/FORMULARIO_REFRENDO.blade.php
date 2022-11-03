@@ -107,7 +107,7 @@
 
 
         .formulario_ {
-            background-color: #e0e0e0;
+            
             border: 1px solid #dddddd;
             text-align: left;
             padding: 8px;
@@ -132,39 +132,47 @@
         <table>
             <thead>
                 <tr>
-                    <th style="padding-right: 150px;">logo</th>
+                    <th style="padding-right: 150px;"><img src="{{ asset('assets/template/img/logopdf.png') }}" width="200 " height="47"></th>
                     <th><center>{{$tramite->USTR_CNOMBRE_TRAMITE}}</center></th>
                 </tr>
             </thead>
         </table>
         <br>
+        <?php $tipoPer = $arrayPer['tipoPer'] ?? ''; ?>
+
         <table style="width:100%;">
             <thead>
                 <tr>
-                    <th style="font-size:18px;"><center>Inscripcion</center></th>
+                    <th style="font-size:18px;"><center>Inscripción</center></th>
                     <th style="font-size:18px;"><center>Contribuyente</center></th>
-                    <th style="font-size:18px;"><center>Ubicación</center></th>
+                    <!-- <th style="font-size:18px;"><center>Ubicación</center></th> -->
+                    <th style="font-size:18px;"><center></center></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <div style="padding-left: 50px;">
-                            <label>Inscripción</label><input type="checkbox">
-                            <label>Inscripción</label><input type="checkbox">
+                    <div style="padding-left: 50px;">
+                            @if(str_starts_with($tramite->USTR_CNOMBRE_TRAMITE,'Refrendo'))
+                                <label>Inscripción</label><input type="checkbox">
+                                <label>Refrendo</label><input type="checkbox" checked>
+                            @else
+                                <label>Inscripción</label><input type="checkbox" checked>
+                                <label>Refrendo</label><input type="checkbox">
+                            @endif
                         </div>
                     </td>
                     <td>
                         <div style="padding-left: 50px;">
-                            <label>Persona Física</label><input type="checkbox">
-                            <label>Persona Moral</label><input type="checkbox">
+                            <label>Persona Física</label><input type="checkbox" <?php if ($tipoPer == 'FISICA') { echo 'checked';  } ?>>
+                            <label>Persona Moral</label><input type="checkbox" <?php if ($tipoPer == 'MORAL') { echo 'checked';  } ?>>
                         </div>
                     </td>
                     <td>
-                        <div style="padding-left: 50px;">
+                        <!-- <div style="padding-left: 50px;">
                             <label>Local</label><input type="checkbox">
                             <label>Foráneo</label><input type="checkbox">
-                        </div>
+                        </div> -->
                     </td>
                 </tr>
             </tbody>
@@ -305,15 +313,26 @@
                                             <p>
                                                 @if(count($pregunta->respuestas)>0)
                                                 <ul>
-                                                    @foreach ($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA  as $item)
-                                                        @if(isset($item->fecha))
-                                                            <li>{{$item->nombre}}, fecha: {{$item->fecha}} </li>
-                                                        @else
-                                                            <li>{{$item->nombre}}</li>
+                                                        @if(isset($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA[0]))
+                                                            @foreach($pregunta->respuestas[0]->FORM_CVALOR_RESPUESTA as $v)
+                                                            <li>
+                                                                @if(isset($v->fecha))
+                                                                    <label><b>Nombre:</b> {{$v->nombre}}, <b>Fecha:</b> {{$v->fecha}}</label>
+                                                                    <br>
+                                                                    <label><b>Descripción</b> {{$v->descripcion}}</label>
+                                                                    <br>
+                                                                @else
+                                                                    <label><b>Nombre:</b> {{$v->nombre}}</label>
+                                                                    <br>
+                                                                    <label><b>Descripción</b> {{$v->descripcion}}</label>
+                                                                    <br>
+                                                                @endif
+                                                            </li>
+                                                            @endforeach
                                                         @endif
-                                                    @endforeach
-                                                @endif
                                                 </ul>
+                                                @endif
+                                                
                                             </p>
                                         @endforeach
                                     </div>

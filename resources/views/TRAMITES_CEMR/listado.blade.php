@@ -555,7 +555,18 @@
                     type: 'GET',
                     url: '/tramite_servicio_cemr/download_tramite/' + id,
                     success: function(response) {
-                        window.location = response.name;
+                        if(response.name != undefined){
+                            window.location = response.name;
+                        }else{
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'error',
+                                title: 'Ha ocurrido un error!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                        
                     },
                     error: function(blob) {
                         console.log(blob);
