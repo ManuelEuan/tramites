@@ -1099,6 +1099,7 @@ class GenerarReportes extends Controller
                         $tramite_ = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id->USTR_NIDUSUARIOTRAMITE);
                         $configuracion =  $tramite_;
                         $USTR_NIDUSUARIOTRAMITE = $tramite_['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
+                        $arrayPer['tipoPer'] = $tramite_['tramite'][0]->USTR_CTIPO_PERSONA;
         
                         $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->orderBy('USRE_NIDUSUARIORESP','DESC')->get();
         
@@ -1170,13 +1171,22 @@ class GenerarReportes extends Controller
                         }
                         $tramite        = $configuracion['tramite'][0];
                         $formularios    =  $configuracion['formularios'][0];
-        
+                        $nombreT = "Refrendo al Padrón de Proveedores y Prestadores de Servicios del Poder Ejecutivo del Estado de Querétaro (Personas Físicas)";
+                        $nombreT2 = "Refrendo al Padrón de Proveedores y Prestadores de Servicios del Poder Ejecutivo del Estado de Querétaro (Persona Moral)";
+                        $nombreT3 = "Inscripción al Padrón de Proveedores y Prestadores de Servicios del Poder Ejecutivo del Estado de Querétaro (Persona moral)";
+                        $nombreT4 = "Inscripción al Padrón de Proveedores y Prestadores de Servicios del Poder Ejecutivo del Estado de Querétaro (Persona física)";
+                        
                         //Creacion de pdf
                         $pdf = app('dompdf.wrapper');
                         $pdf->getDomPDF()->set_option("enable_php", true);
                         $pdf->setPaper("letter", "portrait");
                         //$pdf->loadHTML('<h1>Styde.net</h1>');
-                        $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formularios'));
+                        
+                        if(($tramite->USTR_CNOMBRE_TRAMITE == $nombreT) || ($tramite->USTR_CNOMBRE_TRAMITE == $nombreT2) || ($tramite->USTR_CNOMBRE_TRAMITE == $nombreT3) || ($tramite->USTR_CNOMBRE_TRAMITE == $nombreT4) ){
+                            $pdf->loadView('TEMPLATE.FORMULARIO_REFRENDO', compact('tramite', 'formularios', 'arrayPer'));
+                        }else{
+                            $pdf->loadView('TEMPLATE.REPORTE_FORMULARIO', compact('tramite', 'formulsarios', 'arrayPer'));
+                        }
                         //return $pdf->download('Formulario.pdf');
         
                         //Se guardar el pdf

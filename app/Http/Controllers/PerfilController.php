@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Auth;
 
 class PerfilController extends Controller
 {
-    /* public function __construct(){
+    public function __construct(){
         $this->middleware('auth');
-    } */
+    }
 
     public function index(Request $request) {
         $usuario        = Auth::user();
@@ -201,6 +201,7 @@ class PerfilController extends Controller
 
         return json_encode($results);
     }
+    
     public function modificar(Request $request)
     {
         $response = [];
