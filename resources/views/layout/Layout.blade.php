@@ -23,6 +23,7 @@
     <link href="{{ asset('assets/template/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/css/fcradio.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/template/fonts/fontawesome-5.0.6/css/fontawesome-all.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/manuel.css ') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/main.css">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/main.js"></script>
