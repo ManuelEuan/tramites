@@ -375,14 +375,7 @@
                         }
                     },
                     {
-                        data: 'USTR_DFECHACREACION',
-                        render: function(data, type, row) {
-                            if (type === 'display') {
-                                var date = new Date(data.substring(0, 10));
-                                return (date.getDate() + 1) + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + data.substring(11, data.length);
-                            }
-                            return data;
-                        }
+                        data: 'USTR_DFECHACREACION_FORMAT',
                     },
                     {
                         "data": "USTR_CFOLIO"
