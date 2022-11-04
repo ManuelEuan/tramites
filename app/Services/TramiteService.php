@@ -453,6 +453,7 @@ class TramiteService
      */
     public function consultarSeguimiento(Request $request){
         $orderBy    = 'v.USTR_DFECHAMODIFICADO'; 
+        $order      = "desc";
         $usuario    = Auth::user();
         $result     = [];
 
@@ -484,7 +485,9 @@ class TramiteService
             }
         }
 
-        $order = is_null($request->order) ? "desc" : $request->order == 'asc' ? "asc" : "desc";
+        if(!is_null($request->order))
+            $order = $request->order == 'asc' ? "asc" : "desc";
+
         $query->orderBy($orderBy, $order);
 
         if(is_null($request->paginate) || $request->paginate == "true" ){
