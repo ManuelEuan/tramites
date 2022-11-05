@@ -299,7 +299,7 @@
                                             <?php $estatus_tab = 0; ?>
                                             @if (count($tramite['configuracion']['documentos']) > 0)
                                                 @foreach ($tramite['configuracion']['documentos'] as $doc)
-                                                    @if ($doc->TRAD_NESTATUS == 1)
+                                                    @if ($doc->TRAD_NESTATUS == 1 || $doc->TRAD_NESTATUS == 999999 )
                                                         <?php $estatus_tab++; ?>
                                                         <?php $cont_error++; ?>
                                                     @endif
@@ -634,11 +634,16 @@
                                                                                 </div>
                                                                             @break
                                                                         @endswitch
+                                                                    
+                                                                        <div class="md-6 ml-2" id="btnVer" style="margin-left:40% !important;">
+                                                                            @if (!is_null($doc->id))
+                                                                                <a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$doc->TRAD_CRUTADOC}}" target="_blank">
+                                                                                    <i class="fa fa-eye p-0 m-0" ></i>
+                                                                                </a>
+                                                                            @endif
+                                                                        </div>
                                                                     </td>
-                                                                    <td>
-                                                                    </a></div>
-                                                                    <div class="md-6 ml-2" id="btnVer"><a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$doc->TRAD_CRUTADOC}}" target="_blank"><i class="fa fa-eye p-0 m-0" ></i></a></div>
-                                                                    </td>
+
                                                                     <td>
                                                                         <div id="icon_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}">
                                                                             @switch($doc->TRAD_CEXTENSION)
@@ -660,9 +665,9 @@
                                                                                 @break
                                                                             @endswitch
                                                                         
-                                                                    </div>
                                                                         </div>
                                                                     </td>
+
                                                                     <td>
                                                                         {{ $doc->TRAD_CNOMBRE }}
 
@@ -672,19 +677,17 @@
 
                                                                     </td>
                                                                     <td>
-                                                                        <div id="size_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"> </div>
+                                                                        @if (!is_null($doc->id))
+                                                                            <div id="size_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"> </div>
+                                                                        @endif
                                                                     </td>
+                                                                    
                                                                     <td class="text-center">
                                                                         @switch($doc->TRAD_NESTATUS)
-                                                                            @case(0)
-                                                                                Pendiente revisión
-                                                                            @break
-                                                                            @case(1)
-                                                                                Con observaciones
-                                                                            @break
-                                                                            @case(2)
-                                                                                Aceptado
-                                                                            @break
+                                                                            @case(0)  Pendiente revisión @break
+                                                                            @case(1)  Con observaciones  @break
+                                                                            @case(2)  Aceptado @break
+                                                                            @default  @break
                                                                         @endswitch
                                                                     </td>
                                                                     <td class="text-center">
@@ -2230,9 +2233,6 @@
         }
 
         function TRAM_FN_AGREGAR_ROW(name) {
-
-
-
             var iddata = TRAM_FN_GENERATE(8);
             $("#documentosP4").append('<tr>' +
                 '<td> ' +
