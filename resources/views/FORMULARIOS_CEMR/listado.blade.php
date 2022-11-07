@@ -559,70 +559,73 @@
 
     function openSecRol(FORM_NID){
         gform_nid = FORM_NID;
-        request = $.ajax({
-            url: "/formulario/seccion_roles/"+FORM_NID,
-            type: "get"
-        });
 
-        // Callback handler that will be called on success
-        request.done(function(response, textStatus, jqXHR) {
-            seccion_roles = response;
+        var envio = {
+            formulario_id: formulario_id,
+            FORM_NID: gform_nid,
+            
+        };
+            
+        $.ajax({
+            url: '/formulario/seccion_roles',
+            type: 'post',
+            data: envio,
+            success: function (data) {
+                console.log(data);
 
-            var html = '<select id="cmbRoles" class="selectpicker form-control" multiple>';
-            roles.forEach(roles => {
-                let select = '';
-                seccion_roles.forEach(element => {
-                    if(element.ROL_NIDROL == roles.ROL_NIDROL){
-                        select      =   'selected';
-                        /*
-                        let option  =   `<div class="group-item">
-                                            <div class="row align-items-center">
-                                                <div class="col-md-12 text-center">
-                                                    <span class="text-dark"> ${ value.Description } </span>
+                seccion_roles = data;
+
+                var html = '<select id="cmbRoles" class="selectpicker form-control" multiple>';
+                roles.forEach(roles => {
+                    let select = '';
+                    seccion_roles.forEach(element => {
+                        if(element.ROL_NIDROL == roles.ROL_NIDROL){
+                            select      =   'selected';
+                            /*
+                            let option  =   `<div class="group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-12 text-center">
+                                                        <span class="text-dark"> ${ value.Description } </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div`;*/
+                                            </div`;*/
 
-                        lstRoles.push(roles.ROL_NIDROL);
-                    }
+                            lstRoles.push(roles.ROL_NIDROL);
+                        }
+                    });
+                    html += `<option ${select} value="${ roles.ROL_NIDROL }"> ${ roles.ROL_CNOMBRE } </option>`;
                 });
-                html += `<option ${select} value="${ roles.ROL_NIDROL }"> ${ roles.ROL_CNOMBRE } </option>`;
-            });
-            html += '</select>';
-            $("#htmlsecrol").html(html);
+                html += '</select>';
+                $("#htmlsecrol").html(html);
 
-            $('#cmbRoles').selectpicker({
-                noneSelectedText: 'Roles',
-                noneResultsText: 'No se encontraron resultados',
-            });
-
-            $('#cmbRoles').on('change', function(e) { 
-                console.log("entro");
-                selected = $('#cmbRoles').val();
-                console.log(selected);
-                lstRoles = [];
-
-                //$('#list_roles').html('');
-                
-                $.each(selected, function(key, value) {
-                    lstRoles.push(value);
-                    //var text =  $("#cmbRoles option[value='" + value + "']")[0].innerText;
-                    //$('#list_roles').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
+                $('#cmbRoles').selectpicker({
+                    noneSelectedText: 'Roles',
+                    noneResultsText: 'No se encontraron resultados',
                 });
-            });
 
-            $('#asignarRolSeccionModal').modal('show');
+                $('#cmbRoles').on('change', function(e) { 
+                    console.log("entro");
+                    selected = $('#cmbRoles').val();
+                    console.log(selected);
+                    lstRoles = [];
 
+                    //$('#list_roles').html('');
+                    
+                    $.each(selected, function(key, value) {
+                        lstRoles.push(value);
+                        //var text =  $("#cmbRoles option[value='" + value + "']")[0].innerText;
+                        //$('#list_roles').append('<div class="group-item"><div class="row align-items-center"><div class="col-md-12 text-center"><span class="text-dark">'+text+'</span></div></div></div>');
+                    });
+                });
+
+                $('#asignarRolSeccionModal').modal('show');
+
+            },
+            error: function (xhr, error) {
+                console.log(xhr.responseText);
+            }
         });
-
-         // Callback handler that will be called on failure
-         request.fail(function(jqXHR, textStatus, errorThrown) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'se presento el siguiente error: ' + errorThrown
-            });
-        });
+        console.log(envio);
     }
 
     //!FUNCION PARA BUSCAR AREAS POR DEPENDENCIA
@@ -775,9 +778,11 @@
         var htmlid = $("#idTramite").val();
         console.log(lstRoles);
         var envio = {
+                formularioid: formulario_id,
                 FORM_NID: gform_nid,
                 LISTROL: lstRoles,
                 USUA_NIDUSUARIOREGISTRO: 0,
+                
             };
             
             $.ajax({
