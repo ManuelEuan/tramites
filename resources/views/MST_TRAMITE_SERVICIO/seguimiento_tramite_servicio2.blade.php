@@ -1091,6 +1091,7 @@
                                                 </div>
                                                 <div class="col-12"> 
                                                 <a href="{{$tramite["datosPago"]["UrlFormatoPago"]}}" target="_blank"  class="btn btn-primary">Ver Formato de Pago</a>
+                                                <a href="http://serviciosweb.queretaro.gob.mx:8080/recaudanet/enviaBancos_1.jsp?tran={{$tramite['datosPago']['Folio']}}&periodo={{$tramite['datosPago']['Periodo']}}" target="_blank"  class="btn btn-primary">Pago Online</a>
                                                 <button onClick="generar_orden_pago({{ $tramite['idusuariotramite'] }},{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }});" class="btn btn-primary">Generar Nueva Orden de Pago</button>
                                                 <input type="hidden" id="idSeccionSeguimientoPago" value="{{ $confsec->SSEGTRA_NIDSECCION_SEGUIMIENTO }}"/>
                                                 </div>
@@ -1685,6 +1686,7 @@
                             </div>
                             <div class="col-12"> 
                             <a href="`+data.urlFormatoPago+`" target="_blank"  class="btn btn-primary">Ver Formato de Pago</a>
+                            <a href="http://serviciosweb.queretaro.gob.mx:8080/recaudanet/enviaBancos_1.jsp?tran=`+data.folio+`&periodo=`+data.periodo+`" target="_blank"  class="btn btn-primary">Pago Online</a>
                             </div>
                             `);
                             
@@ -1726,7 +1728,7 @@
                     success: function(data) {
                         if(data.estatusPago == 1){
                             $("#alertValidatePago").html('<div class="alert alert-success" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');
-                            //location.reload();
+                            location.reload();
 
                         }else{
                             $("#alertValidatePago").html('<div class="alert alert-warning" role="alert" style="font-size: 16px;">'+data.mensajePago+'</div>');

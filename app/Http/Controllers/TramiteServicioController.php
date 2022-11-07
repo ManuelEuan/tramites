@@ -2039,12 +2039,16 @@ class TramiteServicioController extends Controller
             $referenciaPago->Activo = 1;
             $referenciaPago->save();
 
+            $folioSlit = explode("/",$response["folioControlEstado"]);
+
             $responseJson["estatusPago"] = 1;
             $responseJson["mensajePago"] = $response["mensaje"];
             $responseJson["urlFormatoPago"] = $response["urlFormatoPago"];
             $responseJson["folioControlEstado"] = $response["folioControlEstado"];
             $responseJson["lineaCaptura"] = $response["lineaCaptura"];
             $responseJson["fechaVencimiento"] = $response["fechaVencimiento"];
+            $responseJson["periodo"] = $folioSlit[0];
+            $responseJson["folio"] = $folioSlit[1];
 
         }else{
             $responseJson["estatusPago"] = 0;
