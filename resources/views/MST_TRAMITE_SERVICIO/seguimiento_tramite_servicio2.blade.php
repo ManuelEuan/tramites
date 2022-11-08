@@ -299,7 +299,7 @@
                                             <?php $estatus_tab = 0; ?>
                                             @if (count($tramite['configuracion']['documentos']) > 0)
                                                 @foreach ($tramite['configuracion']['documentos'] as $doc)
-                                                    @if ($doc->TRAD_NESTATUS == 1)
+                                                    @if ($doc->TRAD_NESTATUS == 1 || $doc->TRAD_NESTATUS == 999999 )
                                                         <?php $estatus_tab++; ?>
                                                         <?php $cont_error++; ?>
                                                     @endif
@@ -634,11 +634,16 @@
                                                                                 </div>
                                                                             @break
                                                                         @endswitch
+                                                                    
+                                                                        <div class="md-6 ml-2" id="btnVer" style="margin-left:40% !important;">
+                                                                            @if (!is_null($doc->id))
+                                                                                <a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$doc->TRAD_CRUTADOC}}" target="_blank">
+                                                                                    <i class="fa fa-eye p-0 m-0" ></i>
+                                                                                </a>
+                                                                            @endif
+                                                                        </div>
                                                                     </td>
-                                                                    <td>
-                                                                    </a></div>
-                                                                    <div class="md-6 ml-2" id="btnVer"><a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$doc->TRAD_CRUTADOC}}" target="_blank"><i class="fa fa-eye p-0 m-0" ></i></a></div>
-                                                                    </td>
+
                                                                     <td>
                                                                         <div id="icon_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}">
                                                                             @switch($doc->TRAD_CEXTENSION)
@@ -660,9 +665,9 @@
                                                                                 @break
                                                                             @endswitch
                                                                         
-                                                                    </div>
                                                                         </div>
                                                                     </td>
+
                                                                     <td>
                                                                         {{ $doc->TRAD_CNOMBRE }}
 
@@ -672,19 +677,17 @@
 
                                                                     </td>
                                                                     <td>
-                                                                        <div id="size_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"> </div>
+                                                                        @if (!is_null($doc->id))
+                                                                            <div id="size_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"> </div>
+                                                                        @endif
                                                                     </td>
+                                                                    
                                                                     <td class="text-center">
                                                                         @switch($doc->TRAD_NESTATUS)
-                                                                            @case(0)
-                                                                                Pendiente revisión
-                                                                            @break
-                                                                            @case(1)
-                                                                                Con observaciones
-                                                                            @break
-                                                                            @case(2)
-                                                                                Aceptado
-                                                                            @break
+                                                                            @case(0)  Pendiente revisión @break
+                                                                            @case(1)  Con observaciones  @break
+                                                                            @case(2)  Aceptado @break
+                                                                            @default  @break
                                                                         @endswitch
                                                                     </td>
                                                                     <td class="text-center">
@@ -709,22 +712,30 @@
                                                                         @endif
                                                                     </td>
                                                                     <td style="width: 100px;">
-                                                                        <?php $disbledInputFile = $tramite['disabled'] == 'disabled' ?
-                                                                        'btn-file-disabled btn-file-disabled-action' : ''; ?>
+                                                                        <?php $disbledInputFile = $doc->TRAD_NESTATUS == 2 ? 'btn-file-disabled btn-file-disabled-action' : ''; ?>
                                                                         <div id="documentos-add"></div>
                                                                         <input type="hidden"
                                                                             name="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}_{{ $doc->id }}"
                                                                             id="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             value="{{ $doc->TRAD_CRUTADOC }}_{{ $doc->TRAD_CEXTENSION }}_{{ $doc->TRAD_NPESO }}_{{ $doc->TRAD_CNOMBRE }}">
-                                                                        <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' :
-                                                                        ''; ?>
-                                                                        <input
+
+                                                                        <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' : ''; ?>
+                                                                        {{-- <input
                                                                             class="file-select documentos {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
                                                                             name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
                                                                             {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
+                                                                            {{ $_required_file }}> --}}
+                                                                            <input
+                                                                            class="file-select documentos {{ $doc->TRAD_NESTATUS == 2 ? '' : $disbledInputFile }}"
+                                                                            name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
+                                                                            id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
+                                                                            data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
+                                                                            {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? $tramite['disabled'] : '' }}
                                                                             {{ $_required_file }}>
+
+                                                                            
                                                                     </td>
                                                                     <td>
                                                                         @if ($doc->TRAD_NMULTIPLE == 1)
@@ -1922,9 +1933,30 @@
             $(".documentos").on('change', function() {
 
                 var id = this.id;
+                var doctype = $(this).data("doctype");
                 var formData = new FormData();
                 var files = $("#" + id)[0].files[0];
-                formData.append('file', files);
+                var size = $("#" + id)[0].files[0].size;
+                var kb = (size / 1024)
+                var mb = (kb / 1024)
+    
+                formData.append('file',files);
+                formData.append('doctype',doctype);
+                if(mb.toFixed(3) > 5){
+                    return  Swal.fire({ 
+                                title: 'Error!',
+                                text: 'El archivo debe de pesar menos de 5Mb',
+                                icon: 'error',
+                                confirmButtonText: 'Ok'
+                            })
+                }
+                Swal.fire({
+                    position: 'center',
+                    icon: 'info',
+                    title: 'Cargando documento',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
 
                 // $.each($("#" + id)[0].files, function(i, file) {
                 //     formData.append('file[]', file);
@@ -1937,31 +1969,48 @@
                     contentType: false,
                     processData: false,
                     success: function(response) {
-                        $("#docs_" + id).val(response.path + "_" + response.extension + "_" +
-                            response.size + "_" + name);
-                        $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) +
-                            '</span>');
-                        switch (response.extension) {
-                            case "jpg":
-                                $("#icon_" + id).html(
-                                    '<img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">'
-                                    );
-                                break;
-                            case "png":
-                                $("#icon_" + id).html(
-                                    '<img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">'
-                                    );
-                                break;
-                            case "pdf":
-                                $("#icon_" + id).html(
-                                    '<img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">'
-                                    );
-                                break;
-                            default:
-                                $("#icon_" + id).html(
-                                    '<img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">'
-                                    );
-                                break;
+                        console.log(response);
+                        if(response.extension=="pdf"){
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Listo!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            $("#docs_" + id).val(response.path + "_" + response.extension + "_" + response.size+"_"+response.typename);
+                            $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
+
+                            switch (response.extension) {
+                                case "jpg":
+                                    $("#icon_" + id).html(
+                                        '<img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">'
+                                        );
+                                    break;
+                                case "png":
+                                    $("#icon_" + id).html(
+                                        '<img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">'
+                                        );
+                                    break;
+                                case "pdf":
+                                    $("#icon_" + id).html(
+                                        '<img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">'
+                                        );
+                                    break;
+                                default:
+                                    $("#icon_" + id).html(
+                                        '<img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">'
+                                        );
+                                    break;
+                            }
+                        }
+                        else{
+                            Swal.fire({ 
+                                title: 'Error!',
+                                text: 'Solo se permite PDF',
+                                icon: 'error',
+                                confirmButtonText: 'Ok'
+                            });
                         }
                     }
                 });
@@ -2172,10 +2221,17 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Listo!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                     $("#docs_" + id).val(response.path + "_" + response.extension + "_" + response.size + "_" +
                         bla);
 
-                    $("#size_" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
+                    $("#size_file" + id).html('<span>' + TRAM_FN_CONVERTIR_SIZE(response.size) + '</span>');
                     switch (response.extension) {
                         case "jpg":
                             $("#icon_" + id).html(
@@ -2230,9 +2286,6 @@
         }
 
         function TRAM_FN_AGREGAR_ROW(name) {
-
-
-
             var iddata = TRAM_FN_GENERATE(8);
             $("#documentosP4").append('<tr>' +
                 '<td> ' +

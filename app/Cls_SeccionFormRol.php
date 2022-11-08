@@ -11,15 +11,16 @@ class Cls_SeccionFormRol extends Model
     protected $table = 'Seccionform_rol';
 
     
-    static function AsignarSecRol($FORM_NID ,$ROL_NIDROL, $USUA_NIDUSUARIOREGISTRO){//Request $request
+    static function AsignarSecRol($formularioid, $FORM_NID ,$ROL_NIDROL, $USUA_NIDUSUARIOREGISTRO){//Request $request
         try {
-            $verifica = DB::select('select * from Seccionform_rol where FORM_NID = ? and ROL_NIDROL = ?', [$FORM_NID, $ROL_NIDROL]);
+            $verifica = DB::select('select * from Seccionform_rol where formulario_id = ? and FORM_NID = ? and ROL_NIDROL = ?', [$formularioid, $FORM_NID, $ROL_NIDROL]);
         
             if(count($verifica) > 0){
                 //ya registrado
             }else{
-                DB::insert('insert into Seccionform_rol (FORM_NID, ROL_NIDROL, USUA_NIDUSUARIOREGISTRO) values (?, ?, ?)',
+                DB::insert('insert into Seccionform_rol (formulario_id, FORM_NID, ROL_NIDROL, USUA_NIDUSUARIOREGISTRO) values (?, ?, ?, ?)',
                     [
+                        $formularioid,
                         $FORM_NID,
                         $ROL_NIDROL,
                         $USUA_NIDUSUARIOREGISTRO
@@ -105,8 +106,13 @@ class Cls_SeccionFormRol extends Model
         return response()->json($response);
     }
 
-    static function SeccionRoles($FORM_NID){//Request $request
-        $response = DB::select('select * from Seccionform_rol where FORM_NID = ?', [$FORM_NID]);
+    static function SeccionRoles($formulario_id, $FORM_NID){//Request $request
+        $response = DB::select('select * from Seccionform_rol where formulario_id = ? and FORM_NID = ?', [$formulario_id, $FORM_NID]);
+
+        return $response;
+    }
+    static function getFormSeccionRoles($formulario_id, $FORM_NID, $ROL_NIDROL){//Request $request
+        $response = DB::select('select * from Seccionform_rol where formulario_id = ? and FORM_NID = ? and ROL_NIDROL = ?', [$formulario_id, $FORM_NID, $ROL_NIDROL]);
 
         return $response;
     }

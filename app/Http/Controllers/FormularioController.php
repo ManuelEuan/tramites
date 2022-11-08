@@ -123,8 +123,8 @@ class FormularioController extends Controller
         return response()->json($items);
     }
 
-    public function seccion_roles($FORM_NID){
-        $items = Cls_SeccionFormRol::SeccionRoles($FORM_NID);
+    public function seccion_roles(Request $request){
+        $items = Cls_SeccionFormRol::SeccionRoles($request->formulario_id, $request->FORM_NID);
         return response()->json($items);
     }
     public function areasXDependencia($FORM_NID){
@@ -645,7 +645,7 @@ class FormularioController extends Controller
             //code...
             foreach ($request->LISTROL as $key => $value) {
                 # code...
-                $respuesta = Cls_SeccionFormRol::AsignarSecRol($request->FORM_NID, intval($value), intval($request->USUA_NIDUSUARIOREGISTRO));
+                $respuesta = Cls_SeccionFormRol::AsignarSecRol($request->formularioid, $request->FORM_NID, intval($value), intval($request->USUA_NIDUSUARIOREGISTRO));
                 array_push($prueba, intval($value));
             }
             return response()->json($respuesta);

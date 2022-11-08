@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\User;
 use DateTime;
+use Exception;
 use App\Models\Cls_Tramite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -444,6 +445,11 @@ class TramiteService
         $start      = !is_null($request->start) ? $request->start : 0;
         $total      = $query->count();
         $resultado  = $query->orderBy($order_by, $order)->offset($start)->limit($registros)->get();
+
+        foreach($resultado as $item){
+            $creacion   = new DateTime($item->USTR_DFECHACREACION);
+            $item->USTR_DFECHACREACION_FORMAT = $creacion->format('d-m-Y H:i:s');
+        }
 
         return [ "result" => $resultado, "total" =>  $total];
     }
