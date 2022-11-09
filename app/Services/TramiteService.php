@@ -112,11 +112,11 @@ class TramiteService
                             ->join('requisits as r', 'pr.RequisitId', '=', 'r.Id')
                             ->join('naturetypes as n', 'pr.Nature', '=', 'n.Id')
                             ->join('naturepresentationtypes as np', 'pr.NatureHow', '=', 'np.Id')
-                            ->select('r.*', 'r.iId as Id' ,'n.Name as tipoDocumento', 'np.Name as presentacion')
+                            ->select('r.*','r.Id as uuid', 'r.iId as Id' ,'n.Name as tipoDocumento', 'np.Name as presentacion')
                             ->where(['pr.IdProcedure' => $tramiteID, 'r.IsDeleted' => false])
                             ->groupBy('r.Id','n.Name', 'np.Name')->get();
         $requisitos = DB::connection('mysql2')->table('procedurerequisit as pr')
-                            ->select('pr.Description')
+                            ->select('pr.Description', 'pr.RequisitId')
                             ->where(['pr.IdProcedure' => $tramiteID])->get();
 
         $oficinas   = DB::connection('mysql2')->table('procedureoffices as po')
@@ -158,11 +158,10 @@ class TramiteService
         ################ Documentos ################
         $arrayDocumentos = [];
         foreach($arrayDetalle['documentos'] as $key => $documento) {
-
-            if(isset($arrayDetalle['requisitos'][$key]->Description)){
-                $desc = $arrayDetalle['requisitos'][$key]->Description;
-            }else{
-                $desc = $documento->Description;
+            $desc = $documento->Description;
+            foreach($arrayDetalle['requisitos'] as $req){
+                if($req->RequisitId == $documento->uuid)
+                    $desc = $req->Description;
             }
             $array = array(
                 "nombre"        => $documento->Name,

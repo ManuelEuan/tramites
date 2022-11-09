@@ -230,11 +230,12 @@ class TramiteServicioController extends Controller
         $objTramite     = $this->tramiteService->getTramite($detalle->TRAM_NIDTRAMITE_ACCEDE);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
         $arrayDocumentos = [];
+
         foreach($arrayDetalle['documentos'] as $key => $documento) {
-            if(isset($arrayDetalle['requisitos'][$key]->Description)){
-                $desc = $arrayDetalle['requisitos'][$key]->Description;
-            }else{
-                $desc = $documento->Description;
+            $desc = $documento->Description;
+            foreach($arrayDetalle['requisitos'] as $req){
+                if($req->RequisitId == $documento->uuid)
+                    $desc = $req->Description;
             }
             $array = array($desc, $documento->Name);
             array_push($arrayDocumentos, $array);
