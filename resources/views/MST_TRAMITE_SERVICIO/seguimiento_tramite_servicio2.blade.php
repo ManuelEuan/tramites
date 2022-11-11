@@ -1023,11 +1023,10 @@
                                                     </p>
                                                 </div>
                                             </div>
-                                            @foreach ($confsec->resolutivos as $resu)
-
-                                                <button type="submit" class="btn btn-primary" style="margin-right:10px;"><a
-                                                        href="{{ asset($resu->USRE_CRUTADOC) }}" style="color:#fff !important;"
-                                                        download="RESOLUTIVO">Descargar</a></button>
+                                            @foreach ($confsec->resolutivos as $index => $resu)
+                                                <a style="display: none;" id="archivoReso" href="{{ asset($resu->USRE_CRUTADOC) }}" style="color:#fff !important;" download="RESOLUTIVO"></a>
+                                                <input type="hidden" id="inputFormat" value="{{ asset('|dos') }}"> 
+                                                <button  onclick="descargarResolutivo({{$index}})" class="btn btn-primary" style="margin-right:10px;">Descargar</button>
                                             @endforeach
                                         @endif
                                     @break
@@ -2848,6 +2847,34 @@
         function TRAM_FN_DETALLE_NOTIFICACION(id) {
             $(location).attr('href', '/tramite_servicio/consultar_detalle_notificacion/' + id);
         };
+
+        function descargarResolutivo(id){
+            let input   = document.getElementById("inputFormat").value;
+            let base    = input.split("|");
+
+            $.ajax({
+                type: 'GET',
+                url: '/tramite_servicio/getResolutivo/' + 241,
+                success: function(data) {
+                    console.log(data);
+                    let url = base[0] +  data.url;
+                    let a = document.createElement('a');
+                    /* let url = window.URL.createObjectURL(data); */
+                    console.log("Manuel", url);
+                    a.href = url;
+                    a.download = "Formato";
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                },
+                error: function(resp) {
+                    let error = JSON.parse(resp.responseText);
+                    respuestaError(error);
+                    document.getElementById("overlay").style.display = "none";
+                }
+            });
+
+            document.getElementById("archivoReso").click();
+        }
 
         //Convertir byte a (Kb, Mb, Gb, Tb)
         function TRAM_FN_CONVERTIR_SIZE(size) {
