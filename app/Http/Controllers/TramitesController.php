@@ -346,7 +346,11 @@ class TramitesController extends Controller
             unlink($saveDocPath);
         }
 
-        return redirect('/docts/resolutivos/resolutivo_' . $nameFile[0] . '.pdf');
+        $ruta = '/docts/resolutivos/resolutivo_' . $nameFile[0] . '.pdf';
+        if($tipo == 99)
+            return $ruta;
+
+        return redirect($ruta);
     }
 
     //Obtener trámite en seguimiento
@@ -1225,5 +1229,22 @@ class TramitesController extends Controller
             $retorno = true;
         }
         return $retorno;
+    }
+
+    /**
+     * Retorna la url del resolutivo a descargar
+     * @param Integer $id
+     * @return Response
+     */
+    public function getResolutivo($id){
+        try {
+            $result     = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
+            $resolutivo = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($result[0]->USTR_NIDTRAMITE);
+            $archivo    = $this->generatePrevioResolutivo($resolutivo[0]->RESO_NID, $id, 99);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+
+        return response()->json(["url" => $archivo]);
     }
 }
