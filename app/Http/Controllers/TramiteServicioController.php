@@ -513,6 +513,7 @@ class TramiteServicioController extends Controller
                                     case "catalogo":
                                         if ($resp->FORM_NPREGUNTAID == $_resp['USRE_NIDPREGUNTA']) {
                                             $resp->respString   = $_resp['USRE_CRESPUESTA'];
+                                            $resp->id           = $_resp['USRE_NIDUSUARIORESP'];
 
                                             if($resp->FORM_CVALOR == 'tram_cat_giros'){
                                                 $resp->respArray    = json_decode($_resp['USRE_CRESPUESTA']);
@@ -590,7 +591,7 @@ class TramiteServicioController extends Controller
                     $tramite['configuracion']['secciones'][$i]->CONF_NESTATUS_SEGUIMIENTO = 2;
             }
         }
-
+        /* dd($tramite['configuracion']['formularios'][0]->secciones); */
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 
@@ -1272,10 +1273,8 @@ class TramiteServicioController extends Controller
         return Response()->json($response);
     }
 
-    public function reenviar(Request $request)
-    {
+    public function reenviar(Request $request) {
         try{
-            
             $session = session('consultarPen');
             DB::table('tram_his_notificacion_tramite')->where('HNOTI_NIDNOTIFICACION', $session )->update(['HNOTI_NLEIDO' => true]);
             session()->forget('consultarPen');

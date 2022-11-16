@@ -543,12 +543,15 @@
                                                                         @break
                                                                         @case('catalogo')
                                                                             <div class="col-md-4">
-                                                                                <div class="form-group">
+                                                                                <div class="form-group {{ $preg->estatus == 1 ? 'error-input' : '' }}">
                                                                                     <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
-                                                                                    <?php 
+                                                                                    <?php
+                                                                                        foreach($preg->respuestas as $resp){
+                                                                                            $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0_'.$resp->id;
+                                                                                        }
+
                                                                                         $multiple   = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'multiple' : '';
                                                                                         $class      = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'selectCatalogos' : '';
-                                                                                        $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0_'.$resp->id;
                                                                                     ?>
 
                                                                                     @foreach ($preg->respuestas as $resp)
@@ -580,6 +583,10 @@
                                                                                             @endforeach
                                                                                         @endforeach
                                                                                     </select>
+
+                                                                                    @if ($preg->estatus == 1)
+                                                                                        <span class="text-danger">{{ $preg->observaciones }}</span>
+                                                                                    @endif
                                                                                 </div>
 
                                                                                 <div {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="inputGiro_resp_{{$preg->FORM_NID}}_0">
@@ -2189,8 +2196,6 @@
             if(tienePago == 1){
                 actualizar_pago();
             }
-
-
         });
 
         function TRAM_FN_SUBIR_DOCUMENTO_MULTIPLE(val) {
