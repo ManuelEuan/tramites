@@ -712,30 +712,22 @@
                                                                         @endif
                                                                     </td>
                                                                     <td style="width: 100px;">
-                                                                        <?php $disbledInputFile = $doc->TRAD_NESTATUS == 2 ? 'btn-file-disabled btn-file-disabled-action' : ''; ?>
+                                                                        <?php $disbledInputFile = $tramite['disabled'] == 'disabled' ?
+                                                                        'btn-file-disabled btn-file-disabled-action' : ''; ?>
                                                                         <div id="documentos-add"></div>
                                                                         <input type="hidden"
                                                                             name="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}_{{ $doc->id }}"
                                                                             id="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             value="{{ $doc->TRAD_CRUTADOC }}_{{ $doc->TRAD_CEXTENSION }}_{{ $doc->TRAD_NPESO }}_{{ $doc->TRAD_CNOMBRE }}">
-
-                                                                        <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' : ''; ?>
-                                                                        {{-- <input
+                                                                        <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' :
+                                                                        ''; ?>
+                                                                        <input
                                                                             class="file-select documentos {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
                                                                             name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
                                                                             {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
-                                                                            {{ $_required_file }}> --}}
-                                                                            <input
-                                                                            class="file-select documentos {{ $doc->TRAD_NESTATUS == 2 ? '' : $disbledInputFile }}"
-                                                                            name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
-                                                                            id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
-                                                                            data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
-                                                                            {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? $tramite['disabled'] : '' }}
                                                                             {{ $_required_file }}>
-
-                                                                            
                                                                     </td>
                                                                     <td>
                                                                         @if ($doc->TRAD_NMULTIPLE == 1)

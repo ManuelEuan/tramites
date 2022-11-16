@@ -361,7 +361,7 @@ class TramiteServicioController extends Controller
             $configaracion  = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($detalle->TRAM_NIDTRAMITE, $detalle->USTR_NIDUSUARIOTRAMITE);
             $pagoTramite    = Cls_Pago_Tramite::where([['USTR_NIDUSUARIOTRAMITE','=',$id],['Activo','=',1]])->first();
             $resolutivosConfig = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($detalle->TRAM_NIDTRAMITE);
-            
+
             //Verificar seccion seguiente, para activar
             foreach ($configaracion['secciones'] as $item) {
                 if (isset($item->SSEGTRA_NIDSECCION_SEGUIMIENTO)) {
@@ -374,6 +374,10 @@ class TramiteServicioController extends Controller
                     }
                 }
             }
+            //VAlido si esta dando seguimiento
+            if(session()->has('consultarPen'))
+                $this->atencion = 1;
+
 
             $tramite = [];
             $tramite['id']                  = $detalle->TRAM_NIDTRAMITE;
@@ -587,7 +591,6 @@ class TramiteServicioController extends Controller
             }
         }
 
-        /* dd($tramite['configuracion']); */
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 
@@ -634,8 +637,7 @@ class TramiteServicioController extends Controller
         return Response()->json($response);
     }
 
-    public function consultar_detalle_notificacion($id)
-    {
+    public function consultar_detalle_notificacion($id) {
         $tramites = new Cls_Tramite_Servicio();
         $noti = $tramites->TRAM_CONSULTAR_DETALLE_NOTIFICACION($id);
         $detalle = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE_SEGUIMIENTO($noti->HNOTI_NIDUSUARIOTRAMITE);
@@ -649,17 +651,15 @@ class TramiteServicioController extends Controller
         $tramite['estatus'] = $detalle->TRAM_NESTATUS_PROCESO == null ? 1 : $detalle->TRAM_NESTATUS_PROCESO;
         $tramite['atencion_formulario'] = $this->atencion;
         $tramite['notificacion'] = $noti;
-        //$tramites->TRAM_ESTATUS_NOTIFICACION($id);
-
-        //dd($noti->HNOTI_CMENSAJE);
 
         return view('MST_TRAMITE_SERVICIO.detalle_notificacion', compact('tramite'));
     }
 
     public function atencion_notificacion_seguimiento($id, $noti)
     {
+        session(['consultarPen' => $noti]);
         $tramites = new Cls_Tramite_Servicio();
-        $tramites->TRAM_ESTATUS_NOTIFICACION($noti);
+        /* $tramites->TRAM_ESTATUS_NOTIFICACION($noti); */
         $notificacion_det = $tramites->TRAM_CONSULTAR_DETALLE_NOTIFICACION($noti);
         $this->atencion = 1;
         $this->seccion_active = $notificacion_det->HNOTI_NIDCONFIGSECCION; //Activar seccion
@@ -1275,6 +1275,11 @@ class TramiteServicioController extends Controller
     public function reenviar(Request $request)
     {
         try{
+            
+            $session = session('consultarPen');
+            DB::table('tram_his_notificacion_tramite')->where('HNOTI_NIDNOTIFICACION', $session )->update(['HNOTI_NLEIDO' => true]);
+            session()->forget('consultarPen');
+            
             $respuestas = array();
             $respuestas_especial = array();
             $documentos = array();
