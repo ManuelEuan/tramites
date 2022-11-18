@@ -162,10 +162,17 @@ class TramitesController extends Controller
                 $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
             }else{
                 //$asignados =[$tramite_seguimiento->UsuarioID, 'rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
-                $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
-                foreach ($tramites as $key => $t) {
+                $asignados =['rol' => Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
+                foreach ($tramites as $key => $t) { 
                     $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
                     $t->asignado = Cls_UsuarioTramiteAnalista::VerificaAsignacion($t->USTR_NIDUSUARIOTRAMITE);
+                    $t->responsable = null;
+                    
+                    if($t->asignado){
+                        $asignado = DB::table('tram_mdv_usuariotramite_analista')
+                                        ->where('USTR_NIDUSUARIOTRAMITE', $t->USTR_NIDUSUARIOTRAMITE)->first();
+                        $t->responsable = $asignado->USUA_NIDUSUARIO;
+                    }
 
                     $diasH = $t->USTR_NDIASHABILESRESOLUCION;
                     $hoy = date('Y-m-d');
