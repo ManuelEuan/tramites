@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use File;
+use App\User;
 use DateTime;
 use Exception;
 use ZipArchive;
-use App\Cls_Usuario;
 use Carbon\Carbon;
+use App\Cls_Usuario;
+use App\Cls_SeccionFormRol;
 use Illuminate\Support\Str;
 use App\Cls_Usuario_Tramite;
 use Illuminate\Http\Request;
@@ -20,13 +22,12 @@ use App\Services\TramiteService;
 use Illuminate\Support\Facades\DB;
 use App\Cls_UsuarioTramiteAnalista;
 use App\Models\Cls_Citas_Calendario;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 //asignar tramites
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use App\Cls_Seguimiento_Servidor_Publico;
 use App\Models\Cls_Formulario_Pregunta_Respuesta;
-use App\Cls_SeccionFormRol;
 
 class TramitesController extends Controller
 {
@@ -46,126 +47,25 @@ class TramitesController extends Controller
         return view('TRAMITES_CEMR.index');
     }
 
-    public function find(Request $request)
-    {
+    public function find(Request $request){
         $response = [];
         try {
+            $seguimiento = new Cls_Seguimiento_Servidor_Publico();
+            $user = Auth::user();
 
-            ## Read value
-            /* $draw = $request->get('draw');
-            $start = $request->get("start");
-            $rowperpage = $request->get("length"); // Rows display per page
+            $seguimiento->UsuarioID = $user->TRAM_CAT_ROL->ROL_CCLAVE == 'ADM' ? 0 : $user->USUA_NIDUSUARIO;
+            $resultado      =  $this->tramiteService->listadoSeguimiento($request);
+            $tramites       = $resultado['result'];
+            $asignados      = ['rol' => $user->TRAM_CAT_ROL->ROL_CCLAVE];
 
-            $columnIndex_arr = $request->get('order');
-            $columnName_arr = $request->get('columns');
-            $order_arr = $request->get('order');
-            $search_arr = $request->get('search');
+            foreach ($tramites as $t) { 
+                $t->rol     = $user->TRAM_CAT_ROL->ROL_CCLAVE;
+                $diasH      = $t->USTR_NDIASHABILESRESOLUCION;
+                $hoy        = date('Y-m-d');
+                $fechaFinal = date('Y-m-d', strtotime($t->USTR_DFECHACREACION. ' + '.$diasH.' days'));
 
-            $columnIndex = $columnIndex_arr[0]['column']; // Column index
-            $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-            $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-            $searchValue = $search_arr['value']; // Search value
-
-            //Filter
-            $filter = [];
-            $filter['StrTexto'] = $searchValue;
-            $filter['IntNumPagina'] = $searchValue === null ? intval($start) : 0;
-            $filter['IntDesde'] = $searchValue === null ? intval($start) : 0;
-            $filter['IntCantidadRegistros'] = intval($rowperpage);
-            $filter['StrOrdenColumna'] = $columnName;
-            $filter['StrOrdenDir'] = $columnSortOrder;
-
-            $filter['fecha'] = $request->get('fecha') ?? "";
-            $filter['folio'] = $request->get('folio') ?? "";
-            $filter['tramite'] = is_null($request->get('tramite')) ? 0 : intval($request->get('tramite'));
-            $filter['razonSocial'] = $request->get('razonSocial') ?? "";
-            $filter['nombre'] = $request->get('nombre') ?? "";
-            $filter['rfc'] = $request->get('rfc') ?? "";
-            $filter['curp'] = $request->get('curp') ?? "";
-            $filter['estatus'] = is_null($request->get('estatus')) ? 0 : intval($request->get('estatus'));
- 
-            $tramite_seguimiento = new Cls_Seguimiento_Servidor_Publico();
-            $tramite_seguimiento->USTR_NIDUSUARIOTRAMITE = 0;
-            $tramite_seguimiento->StrTexto =  $filter['StrTexto'] ?? "";
-            $tramite_seguimiento->IntDesde = $filter['IntDesde'];
-            $tramite_seguimiento->IntCantidadRegistros =  $filter['IntCantidadRegistros'];
-
-            $tramite_seguimiento->fecha =  $filter['fecha'];
-            $tramite_seguimiento->folio =  $filter['folio'];
-            $tramite_seguimiento->tramite =  $filter['tramite'];
-            $tramite_seguimiento->razonSocial =  $filter['razonSocial'];
-            $tramite_seguimiento->nombre =  $filter['nombre'];
-            $tramite_seguimiento->rfc =  $filter['rfc'];
-            $tramite_seguimiento->curp =  $filter['curp'];
-            $tramite_seguimiento->estatus =  $filter['estatus'];
-
-            $tramite_seguimiento->ordenColumna =  $filter['StrOrdenColumna'] === null ? 'USTR_DFECHACREACION' : $filter['StrOrdenColumna'];
-            $tramite_seguimiento->direccionOrden = $filter['StrOrdenColumna'] === null ? 'desc' :  $filter['StrOrdenDir'];
-
-            //Validar tipo de usuario
-            */
-            $tramite_seguimiento = new Cls_Seguimiento_Servidor_Publico();
-            if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE === 'ADM') {
-                $tramite_seguimiento->UsuarioID = 0;
-            } else {
-                $tramite_seguimiento->UsuarioID = Auth::user()->USUA_NIDUSUARIO;
-            }
-
-           // $result = $tramite_seguimiento->TRAM_SP_CONSULTAR_TRAMITES_SEGUIMIENTO();
-            $result         =  $this->tramiteService->listadoSeguimiento($request);
-
-            $tramites       = $result['result'];
-            $totalRegistros = $result['total'];
-            $mostrar=[];
-
-            if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE === 'ANTA'){
-                $asignados = Cls_UsuarioTramiteAnalista::TramitesAnalista($tramite_seguimiento->UsuarioID);
-                //$asignados[] = $tramite_seguimiento->UsuarioID;
-                //$asignados[] = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
-
-                foreach ($tramites as $key => $t) {
-                    foreach ($asignados as $llave => $index) {
-                        if($t->USTR_NIDUSUARIOTRAMITE == $index->USTR_NIDUSUARIOTRAMITE){
-                            $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
-
-                            $mostrar[] = $t;
-
-                            $diasH = $t->USTR_NDIASHABILESRESOLUCION;
-                            $hoy = date('Y-m-d');
-                            $fechaFinal = date('Y-m-d', strtotime($t->USTR_DFECHACREACION. ' + '.$diasH.' days'));
-                            
-
-                            if($t->USTR_NESTATUS == 4){
-                                if(!empty($t->USTR_DFECHAESTATUS)){
-                                    $diasN = $t->USTR_NDIASHABILESNOTIFICACION;
-                                    $fechaFinalNotificacion = date('Y-m-d', strtotime($t->USTR_DFECHAESTATUS. ' + '.$diasN.' days'));
-                                    if($hoy > $fechaFinalNotificacion){
-                                        $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
-                                    }
-                                }else{
-                                    if($hoy > $fechaFinal){
-                                        $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
-                                    }
-                                }
-                                
-                            }elseif($t->USTR_NESTATUS != 10){
-                                /*if($hoy > $fechaFinal){
-                                    $tramite_seguimiento->ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
-                                }*/
-                            }
-
-                        }
-                    }
-                }
-                $tramites = $mostrar;
-                $totalRegistros=strval(count($tramites));
-                $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
-            }else{
-                //$asignados =[$tramite_seguimiento->UsuarioID, 'rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
-                $asignados =['rol' => Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
-                foreach ($tramites as $key => $t) { 
-                    $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
-                    $t->asignado = Cls_UsuarioTramiteAnalista::VerificaAsignacion($t->USTR_NIDUSUARIOTRAMITE);
+                if($user->TRAM_CAT_ROL->ROL_CCLAVE != 'ANTA'){
+                    $t->asignado    = Cls_UsuarioTramiteAnalista::VerificaAsignacion($t->USTR_NIDUSUARIOTRAMITE);
                     $t->responsable = null;
                     
                     if($t->asignado){
@@ -173,41 +73,33 @@ class TramitesController extends Controller
                                         ->where('USTR_NIDUSUARIOTRAMITE', $t->USTR_NIDUSUARIOTRAMITE)->first();
                         $t->responsable = $asignado->USUA_NIDUSUARIO;
                     }
+                }
 
-                    $diasH = $t->USTR_NDIASHABILESRESOLUCION;
-                    $hoy = date('Y-m-d');
-                    $fechaFinal = date('Y-m-d', strtotime($t->USTR_DFECHACREACION. ' + '.$diasH.' days'));
-                    
-                    if($t->USTR_NESTATUS == 4){
-                        if(!empty($t->USTR_DFECHAESTATUS)){
-                            $diasN = $t->USTR_NDIASHABILESNOTIFICACION;
-                            $fechaFinalNotificacion = date('Y-m-d', strtotime($t->USTR_DFECHAESTATUS. ' + '.$diasN.' days'));
-                            if($hoy > $fechaFinalNotificacion){
-                                $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
-                            }
-                        }else{
-                            if($hoy > $fechaFinal){
-                                $tramite_seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
-                            }
+                if($t->USTR_NESTATUS == 4){
+                    if(!empty($t->USTR_DFECHAESTATUS)){
+                        $diasN = $t->USTR_NDIASHABILESNOTIFICACION;
+                        $fechaFinalNotificacion = date('Y-m-d', strtotime($t->USTR_DFECHAESTATUS. ' + '.$diasN.' days'));
+                        if($hoy > $fechaFinalNotificacion){
+                            $seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
                         }
-                    }elseif($t->USTR_NESTATUS != 10){
-                        /*if($hoy > $fechaFinal){
-                            $tramite_seguimiento->ACTUALIZAR_STATUS_VENCIDO($t->USTR_CFOLIO);
-                        }*/
+                    }else{
+                        if($hoy > $fechaFinal){
+                            $seguimiento->ACTUALIZAR_STATUS($t->USTR_CFOLIO);
+                        }
                     }
                 }
             }
             
             $response = [
-                'recordsTotal'      => $totalRegistros,
-                'recordsFiltered'   => $totalRegistros,
-                'data'              =>  $tramites,
+                'recordsTotal'      => $resultado['total'],
+                'recordsFiltered'   => $resultado['total'],
+                'data'              => $tramites,
                 'asignados'         => $asignados
             ];
-        } catch (\Throwable $th) {
+        } catch (Exception $ex) {
             $response = [
                 'data'      => [],
-                'error'     => $th->getMessage(),
+                'error'     => $ex->getMessage(),
                 'code'      => 400,
                 'mensaje'   => 'Ocurrió un error al obtener trámites',
             ];
