@@ -263,7 +263,6 @@ class Cls_Tramite_Servicio extends Model
 
                     foreach($subidos as $sub){
                         if($requerido->TRAD_NIDTRAMITEDOCUMENTO == $sub->TRAD_NIDTRAMITEDOCUMENTO){
-                            $sub->TRAD_NESTATUS = 0;
                             $item = $sub;
                         }
                     }
