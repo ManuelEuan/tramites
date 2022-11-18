@@ -149,7 +149,7 @@
                     <label>Tipo de cuestionario</label>
                     <select name="analistaSelec" id="analistaSelec" class="form-control">
                     </select>
-                    <input type="text" id="idTramite" readonly>
+                    <input type="hidden" id="idTramite" readonly>
                 </div>
             </div>
             <div class="modal-footer">
@@ -170,7 +170,8 @@
 <script>
     var table = null;
     var registros_paginas = 10;
-    var isVencido = false;
+    var isVencido   = false;
+    var analistas   = [];
 
     var estatus_seguimiento_antiguo = [{
             id: 1,
@@ -458,7 +459,7 @@
                                         <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
                                     </span>
                                     <span>
-                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>
+                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE }, ${ data.responsable } )" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>
                                     </span>
                                     <span>
                                         <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
@@ -598,6 +599,7 @@
             type: 'GET',
             url: "/ListaAnalistas", 
             success: function(result){
+                analistas = result;
                 html += '<option value="'+0+'" >Sin Asignación</option>';
                 for(i=0; i<result.length; i++){
                     var nombre = result[i].USUA_CPRIMER_APELLIDO+' '+result[i].USUA_CSEGUNDO_APELLIDO+' '+result[i].USUA_CNOMBRES;
@@ -610,9 +612,20 @@
     }
 
     // ! modalito
-    function asignarFuncionarioModal(id) {
-        // !codigo
-        $("#idTramite").val(id);
+    function asignarFuncionarioModal(tramiteId, responsableId = null) {
+        if(responsableId != null){
+            $("#analistaSelec option[value="+ responsableId +"]").attr("selected", true);
+        }
+        else{
+            html = '<option value="'+0+'" >Sin Asignación</option>';
+            analistas.forEach(element => {
+                var nombre = element.USUA_CPRIMER_APELLIDO + ' '+ element.USUA_CSEGUNDO_APELLIDO + ' ' + element.USUA_CNOMBRES;
+                html += '<option value="'+ element.USUA_NIDUSUARIO +'" >'+ nombre +'</option>';
+            });
+
+            $("#analistaSelec").html(html);
+        }
+        $("#idTramite").val(tramiteId);
         $("#asignarFuncionarioModal").modal('show');
     }
 

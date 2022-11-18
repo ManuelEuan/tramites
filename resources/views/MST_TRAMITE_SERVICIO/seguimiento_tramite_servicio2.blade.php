@@ -543,12 +543,15 @@
                                                                         @break
                                                                         @case('catalogo')
                                                                             <div class="col-md-4">
-                                                                                <div class="form-group">
+                                                                                <div class="form-group {{ $preg->estatus == 1 ? 'error-input' : '' }}">
                                                                                     <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}}</label>
-                                                                                    <?php 
+                                                                                    <?php
+                                                                                        foreach($preg->respuestas as $resp){
+                                                                                            $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0_'.$resp->id;
+                                                                                        }
+
                                                                                         $multiple   = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'multiple' : '';
                                                                                         $class      = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? 'selectCatalogos' : '';
-                                                                                        $name       = $preg->respuestas[0]->FORM_CVALOR == 'tram_cat_giros' ? '' : 'name=resp_'.$preg->FORM_NID.'_0_'.$resp->id;
                                                                                     ?>
 
                                                                                     @foreach ($preg->respuestas as $resp)
@@ -580,6 +583,10 @@
                                                                                             @endforeach
                                                                                         @endforeach
                                                                                     </select>
+
+                                                                                    @if ($preg->estatus == 1)
+                                                                                        <span class="text-danger">{{ $preg->observaciones }}</span>
+                                                                                    @endif
                                                                                 </div>
 
                                                                                 <div {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="inputGiro_resp_{{$preg->FORM_NID}}_0">
@@ -712,30 +719,22 @@
                                                                         @endif
                                                                     </td>
                                                                     <td style="width: 100px;">
-                                                                        <?php $disbledInputFile = $doc->TRAD_NESTATUS == 2 ? 'btn-file-disabled btn-file-disabled-action' : ''; ?>
+                                                                        <?php $disbledInputFile = $tramite['disabled'] == 'disabled' ?
+                                                                        'btn-file-disabled btn-file-disabled-action' : ''; ?>
                                                                         <div id="documentos-add"></div>
                                                                         <input type="hidden"
                                                                             name="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}_{{ $doc->id }}"
                                                                             id="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             value="{{ $doc->TRAD_CRUTADOC }}_{{ $doc->TRAD_CEXTENSION }}_{{ $doc->TRAD_NPESO }}_{{ $doc->TRAD_CNOMBRE }}">
-
-                                                                        <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' : ''; ?>
-                                                                        {{-- <input
+                                                                        <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' :
+                                                                        ''; ?>
+                                                                        <input
                                                                             class="file-select documentos {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
                                                                             name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
                                                                             {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
-                                                                            {{ $_required_file }}> --}}
-                                                                            <input
-                                                                            class="file-select documentos {{ $doc->TRAD_NESTATUS == 2 ? '' : $disbledInputFile }}"
-                                                                            name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
-                                                                            id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
-                                                                            data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
-                                                                            {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? $tramite['disabled'] : '' }}
                                                                             {{ $_required_file }}>
-
-                                                                            
                                                                     </td>
                                                                     <td>
                                                                         @if ($doc->TRAD_NMULTIPLE == 1)
@@ -2197,8 +2196,6 @@
             if(tienePago == 1){
                 actualizar_pago();
             }
-
-
         });
 
         function TRAM_FN_SUBIR_DOCUMENTO_MULTIPLE(val) {

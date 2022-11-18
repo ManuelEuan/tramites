@@ -333,6 +333,7 @@ class LoginController extends Controller
 	}
 
 	public function logout() {
+		session()->forget('consultarPen');
 		Auth::logout();
 		if(Cookie::has("rol_clave")){
 			$rol = Cookie::forget("rol_clave");

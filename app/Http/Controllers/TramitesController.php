@@ -162,10 +162,17 @@ class TramitesController extends Controller
                 $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
             }else{
                 //$asignados =[$tramite_seguimiento->UsuarioID, 'rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
-                $asignados =['rol' =>Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
-                foreach ($tramites as $key => $t) {
+                $asignados =['rol' => Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE];
+                foreach ($tramites as $key => $t) { 
                     $t->rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
                     $t->asignado = Cls_UsuarioTramiteAnalista::VerificaAsignacion($t->USTR_NIDUSUARIOTRAMITE);
+                    $t->responsable = null;
+                    
+                    if($t->asignado){
+                        $asignado = DB::table('tram_mdv_usuariotramite_analista')
+                                        ->where('USTR_NIDUSUARIOTRAMITE', $t->USTR_NIDUSUARIOTRAMITE)->first();
+                        $t->responsable = $asignado->USUA_NIDUSUARIO;
+                    }
 
                     $diasH = $t->USTR_NDIASHABILESRESOLUCION;
                     $hoy = date('Y-m-d');
@@ -358,12 +365,6 @@ class TramitesController extends Controller
         $tramite = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
         $configaracion =  $tramite;
 
-        $usuario    = Auth::user();
-
-        //$depPertenece   = DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-        //$uniPertenece   = DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-        //$tramPertenece  = DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-
         $USTR_NIDUSUARIOTRAMITE = $tramite['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
 
         try {
@@ -374,92 +375,86 @@ class TramitesController extends Controller
     
             foreach ($configaracion['formularios'] as $form) {
                 foreach ($form->secciones as $sec) {
-                    $forsecrol = Cls_SeccionFormRol::getFormSeccionRoles($form->FORM_NIDFORMULARIO, $sec->FORM_NID, $usuario->USUA_NIDROL);
-                    if(count($forsecrol)>0){
-                        foreach ($sec->preguntas as $preg) {
-                            foreach ($preg->respuestas as $resp) {
-                                $resp->FORM_CVALOR_RESPUESTA = "";
-        
-                                foreach ($respuestas as $_resp) {
-                                    if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
-                                        $preg->estatus = $_resp['USRE_NESTATUS'];
-                                        $preg->observaciones = $_resp['USRE_COBSERVACION'];
-                                    }
-        
-                                    switch ($preg->FORM_CTIPORESPUESTA) {
-                                        case "multiple":
-                                            if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
-                                                $resp->FORM_CVALOR_RESPUESTA = "checked";
-                                                break;
-                                            }
+                    foreach ($sec->preguntas as $preg) {
+                        foreach ($preg->respuestas as $resp) {
+                            $resp->FORM_CVALOR_RESPUESTA = "";
+    
+                            foreach ($respuestas as $_resp) {
+                                if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
+                                    $preg->estatus = $_resp['USRE_NESTATUS'];
+                                    $preg->observaciones = $_resp['USRE_COBSERVACION'];
+                                }
+    
+                                switch ($preg->FORM_CTIPORESPUESTA) {
+                                    case "multiple":
+                                        if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                            $resp->FORM_CVALOR_RESPUESTA = "checked";
                                             break;
-                                        case "unica":
-                                            if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
-                                                $resp->FORM_CVALOR_RESPUESTA = "checked";
-                                                break;
-                                            }
+                                        }
+                                        break;
+                                    case "unica":
+                                        if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                            $resp->FORM_CVALOR_RESPUESTA = "checked";
                                             break;
-                                        case "especial":
-                                            foreach ($resp->respuestas_especial as $esp) {
-                                                switch ($resp->FORM_CTIPORESPUESTAESPECIAL) {
-                                                    case "opciones":
-        
-                                                        if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
-                                                            if ($esp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
-                                                                $esp->FORM_CVALOR_RESPUESTA = "selected";
-                                                                break;
-                                                            }
-                                                        }
-                                                        break;
-                                                    default:
-                                                        if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
-                                                            $esp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
+                                        }
+                                        break;
+                                    case "especial":
+                                        foreach ($resp->respuestas_especial as $esp) {
+                                            switch ($resp->FORM_CTIPORESPUESTAESPECIAL) {
+                                                case "opciones":
+    
+                                                    if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
+                                                        if ($esp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                                            $esp->FORM_CVALOR_RESPUESTA = "selected";
                                                             break;
                                                         }
+                                                    }
+                                                    break;
+                                                default:
+                                                    if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
+                                                        $esp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
                                                         break;
-                                                }
+                                                    }
+                                                    break;
                                             }
-                                            break;
-                                        case "catalogo":
-                                            if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
-                                                $json       = json_decode($_resp['USRE_CRESPUESTA']);
-                                                $array      = array();
+                                        }
+                                        break;
+                                    case "catalogo":
+                                        if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
+                                            $json       = json_decode($_resp['USRE_CRESPUESTA']);
+                                            $array      = array();
 
-                                                if(is_array($json)){
-                                                    foreach($json as $key => $value){
-                                                        $query = DB::table($resp->FORM_CVALOR)->where('id', $value->id)->first();
-        
-                                                        if(!is_null($query)){
-                                                            $format         =  new DateTime($value->fecha);
-                                                            $query->fecha   = $format->format('d-m-Y');
-                                                            array_push($array, $query);
-                                                        }
+                                            if(is_array($json)){
+                                                foreach($json as $key => $value){
+                                                    $query = DB::table($resp->FORM_CVALOR)->where('id', $value->id)->first();
+    
+                                                    if(!is_null($query)){
+                                                        $format         =  new DateTime($value->fecha);
+                                                        $query->fecha   = $format->format('d-m-Y');
+                                                        array_push($array, $query);
                                                     }
                                                 }
-                                                else {
-                                                    $query = DB::table($resp->FORM_CVALOR)->where('id', $json)->first();
-                                                    array_push($array, $query);
-                                                }
+                                            }
+                                            else {
+                                                $query = DB::table($resp->FORM_CVALOR)->where('id', $json)->first();
+                                                array_push($array, $query);
+                                            }
 
-                                                $resp->FORM_CVALOR_RESPUESTA = $array;
-                                                break;
-                                            }
+                                            $resp->FORM_CVALOR_RESPUESTA = $array;
                                             break;
-                                        default:
-        
-                                            if ($resp->FORM_NPREGUNTAID === $_resp['USRE_NIDPREGUNTA']) {
-                                                $resp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
-                                                break;
-                                            }
+                                        }
+                                        break;
+                                    default:
+    
+                                        if ($resp->FORM_NPREGUNTAID === $_resp['USRE_NIDPREGUNTA']) {
+                                            $resp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
                                             break;
-                                    }
+                                        }
+                                        break;
                                 }
                             }
                         }
-                    }else{
-                        $sec->preguntas = [];
                     }
-                    
                 }
             }
     
