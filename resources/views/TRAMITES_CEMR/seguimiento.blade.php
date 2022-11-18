@@ -480,9 +480,7 @@
                                                                 <th scope="col">Referencia</th>
                                                                 <th scope="col">Concepto</th>
                                                                 <th scope="col">¿Aplica?</th>
-                                                                <th scope="col"></th>
-                                                                <!-- <th scope="col">¿Aplica?</th>
-                                                                <th scope="col">Cantidad</th> -->
+                                                                <th scope="col">Cantidad</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -493,13 +491,13 @@
                                                                         <td>{{$con->USCON_CONCEPTO}}</td>
                                                                         <td>
                                                                             <div class="custom-control custom-checkbox">
-                                                                                <input class="custom-control-input" type="checkbox" name="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NIDUSUARIOCONCEPTO}}" checked  disabled/>
-                                                                                <label class="custom-control-label" for="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}"></label>
+                                                                                <input class="custom-control-input" type="checkbox" name="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NIDUSUARIOCONCEPTO}}" {{$con->USCON_NACTIVO == 1 ? 'checked' : ''}}>
+                                                                                <label class="custom-control-label" for="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}"></label> 
                                                                             </div>
                                                                         </td>
                                                                         <td>
                                                                             <div class="form-group">
-                                                                                <input type="hidden" class="form-control" name="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NCANTIDAD}}">
+                                                                                <input type="number" class="form-control" name="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NCANTIDAD}}">
                                                                             </div>
                                                                         </td>
                                                                     </tr>
@@ -555,12 +553,12 @@
                                                             <label class='respuesta_pequena'>1 de febrero de 2021</label>
                                                         </div> -->
                                                             <div class="col-md-6">
-                                                                <label class="titulo_pequeno">Número de referencia del pago</label> <br>
-                                                                <label class='respuesta_pequena' id="txtReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label>
+                                                                <!-- <label class="titulo_pequeno">Número de referencia del pago</label> <br>
+                                                                <label class='respuesta_pequena' id="txtReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></label> -->
                                                             </div>
                                                             <div class="col-md-6">
-                                                                <label class="titulo_pequeno">Número de referencia</label> <br>
-                                                                <label class='respuesta_pequena' id="txtIdReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">033-6622</label>
+                                                                <!-- <label class="titulo_pequeno">Número de referencia</label> <br>
+                                                                <label class='respuesta_pequena' id="txtIdReferencia_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">033-6622</label> -->
                                                             </div>
                                                             <div class="col-md-12">
                                                                 <!-- <label class="titulo_pequeno">Mensaje</label> <br>

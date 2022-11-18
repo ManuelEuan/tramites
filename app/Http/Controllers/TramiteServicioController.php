@@ -230,11 +230,12 @@ class TramiteServicioController extends Controller
         $objTramite     = $this->tramiteService->getTramite($detalle->TRAM_NIDTRAMITE_ACCEDE);
         $arrayDetalle   = $this->tramiteService->getDetalle($objTramite->Id);
         $arrayDocumentos = [];
+
         foreach($arrayDetalle['documentos'] as $key => $documento) {
-            if(isset($arrayDetalle['requisitos'][$key]->Description)){
-                $desc = $arrayDetalle['requisitos'][$key]->Description;
-            }else{
-                $desc = $documento->Description;
+            $desc = $documento->Description;
+            foreach($arrayDetalle['requisitos'] as $req){
+                if($req->RequisitId == $documento->uuid)
+                    $desc = $req->Description;
             }
             $array = array($desc, $documento->Name);
             array_push($arrayDocumentos, $array);
@@ -358,11 +359,9 @@ class TramiteServicioController extends Controller
             $tramites       = new Cls_Tramite_Servicio();
             $detalle        = $tramites->TRAM_CONSULTAR_DETALLE_TRAMITE_SEGUIMIENTO($id);
             $configaracion  = $tramites->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($detalle->TRAM_NIDTRAMITE, $detalle->USTR_NIDUSUARIOTRAMITE);
+            $pagoTramite    = Cls_Pago_Tramite::where([['USTR_NIDUSUARIOTRAMITE','=',$id],['Activo','=',1]])->first();
             $resolutivosConfig = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($detalle->TRAM_NIDTRAMITE);
-
-            $pagoTramite = Cls_Pago_Tramite::where([['USTR_NIDUSUARIOTRAMITE','=',$id],['Activo','=',1]])->first();
             
-
             //Verificar seccion seguiente, para activar
             foreach ($configaracion['secciones'] as $item) {
                 if (isset($item->SSEGTRA_NIDSECCION_SEGUIMIENTO)) {
@@ -440,7 +439,6 @@ class TramiteServicioController extends Controller
             $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $exist->USTR_NIDUSUARIOTRAMITE)
                 ->select('*')
                 ->get()->toArray();
-
 
 
             foreach ($configaracion['formularios'] as $form) {
@@ -559,9 +557,8 @@ class TramiteServicioController extends Controller
         }
 
         //Obtener detalles del tramite
-        $tramiteService = new TramiteService();
-        $objTramite     = $tramiteService->getTramite($tramite['idtramiteaccede']);
-        $result = $tramiteService->getDetalle($objTramite->Id);
+        $objTramite     = $this->tramiteService->getTramite($tramite['idtramiteaccede']);
+        $result         = $this->tramiteService->getDetalle($objTramite->Id);
 
         $tramite['infoModulo'] = (array) $result['oficinas'][0];
         $cita = Cls_Citas_Calendario::where([
@@ -589,8 +586,8 @@ class TramiteServicioController extends Controller
                     $tramite['configuracion']['secciones'][$i]->CONF_NESTATUS_SEGUIMIENTO = 2;
             }
         }
-        /* dd($tramite['configuracion']['formularios'][0]->secciones); */
-        //dd($tramite);
+
+        /* dd($tramite['configuracion']); */
         return view('MST_TRAMITE_SERVICIO.seguimiento_tramite_servicio2', compact('tramite'));
     }
 
@@ -2040,12 +2037,16 @@ class TramiteServicioController extends Controller
             $referenciaPago->Activo = 1;
             $referenciaPago->save();
 
+            $folioSlit = explode("/",$response["folioControlEstado"]);
+
             $responseJson["estatusPago"] = 1;
             $responseJson["mensajePago"] = $response["mensaje"];
             $responseJson["urlFormatoPago"] = $response["urlFormatoPago"];
             $responseJson["folioControlEstado"] = $response["folioControlEstado"];
             $responseJson["lineaCaptura"] = $response["lineaCaptura"];
             $responseJson["fechaVencimiento"] = $response["fechaVencimiento"];
+            $responseJson["periodo"] = $folioSlit[0];
+            $responseJson["folio"] = $folioSlit[1];
 
         }else{
             $responseJson["estatusPago"] = 0;

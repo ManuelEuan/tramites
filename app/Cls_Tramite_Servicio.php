@@ -2,6 +2,7 @@
 
 namespace App;
 
+use stdClass;
 use Exception;
 use Illuminate\Http\Request;
 use App\Cls_Notificacion_Tramite;
@@ -238,32 +239,38 @@ class Cls_Tramite_Servicio extends Model
                     array($TRAM_NIDTRAMITE_CONFIG)
                 );
             }else {
-                $response['documentos'] = DB::select(
-                    'SELECT a.USDO_NIDTRAMITEDOCUMENTO as TRAD_NIDTRAMITEDOCUMENTO, 
-                            a.USDO_CEXTENSION as TRAD_CEXTENSION, 
-                            a.USDO_CRUTADOC as TRAD_CRUTADOC, 
-                            a.USDO_NPESO as TRAD_NPESO,
-                            a.USDO_NESTATUS as TRAD_NESTATUS,
-                            a.USDO_COBSERVACION as TRAD_COBSERVACION,
-                            a.USDO_CDOCNOMBRE as TRAD_CNOMBRE,
-                            b.TRAD_NMULTIPLE,
-                            b.TRAD_NOBLIGATORIO,
-                            a.USDO_NIDUSUARIORESP as id
-                            FROM tram_mdv_usuariordocumento as a
-                            LEFT JOIN tram_mdv_documento_tramite as b ON a.USDO_NIDTRAMITEDOCUMENTO = b.TRAD_NIDTRAMITEDOCUMENTO 
-                            where a.USDO_NIDUSUARIOTRAMITE = ?',
-                    array($USTR_NIDUSUARIOTRAMITE)
-                );
+                $requeridos = DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+                $subidos    = DB::table('tram_mdv_usuariordocumento as a')
+                                    ->join('tram_mdv_documento_tramite as b', 'a.USDO_NIDTRAMITEDOCUMENTO', '=', 'b.TRAD_NIDTRAMITEDOCUMENTO')
+                                    ->select('a.USDO_NIDTRAMITEDOCUMENTO as TRAD_NIDTRAMITEDOCUMENTO', 'a.USDO_CEXTENSION as TRAD_CEXTENSION', 'a.USDO_CRUTADOC as TRAD_CRUTADOC', 'a.USDO_NPESO as TRAD_NPESO',
+                                                'a.USDO_NESTATUS as TRAD_NESTATUS', 'a.USDO_COBSERVACION as TRAD_COBSERVACION', 'a.USDO_CDOCNOMBRE as TRAD_CNOMBRE', 'b.TRAD_NMULTIPLE', 'b.TRAD_NOBLIGATORIO', 'a.USDO_NIDUSUARIORESP as id'
+                                    )
+                                    ->where('a.USDO_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->get();
 
-                if(count($response['documentos']) == 0){
-                    $response['documentos'] = DB::select(
-                        'SELECT a.*, 1 as TRAD_NESTATUS, "" as TRAD_COBSERVACION, 0 as id, "" as TRAD_CRUTADOC, 0 as TRAD_NPESO  
-                        FROM tram_mdv_documento_tramite as a where a.TRAD_NIDTRAMITE = ?',
-                        array($TRAM_NIDTRAMITE_CONFIG)
-                    );
+                foreach($requeridos as $requerido){
+                    $item = new stdClass();
+                    $item->TRAD_NIDTRAMITEDOCUMENTO = $requerido->TRAD_NIDTRAMITEDOCUMENTO;
+                    $item->TRAD_CEXTENSION      = null;
+                    $item->TRAD_CRUTADOC        = null;
+                    $item->TRAD_NPESO           = null;
+                    $item->TRAD_NESTATUS        = 999999;
+                    $item->TRAD_COBSERVACION    = null;
+                    $item->TRAD_CNOMBRE         = $requerido->TRAD_CNOMBRE;
+                    $item->TRAD_NMULTIPLE       = $requerido->TRAD_NMULTIPLE;
+                    $item->TRAD_NOBLIGATORIO    = $requerido->TRAD_NOBLIGATORIO;
+                    $item->id                   = null;
+
+
+                    foreach($subidos as $sub){
+                        if($requerido->TRAD_NIDTRAMITEDOCUMENTO == $sub->TRAD_NIDTRAMITEDOCUMENTO){
+                            $sub->TRAD_NESTATUS = 0;
+                            $item = $sub;
+                        }
+                    }
+                    array_push($response['documentos'] , $item);
                 }
             }
-            
+
             $response['edificios'] = DB::select(
                 'SELECT * FROM tram_mst_edificio where EDIF_NIDTRAMITE = ?',
                 array($TRAM_NIDTRAMITE_CONFIG)
@@ -289,6 +296,7 @@ class Cls_Tramite_Servicio extends Model
             return $response;
 
         } catch (\Throwable $th) {
+            dd($th);
         }
     }
 

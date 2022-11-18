@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Mail;
 //asignar tramites
 use App\Cls_Seguimiento_Servidor_Publico;
 use App\Models\Cls_Formulario_Pregunta_Respuesta;
+use App\Cls_SeccionFormRol;
 
 class TramitesController extends Controller
 {
@@ -345,13 +346,23 @@ class TramitesController extends Controller
             unlink($saveDocPath);
         }
 
-        return redirect('/docts/resolutivos/resolutivo_' . $nameFile[0] . '.pdf');
+        $ruta = '/docts/resolutivos/resolutivo_' . $nameFile[0] . '.pdf';
+        if($tipo == 99)
+            return $ruta;
+
+        return redirect($ruta);
     }
 
     //Obtener trámite en seguimiento
     public function obtener_tramite_seguimiento($id) {
         $tramite = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
         $configaracion =  $tramite;
+
+        $usuario    = Auth::user();
+
+        //$depPertenece   = DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
+        //$uniPertenece   = DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
+        //$tramPertenece  = DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
 
         $USTR_NIDUSUARIOTRAMITE = $tramite['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
 
@@ -363,86 +374,92 @@ class TramitesController extends Controller
     
             foreach ($configaracion['formularios'] as $form) {
                 foreach ($form->secciones as $sec) {
-                    foreach ($sec->preguntas as $preg) {
-                        foreach ($preg->respuestas as $resp) {
-                            $resp->FORM_CVALOR_RESPUESTA = "";
-    
-                            foreach ($respuestas as $_resp) {
-                                if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
-                                    $preg->estatus = $_resp['USRE_NESTATUS'];
-                                    $preg->observaciones = $_resp['USRE_COBSERVACION'];
-                                }
-    
-                                switch ($preg->FORM_CTIPORESPUESTA) {
-                                    case "multiple":
-                                        if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
-                                            $resp->FORM_CVALOR_RESPUESTA = "checked";
+                    $forsecrol = Cls_SeccionFormRol::getFormSeccionRoles($form->FORM_NIDFORMULARIO, $sec->FORM_NID, $usuario->USUA_NIDROL);
+                    if(count($forsecrol)>0){
+                        foreach ($sec->preguntas as $preg) {
+                            foreach ($preg->respuestas as $resp) {
+                                $resp->FORM_CVALOR_RESPUESTA = "";
+        
+                                foreach ($respuestas as $_resp) {
+                                    if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
+                                        $preg->estatus = $_resp['USRE_NESTATUS'];
+                                        $preg->observaciones = $_resp['USRE_COBSERVACION'];
+                                    }
+        
+                                    switch ($preg->FORM_CTIPORESPUESTA) {
+                                        case "multiple":
+                                            if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                                $resp->FORM_CVALOR_RESPUESTA = "checked";
+                                                break;
+                                            }
                                             break;
-                                        }
-                                        break;
-                                    case "unica":
-                                        if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
-                                            $resp->FORM_CVALOR_RESPUESTA = "checked";
+                                        case "unica":
+                                            if ($resp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                                $resp->FORM_CVALOR_RESPUESTA = "checked";
+                                                break;
+                                            }
                                             break;
-                                        }
-                                        break;
-                                    case "especial":
-                                        foreach ($resp->respuestas_especial as $esp) {
-                                            switch ($resp->FORM_CTIPORESPUESTAESPECIAL) {
-                                                case "opciones":
-    
-                                                    if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
-                                                        if ($esp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
-                                                            $esp->FORM_CVALOR_RESPUESTA = "selected";
+                                        case "especial":
+                                            foreach ($resp->respuestas_especial as $esp) {
+                                                switch ($resp->FORM_CTIPORESPUESTAESPECIAL) {
+                                                    case "opciones":
+        
+                                                        if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
+                                                            if ($esp->FORM_NID == $_resp['USRE_CRESPUESTA']) {
+                                                                $esp->FORM_CVALOR_RESPUESTA = "selected";
+                                                                break;
+                                                            }
+                                                        }
+                                                        break;
+                                                    default:
+                                                        if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
+                                                            $esp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
                                                             break;
                                                         }
-                                                    }
-                                                    break;
-                                                default:
-                                                    if ($esp->FORM_NPREGUNTARESPUESTAID == $_resp['USRE_NIDPREGUNTARESPUESTA']) {
-                                                        $esp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
                                                         break;
-                                                    }
-                                                    break;
-                                            }
-                                        }
-                                        break;
-                                    case "catalogo":
-                                        if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
-                                            $json       = json_decode($_resp['USRE_CRESPUESTA']);
-                                            $array      = array();
-
-                                            if(is_array($json)){
-                                                foreach($json as $key => $value){
-                                                    $query = DB::table($resp->FORM_CVALOR)->where('id', $value->id)->first();
-    
-                                                    if(!is_null($query)){
-                                                        $format         =  new DateTime($value->fecha);
-                                                        $query->fecha   = $format->format('d-m-Y');
-                                                        array_push($array, $query);
-                                                    }
                                                 }
                                             }
-                                            else {
-                                                $query = DB::table($resp->FORM_CVALOR)->where('id', $json)->first();
-                                                array_push($array, $query);
-                                            }
+                                            break;
+                                        case "catalogo":
+                                            if ($preg->FORM_NID == $_resp['USRE_NIDPREGUNTA']) {
+                                                $json       = json_decode($_resp['USRE_CRESPUESTA']);
+                                                $array      = array();
 
-                                            $resp->FORM_CVALOR_RESPUESTA = $array;
+                                                if(is_array($json)){
+                                                    foreach($json as $key => $value){
+                                                        $query = DB::table($resp->FORM_CVALOR)->where('id', $value->id)->first();
+        
+                                                        if(!is_null($query)){
+                                                            $format         =  new DateTime($value->fecha);
+                                                            $query->fecha   = $format->format('d-m-Y');
+                                                            array_push($array, $query);
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    $query = DB::table($resp->FORM_CVALOR)->where('id', $json)->first();
+                                                    array_push($array, $query);
+                                                }
+
+                                                $resp->FORM_CVALOR_RESPUESTA = $array;
+                                                break;
+                                            }
                                             break;
-                                        }
-                                        break;
-                                    default:
-    
-                                        if ($resp->FORM_NPREGUNTAID === $_resp['USRE_NIDPREGUNTA']) {
-                                            $resp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
+                                        default:
+        
+                                            if ($resp->FORM_NPREGUNTAID === $_resp['USRE_NIDPREGUNTA']) {
+                                                $resp->FORM_CVALOR_RESPUESTA = $_resp['USRE_CRESPUESTA'];
+                                                break;
+                                            }
                                             break;
-                                        }
-                                        break;
+                                    }
                                 }
                             }
                         }
+                    }else{
+                        $sec->preguntas = [];
                     }
+                    
                 }
             }
     
@@ -1212,5 +1229,22 @@ class TramitesController extends Controller
             $retorno = true;
         }
         return $retorno;
+    }
+
+    /**
+     * Retorna la url del resolutivo a descargar
+     * @param Integer $id
+     * @return Response
+     */
+    public function getResolutivo($id){
+        try {
+            $result     = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
+            $resolutivo = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($result[0]->USTR_NIDTRAMITE);
+            $archivo    = $this->generatePrevioResolutivo($resolutivo[0]->RESO_NID, $id, 99);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+
+        return response()->json(["url" => $archivo]);
     }
 }

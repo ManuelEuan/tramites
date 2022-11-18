@@ -94,6 +94,7 @@ Route::group(['prefix' => 'tramite_servicio'], function () {
     Route::get('/seguimiento_tramite/{id}', 'TramiteServicioController@seguimiento_tramite_servicio')->name('seguimiento_tramite');
     Route::put('/ubicacion_ventanilla', 'TramiteServicioController@ubicacion_ventanilla_sin_cita')->name('ubicacion_ventanilla_sin_cita');
     Route::post('/api/obtenerinfociudadano', 'TramiteServicioController@obtenerInformacionCiudadano');
+    Route::get('/getResolutivo/{id}', 'TramitesController@getResolutivo');
 });
 
 
@@ -137,7 +138,6 @@ Route::group(['prefix' => 'formulario'], function () {
     Route::get('/', 'FormularioController@list');
     Route::get('/secciones', 'FormularioController@secciones');
     Route::get('/roles', 'FormularioController@roles');
-    Route::get('/seccion_roles/{id}', 'FormularioController@seccion_roles');
     Route::get('/areasXDependencia/{id}', 'FormularioController@areasXDependencia');
     Route::get('/dependencias_formulario/{id}', 'FormularioController@dependencias_formulario');
     Route::get('/find', 'FormularioController@find');
@@ -148,6 +148,7 @@ Route::group(['prefix' => 'formulario'], function () {
     Route::get('/detalle', 'FormularioController@detalle');
     Route::post('/preguntas', 'FormularioController@preguntas');
 
+    Route::post('/seccion_roles', 'FormularioController@seccion_roles');
     Route::post('/seccion_rol_asigna', 'FormularioController@seccion_rol_asigna');
     Route::post('/dependencia_asigna_area', 'FormularioController@dependencia_asigna_area');
     Route::post('/seccion_asigna_dependencia', 'FormularioController@seccion_asigna_dependencia');

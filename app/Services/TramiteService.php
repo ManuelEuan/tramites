@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\User;
 use DateTime;
+use Exception;
 use App\Models\Cls_Tramite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -111,11 +112,11 @@ class TramiteService
                             ->join('requisits as r', 'pr.RequisitId', '=', 'r.Id')
                             ->join('naturetypes as n', 'pr.Nature', '=', 'n.Id')
                             ->join('naturepresentationtypes as np', 'pr.NatureHow', '=', 'np.Id')
-                            ->select('r.*', 'r.iId as Id' ,'n.Name as tipoDocumento', 'np.Name as presentacion')
+                            ->select('r.*','r.Id as uuid', 'r.iId as Id' ,'n.Name as tipoDocumento', 'np.Name as presentacion')
                             ->where(['pr.IdProcedure' => $tramiteID, 'r.IsDeleted' => false])
                             ->groupBy('r.Id','n.Name', 'np.Name')->get();
         $requisitos = DB::connection('mysql2')->table('procedurerequisit as pr')
-                            ->select('pr.Description')
+                            ->select('pr.Description', 'pr.RequisitId')
                             ->where(['pr.IdProcedure' => $tramiteID])->get();
 
         $oficinas   = DB::connection('mysql2')->table('procedureoffices as po')
@@ -157,11 +158,10 @@ class TramiteService
         ################ Documentos ################
         $arrayDocumentos = [];
         foreach($arrayDetalle['documentos'] as $key => $documento) {
-
-            if(isset($arrayDetalle['requisitos'][$key]->Description)){
-                $desc = $arrayDetalle['requisitos'][$key]->Description;
-            }else{
-                $desc = $documento->Description;
+            $desc = $documento->Description;
+            foreach($arrayDetalle['requisitos'] as $req){
+                if($req->RequisitId == $documento->uuid)
+                    $desc = $req->Description;
             }
             $array = array(
                 "nombre"        => $documento->Name,
@@ -445,6 +445,11 @@ class TramiteService
         $total      = $query->count();
         $resultado  = $query->orderBy($order_by, $order)->offset($start)->limit($registros)->get();
 
+        foreach($resultado as $item){
+            $creacion   = new DateTime($item->USTR_DFECHACREACION);
+            $item->USTR_DFECHACREACION_FORMAT = $creacion->format('d-m-Y H:i:s');
+        }
+
         return [ "result" => $resultado, "total" =>  $total];
     }
 
@@ -453,6 +458,7 @@ class TramiteService
      */
     public function consultarSeguimiento(Request $request){
         $orderBy    = 'v.USTR_DFECHAMODIFICADO'; 
+        $order      = "desc";
         $usuario    = Auth::user();
         $result     = [];
 
@@ -484,7 +490,9 @@ class TramiteService
             }
         }
 
-        $order = is_null($request->order) ? "desc" : $request->order == 'asc' ? "asc" : "desc";
+        if(!is_null($request->order))
+            $order = $request->order == 'asc' ? "asc" : "desc";
+
         $query->orderBy($orderBy, $order);
 
         if(is_null($request->paginate) || $request->paginate == "true" ){
