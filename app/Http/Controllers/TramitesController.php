@@ -18,6 +18,7 @@ use App\Cls_Usuario_Documento;
 use App\Cls_Usuario_Respuesta;
 use App\Services\VariosService;
 use PhpOffice\PhpWord\Settings;
+use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
 use Illuminate\Support\Facades\DB;
 use App\Cls_UsuarioTramiteAnalista;
@@ -116,27 +117,15 @@ class TramitesController extends Controller
     }
 
     //Vista seguimiento
-    public function seguimiento($id)
-    {
+    public function seguimiento($id){
         $var = $this->verifica_rol_analista_asignado($id);
         if($var){
             //Marcar trámite del ciudadano como Recibido
             Cls_Seguimiento_Servidor_Publico::TRAM_MARCAR_ESTATUS_REVISION_TRAMITE($id);
-            $result = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
-            $tramite = $result[0];
-
-            //Secciones
-            $secciones = DB::select(
-                'SELECT * FROM tram_aux_seccion_seguimiento_tramite WHERE SSEGTRA_NIDUSUARIOTRAMITE = ? ORDER BY SSEGTRA_NIDSECCION_SEGUIMIENTO',
-                array($id)
-            );
-
-            //Conceptos
-            $conceptos = DB::select(
-                'SELECT * FROM tram_mdv_usuario_concepto WHERE USCON_NIDUSUARIOTRAMITE = ?',
-                array($id)
-            );
-
+            $tramite    = DB::table('tram_vw_tramite_seguimiento')->where('USTR_NIDUSUARIOTRAMITE', $id)->first();
+            $secciones  = Cls_Seccion_Seguimiento::where('SSEGTRA_NIDUSUARIOTRAMITE', $id)->orderBy('SSEGTRA_NIDSECCION_SEGUIMIENTO', 'desc')->get();
+            $conceptos  = DB::table('tram_mdv_usuario_concepto')->where('USCON_NIDUSUARIOTRAMITE', $id)->get();
+        
             $resolutivos= Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
             $objTramite = $this->tramiteService->getTramite($tramite->USTR_NIDTRAMITE_ACCEDE);
             $result     = $this->tramiteService->getDetalle($objTramite->Id);
@@ -154,14 +143,14 @@ class TramitesController extends Controller
 
             $tramite->cita = ($cita->count() > 0
                 ? array(
-                        "ID" => $cita->first()->idcitas_tramites_calendario,
-                        "USUARIO" => $cita->first()->CITA_IDUSUARIO,
-                        "FECHA" => $cita->first()->CITA_FECHA,
-                        "HORA" => $cita->first()->CITA_HORA,
-                        "TRAMITE" => $cita->first()->CITA_IDTRAMITE,
-                        "MODULO" => $cita->first()->CITA_IDMODULO,
+                        "ID"        => $cita->first()->idcitas_tramites_calendario,
+                        "USUARIO"   => $cita->first()->CITA_IDUSUARIO,
+                        "FECHA"     => $cita->first()->CITA_FECHA,
+                        "HORA"      => $cita->first()->CITA_HORA,
+                        "TRAMITE"   => $cita->first()->CITA_IDTRAMITE,
+                        "MODULO"    => $cita->first()->CITA_IDMODULO,
                         "CONFIRMADO" => $cita->first()->CITA_CONFIRMADO,
-                        "FOLIO" => $cita->first()->CITA_FOLIO,
+                        "FOLIO"     => $cita->first()->CITA_FOLIO,
                     )
                 : array());
 
@@ -1102,19 +1091,13 @@ class TramitesController extends Controller
     }
 
     private function verifica_rol_analista_asignado($idtramite){
-        $rol = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE;
-        $iduser = Auth::user()->USUA_NIDUSUARIO;
+        $retorno = true;
 
-        if($rol == 'ANTA'){
-            $asignados = Cls_UsuarioTramiteAnalista::AnalistaTramiteAsignado($idtramite, $iduser);
-            if(count($asignados) > 0){
-                $retorno = true;
-            }else{
-                $retorno = false;
-            }
-        }else{
-            $retorno = true;
+        if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == 'ANTA'){
+            $asignados  = Cls_UsuarioTramiteAnalista::AnalistaTramiteAsignado($idtramite, Auth::user()->USUA_NIDUSUARIO);
+            $retorno    = count($asignados) > 0 ? true : false;
         }
+
         return $retorno;
     }
 
