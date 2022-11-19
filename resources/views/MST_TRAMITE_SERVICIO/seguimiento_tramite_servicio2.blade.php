@@ -595,7 +595,7 @@
                                                                                         <div id="inputGiro_">
                                                                                             <br />
                                                                                             <label id='label_{{$respArray->id}}'> {{$respArray->clave}}</label>
-                                                                                            <input type="date" id="fechaGiro_{{$respArray->id}}" name="fechaGiro_{{$respArray->id}}" class="form-control txt_abierta" placeholder="Fecha" value="{{$respArray->fecha}}" required/>
+                                                                                            <input  {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} type="date" id="fechaGiro_{{$respArray->id}}" name="fechaGiro_{{$respArray->id}}" class="form-control txt_abierta" placeholder="Fecha" value="{{$respArray->fecha}}" required/>
                                                                                         </div>
                                                                                     @endforeach
                                                                                 </div>
