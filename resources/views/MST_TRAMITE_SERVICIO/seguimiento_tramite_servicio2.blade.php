@@ -1649,6 +1649,7 @@
         // }
         var idtramiteAccede = "{{ $tramite['idtramiteaccede'] }}";
         var selectedVentanilla = "{{ $tramite['ubicacion_ventanilla_sin_cita'] }}";
+
         if(selectedVentanilla != 0){
             //loadSelectedEdificio(idtramiteAccede, selectedVentanilla);
             loadModulos(idtramiteAccede, selectedVentanilla);
