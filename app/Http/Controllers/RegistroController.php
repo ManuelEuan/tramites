@@ -51,15 +51,15 @@ class RegistroController extends Controller
         }
         
         //Envia correo
-		$ObjData['StrNombres'] = $request->txtNombres;
+		/*$ObjData['StrNombres'] = $request->txtNombres;
 		$ObjData['StrHost'] = $request->getHttpHost();
 		$ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
 		$ObjData['StrCorreoElectronico'] = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCorreo_ElectronicoMoral : $request->txtCorreo_Electronico;
 		$ObjData['StrRFC'] = $request->txtRfc;
 		Mail::send('MSTP_MAIL.registro', $ObjData, function ($message) use($ObjData) {
-			$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
-			$message->to($ObjData['StrCorreoElectronico'], '')->subject('Registro.');
-        });
+			$message->from(env('MAIL_FROM_ADDRESS'), 'Sistema de Tramites Digitales Queretaro');
+			$message->to($ObjData['StrCorreoElectronico'], $request->txtNombres)->subject('Registro.');
+        });*/
         
         if($IntUsuarioId > 0){
             //Insertar bitacora
