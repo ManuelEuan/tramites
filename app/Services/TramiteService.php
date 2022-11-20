@@ -406,7 +406,6 @@ class TramiteService
                     ->where('v.USTR_NESTATUS','!=',1)
                     ->select('v.*');
         }
-        
 
         if($rol->ROL_CCLAVE != 'ADM'){
             $depPertenece   = DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
@@ -415,6 +414,11 @@ class TramiteService
 
             $query->whereIn('t.TRAM_NIDCENTRO', $depPertenece->pluck('DEPUP_NIDDEPENCIA'))
                      ->whereIn('v.USTR_NIDTRAMITE_ACCEDE', $tramPertenece->pluck('TRAMUP_NIDTRAMITE'));
+        }
+
+        if($rol->ROL_CCLAVE == 'ANTA'){
+            $asignados = DB::table('tram_mdv_usuariotramite_analista')->where('USUA_NIDUSUARIO', $usuario->id)->get();
+            $query->whereIn('v.USTR_NIDUSUARIOTRAMITE', $asignados->pluck('USTR_NIDUSUARIOTRAMITE'));
         }
         
         //Parametros de busqueda
@@ -440,6 +444,7 @@ class TramiteService
         $order      = isset($request->order[0]['dir']) ? $request->order[0]['dir'] : 'desc';
         $order      = $request->order[0]['column'] == 0 ? 'desc' : 'asc';
         $order_by   = $request->columns[$request->order[0]['column']]['data'];
+        $order_by   = 'USTR_DFECHACREACION_FORMAT' ? 'v.USTR_DFECHACREACION' : $order_by;
         $order_by   = !is_null($order_by)  ? $order_by : "v.USTR_DFECHACREACION";
         $start      = !is_null($request->start) ? $request->start : 0;
         $total      = $query->count();

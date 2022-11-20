@@ -439,48 +439,32 @@
                          */
                         data: null,
                         render: function(data, type, row) {
-                            if(data.rol == 'ANTA'){
-                                return `<span>
-                                        <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                    </span>`;
-                            }
-                            else{
-                                if(data.asignado != 0){
-                                    return `<span>
-                                        <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE }, ${ data.responsable } )" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                    </span>`;
-                                }else{
-                                    return `<span>
-                                        <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa fa-users' style="color: black"></i></button>
-                                    </span>
-                                    <span>
-                                        <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                    </span>`;
-                                }
-                                
-                            }
-                            
+                            let html =  `<span>
+                                            <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                        </span>
+                                        <span>
+                                            <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                        </span>`;
+
+                                        if(data.rol != 'ANTA'){
+                                            html +=`<span>`;
+                                                if(data.asignado != 0){
+                                                    
+                                                    html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="${ data.responsable }">
+                                                            <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>`;
+                                                }
+                                                else{
+                                                    html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="0">
+                                                            <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa fa-users' style="color: black"></i></button>`;
+                                                }
+                                            html +=`</span>`;
+                                        }
+
+                                html +=` <span>
+                                            <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                        </span>`;         
+
+                                return html;
                         }
                     },
                 ],
@@ -612,19 +596,21 @@
     }
 
     // ! modalito
-    function asignarFuncionarioModal(tramiteId, responsableId = null) {
-        if(responsableId != null){
+    function asignarFuncionarioModal(tramiteId) {
+        let html = '<option value="'+0+'" >Sin Asignación</option>';
+        analistas.forEach(element => {
+            var nombre = element.USUA_CPRIMER_APELLIDO + ' '+ element.USUA_CSEGUNDO_APELLIDO + ' ' + element.USUA_CNOMBRES;
+            html += '<option value="'+ element.USUA_NIDUSUARIO +'" >'+ nombre +'</option>';
+        });
+
+        $("#analistaSelec").html(html);
+
+
+        let responsableId = $("#asignado_"+ tramiteId).val();
+        if(responsableId != 0){
             $("#analistaSelec option[value="+ responsableId +"]").attr("selected", true);
         }
-        else{
-            html = '<option value="'+0+'" >Sin Asignación</option>';
-            analistas.forEach(element => {
-                var nombre = element.USUA_CPRIMER_APELLIDO + ' '+ element.USUA_CSEGUNDO_APELLIDO + ' ' + element.USUA_CNOMBRES;
-                html += '<option value="'+ element.USUA_NIDUSUARIO +'" >'+ nombre +'</option>';
-            });
 
-            $("#analistaSelec").html(html);
-        }
         $("#idTramite").val(tramiteId);
         $("#asignarFuncionarioModal").modal('show');
     }
@@ -650,11 +636,13 @@
                     $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
                     $("#icon-"+htmlid).addClass("fa fa-users");
                     $("#icon-"+htmlid).attr("title", "Asignar funcionario");
+                    $("#asignado_"+ htmlid).val(0);
                 }else{
                     $("#icon-"+htmlid).removeClass("fa fa-users");
                     $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
                     $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
                     $("#icon-"+htmlid).attr("title", "Reasignar funcionario");
+                    $("#asignado_"+ htmlid).val(envio.USUA_NIDUSUARIO);
                 }
 
                 //fa-solid fa-user-check
