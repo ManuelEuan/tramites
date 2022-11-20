@@ -1483,7 +1483,9 @@
                     vertical-align: middle;
                     color: #7F7F7F;
                 }
-
+                .selectCatalogos, .dropdown-item{
+                    white-space: break-spaces;
+                }
             </style>
         @endsection
 
