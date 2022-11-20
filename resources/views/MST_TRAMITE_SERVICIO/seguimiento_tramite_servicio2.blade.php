@@ -1928,8 +1928,7 @@
             });
 
             //Subir documento
-            $(".documentos").on('change', function() {
-
+            $("#documentosP4").on('change','.documentos', function() {
                 var id = this.id;
                 var doctype = $(this).data("doctype");
                 var formData = new FormData();
@@ -1937,10 +1936,21 @@
                 var size = $("#" + id)[0].files[0].size;
                 var kb = (size / 1024)
                 var mb = (kb / 1024)
+                const fileType = files ? files.type : "unknown";
     
                 formData.append('file',files);
                 formData.append('doctype',doctype);
+                if(fileType != "application/pdf"){
+                    document.getElementById(id).value = "";
+                    return  Swal.fire({ 
+                                title: 'Error!',
+                                text: 'Solo se permite PDF',
+                                icon: 'error',
+                                confirmButtonText: 'Ok'
+                            })
+                }
                 if(mb.toFixed(3) > 5){
+                    document.getElementById(id).value = "";
                     return  Swal.fire({ 
                                 title: 'Error!',
                                 text: 'El archivo debe de pesar menos de 5Mb',
@@ -1956,9 +1966,7 @@
                     timer: 1500
                 })
 
-                // $.each($("#" + id)[0].files, function(i, file) {
-                //     formData.append('file[]', file);
-                // });
+
                 var name = $(this).data("docname");
                 $.ajax({
                     url: '/tramite_servicio/subir_documento',
@@ -2003,6 +2011,7 @@
                             }
                         }
                         else{
+                            document.getElementById(id).value = "";
                             Swal.fire({ 
                                 title: 'Error!',
                                 text: 'Solo se permite PDF',
