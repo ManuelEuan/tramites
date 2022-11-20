@@ -2567,7 +2567,10 @@
                 showCancelButton: true,
                 cancelButtonText: 'No, cancelar',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Sí enviar'
+                confirmButtonText: 'Sí enviar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
             }).then((result) => {
                 if (result.isConfirmed) {
                     $("#loading-text").html("Enviando...");
@@ -2585,7 +2588,22 @@
                                     icon: 'success',
                                     showCancelButton: false,
                                     confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
+                                    confirmButtonText: 'Aceptar',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    allowEnterKey: false,
+                                    willClose: (el) => {
+                                        Swal.fire({
+                                            title: 'Espere un momento porfavor...',
+                                            text: "",
+                                            showConfirmButton: false,
+                                            showCancelButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                            allowEnterKey: false,
+                                        })
+                                        return false;
+                                    },
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         //location.reload();
