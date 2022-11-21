@@ -139,7 +139,7 @@ class TramitesController extends Controller
                     ["CITA_IDUSUARIO", $tramite->USTR_NIDUSUARIO],
                     ["CITA_IDTRAMITE", $tramite->USTR_NIDTRAMITE],
                     ["CITA_IDMODULO", $tramite->infoModulo['iId']],
-                ])->orderBy('idcitas_tramites_calendario', 'DESC')->get();
+                ])->orderBy('idcitas_tramites_calendario', 'DESC');
 
             $tramite->cita = ($cita->count() > 0
                 ? array(
