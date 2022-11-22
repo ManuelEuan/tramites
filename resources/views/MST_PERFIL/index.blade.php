@@ -168,7 +168,7 @@
                                                                 <label for="bus-txt-centro-trabajo">Correo electronico
                                                                     <span class="text-danger">*</span>
                                                                     <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreo', 1);"></i></span></label>
-                                                                <input type="text" class="form-control" name="txtCorreo" id="txtCorreo" placeholder="ejemplo@correo.com" value="{{ $usuario->USUA_CCORREO_ELECTRONICO }}" disabled>
+                                                                <input type="email" class="form-control" name="txtCorreo" id="txtCorreo" placeholder="ejemplo@correo.com" value="{{ $usuario->USUA_CCORREO_ELECTRONICO }}" disabled>
                                                             </div>
 
                                                         </div>
@@ -177,7 +177,7 @@
                                                             <div class="form-group">
                                                                 <label for="bus-txt-centro-trabajo">Correo electronico
                                                                     alternativo <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreoAlternativo', 1);"></i></span></label>
-                                                                <input type="text" class="form-control" name="txtCorreoAlternativo" id="txtCorreoAlternativo" placeholder="alternativo@correo.com" value="{{ $usuario->USUA_CCORREO_ALTERNATIVO }}" disabled>
+                                                                <input type="email" class="form-control" name="txtCorreoAlternativo" id="txtCorreoAlternativo" placeholder="alternativo@correo.com" value="{{ $usuario->USUA_CCORREO_ALTERNATIVO }}" disabled>
                                                             </div>
 
                                                         </div>
@@ -2124,11 +2124,25 @@
     function TRAM_AJX_GUARDAR() {
         $("#btnSubmit").prop("disabled", true);
         TRAM_FN_ENABLED_INPUT();
-        var validator = $('#frmForm').validate({onkeyup: false});
+        const validator = $('#frmForm').validate({onkeyup: false});
 
         if (!validator.form()) {
-            $('#telefonoPersonaAutorizada-error').html('<b style="color: red;">Favor de poner en el formato (999) 999-9999</b>');
+            const errorMap = validator.errorMap;
+
             $('.listError').hide();
+
+            if(errorMap){
+                if(errorMap.telefonoPersonaAutorizada){
+                    $('#telefonoPersonaAutorizada-error').html('<b style="color: red;">Favor de poner en el formato (999) 999-9999</b>');
+                }
+                if(errorMap.txtCorreo){
+                    $('#txtCorreo-error').html('<b style="color: red;">Correo inválido</b>');
+                }
+                if(errorMap.txtCorreoAlternativo){
+                    $('#txtCorreoAlternativo-error').html('<b style="color: red;">Correo inválido</b>');
+                }
+                
+            }
 
             var htmlError =
                 "<div class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Los siguientes datos son obligatorios:</strong> <br/>";
