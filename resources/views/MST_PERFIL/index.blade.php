@@ -1482,6 +1482,24 @@
             "e",
         ];
 
+
+        $("#txtNombres").keyup(function(){
+            this.value = this.value.toLocaleUpperCase();
+        });
+
+        $("#txtPrimer_Apellido").keyup(function(){
+            this.value = this.value.toLocaleUpperCase();
+        });
+
+        $("#txtSegundo_Apellido").keyup(function(){
+            this.value = this.value.toLocaleUpperCase();
+        });
+
+        $("#nombrePersonaAutorizada").keyup(function(){
+            this.value = this.value.toLocaleUpperCase();
+        });
+                
+
         //para personas morales
         $("#txtNumero_Exterior_Fiscal").keydown(function(e) {
             if (invalidChars.includes(e.key)) {
