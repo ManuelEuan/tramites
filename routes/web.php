@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+Route::get('/email/verify/{id}/{token}', 'LoginController@verificacion');
+Auth::routes(['verify' => true]);
+
 Route::get('/', 'LoginController@index')->name("login");
 Route::post('/login', 'LoginController@login');
 Route::get('/logout', 'LoginController@logout');

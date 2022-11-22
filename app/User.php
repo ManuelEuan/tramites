@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
     protected $connection   = 'mysql';
@@ -64,7 +64,8 @@ class User extends Authenticatable
         'USUA_CSEGUNDOAPELLIDO_NOTIFICACION',
         'USUA_CTEL_LOCAL_NOTIFICACION',
         'USUA_CTEL_CELULAR_NOTIFICACION',
-        'USUA_CCORREO_NOTIFICACION'
+        'USUA_CCORREO_NOTIFICACION',
+        'email_verified_at'
     ];
 
     public function getEmailAttribute() {
