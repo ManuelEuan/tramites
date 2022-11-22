@@ -79,7 +79,15 @@
                                 </div>
                                 <br/>
                             @endif
-
+                            @if($errors->has('verificacion'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ $errors->first('verificacion') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <br/>
+                            @endif
                             <div class="md-form">
                                 <i class="fa fa-user prefix grey-text"></i>
                                 <input type="text" name="txtUsuario" id="txtUsuario" class="form-control" autocomplete="off" />

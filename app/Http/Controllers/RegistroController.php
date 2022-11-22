@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Cls_Usuario;
-use App\Cls_Rol;
-use App\Cls_Sucursal;
-use App\Cls_Bitacora;
+use App\User;
 use Exception;
+use App\Cls_Rol;
+use App\Cls_Usuario;
+use App\Cls_Bitacora;
+use App\Cls_Sucursal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Auth\Events\Registered;
 
 class RegistroController extends Controller
 {
@@ -24,29 +26,30 @@ class RegistroController extends Controller
             $request->txtCorreo_Electronico       = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCorreo_ElectronicoMoral : $request->txtCorreo_Electronico;
             $IntUsuarioId           = Cls_Usuario::TRAM_SP_AGREGARUSUARIO($request);
             $sucursales             = is_null($request->lstSucursal) ? [] : $request->lstSucursal;
-            
+            $user                   = User::find($IntUsuarioId);
+            event(new Registered($user));
             //Agregar sucursales
             foreach ($sucursales as $value) {
                 $ObjSucursal = array(
-                    'txtUsuario' => $IntUsuarioId,
-                    'txtCalle' => '0',
+                    'txtUsuario'    => $IntUsuarioId,
+                    'txtCalle'      => '0',
                     'txtNumero_Interior' => '0',
                     'txtNumero_Exterior' => '0',
-                    'txtCP' => '0',
-                    'cmbColonia' => '0',
-                    'cmbMunicipio' => '0',
-                    'cmbEstado' => '0',
-                    'cmbPais' => '0'
+                    'txtCP'         => '0',
+                    'cmbColonia'    => '0',
+                    'cmbMunicipio'  => '0',
+                    'cmbEstado'     => '0',
+                    'cmbPais'       => '0'
                 );
                 Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
             }
         }
         catch(Exception $e) { dd($e);
             $response = [
-                'codigo' => 400, 
-                'status' => "error", 
-                'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage(),
-                'data' => $IntUsuarioId
+                'codigo'    => 400, 
+                'status'    => "error", 
+                'message'   => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage(),
+                'data'      => $IntUsuarioId
             ];
         }
         
@@ -72,10 +75,10 @@ class RegistroController extends Controller
         }
 
         $response = [
-            'codigo' => $IntUsuarioId > 0 ? 200 : 400, 
-            'status' => $IntUsuarioId > 0 ? "success" : "error",
-            'message' => $IntUsuarioId > 0 ? '¡Éxito! Acción realizada con éxito.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<asdas>>",
-            'data' => $IntUsuarioId
+            'codigo'    => $IntUsuarioId > 0 ? 200 : 400, 
+            'status'    => $IntUsuarioId > 0 ? "success" : "error",
+            'message'   => $IntUsuarioId > 0 ? '¡Éxito! Acción realizada con éxito.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<asdas>>",
+            'data'      => $IntUsuarioId
         ];
 
         return Response()->json($response);

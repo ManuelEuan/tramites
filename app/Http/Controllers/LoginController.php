@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Exception;
-use App\Cls_Bloqueo;
 Use App\Cls_Usuario;
+use App\Cls_Bloqueo;
 use App\Cls_Bitacora;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,6 +63,12 @@ class LoginController extends Controller
 			//Validar si la cuenta esta bloquedo
 			//Validar si encontro un usuario con el correo indicado
 			if($IntIdUsuario != null){
+				$user = User::find($IntIdUsuario->USUA_NIDUSUARIO);
+				if(is_null($user->email_verified_at)){
+					$validator->errors()->add('verificacion', ' Estimado usuario, su cuenta no se ha verificado, favor de verificar.');
+					return Redirect::back()->withErrors($validator);
+				}
+
 				$ObjBloqueo = Cls_Bloqueo::TRAM_SP_VALIDAR_BLOQUEO($IntIdUsuario->USUA_NIDUSUARIO);
 
 				if($ObjBloqueo != null){
@@ -341,4 +348,18 @@ class LoginController extends Controller
 		}
 		return view('MSTP_LOGIN.index');
 	}
+
+
+	/**
+	 * Verificacion de la cuenta del usuario
+	 */
+	public function verificacion($id, $token, Request $request){
+		$user = User::find($id);
+		if(!is_null($user)){
+			$user->email_verified_at = now();
+			$user->save();
+		}
+		
+		return Redirect::to('/');
+    }
 }
