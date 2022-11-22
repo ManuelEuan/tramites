@@ -30,6 +30,7 @@ Route::get('/registrar', function () {
 Route::post('/registrar/agregar', array('uses' => 'RegistroController@agregar'));
 Route::get('/registrar/validar_rfc/{StrRfc}', array('uses' => 'RegistroController@validar_rfc'));
 Route::get('/registrar/validar_correo/{StrCorreo}', array('uses' => 'RegistroController@validar_correo'));
+Route::get('/registrar/validar_curp/{StrCurp}', array('uses' => 'RegistroController@validar_curp'));
 Route::get('/registrar/localidades/{Strlocalidad}', array('uses' => 'RegistroController@localidades'));
 Route::get('/registrar/estados', array('uses' => 'RegistroController@estados'));
 Route::get('/registrar/municipios', array('uses' => 'RegistroController@municipios'));
