@@ -356,7 +356,7 @@
                                                                 <div class="col-md-12">
                                                                     <h3 class="indicaciones">Notificación al solicitante</h3>
                                                                     <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
-                                                                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
+                                                                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1500 carácteres con HTML.</small>
                                                                     <textarea name="txtAreaCita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></textarea>
                                                                 </div>
                                                             </div>
@@ -887,7 +887,7 @@
                 <br>
                 <div class="form-group">
                     <label for="textRechazarTramite" class="col-form-label">Motivos de rechazo</label>
-                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
+                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1500 carácteres con HTML.</small>
                     <textarea class="form-control" name="textRechazarTramite" id="textRechazarTramite" cols="30" rows="10"></textarea>
                 </div>
             </div>
@@ -1739,7 +1739,7 @@
                 showCharCount: true,
                 countHTML: true,
                 maxWordCount: -1,
-                maxCharCount: 1000,
+                maxCharCount: 1500,
             }
         });
         // CKEDITOR.replace('txtAreaCita');
@@ -1751,7 +1751,7 @@
                 showCharCount: true,
                 countHTML: true,
                 maxWordCount: -1,
-                maxCharCount: 1000,
+                maxCharCount: 1500,
             }
         });
 
@@ -2698,7 +2698,7 @@
                     showCharCount: true,
                     countHTML: true,
                     maxWordCount: -1,
-                    maxCharCount: 1000,
+                    maxCharCount: 1500,
                 }
             });
 
