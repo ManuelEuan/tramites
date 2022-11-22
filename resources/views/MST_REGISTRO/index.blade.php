@@ -222,14 +222,14 @@
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Correo electrónico <span class="text-danger">*</span></label>
                                         <input type="email" class="form-control" name="txtCorreo_Electronico" id="txtCorreo_Electronico" placeholder="Correo electrónico" required>
-                                            <span id="resultadoExistCorreo" style="font-size: 12px;"></span>
+                                        <span id="resultadoExistCorreo" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 divCorreoMoral">
                                     <div class="form-group">
                                         <label for="bus-txt-centro-trabajo">Correo electrónico Moral<span class="text-danger">*</span></label>
                                         <input type="email" class="form-control" name="txtCorreo_ElectronicoMoral" id="txtCorreo_ElectronicoMoral" placeholder="Correo electrónico" required>
-                                            <span id="resultadoExistCorreoMoral" style="font-size: 12px;"></span>
+                                        <span id="resultadoExistCorreoMoral" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -308,20 +308,22 @@
                                 <div class="col-md-4">
                                     <label for="bus-txt-centro-trabajo">Teléfono <span class="text-danger">*</span> </label>
                                     <div class="form-group">
-                                    <input type="text" class="form-control" title='Teléfono'  id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" placeholder="999999999" placeholder="No. de teléfono" required >
+                                        <input type="text" class="form-control" title='Teléfono'  id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" placeholder="999999999" placeholder="No. de teléfono" required >
                                     </div>
                                 </div>
-
+                                
                                 <div class="col-md-4">
                                     <label for="bus-txt-centro-trabajo">Correo <span class="text-danger">*</span> </label>
                                     <div class="form-group">
                                         <input class="form-control" type="text" id="correoPersonaAutorizada" name="correoPersonaAutorizada" placeholder="Correo" required>
+                                        <span id="resultadocorreoPersonaAutorizada" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="bus-txt-centro-trabajo">Confirmación correo persona autorizada <span class="text-danger">*</span> </label>
                                     <div class="form-group">
                                         <input class="form-control" type="text" id="ConfirmCorreoPersonaAutorizada" name="ConfirmCorreoPersonaAutorizada" placeholder="Correo" required>
+                                        <span id="resultadoConfirmCorreoPersonaAutorizada" style="font-size: 12px;"></span>
                                     </div>
                                 </div>
                             </div>
@@ -766,6 +768,13 @@
                     txtCurp: {
                         required: ""
                     },
+                    txtCurpMoral:{
+                        required: ""
+                    },
+                    txtCorreo_ElectronicoMoral:{
+                        required: "",
+                        email: "",
+                    },
                     txtNumeroTelefono:{
                         minlength: "El tamaño del campo debe contener mínimo 10 dígitos.",
                         required: ""
@@ -1093,22 +1102,19 @@
                 }
             }
         });
+
         $('#txtConfirmacionCorreo_Electronico').change(function(){
             var value = $( this ).val();
             emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-            var correoprincipal = $('#txtCorreo_ElectronicoMoral').val();
+            var correoprincipal = $('#txtConfirmacionCorreo_Electronico').val();
+            console.log(value, correoprincipal);
             if(value != ""){
-                if (emailRegex.test(value)) {
-                    if(value == correoprincipal){
-                    $("#correoEsIgual").html('');
-                    }
-                    else {
-                        $("#correoEsIgual").html("<span style='color: red;'> Los correos no coinciden</span>");
-                    }
-                } else {
+                if (!emailRegex.test(value)) {
                     $("#correoEsIgual").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
                 }
-               
+               else{
+                $("#correoEsIgual").html("");
+               }
             }
         });
         $('#txtConfirmacionCorreo_ElectronicoFisica').change(function(){
@@ -1148,6 +1154,44 @@
                 }
             }
         });
+
+        $('#correoPersonaAutorizada').change(function(){
+            var value = $( this ).val();
+            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            var correoprincipal = $('#txtCorreo_Alternativo').val();
+
+            if(value != ""){
+                if (!emailRegex.test(value)) {
+                    $("#resultadocorreoPersonaAutorizada").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");   
+                }
+            }
+        });
+
+        $('#ConfirmCorreoPersonaAutorizada').change(function(){
+            var value = $( this ).val();
+            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            var correoprincipal = $('#txtCorreo_Alternativo').val();
+
+            if(value != ""){
+                if (!emailRegex.test(value)) {
+                    $("#resultadoConfirmCorreoPersonaAutorizada").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");   
+                }
+            }
+        });
+        
+
+        $('#txtCorreo_ElectronicoMoral').change(function(){
+            var value = $( this ).val();
+            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            var correoprincipal = $('#txtCorreo_Alternativo').val();
+
+            if(value != ""){
+                if (!emailRegex.test(value)) {
+                    $("#resultadoExistCorreoMoral").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");   
+                }
+            }
+        });
+
 
         $('#txtConfirmacion').change(function(){
             var value = $( this ).val();
@@ -1228,7 +1272,7 @@
 
         //Guardar
         function TRAM_AJX_GUARDAR(){
-            $("#btnSubmit").prop("disabled", true);
+
             if (!$("#frmForm").valid()){
                 $('.listError').hide();
                 var validator = $('#frmForm').validate();
@@ -1243,12 +1287,10 @@
                 });
                 htmlError += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
                 $(".listError").html(htmlError);
-                $("#btnSubmit").prop("disabled", false);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 return;
             }
             if($("#resultadoValidText").html() != ""){
-                $("#btnSubmit").prop("disabled", true);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 return;
             }
@@ -1295,31 +1337,27 @@
                 }
             }
             if($("#resultadoExistRfc").html() != ""){
-                $("#btnSubmit").prop("disabled", true);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 return;
             }
 
             if($(".resultadoValidTextCurp").html() != ""){
-                $("#btnSubmit").prop("disabled", true);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 return;
             }
 
             if($(".resultadoValidTextCurpMoral").html() != ""){
-                $("#btnSubmit").prop("disabled", true);
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 return;
             }
 
             if($("#resultadoExistCorreo").html() != ""){
-                $("#btnSubmit").prop("disabled", true);
                 return;
             }
             if($("#resultadoExistCorreoMoral").html() != ""){
-                $("#btnSubmit").prop("disabled", true);
                 return;
             }
+
 
             Swal.fire({
                 title: '¡Confirmar!',
@@ -1333,7 +1371,7 @@
                 }).then((result) => {
                 if (result.isConfirmed) {
 
-
+                    $("#btnSubmit").prop("disabled", true);
                     $.ajax({
                         data: $('#frmForm').serialize(),
                         url: "/registrar/agregar",
@@ -1453,14 +1491,8 @@
                 var rfc = newValue.trim().toUpperCase();
                 rfcCorrecto = TRAM_FN_VALIDAR_RFC(rfc);   // Acá se comprueba
                 if (rfcCorrecto) {
-                    setTimeout(function(){
-                        $(".btnSubmit").prop("disabled", false);
-                    }, 1000);
                     $("#resultadoValidText").html("");
                 } else {
-                    setTimeout(function(){
-                        $(".btnSubmit").prop("disabled", true);
-                    }, 1000);
                     $("#resultadoValidText").html("<span style='color: red;'>El RFC no es válido, se requiere verificar.</span>");
                 }
                 //toUpperCase
@@ -1562,9 +1594,6 @@
                 dataType: 'json',
                 success: function(data) {
                     if(data.data != null){
-                        setTimeout(function(){
-                            $(".btnSubmit").prop("disabled", true);
-                        }, 1000);
                         if(tipo == 'curp'){
                             if(persona == 'fisica'){
                                 $(".iconCurp_Valido").hide();
@@ -1610,9 +1639,6 @@
             $.get('/registrar/validar_correo/' + StrCorreo, function (data) {
                 //Validamos si existe un usuario con el correo capturado
                 if(data.status == "success"){
-                    setTimeout(function(){
-                        $(".btnSubmit").prop("disabled", true);
-                    }, 1000);
                     $("#txtRfc").attr("aria-invalid", "true");
                     $("#txtRfc").addClass("error");
                     if(tipo == 'FISICA'){
@@ -1623,9 +1649,6 @@
                         $("#resultadoExistCorreoMoral").html("<span style='color: red;'>"+ data.message +"</span>");
                     }
                 }else {
-                    setTimeout(function(){
-                        $(".btnSubmit").prop("disabled", false);
-                    }, 1000);
                     $("#txtRfc").attr("aria-invalid", "false");
                     $("#txtRfc").removeClass("error");
                     if(tipo == 'FISICA'){
