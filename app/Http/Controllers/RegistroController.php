@@ -105,15 +105,20 @@ class RegistroController extends Controller
     public function validar_curp($StrCurp){
 
         $IntResult = Cls_Usuario::TRAM_SP_VALIDAR_CURP($StrCurp);
-
-        return Response()->json($IntResult);
+        $response = [
+            'codigo' => $IntResult > 0 ? 200 : 400, 
+            'status' => $IntResult > 0 ? "success" : "error", 
+            'message' => $IntResult > 0 ? 'El correo electrónico ya existe en el sistema, por favor ingresa con tu usuario y contraseña.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<>>"
+        ];
+        //dd($response);
+        return Response()->json($response);
     }
 
     public function validar_correo($StrCorreo){
-
+        
         try {
             $IntResult = Cls_Usuario::TRAM_SP_VALIDAR_CORREO($StrCorreo);
-
+            
             $response = [
                 'codigo' => $IntResult > 0 ? 200 : 400, 
                 'status' => $IntResult > 0 ? "success" : "error", 
@@ -127,6 +132,7 @@ class RegistroController extends Controller
                 'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage()
             ];
         }
+        //dd($response);
         return Response()->json($response);
     }
 	

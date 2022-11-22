@@ -169,6 +169,7 @@
                                                                     <span class="text-danger">*</span>
                                                                     <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreo', 1);"></i></span></label>
                                                                 <input type="text" class="form-control" name="txtCorreo" id="txtCorreo" placeholder="ejemplo@correo.com" value="{{ $usuario->USUA_CCORREO_ELECTRONICO }}" disabled>
+                                                                <span id="resultadoExistCorreoElectronico" style="font-size: 12px;"></span>
                                                             </div>
 
                                                         </div>
@@ -178,6 +179,7 @@
                                                                 <label for="bus-txt-centro-trabajo">Correo electronico
                                                                     alternativo <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreoAlternativo', 1);"></i></span></label>
                                                                 <input type="text" class="form-control" name="txtCorreoAlternativo" id="txtCorreoAlternativo" placeholder="alternativo@correo.com" value="{{ $usuario->USUA_CCORREO_ALTERNATIVO }}" disabled>
+                                                                <span id="resultadoExistCorreoElectronicoAlternativo" style="font-size: 12px;"></span>
                                                             </div>
 
                                                         </div>
@@ -1304,6 +1306,33 @@
 
 @section('scripts')
 <script>
+    @if (empty($usuario->USUA_CCORREO_ELECTRONICO))
+    var emailPrimario = '';
+    @else
+    var emailPrimario = '{{$usuario->USUA_CCORREO_ELECTRONICO}}';
+    @endif
+
+    @if (empty($usuario->USUA_CCORREO_ALTERNATIVO))
+    var emailAlternativo = '';
+    @else
+    var emailAlternativo = '{{$usuario->USUA_CCORREO_ALTERNATIVO}}';
+    @endif
+
+
+    @if (empty($usuario->USUA_CCURP))
+    var curpPrincipal = '';
+    @else
+    var curpPrincipal = '{{$usuario->USUA_CCURP}}';
+    @endif
+    
+    
+    var emailPrimarioValido = 1;
+
+    var emailAlternativoValido = 1;
+
+    var curpPrincipalValido = 1;
+    
+
     function GET_VISTA_PREDIOS() {
         var settings = {
             "url": "http://pruebasws.merida.gob.mx:8080/wsducat/api/WSDUWEB/html/consultaPredios/LC",
@@ -1930,6 +1959,31 @@
         $(".txtCurp").change(function() {
             var value = $(this).val();
             TRAM_FN_VALIDAR_INPUNT_CURP(value);
+
+            if(curpPrincipal == value){
+                return;
+            }
+
+            $.get('/registrar/validar_curp/' + value, function(data) {
+                //Validamos si existe un usuario con el correo capturado
+                if (data.status == "success") {
+                    
+                    $(".iconCurp_Valido").hide();
+                    $(".resultadoValidTextCurp").html(
+                    "<span style='color: red;'>¡Error!</span> El CURP ya existe en el sistema.");
+                    curpPrincipalValido = 0;
+                } else {
+                   
+                    if(curpPrincipalValido == 1){
+
+                        $(".iconCurp_Valido").show();
+                        $(".resultadoValidTextCurp").html("");
+                        curpPrincipalValido = 1;
+
+                    }
+                }
+            });
+
         });
 
         //Correo
@@ -1939,6 +1993,78 @@
 
             console.log("ejecutando");
         });
+
+        //Correo resultadoExistCorreoElectronico
+        $('#txtCorreo').change(function() {
+            var value = $(this).val();
+            //TRAM_AJX_VALIDAR_CORREO_ERROR(value,'#txtCorreo','#resultadoExistCorreoElectronico');
+
+            var reg = /^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
+
+            if (reg.test(value)) {
+                emailPrimarioValido = 1;
+                $('#resultadoExistCorreoElectronico').html("");
+            } else {
+                emailPrimarioValido = 0;
+                $('#resultadoExistCorreoElectronico').html("<span style='color: red;'>El correo electrónico no es valido</span>");
+                return;
+            }
+
+            if(emailPrimario == value){
+                return;
+            }
+
+            $.get('/registrar/validar_correo/' + value, function(data) {
+            //Validamos si existe un usuario con el correo capturado
+            if (data.status == "success") {
+                
+                $('#resultadoExistCorreoElectronico').html("<span style='color: red;'>El correo electrónico ya existe en el sistema</span>");
+                emailPrimarioValido = 0;
+            } else {
+                $('#resultadoExistCorreoElectronico').html("");
+                emailPrimarioValido = 1;
+            }
+        });
+
+            console.log("ejecutando");
+        });
+
+        //Correo resultadoExistCorreoElectronico
+        $('#txtCorreoAlternativo').change(function() {
+            var value = $(this).val();
+            //TRAM_AJX_VALIDAR_CORREO_ERROR(value,'#txtCorreo','#resultadoExistCorreoElectronico');
+
+            var reg = /^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
+
+            if (reg.test(value)) {
+                emailAlternativoValido = 1;
+                $('#resultadoExistCorreoElectronicoAlternativo').html("");
+            } else {
+                emailAlternativoValido = 0;
+                $('#resultadoExistCorreoElectronicoAlternativo').html("<span style='color: red;'>El correo electrónico no es valido</span>");
+                return;
+            }
+
+            if(emailAlternativo == value){
+                return;
+            }
+
+            $.get('/registrar/validar_correo/' + value, function(data) {
+            //Validamos si existe un usuario con el correo capturado
+            if (data.status == "success") {
+                
+                $('#resultadoExistCorreoElectronicoAlternativo').html("<span style='color: red;'>El correo electrónico ya existe en el sistema</span>");
+                emailAlternativoValido = 0;
+            } else {
+                $('#resultadoExistCorreoElectronicoAlternativo').html("");
+                emailAlternativoValido = 1;
+            }
+        });
+
+            console.log("ejecutando");
+        });
+
+
 
         //Mismo domicilio
         $("#chbDomicilio_Mismo").click(function() {
@@ -2122,9 +2248,29 @@
     };
 
     function TRAM_AJX_GUARDAR() {
+
+        var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
         $("#btnSubmit").prop("disabled", true);
         TRAM_FN_ENABLED_INPUT();
         var validator = $('#frmForm').validate({onkeyup: false});
+
+        if(emailPrimarioValido == 0)
+        {
+            return;
+        }
+
+        if(emailAlternativoValido == 0)
+        {
+            return;
+        }
+
+        if(curpPrincipalValido == 0)
+        {
+            return;
+        }
+
+        
 
         if (!validator.form()) {
             $('#telefonoPersonaAutorizada-error').html('<b style="color: red;">Favor de poner en el formato (999) 999-9999</b>');
@@ -2562,6 +2708,7 @@
                 }, 1000);
                 $(".iconCurp_Valido").show();
                 $(".resultadoValidTextCurp").html("");
+                curpPrincipalValido = 1;
             } else {
                 setTimeout(function() {
                     $(".btnSubmit").prop("disabled", false);
@@ -2569,6 +2716,7 @@
                 $(".iconCurp_Valido").hide();
                 $(".resultadoValidTextCurp").html(
                     "<span style='color: red;'>¡Error!</span> El CURP no es válido, favor de verficar.");
+                    curpPrincipalValido = 0;
             }
             $(".txtCurp").val(curp);
         }
@@ -2615,6 +2763,7 @@
         });
     };
 
+   
     function deleteDocUser(id) {
 
         Swal.fire({
