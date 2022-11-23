@@ -229,6 +229,7 @@
                                                     <label for="bus-txt-centro-trabajo">Correo <span class="text-danger">*</span> <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('correoPersonaAutorizada', 1);"></i></label>
                                                     <div class="form-group">
                                                         <input class="form-control" type="text" id="correoPersonaAutorizada" name="correoPersonaAutorizada" value="{{ $usuario->USUA_CCORREO_NOTIFICACION }}" placeholder="Correo" required disabled>
+                                                        <span id="errorPAutorizada" style="font-size: 12px;"></span>
                                                     </div>
                                                 </div>
 
@@ -2008,8 +2009,6 @@
         $('#txtCorreo_Electronico').change(function() {
             var value = $(this).val();
             TRAM_AJX_VALIDAR_CORREO(value);
-
-            console.log("ejecutando");
         });
 
         //Correo resultadoExistCorreoElectronico
@@ -2033,18 +2032,16 @@
             }
 
             $.get('/registrar/validar_correo/' + value, function(data) {
-            //Validamos si existe un usuario con el correo capturado
-            if (data.status == "success") {
-                
-                $('#resultadoExistCorreoElectronico').html("<span style='color: red;'>El correo electrónico ya existe en el sistema</span>");
-                emailPrimarioValido = 0;
-            } else {
-                $('#resultadoExistCorreoElectronico').html("");
-                emailPrimarioValido = 1;
-            }
-        });
-
-            console.log("ejecutando");
+                //Validamos si existe un usuario con el correo capturado
+                if (data.status == "success") {
+                    
+                    $('#resultadoExistCorreoElectronico').html("<span style='color: red;'>El correo electrónico ya existe en el sistema</span>");
+                    emailPrimarioValido = 0;
+                } else {
+                    $('#resultadoExistCorreoElectronico').html("");
+                    emailPrimarioValido = 1;
+                }
+            });
         });
 
         //Correo resultadoExistCorreoElectronico
@@ -2068,21 +2065,43 @@
             }
 
             $.get('/registrar/validar_correo/' + value, function(data) {
-            //Validamos si existe un usuario con el correo capturado
-            if (data.status == "success") {
-                
-                $('#resultadoExistCorreoElectronicoAlternativo').html("<span style='color: red;'>El correo electrónico ya existe en el sistema</span>");
-                emailAlternativoValido = 0;
-            } else {
-                $('#resultadoExistCorreoElectronicoAlternativo').html("");
-                emailAlternativoValido = 1;
+                //Validamos si existe un usuario con el correo capturado
+                if (data.status == "success") {
+                    
+                    $('#resultadoExistCorreoElectronicoAlternativo').html("<span style='color: red;'>El correo electrónico ya existe en el sistema</span>");
+                    emailAlternativoValido = 0;
+                } else {
+                    $('#resultadoExistCorreoElectronicoAlternativo').html("");
+                    emailAlternativoValido = 1;
+                }
+            });
+        });
+
+        document.getElementById('txtTelefono').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+
+        document.getElementById('telefonoPersonaAutorizada').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+
+
+        $("#correoPersonaAutorizada").change(function(){
+            var value = $( this ).val();
+            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            if(value == ""){
+                $("#errorPAutorizada").html("<span style='color: red;'> El correo es requerido.</span>");
+            }
+           
+            if (!emailRegex.test(value)) {
+                $("#errorPAutorizada").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+            }
+            else{
+                $("#errorPAutorizada").html("");
             }
         });
-
-            console.log("ejecutando");
-        });
-
-
 
         //Mismo domicilio
         $("#chbDomicilio_Mismo").click(function() {
@@ -2266,31 +2285,39 @@
     };
 
     function TRAM_AJX_GUARDAR() {
-
         var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-        $("#btnSubmit").prop("disabled", true);
-        TRAM_FN_ENABLED_INPUT();
+        /* $("#btnSubmit").prop("disabled", true); */
         const validator = $('#frmForm').validate({onkeyup: false});
-
-        if(emailPrimarioValido == 0)
-        {
+        if(emailPrimarioValido == 0) {
             return;
         }
 
-        if(emailAlternativoValido == 0)
-        {
+        if(emailAlternativoValido == 0){
             return;
         }
 
-        if(curpPrincipalValido == 0)
-        {
+        if(curpPrincipalValido == 0) {
             return;
         }
 
-        
+        let CPA = $("#correoPersonaAutorizada").val();
+        if(CPA == ""){
+            $("#errorPAutorizada").html("<span style='color: red;'> El correo es requerido.</span>");
+        }
 
+        emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+        if(!emailRegex.test(CPA)) {
+            $("#errorPAutorizada").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+            return;
+        }
+        else{
+            $("#errorPAutorizada").html("");
+        }
+
+       
         if (!validator.form()) {
+            console.log("entre");
             const errorMap = validator.errorMap;
 
             $('.listError').hide();
@@ -2329,28 +2356,44 @@
 
             return;
         }
-
-        $.ajax({
-            data: $('#frmForm').serialize(),
-            url: "/perfil/modificar",
-            type: "POST",
-            dataType: 'json',
-            success: function(data) {
-                console.log(data);
-                $("#btnSubmit").prop("disabled", false);
-                if (data.status == "success") {
-                    // $('#frmForm').trigger("reset");
-                    // $(".listError").html("");
-                    // TRAM_FN_TRAMITE();
-                    Swal.fire({
-                        title: '¡Aviso!',
-                        text: data.message,
-                        icon: 'success',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Aceptar'
-                    });
-                } else {
+        else{
+            $("#btnSubmit").prop("disabled", true);
+            TRAM_FN_ENABLED_INPUT();
+            $.ajax({
+                data: $('#frmForm').serialize(),
+                url: "/perfil/modificar",
+                type: "POST",
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    $("#btnSubmit").prop("disabled", false);
+                    TRAM_FN_DISABLED_INPUT();
+                    if (data.status == "success") {
+                        // $('#frmForm').trigger("reset");
+                        // $(".listError").html("");
+                        // TRAM_FN_TRAMITE();
+                        Swal.fire({
+                            title: '¡Aviso!',
+                            text: data.message,
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: '¡Aviso!',
+                            text: data.message,
+                            icon: 'info',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                },
+                error: function(data) {
+                    $("#btnSubmit").prop("disabled", false);
+                    TRAM_FN_DISABLED_INPUT();
                     Swal.fire({
                         title: '¡Aviso!',
                         text: data.message,
@@ -2360,19 +2403,10 @@
                         confirmButtonText: 'Aceptar'
                     });
                 }
-            },
-            error: function(data) {
-                $("#btnSubmit").prop("disabled", false);
-                Swal.fire({
-                    title: '¡Aviso!',
-                    text: data.message,
-                    icon: 'info',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Aceptar'
-                });
-            }
-        });
+            });
+        }
+       
+       /*   */
     };
 
     //Redirige a login
