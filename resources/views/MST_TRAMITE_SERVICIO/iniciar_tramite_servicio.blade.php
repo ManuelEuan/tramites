@@ -243,6 +243,12 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}} </label>
+                                                                @php  
+                                                                    $validacion = strpos(strtolower($preg->FORM_CPREGUNTA), 'interbancaria') !== false ? 'minlength=18 maxlength=18' : "";
+                                                                    $tipo       = $validacion ? "number" : "text";
+                                                                    $clase      = $validacion ? "" : "txt_abierta";
+                                                                @endphp 
+
                                                                 @if($preg->respuestas > 0)
                                                                     @foreach($preg->respuestas as $resp)
                                                                     <?php 
@@ -251,10 +257,11 @@
                                                                     }else{
                                                                     $resARR[] = $preg->FORM_NID;
                                                                     ?>
-                                                                        <input type="text" class="form-control txt_abierta" 
+                                                                        <input type="{{$tipo}}" class="form-control {{$clase}}" 
                                                                         name="resp_{{$preg->FORM_NID}}_0" 
                                                                         id="resp_{{$preg->FORM_NID}}_0" 
-                                                                        placeholder="{{$preg->FORM_CPREGUNTA}}" vinculacion="<?php echo(isset($preg->FORM_CVALORASIGNACION)? ($preg->FORM_CVALORASIGNACION):"" )?>" required> 
+                                                                        placeholder="{{$preg->FORM_CPREGUNTA}}" vinculacion="<?php echo(isset($preg->FORM_CVALORASIGNACION)? ($preg->FORM_CVALORASIGNACION):"" )?>"
+                                                                        required {{$validacion}}> 
                                                                     <?php };    ?>
                                                                     @endforeach
                                                                 @endif
@@ -1414,6 +1421,8 @@
 
         jQuery.extend(jQuery.validator.messages, {
             required: "Es requerido",
+            maxlength: "El valor agregado solo puede ser a 18 digitos.",
+            minlength: "El valor agregado solo puede ser a 18 digitos.",
         });
 
         $(".selectCatalogos").selectpicker({

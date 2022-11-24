@@ -344,15 +344,19 @@
                                                                             <div class="col-md-4">
                                                                                 <div class="form-group {{ $preg->estatus == 1 ? 'error-input' : '' }}">
                                                                                     <label for="resp_{{ $preg->FORM_NID }}">{{ $preg->FORM_CPREGUNTA }}</label>
+                                                                                    @php  
+                                                                                        $validacion = strpos(strtolower($preg->FORM_CPREGUNTA), 'interbancaria') !== false ? 'minlength=18 maxlength=18' : "";
+                                                                                        $tipo       = $validacion ? "number" : "text"; 
+                                                                                    @endphp 
                                                                                     @if ($preg->respuestas > 0)
                                                                                         @foreach ($preg->respuestas as $resp)
-                                                                                            <input type="text" class="form-control"
+                                                                                            <input type="{{$tipo}}" class="form-control"
                                                                                                 name="resp_{{ $preg->FORM_NID }}_0_{{ $resp->id }}"
                                                                                                 id="resp_{{ $preg->FORM_NID }}_0"
                                                                                                 placeholder="{{ $preg->FORM_CPREGUNTA }}"
                                                                                                 value="{{ $resp->FORM_CVALOR_RESPUESTA }}"
-                                                                                                {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
-                                                                                                required>
+                                                                                                {{-- {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} --}}
+                                                                                                required {{$validacion}}>
                                                                                         @endforeach
                                                                                     @endif
                                                                                     @if ($preg->estatus == 1)
@@ -2047,6 +2051,8 @@
 
             jQuery.extend(jQuery.validator.messages, {
                 required: "Es requerido",
+                maxlength: "El valor agregado solo puede ser a 18 digitos.",
+                minlength: "El valor agregado solo puede ser a 18 digitos.",
             });
 
             $('.secconceptos').each(function() {
@@ -2993,7 +2999,7 @@
             let html    = '';
             let json    = null;
             let valor   = {"id": select, "valor": $("#"+select+"_input").val()} ;
-
+           
             if(items.length > 4){
                 mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
                 return;
@@ -3041,6 +3047,15 @@
             }
         });
 
+        function mensajeError(icon = 'error', message = ''){
+            console.log(message);
+            Swal.fire({
+                icon: icon,
+                title: '',
+                text: message,
+                footer: ''
+            });
+        }
     </script>
 
 
@@ -3425,7 +3440,5 @@
 
     </script>
     
-
-
 
 @endsection
