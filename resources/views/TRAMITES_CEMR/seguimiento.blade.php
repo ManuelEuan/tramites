@@ -98,6 +98,10 @@
                 <div class="col-md-10" style="text-align: left;">
                     <h2 class="titulo">{{$tramite->USTR_CNOMBRE_TRAMITE}}</h2><br><br>
                     <h2 class="subtitulo">{{$tramite->USTR_CCENTRO}}</h2>
+                    @if($tramite->USTR_NESTATUS == 9)
+                        <h2 class="titulo">MOTIVO DE RECHAZO</h2><br>
+                        <h2 class="subtitulo">{{$tramite->USTR_CMOTIVORECHAZO}}</h2>
+                    @endif
                 </div>
                 <div class="col-md-2" style="text-align: center;">
                     <p style="margin: 0px; font-size: 1rem; color:#393939;">Estatus de trámite</p>
@@ -811,7 +815,7 @@
                                                         <div class="col-md-12">
                                                             <h3 class="indicaciones">Notificación al solicitante</h3>
                                                             <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
-                                                            <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
+                                                            <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1500 carácteres con HTML.</small>
                                                             <textarea name="txtAreaRevision"></textarea>
                                                         </div>
                                                     </div>
@@ -3600,7 +3604,8 @@
             "nombre_tramite": "{{$tramite->USTR_CNOMBRE_TRAMITE}}",
             "folio_tramite": "{{$tramite->USTR_CFOLIO}}",
             "CONF_PREGUNTAS": [],
-            "IDCITA": "{{ @$tramite->cita['ID'] }}"
+            "IDCITA": "{{ @$tramite->cita['ID'] }}",
+            "USTR_CMOTIVORECHAZO": ""
         };
 
         var txtMotivoRechazo = CKEDITOR.instances['textRechazarTramite'].getData();
@@ -3617,6 +3622,7 @@
         }
 
         seccion_formulario.CONF_NOTIFICACION = txtMotivoRechazo;
+        seccion_formulario.USTR_CMOTIVORECHAZO = txtMotivoRechazo;
 
         $("#txt_loading").text("Guardando Trámite...");
         $("#loading_").show();

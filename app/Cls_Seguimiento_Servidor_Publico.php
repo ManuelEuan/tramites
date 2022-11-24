@@ -793,14 +793,14 @@ class Cls_Seguimiento_Servidor_Publico extends Model
 
     /*********** RECHARZAR *************/
     //RECHAZAR
-    static function TRAM_RECHAZAR_TRAMITE($CONF_NIDUSUARIOTRAMITE)
+    static function TRAM_RECHAZAR_TRAMITE($CONF_NIDUSUARIOTRAMITE, $USTR_CMOTIVORECHAZO)
     {
         try {
 
             //Mantenemos el estatus general del trámite en 9 -> Rechazar
             DB::select(
-                'UPDATE tram_mdv_usuariotramite SET USTR_NESTATUS = 9 WHERE USTR_NIDUSUARIOTRAMITE = ?',
-                array($CONF_NIDUSUARIOTRAMITE)
+                'UPDATE tram_mdv_usuariotramite SET USTR_NESTATUS = 9, USTR_CMOTIVORECHAZO = ?  WHERE USTR_NIDUSUARIOTRAMITE = ?',
+                array($USTR_CMOTIVORECHAZO, $CONF_NIDUSUARIOTRAMITE)
             );
         } catch (\Throwable $th) {
             //throw $th;
