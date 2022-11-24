@@ -1319,6 +1319,12 @@
     var emailAlternativo = '{{$usuario->USUA_CCORREO_ALTERNATIVO}}';
     @endif
 
+    @if (empty($usuario->USUA_CCORREO_ELECTRONICO))
+    var emailPA = '';
+    @else
+    var emailPA = '{{$usuario->USUA_CCORREO_NOTIFICACION}}';
+    @endif
+
 
     @if (empty($usuario->USUA_CCURP))
     var curpPrincipal = '';
@@ -1330,6 +1336,8 @@
     var emailPrimarioValido = 1;
 
     var emailAlternativoValido = 1;
+
+    var emailPAValido = 1;
 
     var curpPrincipalValido = 1;
     
@@ -2067,7 +2075,6 @@
             $.get('/registrar/validar_correo/' + value, function(data) {
                 //Validamos si existe un usuario con el correo capturado
                 if (data.status == "success") {
-                    
                     $('#resultadoExistCorreoElectronicoAlternativo').html("<span style='color: red;'>El correo electrónico ya existe en el sistema</span>");
                     emailAlternativoValido = 0;
                 } else {
@@ -2089,16 +2096,19 @@
 
 
         $("#correoPersonaAutorizada").change(function(){
-            var value = $( this ).val();
-            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            var value = $(this).val();
+            emailRegex = /^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
             if(value == ""){
+                emailPAValido = 0;
                 $("#errorPAutorizada").html("<span style='color: red;'> El correo es requerido.</span>");
             }
            
             if (!emailRegex.test(value)) {
-                $("#errorPAutorizada").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+                emailPAValido = 0;
+                $("#errorPAutorizada").html("<span style='color: red;'>El correo electrónico no es valido.</span>");
             }
             else{
+                emailPAValido = 1;
                 $("#errorPAutorizada").html("");
             }
         });
@@ -2301,6 +2311,10 @@
             return;
         }
 
+        if(emailPAValido == 0) {
+            return;
+        }
+
         let CPA = $("#correoPersonaAutorizada").val();
         if(CPA == ""){
             $("#errorPAutorizada").html("<span style='color: red;'> El correo es requerido.</span>");
@@ -2332,7 +2346,6 @@
                 if(errorMap.txtCorreoAlternativo){
                     $('#txtCorreoAlternativo-error').html('<b style="color: red;">Correo inválido</b>');
                 }
-                
             }
 
             var htmlError =
