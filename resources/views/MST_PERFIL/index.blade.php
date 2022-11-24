@@ -2881,6 +2881,34 @@
     }
 
     function enviarDoc(id) {
+        var file        = $('input[name="doc' + id + '"]').val()
+        var extension   = file.substr((file.lastIndexOf('.') + 1));
+        var size        = $('input[name="doc' + id + '"]')[0].files[0].size;
+        var kb          = (size / 1024);
+        var mb          = (kb / 1024);
+        console.log(extension, size, mb.toFixed(3));
+
+        if(mb.toFixed(3) > 5){
+            $('input[name="doc' + id + '"]').val('');
+            Swal.fire({ 
+                title: 'Error!',
+                text: 'El archivo debe de pesar menos de 5Mb',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+            return ;
+        }
+        if(extension != "pdf"){
+            $('input[name="doc' + id + '"]').val('');
+            Swal.fire({ 
+                title: 'Error!',
+                text: 'Solo se permite PDF',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+            return;
+        }
+
         Swal.fire({
             title: '',
             text: "¿Desea guardar el documento?",
@@ -2892,18 +2920,9 @@
             confirmButtonText: 'Si'
         }).then((result) => {
             if (result.isConfirmed) {
-                var file = $('input[name="doc' + id + '"]').val()
-                if (file == '') {
-                    alert('debe seleccionar un archivo')
-                    return
-                }
                 $.LoadingOverlay("show");
-                var doc = $('input[name="doc' + id + '"]')[0].files[0]
-                var {
-                    size
-                } = $('input[name="doc' + id + '"]')[0].files[0]
-                var extension = file.substr((file.lastIndexOf('.') + 1));
-                var formData = new FormData()
+                var doc         = $('input[name="doc' + id + '"]')[0].files[0];
+                var formData    = new FormData()
 
                 formData.append('documento', doc)
                 formData.append('tipo', id)
@@ -2920,12 +2939,11 @@
                         listarDocs()
                         Swal.fire('Éxito', data, 'success')
                         $.LoadingOverlay("hide");
-                        $('input[name="doc' + id + '"]').val('')
+                        $('input[name="doc' + id + '"]').val('');
                     }
-
                 })
             } else {
-                $('input[name="doc' + id + '"]').val('')
+                $('input[name="doc' + id + '"]').val('');
             }
         });
     }
