@@ -794,11 +794,12 @@ class TramitesController extends Controller
     public function rechazar_tramite(Request $request)
     {
         $response = [];
+        $mensaje_corto = "";
         try {
 
-            Cls_Seguimiento_Servidor_Publico::TRAM_RECHAZAR_TRAMITE($request->CONF_NIDUSUARIOTRAMITE);
+            Cls_Seguimiento_Servidor_Publico::TRAM_RECHAZAR_TRAMITE($request->CONF_NIDUSUARIOTRAMITE, $request->USTR_CMOTIVORECHAZO);
 
-            if($request->IDCITA != null || $request->IDCITA != undefined || $request->IDCITA != "") {
+            if(isset($request->IDCITA)) {
                 Cls_Citas_Calendario::deleteCita($request->IDCITA);
             }
 
