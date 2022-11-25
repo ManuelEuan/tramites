@@ -568,9 +568,11 @@
                                                                                         @foreach ($preg->respuestas as $resp)
                                                                                             @foreach ($resp->catalogos as $cat)
                                                                                                 <?php
-                                                                                                    $selected = "";
+                                                                                                    $antSel     = array();
+                                                                                                    $selected   = "";
                                                                                                     if($resp->FORM_CVALOR == 'tram_cat_giros'){
                                                                                                         foreach($resp->respArray  as $respArray){
+                                                                                                            array_push($antSel, $respArray->id);
                                                                                                             if($respArray->id == $cat->id){
                                                                                                                 $selected = "selected";
                                                                                                                 break;
@@ -1630,6 +1632,7 @@
     <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
     <script>
         var catalogos   = <?php echo json_encode($tramite['giros']); ?>;
+        var antSel      = <?php echo json_encode($antSel); ?>; 
         var catGiros    = [];
         var anios       = [];
 
@@ -2999,10 +3002,17 @@
             let html    = '';
             let json    = null;
             let valor   = {"id": select, "valor": $("#"+select+"_input").val()} ;
-           
+
             if(items.length > 4){
+                $(".selectCatalogos option[value="+id+"]").attr("selected", false);
+                $('.selectpicker').selectpicker('deselectAll');
+                $('.selectpicker').selectpicker('val', antSel);
+                $('.selectpicker').selectpicker('refresh');
                 mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
                 return;
+            }
+            else{
+                antSel = items;
             }
 
             if(valor != ""){

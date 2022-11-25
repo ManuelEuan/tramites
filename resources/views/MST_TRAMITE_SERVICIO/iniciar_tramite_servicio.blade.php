@@ -968,6 +968,7 @@
     var catalogos   = [];
     var catGiros    = [];
     var catBancos   = [];
+    var antSel      = [];
 
     //0 no es gestor
     if(es_gestor == 0){
@@ -1890,8 +1891,15 @@
         let html = '';
         
         if(items.length > 4){
+            $('.selectpicker').selectpicker('deselectAll');
+            $('.selectpicker').selectpicker('val', antSel);
+            $('.selectpicker').selectpicker('refresh');
+
             mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
             return;
+        }
+        else{
+            antSel = items;
         }
 
         items.forEach(element => {
