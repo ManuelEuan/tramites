@@ -13,24 +13,22 @@ class Cls_UsuarioTramiteAnalista extends Model
     
     static function AsignarTramite(Request $request){//Request $request
         try {
-            $verifica = DB::select('select * from tram_mdv_usuariotramite_analista where USTR_NIDUSUARIOTRAMITE = ?', [$request->USTR_NIDUSUARIOTRAMITE,]);
-        
-            if(count($verifica) > 0){
-                DB::update('update tram_mdv_usuariotramite_analista set USUA_NIDUSUARIO = ?, USTR_ACTIVO  = 1 WHERE USTR_NIDUSUARIOTRAMITE = ?',
-                    [
-                        $request->USUA_NIDUSUARIO,
-                        $request->USTR_NIDUSUARIOTRAMITE
-                    ]
-                );
+            $existe = DB::table('tram_mdv_usuariotramite_analista')->where('USTR_NIDUSUARIOTRAMITE', $request->USTR_NIDUSUARIOTRAMITE)->first();
+            
+            if(!is_null($existe)){
+                DB::table('tram_mdv_usuariotramite_analista')->where('USTR_NIDUSUARIOTRAMITE', $request->USTR_NIDUSUARIOTRAMITE)->update([
+                    'USUA_NIDUSUARIO'           => $request->USUA_NIDUSUARIO, 
+                    'USUA_NIDUSUARIOREGISTRO'   => $request->USUA_NIDUSUARIOREGISTRO,
+                    'USUA_FECHA'                => now()
+                ]);
             }else{
-                DB::insert('insert into tram_mdv_usuariotramite_analista (USTR_NIDUSUARIOTRAMITE, USUA_NIDUSUARIO, USTR_ACTIVO, USUA_NIDUSUARIOREGISTRO) values (?, ?, ?, ?)',
-                    [
-                        $request->USTR_NIDUSUARIOTRAMITE,
-                        $request->USUA_NIDUSUARIO,
-                        1,
-                        $request->USUA_NIDUSUARIOREGISTRO
-                    ]
-                );
+                DB::table('tram_mdv_usuariotramite_analista')->insert([
+                    'USTR_NIDUSUARIOTRAMITE'    => $request->USTR_NIDUSUARIOTRAMITE,
+                    'USUA_NIDUSUARIO'           => $request->USUA_NIDUSUARIO, 
+                    'USUA_NIDUSUARIOREGISTRO'   => $request->USUA_NIDUSUARIOREGISTRO,
+                    'USUA_FECHA'                => now(),
+                    'USTR_ACTIVO'               => true
+                ]);
             }
 
             $response = [
