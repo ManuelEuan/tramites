@@ -394,7 +394,7 @@
                             "data": null,
                             render: function(data, type, row) {
                                 var fecha = "";
-                                if (data.rol == "ANTA") {
+                                if (data.fecha_asignacion != null) {
                                     fecha = data.fecha_asignacion;
                                 } else {
                                     fecha = 'S/R';
