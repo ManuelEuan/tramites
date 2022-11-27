@@ -504,27 +504,28 @@
                                             //$TXT_STAT=''.$VIG_TXT.'..v: '.$VIGENCIA_FIN.'..va: '.$tramite['DOCS_BASE'][$nmbres][5].'..id: '.$tramite['DOCS_BASE'][$nmbres][6];
                                             
                                             ?>
+
                                             <td>
                                             @foreach($tramite['repositorio'] as $rep)
                                                 @if($rep->USDO_CDOCNOMBRE == $nmbres)
                                                     <div class="custom-control custom-checkbox">
-                                                        
                                                         <div class="row">
                                                             <div class="md-6">   
-                                                            <input class="form-check-input chckdfiles" type="checkbox" 
-                                                        onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}',
-                                                        '{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}',
-                                                        'file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" 
-                                                        value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                        title="Elegir archivo existente" checked>                                                     <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" 
-                                                            target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  >
-                                                            <i title='Descargar documento' class='fas fa-download'></i>
-                                                        </a></div>
-                                                            <div class="md-6 ml-2" ><a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank"><i class="fa fa-eye p-0 m-0" ></i></a></div>
+                                                                <input class="form-check-input chckdfiles" type="checkbox" 
+                                                                    onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}','{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}','file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" 
+                                                                    value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
+                                                                    title="Elegir archivo existente" checked>                                                     
+                                                                    <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  >
+                                                                        <i title='Descargar documento' class='fas fa-download'></i>
+                                                                    </a>
+                                                            </div>
+                                                            <div class="md-6 ml-2" >
+                                                                <a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank">
+                                                                    <i class="fa fa-eye p-0 m-0" ></i>
+                                                                </a>
+                                                            </div>
                                                         </div>
-
                                                     </div>
-                                                    
                                                     @break;
                                                 @endif
                                             @endforeach
@@ -554,9 +555,9 @@
                                             <?php echo $otrotest;?>
                                             {{$doc->TRAD_CNOMBRE}}
 
-                                                @if($doc->TRAD_NOBLIGATORIO == 1 )
-                                                    <span class="text-danger">*</span>
-                                                @endif
+                                            @if($doc->TRAD_NOBLIGATORIO == 1 )
+                                                <span class="text-danger">*</span>
+                                            @endif
                                             <br>
                                             <p style="font-size: 12px;color: red;"><b>5Mb máximo</b></p>
                                             </td>
@@ -591,11 +592,12 @@
                                             </td>
                                             <td style="width: 70px;">
                                                 <input type="hidden" name="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="0_0_0_{{$doc->TRAD_CNOMBRE}}">
+                                                    id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="0_0_0_{{$doc->TRAD_CNOMBRE}}">
 
+                                                <input type="hidden" value="{{$doc->TRAD_NOBLIGATORIO}}" id="valida_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
                                                 <input class="file-select documentos" name="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file"  accept="application/pdf"
-                                                data-doctype="{{$doc->TRAD_CNOMBRE}}" {{$doc->TRAD_NOBLIGATORIO == 1 ? 'required' : '' }}>
+                                                    id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file"  accept="application/pdf"
+                                                    data-doctype="{{$doc->TRAD_CNOMBRE}}" {{$doc->TRAD_NOBLIGATORIO == 1 ? 'required' : '' }}>
                                             </td>
                                             <td>
                                             @if($doc->TRAD_NMULTIPLE == 1)
@@ -1041,9 +1043,13 @@
             $("#docs_" + id).val("0_0_0_"+nombre);
             $('#chck_'+id).attr("title", "Elegir archivo existente.")
             $('#'+id).show();
-            $('#'+id).attr("required", "required");
+            /* $('#'+id).attr("required", "required"); */
             $("#link_"+id).hide();
             setDocData(nombre, "", "", id);
+
+            if($("#valida_"+id).val() == 1){
+                $('#'+id).attr("required", "required");
+            }
         }
     }
 
