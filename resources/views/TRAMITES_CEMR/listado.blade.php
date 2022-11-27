@@ -735,6 +735,29 @@
                             extend: 'csvHtml5',
                             exportOptions: {
                                 columns: [0, 1, 2, 3, 4, 5]
+                            },
+                            //className: 'btn btn-xs btn-primary p-5 m-0 width-35 assets-export-btn export-csv',
+                            charset: 'UTF-8',
+                            bom: true,
+                            customize: function (csv) {
+                                //Split the csv to get the rows
+                                var split_csv = csv.split("\n");
+        
+                                //Remove the row one to personnalize the headers
+                                //split_csv[0] = '"field0","field1","field2","field3","field4","field5"';
+        
+                                //For each row except the first one (header)
+                                $.each(split_csv.slice(1), function (index, csv_row) {
+                                    //Split on quotes and comma to get each cell
+                                    var csv_cell_array = [];
+                                    csv_cell_array = csv_row.split('","');
+                                    csv_cell_array[1] = csv_cell_array[1].concat("");
+                                    split_csv[index+1] = csv_cell_array.join('","');                             
+                                });
+        
+                                //Join the rows with line breck and return the final csv (datatables will take the returned csv and process it)
+                                csv = split_csv.join("\n");
+                                return csv;
                             }
                         },
                         {
