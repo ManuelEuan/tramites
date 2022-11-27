@@ -336,6 +336,7 @@ class TramiteServicioController extends Controller
                 $tramite['repositorio'][] = $repodoc;
             };
         }
+        /* dd($tramite['configuracion']['documentos']); */
         //$tramite['descripcionesDoc'] = $arrayDocumentos;
         ///////////////////////////////////////////////////////////////////
 
