@@ -2337,10 +2337,14 @@
         }
 
         function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre) {
+            $("#file_"+id).show();
             $("#docs_file_" + id).val("0_0_0_" + nombre);
             $("#size_file_" + id).html("0 Bytes");
             $("#icon_file_" + id).html(
             "<img src='{{ asset('assets/template/img/doc.png') }}'' width='20' height='20'>");
+            $("#chck_file_" + id).prop("checked", false);
+            $('#file_'+id).attr("required", "required");
+            $("#btnEnviar").hide();
         }
 
         //____________________________________
