@@ -404,15 +404,17 @@ class TramiteService
             if($rol->ROL_CCLAVE == 'ANTA'){
                 $query = DB::table('tram_vw_tramite_seguimiento as v')
                     ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
-                    ->join('tram_mdv_usuariotramite_analista as a','v.USTR_NIDUSUARIOTRAMITE','=','a.USTR_NIDUSUARIOTRAMITE')
+                    ->leftJoin('tram_mdv_usuariotramite_analista as ua','v.USTR_NIDUSUARIOTRAMITE','=','ua.USTR_NIDUSUARIOTRAMITE')
+                    ->leftJoin('tram_mst_usuario as anaNom', 'anaNom.USUA_NIDUSUARIO' ,'=', 'ua.USUA_NIDUSUARIO')
                     ->where('v.USTR_NESTATUS','!=',1)
-                    ->select('v.*', 'a.USUA_FECHA as fecha_asignacion');
+                    ->select('v.*', 'ua.USUA_FECHA as fecha_asignacion', DB::raw("concat(anaNom.USUA_CNOMBRES, ' ', anaNom.USUA_CPRIMER_APELLIDO, ' ', anaNom.USUA_CSEGUNDO_APELLIDO) as analista"));
             }else{
                 $query = DB::table('tram_vw_tramite_seguimiento as v')
                     ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
-                    ->join('tram_mdv_usuariotramite_analista as a','v.USTR_NIDUSUARIOTRAMITE','=','a.USTR_NIDUSUARIOTRAMITE')
+                    ->leftJoin('tram_mdv_usuariotramite_analista as ua','v.USTR_NIDUSUARIOTRAMITE','=','ua.USTR_NIDUSUARIOTRAMITE')
+                    ->leftJoin('tram_mst_usuario as anaNom', 'anaNom.USUA_NIDUSUARIO' ,'=', 'ua.USUA_NIDUSUARIO')
                     ->where('v.USTR_NESTATUS','!=',1)
-                    ->select('v.*', 'a.USUA_FECHA as fecha_asignacion');
+                    ->select('v.*', 'ua.USUA_FECHA as fecha_asignacion', DB::raw("concat(anaNom.USUA_CNOMBRES, ' ', anaNom.USUA_CPRIMER_APELLIDO, ' ', anaNom.USUA_CSEGUNDO_APELLIDO) as analista"));
             }
             
         }
@@ -462,7 +464,9 @@ class TramiteService
 
         foreach($resultado as $item){
             $creacion   = new DateTime($item->USTR_DFECHACREACION);
-            $item->USTR_DFECHACREACION_FORMAT = $creacion->format('d-m-Y H:i:s');
+            $fecha_asig = new DateTime($item->fecha_asignacion);
+            $item->USTR_DFECHACREACION_FORMAT   = $creacion->format('d-m-Y H:i:s');
+            $item->fecha_asignacion             = $fecha_asig->format('d-m-Y H:i:s');
         }
 
         return [ "result" => $resultado, "total" =>  $total];

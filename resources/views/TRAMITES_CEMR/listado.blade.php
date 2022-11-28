@@ -112,31 +112,25 @@
                         <div class="row">
                             <div class="col-12">
                                 <table id="example" class="table table-bordered" style="width: 100%">
+                                   @php
+                                        $usuario    = Auth::user();
+                                        $rol        = $usuario->TRAM_CAT_ROL;
+                                   @endphp
                                     <thead class="bg-gob">
                                         <tr>
                                             <th></th>
                                             <th>Fecha</th>
-                                            <?php 
-                                                $usuario    = Auth::user();
-                                                $rol        = $usuario->TRAM_CAT_ROL;
-                                                if($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR'){
-                                                    echo('<th>Fecha Asignación</th>');
-                                                }
-                                                else{}
-                                            ?>
+                                            @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
+                                                <td>Fecha Asignación</td>
+                                            @endif
                                             <th>Folio</th>
                                             <th>Nombre</th>
                                             <th>RFC</th>
                                             <th>Trámite</th>
                                             <th>Estatus</th>
-                                            <?php 
-                                                $usuario    = Auth::user();
-                                                $rol        = $usuario->TRAM_CAT_ROL;
-                                                if($rol->ROL_CCLAVE == 'VLDR'){
-                                                    echo('<th>Asignado a</th>');
-                                                }
-                                                else{}
-                                            ?>
+                                            @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
+                                                <td>Asignado</td>
+                                            @endif
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -189,8 +183,8 @@
     var registros_paginas = 10;
     var isVencido   = false;
     var analistas   = [];
-    var rol   =<?php echo("'".$rol->ROL_CCLAVE."';") ?>
-    var id_user   =<?php echo($usuario->USUA_NIDUSUARIO.";") ?>
+    var rol         =<?php echo("'".$rol->ROL_CCLAVE."';") ?>
+    var id_user     =<?php echo($usuario->USUA_NIDUSUARIO.";") ?>
 
     var estatus_seguimiento_antiguo = [{
             id: 1,
@@ -296,518 +290,489 @@
             noneResultsText: 'Trámite no encontrados',
         });
 
-        function TRAM_AJX_CONSULTARSEGUIMIENTO() {
-
-            var filtro = {
-                dteFechaInicio: null,
-                txtNombre: null,
-                cmbDependenciaEntidad: null,
-                cmbEstatus: null,
-            };
-
-            if(rol == 'ANTA' || rol == 'VLDR'){
-                table = $('#example').DataTable({
-                "language": {
-                    url: "/assets/template/plugins/DataTables/language/Spanish.json",
-                    "search": "Filtrar resultados:",
-                },
-                "ajax": {
-                    // "data": filtro,
-                    "url": "/tramite_servicio_cemr/find",
-                    "type": "POST",
-                    "data": function(d) {
-                        
-                        isVencido = false
-                        return $.extend({}, d, {
-                            "fecha": $('#txtFecha').val(),
-                            "folio": $('#txtFolio').val(),
-                            "tramite": $('#txtTramite').val(),
-                            "razonSocial": $('#txtRazon').val(),
-                            "nombre": $('#txtNombre').val(),
-                            "rfc": $('#txtRFC').val(),
-                            "curp": $('#txtCURP').val(),
-                            "estatus": $('#txtEstatus').val(),
-                        });
-                    }
-                },
-                "columns": [
-                        {
-                            data: null,
-                            render: function(data, type, row) {
-                                var dateFromTramite = new Date(data.USTR_DFECHACREACION);
-                                dateFromTramite.setDate(parseInt(dateFromTramite.getDate()) + parseInt(data.USTR_NDIASHABILESRESOLUCION));
-
-                                var dateMiddle = new Date(data.USTR_DFECHACREACION);
-                                dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 2));
-
-                                var dateTwoDays = new Date(data.USTR_DFECHACREACION);
-                                dateTwoDays.setDate(parseInt(dateTwoDays.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) - 2));
-                                //Fecha de notificacion
-                                var currentDate = new Date();
-
-                                var level = 0;
-                                if(data.USTR_NESTATUS != 4){
-                                    if(data.USTR_NESTATUS != 10 && data.USTR_NESTATUS != 11){
-                                        if(currentDate > dateFromTramite){
-                                            isVencido = true
-                                            level = 4;
-                                        }else if(currentDate >= dateTwoDays){
-                                            level = 3;
-                                        }else if (dateMiddle >= currentDate) {
-                                            level = 1;
-                                        } else if (dateFromTramite >= currentDate) {
-                                            level = 2;
-                                        } else {
-                                            level = 3;
-                                        }
-                                    }else if(data.USTR_NESTATUS == 1){
-                                        level = 1;
-                                    }else{
-                                        level =3;
-                                    }
-                                }else{
-                                    if(data.USTR_DFECHAESTATUS != null){
-                                        var dateNoti = new Date(data.USTR_DFECHAESTATUS);
-                                        dateNoti.setDate(parseInt(dateNoti.getDate()) + parseInt(data.USTR_NDIASHABILESNOTIFICACION));
-
-                                        var dateNotiMedio = new Date(data.USTR_DFECHAESTATUS);
-                                        dateNotiMedio.setDate(parseInt(dateNotiMedio.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESNOTIFICACION) / 2));
-                                        if(dateNotiMedio >= currentDate){
-                                            level = 1;
-                                        }else if(dateNoti >= currentDate){
-                                            level = 2;
-                                        }else{
-                                            level = 3;
-                                        }
-                                    }else{
-                                        if (dateMiddle >= currentDate) {
-                                            level = 1;
-                                        } else if (dateFromTramite >= currentDate) {
-                                            level = 2;
-                                        } else {
-                                            level = 3;
-                                        }
-                                    }
-                                }
-                                
-                                
-                                var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : (level == 3 ? "red" : "black"));
-                            
-                                return '<span class="dot" style="background-color:' + color + '"></span>';
-                            }
-                        },
-                        {
-                            data: 'USTR_DFECHACREACION_FORMAT',
-                        },
-                        {
-                            "data": null,
-                            render: function(data, type, row) {
-                                var fecha = "";
-                                if (data.fecha_asignacion) {
-                                    fecha = data.fecha_asignacion;
-                                } else {
-                                    fecha = 'S/R';
-                                }
-                                return fecha;
-                            }
-                        },
-                        {
-                            "data": "USTR_CFOLIO"
-                        },
-                        {
-                            "data": null,
-                            render: function(data, type, row) {
-                                var nombre = "";
-                                if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
-
-                                
-                                    if(data.USTR_CTIPO_PERSONA == 'FISICA'){
-
-                                        if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
-                                        nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO;
-                                        } else {
-                                            nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
-                                        }
-                                    }else{
-                                    nombre = data.USTR_CRAZON_SOCIAL;
-                                    }
-                                } else {
-                                    if(data.USTR_CTIPO_PERSONA == 'FISICA'){
-
-                                        nombre = data.USTR_CNOMBRE_COMPLETO;
-                                    }else{
-                                        nombre = data.USTR_CRAZON_SOCIAL;
-                                    }
-                                }
-                                return nombre;
-                            }
-                        },
-                        {
-                            "data": "USTR_CRFC"
-                        },
-                        {
-                            "data": "USTR_CNOMBRE_TRAMITE"
-                        },
-                        {
-                            data: 'USTR_NESTATUS',
-                            render: function(data, type, row) {
-                                if(isVencido){
-                                    if (type === 'display') {
-                                        var status = 'Vencido';
-                                        return status;
-                                    }
-                                }else{
-                                    if (type === 'display') {
-                                        var status = estatus_seguimiento.find(x => x.id === parseInt(data));
-                                        return status.nombre;
-                                    }
-                                }
-                                
-                                return data;
-                            }
-                        },
-                        {
-                            /**
-                             * !configurar para mostrar el botón asignar 
-                             */
-                            data: null,
-                            render: function(data, type, row) {
-                                let html =  `<span>
-                                                <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
-                                            </span>
-                                            <span>
-                                                <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
-                                            </span>`;
-
-                                            if(data.rol != 'ANTA'){
-                                                html +=`<span>`;
-                                                    if(data.asignado != 0){
-                                                        
-                                                        html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="${ data.responsable }">
-                                                                <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>`;
-                                                    }
-                                                    else{
-                                                        html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="0">
-                                                                <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa fa-users' style="color: black"></i></button>`;
-                                                    }
-                                                html +=`</span>`;
-                                            }
-
-                                    html +=` <span>
-                                                <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                            </span>`;         
-
-                                    return html;
-                            }
-                        },
-                    ],
-                    searching: false,
-                    ordering: true,
-                    paging: true,
-                    bLengthChange: true,
-                    processing: true,
-                    serverSide: true,
-                    lengthMenu: [
-                        [10, 25, 50, 100, -1],
-                        [10, 25, 50, 100, "Todos"]
-                    ],
-                    dom: 'Blrtip',
-                    buttons: [{
-                            extend: 'excelHtml5',
-                            exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5]
-                            }
-                        },
-                        {
-                            extend: 'csvHtml5',
-                            exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5]
-                            }
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5]
-                            }
-                        }
-                    ]
-                });
-            }
-            else{
-                table = $('#example').DataTable({
-                "language": {
-                    url: "/assets/template/plugins/DataTables/language/Spanish.json",
-                    "search": "Filtrar resultados:",
-                },
-                "ajax": {
-                    // "data": filtro,
-                    "url": "/tramite_servicio_cemr/find",
-                    "type": "POST",
-                    "data": function(d) {
-                        
-                        isVencido = false
-                        return $.extend({}, d, {
-                            "fecha": $('#txtFecha').val(),
-                            "folio": $('#txtFolio').val(),
-                            "tramite": $('#txtTramite').val(),
-                            "razonSocial": $('#txtRazon').val(),
-                            "nombre": $('#txtNombre').val(),
-                            "rfc": $('#txtRFC').val(),
-                            "curp": $('#txtCURP').val(),
-                            "estatus": $('#txtEstatus').val(),
-                        });
-                    }
-                },
-                "columns": [
-                        {
-                            data: null,
-                            render: function(data, type, row) {
-                                var dateFromTramite = new Date(data.USTR_DFECHACREACION);
-                                dateFromTramite.setDate(parseInt(dateFromTramite.getDate()) + parseInt(data.USTR_NDIASHABILESRESOLUCION));
-
-                                var dateMiddle = new Date(data.USTR_DFECHACREACION);
-                                dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 2));
-
-                                var dateTwoDays = new Date(data.USTR_DFECHACREACION);
-                                dateTwoDays.setDate(parseInt(dateTwoDays.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) - 2));
-                                //Fecha de notificacion
-                                var currentDate = new Date();
-
-                                var level = 0;
-                                if(data.USTR_NESTATUS != 4){
-                                    if(data.USTR_NESTATUS != 10 && data.USTR_NESTATUS != 11){
-                                        if(currentDate > dateFromTramite){
-                                            isVencido = true
-                                            level = 4;
-                                        }else if(currentDate >= dateTwoDays){
-                                            level = 3;
-                                        }else if (dateMiddle >= currentDate) {
-                                            level = 1;
-                                        } else if (dateFromTramite >= currentDate) {
-                                            level = 2;
-                                        } else {
-                                            level = 3;
-                                        }
-                                    }else if(data.USTR_NESTATUS == 1){
-                                        level = 1;
-                                    }else{
-                                        level =3;
-                                    }
-                                }else{
-                                    if(data.USTR_DFECHAESTATUS != null){
-                                        var dateNoti = new Date(data.USTR_DFECHAESTATUS);
-                                        dateNoti.setDate(parseInt(dateNoti.getDate()) + parseInt(data.USTR_NDIASHABILESNOTIFICACION));
-
-                                        var dateNotiMedio = new Date(data.USTR_DFECHAESTATUS);
-                                        dateNotiMedio.setDate(parseInt(dateNotiMedio.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESNOTIFICACION) / 2));
-                                        if(dateNotiMedio >= currentDate){
-                                            level = 1;
-                                        }else if(dateNoti >= currentDate){
-                                            level = 2;
-                                        }else{
-                                            level = 3;
-                                        }
-                                    }else{
-                                        if (dateMiddle >= currentDate) {
-                                            level = 1;
-                                        } else if (dateFromTramite >= currentDate) {
-                                            level = 2;
-                                        } else {
-                                            level = 3;
-                                        }
-                                    }
-                                }
-                                
-                                
-                                var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : (level == 3 ? "red" : "black"));
-                            
-                                return '<span class="dot" style="background-color:' + color + '"></span>';
-                            }
-                        },
-                        {
-                            data: 'USTR_DFECHACREACION_FORMAT',
-                        },
-                        {
-                            "data": "USTR_CFOLIO"
-                        },
-                        {
-                            "data": null,
-                            render: function(data, type, row) {
-                                var nombre = "";
-                                if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
-
-                                
-                                    if(data.USTR_CTIPO_PERSONA == 'FISICA'){
-
-                                        if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
-                                        nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO;
-                                        } else {
-                                            nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
-                                        }
-                                    }else{
-                                    nombre = data.USTR_CRAZON_SOCIAL;
-                                    }
-                                } else {
-                                    if(data.USTR_CTIPO_PERSONA == 'FISICA'){
-
-                                        nombre = data.USTR_CNOMBRE_COMPLETO;
-                                    }else{
-                                        nombre = data.USTR_CRAZON_SOCIAL;
-                                    }
-                                }
-                                return nombre;
-                            }
-                        },
-                        {
-                            "data": "USTR_CRFC"
-                        },
-                        {
-                            "data": "USTR_CNOMBRE_TRAMITE"
-                        },
-                        {
-                            data: 'USTR_NESTATUS',
-                            render: function(data, type, row) {
-                                if(isVencido){
-                                    if (type === 'display') {
-                                        var status = 'Vencido';
-                                        return status;
-                                    }
-                                }else{
-                                    if (type === 'display') {
-                                        var status = estatus_seguimiento.find(x => x.id === parseInt(data));
-                                        return status.nombre;
-                                    }
-                                }
-                                
-                                return data;
-                            }
-                        },
-                        {
-                            data: null,
-                            render: function(data, type, row) {
-                                if(data && data.responsable){
-                                    const responsable = analistas.find(x => x.USUA_NIDUSUARIO == data.responsable);
-                                    if(responsable){
-                                        var nombre = "";
-
-                                        if(responsable.USUA_CNOMBRES){
-                                            nombre += responsable.USUA_CNOMBRES
-                                        }
-
-                                        if(responsable.USUA_CPRIMER_APELLIDO){
-                                            nombre += responsable.USUA_CPRIMER_APELLIDO
-                                        }
-
-                                        if(responsable.USUA_CSEGUNDO_APELLIDO){
-                                            nombre += responsable.USUA_CSEGUNDO_APELLIDO
-                                        }
-
-                                        if(nombre){
-                                            return nombre;
-                                        }
-                                    }
-                                }
-
-                                return "SIN ASIGNACÍON";
-                            }
-                        },
-                        {
-                            /**
-                             * !configurar para mostrar el botón asignar 
-                             */
-                            data: null,
-                            render: function(data, type, row) {
-                                let html =  `<span>
-                                                <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
-                                            </span>
-                                            <span>
-                                                <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
-                                            </span>`;
-
-                                            if(data.rol != 'ANTA'){
-                                                html +=`<span>`;
-                                                    if(data.asignado != 0){
-                                                        
-                                                        html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="${ data.responsable }">
-                                                                <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>`;
-                                                    }
-                                                    else{
-                                                        html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="0">
-                                                                <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa fa-users' style="color: black"></i></button>`;
-                                                    }
-                                                html +=`</span>`;
-                                            }
-
-                                    html +=` <span>
-                                                <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
-                                            </span>`;         
-
-                                    return html;
-                            }
-                        },
-                    ],
-                    searching: false,
-                    ordering: true,
-                    paging: true,
-                    bLengthChange: true,
-                    processing: true,
-                    serverSide: true,
-                    lengthMenu: [
-                        [10, 25, 50, 100, -1],
-                        [10, 25, 50, 100, "Todos"]
-                    ],
-                    dom: 'Blrtip',
-                    buttons: [{
-                            extend: 'excelHtml5',
-                            exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6]
-                            }
-                        },
-                        {
-                            extend: 'csvHtml5',
-                            exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6]
-                            },
-                            //className: 'btn btn-xs btn-primary p-5 m-0 width-35 assets-export-btn export-csv',
-                            charset: 'UTF-8',
-                            bom: true,
-                            customize: function (csv) {
-                                //Split the csv to get the rows
-                                var split_csv = csv.split("\n");
-        
-                                //Remove the row one to personnalize the headers
-                                //split_csv[0] = '"field0","field1","field2","field3","field4","field5"';
-        
-                                //For each row except the first one (header)
-                                $.each(split_csv.slice(1), function (index, csv_row) {
-                                    //Split on quotes and comma to get each cell
-                                    var csv_cell_array = [];
-                                    csv_cell_array = csv_row.split('","');
-                                    csv_cell_array[1] = csv_cell_array[1].concat("");
-                                    split_csv[index+1] = csv_cell_array.join('","');                             
-                                });
-        
-                                //Join the rows with line breck and return the final csv (datatables will take the returned csv and process it)
-                                csv = split_csv.join("\n");
-                                return csv;
-                            }
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, 6]
-                            }
-                        }
-                    ]
-                });
-            }
-            
-        }
-
         TRAM_AJX_CONSULTARSEGUIMIENTO();
-
         listaAnalistas();
     });
+
+    function TRAM_AJX_CONSULTARSEGUIMIENTO() {
+        var filtro = {
+            dteFechaInicio: null,
+            txtNombre: null,
+            cmbDependenciaEntidad: null,
+            cmbEstatus: null,
+        };
+
+        if(rol == 'ANTA' || rol == 'VLDR'){
+            table = $('#example').DataTable({
+            "language": {
+                url: "/assets/template/plugins/DataTables/language/Spanish.json",
+                "search": "Filtrar resultados:",
+            },
+            "ajax": {
+                // "data": filtro,
+                "url": "/tramite_servicio_cemr/find",
+                "type": "POST",
+                "data": function(d) {
+                    
+                    isVencido = false
+                    return $.extend({}, d, {
+                        "fecha": $('#txtFecha').val(),
+                        "folio": $('#txtFolio').val(),
+                        "tramite": $('#txtTramite').val(),
+                        "razonSocial": $('#txtRazon').val(),
+                        "nombre": $('#txtNombre').val(),
+                        "rfc": $('#txtRFC').val(),
+                        "curp": $('#txtCURP').val(),
+                        "estatus": $('#txtEstatus').val(),
+                    });
+                }
+            },
+            "columns": [
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            var dateFromTramite = new Date(data.USTR_DFECHACREACION);
+                            dateFromTramite.setDate(parseInt(dateFromTramite.getDate()) + parseInt(data.USTR_NDIASHABILESRESOLUCION));
+
+                            var dateMiddle = new Date(data.USTR_DFECHACREACION);
+                            dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 2));
+
+                            var dateTwoDays = new Date(data.USTR_DFECHACREACION);
+                            dateTwoDays.setDate(parseInt(dateTwoDays.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) - 2));
+                            //Fecha de notificacion
+                            var currentDate = new Date();
+
+                            var level = 0;
+                            if(data.USTR_NESTATUS != 4){
+                                if(data.USTR_NESTATUS != 10 && data.USTR_NESTATUS != 11){
+                                    if(currentDate > dateFromTramite){
+                                        isVencido = true
+                                        level = 4;
+                                    }else if(currentDate >= dateTwoDays){
+                                        level = 3;
+                                    }else if (dateMiddle >= currentDate) {
+                                        level = 1;
+                                    } else if (dateFromTramite >= currentDate) {
+                                        level = 2;
+                                    } else {
+                                        level = 3;
+                                    }
+                                }else if(data.USTR_NESTATUS == 1){
+                                    level = 1;
+                                }else{
+                                    level =3;
+                                }
+                            }else{
+                                if(data.USTR_DFECHAESTATUS != null){
+                                    var dateNoti = new Date(data.USTR_DFECHAESTATUS);
+                                    dateNoti.setDate(parseInt(dateNoti.getDate()) + parseInt(data.USTR_NDIASHABILESNOTIFICACION));
+
+                                    var dateNotiMedio = new Date(data.USTR_DFECHAESTATUS);
+                                    dateNotiMedio.setDate(parseInt(dateNotiMedio.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESNOTIFICACION) / 2));
+                                    if(dateNotiMedio >= currentDate){
+                                        level = 1;
+                                    }else if(dateNoti >= currentDate){
+                                        level = 2;
+                                    }else{
+                                        level = 3;
+                                    }
+                                }else{
+                                    if (dateMiddle >= currentDate) {
+                                        level = 1;
+                                    } else if (dateFromTramite >= currentDate) {
+                                        level = 2;
+                                    } else {
+                                        level = 3;
+                                    }
+                                }
+                            }
+                            
+                            
+                            var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : (level == 3 ? "red" : "black"));
+                        
+                            return '<span class="dot" style="background-color:' + color + '"></span>';
+                        }
+                    },
+                    {
+                        data: 'USTR_DFECHACREACION_FORMAT',
+                    },
+                    {
+                        "data": null,
+                        render: function(data, type, row) {
+                            var fecha = "";
+                            if (data.fecha_asignacion) {
+                                fecha = data.fecha_asignacion;
+                            } else {
+                                fecha = 'S/R';
+                            }
+                            return fecha;
+                        }
+                    },
+                    {
+                        "data": "USTR_CFOLIO"
+                    },
+                    {
+                        "data": null,
+                        render: function(data, type, row) {
+                            var nombre = "";
+                            if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
+
+                            
+                                if(data.USTR_CTIPO_PERSONA == 'FISICA'){
+
+                                    if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
+                                    nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO;
+                                    } else {
+                                        nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
+                                    }
+                                }else{
+                                nombre = data.USTR_CRAZON_SOCIAL;
+                                }
+                            } else {
+                                if(data.USTR_CTIPO_PERSONA == 'FISICA'){
+
+                                    nombre = data.USTR_CNOMBRE_COMPLETO;
+                                }else{
+                                    nombre = data.USTR_CRAZON_SOCIAL;
+                                }
+                            }
+                            return nombre;
+                        }
+                    },
+                    {
+                        "data": "USTR_CRFC"
+                    },
+                    {
+                        "data": "USTR_CNOMBRE_TRAMITE"
+                    },
+                    {
+                        data: 'USTR_NESTATUS',
+                        render: function(data, type, row) {
+                            if(isVencido){
+                                if (type === 'display') {
+                                    var status = 'Vencido';
+                                    return status;
+                                }
+                            }else{
+                                if (type === 'display') {
+                                    var status = estatus_seguimiento.find(x => x.id === parseInt(data));
+                                    return status.nombre;
+                                }
+                            }
+                            
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'analista'
+                    },
+                    {
+                        /**
+                         * !configurar para mostrar el botón asignar 
+                         */
+                        data: null,
+                        render: function(data, type, row) {
+                            let html =  `<span>
+                                            <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                        </span>
+                                        <span>
+                                            <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                        </span>`;
+
+                                        if(data.rol != 'ANTA'){
+                                            html +=`<span>`;
+                                                if(data.asignado != 0){
+                                                    
+                                                    html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="${ data.responsable }">
+                                                            <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>`;
+                                                }
+                                                else{
+                                                    html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="0">
+                                                            <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa fa-users' style="color: black"></i></button>`;
+                                                }
+                                            html +=`</span>`;
+                                        }
+
+                                html +=` <span>
+                                            <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                        </span>`;         
+
+                                return html;
+                        }
+                    },
+                ],
+                searching: false,
+                ordering: true,
+                paging: true,
+                bLengthChange: true,
+                processing: true,
+                serverSide: true,
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, "Todos"]
+                ],
+                dom: 'Blrtip',
+                buttons: [{
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    }
+                ]
+            });
+        }
+        else{
+            table = $('#example').DataTable({
+            "language": {
+                url: "/assets/template/plugins/DataTables/language/Spanish.json",
+                "search": "Filtrar resultados:",
+            },
+            "ajax": {
+                // "data": filtro,
+                "url": "/tramite_servicio_cemr/find",
+                "type": "POST",
+                "data": function(d) {
+                    
+                    isVencido = false
+                    return $.extend({}, d, {
+                        "fecha": $('#txtFecha').val(),
+                        "folio": $('#txtFolio').val(),
+                        "tramite": $('#txtTramite').val(),
+                        "razonSocial": $('#txtRazon').val(),
+                        "nombre": $('#txtNombre').val(),
+                        "rfc": $('#txtRFC').val(),
+                        "curp": $('#txtCURP').val(),
+                        "estatus": $('#txtEstatus').val(),
+                    });
+                }
+            },
+            "columns": [
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            var dateFromTramite = new Date(data.USTR_DFECHACREACION);
+                            dateFromTramite.setDate(parseInt(dateFromTramite.getDate()) + parseInt(data.USTR_NDIASHABILESRESOLUCION));
+
+                            var dateMiddle = new Date(data.USTR_DFECHACREACION);
+                            dateMiddle.setDate(parseInt(dateMiddle.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) / 2));
+
+                            var dateTwoDays = new Date(data.USTR_DFECHACREACION);
+                            dateTwoDays.setDate(parseInt(dateTwoDays.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESRESOLUCION) - 2));
+                            //Fecha de notificacion
+                            var currentDate = new Date();
+
+                            var level = 0;
+                            if(data.USTR_NESTATUS != 4){
+                                if(data.USTR_NESTATUS != 10 && data.USTR_NESTATUS != 11){
+                                    if(currentDate > dateFromTramite){
+                                        isVencido = true
+                                        level = 4;
+                                    }else if(currentDate >= dateTwoDays){
+                                        level = 3;
+                                    }else if (dateMiddle >= currentDate) {
+                                        level = 1;
+                                    } else if (dateFromTramite >= currentDate) {
+                                        level = 2;
+                                    } else {
+                                        level = 3;
+                                    }
+                                }else if(data.USTR_NESTATUS == 1){
+                                    level = 1;
+                                }else{
+                                    level =3;
+                                }
+                            }else{
+                                if(data.USTR_DFECHAESTATUS != null){
+                                    var dateNoti = new Date(data.USTR_DFECHAESTATUS);
+                                    dateNoti.setDate(parseInt(dateNoti.getDate()) + parseInt(data.USTR_NDIASHABILESNOTIFICACION));
+
+                                    var dateNotiMedio = new Date(data.USTR_DFECHAESTATUS);
+                                    dateNotiMedio.setDate(parseInt(dateNotiMedio.getDate()) + parseFloat(parseInt(data.USTR_NDIASHABILESNOTIFICACION) / 2));
+                                    if(dateNotiMedio >= currentDate){
+                                        level = 1;
+                                    }else if(dateNoti >= currentDate){
+                                        level = 2;
+                                    }else{
+                                        level = 3;
+                                    }
+                                }else{
+                                    if (dateMiddle >= currentDate) {
+                                        level = 1;
+                                    } else if (dateFromTramite >= currentDate) {
+                                        level = 2;
+                                    } else {
+                                        level = 3;
+                                    }
+                                }
+                            }
+                            
+                            
+                            var color = level == 1 || data.USTR_NESTATUS == 8 || data.USTR_NESTATUS == 9 ? "green" : (level == 2 ? "yellow" : (level == 3 ? "red" : "black"));
+                        
+                            return '<span class="dot" style="background-color:' + color + '"></span>';
+                        }
+                    },
+                    {
+                        data: 'USTR_DFECHACREACION_FORMAT',
+                    },
+                    {
+                        "data": "USTR_CFOLIO"
+                    },
+                    {
+                        "data": null,
+                        render: function(data, type, row) {
+                            var nombre = "";
+                            if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
+
+                            
+                                if(data.USTR_CTIPO_PERSONA == 'FISICA'){
+
+                                    if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
+                                    nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO;
+                                    } else {
+                                        nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
+                                    }
+                                }else{
+                                nombre = data.USTR_CRAZON_SOCIAL;
+                                }
+                            } else {
+                                if(data.USTR_CTIPO_PERSONA == 'FISICA'){
+
+                                    nombre = data.USTR_CNOMBRE_COMPLETO;
+                                }else{
+                                    nombre = data.USTR_CRAZON_SOCIAL;
+                                }
+                            }
+                            return nombre;
+                        }
+                    },
+                    {
+                        "data": "USTR_CRFC"
+                    },
+                    {
+                        "data": "USTR_CNOMBRE_TRAMITE"
+                    },
+                    {
+                        data: 'USTR_NESTATUS',
+                        render: function(data, type, row) {
+                            if(isVencido){
+                                if (type === 'display') {
+                                    var status = 'Vencido';
+                                    return status;
+                                }
+                            }else{
+                                if (type === 'display') {
+                                    var status = estatus_seguimiento.find(x => x.id === parseInt(data));
+                                    return status.nombre;
+                                }
+                            }
+                            
+                            return data;
+                        }
+                    },
+                    {
+                        /**
+                         * !configurar para mostrar el botón asignar 
+                         */
+                        data: null,
+                        render: function(data, type, row) {
+                            let html =  `<span>
+                                            <button type="button" onclick="verDetalle(${ data.USTR_NIDUSUARIOTRAMITE })" title="Ver detalles" class="btn btn-link"><i class="fas fa-eye" style="color: black"></i></button>
+                                        </span>
+                                        <span>
+                                            <button type="button" onclick="Editar(${ data.USTR_NIDUSUARIOTRAMITE })" title="Editar seguimiento"  class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
+                                        </span>`;
+
+                                        if(data.rol != 'ANTA'){
+                                            html +=`<span>`;
+                                                if(data.asignado != 0){
+                                                    
+                                                    html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="${ data.responsable }">
+                                                            <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Reasignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa-solid fa-user-check' style="color: black"></i></button>`;
+                                                }
+                                                else{
+                                                    html +=`<input type="hidden" id="asignado_${ data.USTR_NIDUSUARIOTRAMITE }" value="0">
+                                                            <button type="button" onclick="asignarFuncionarioModal(${ data.USTR_NIDUSUARIOTRAMITE })" title="Asignar funcionario"  class="btn btn-link"><i id="icon-${ data.USTR_NIDUSUARIOTRAMITE }" class='fa fa-users' style="color: black"></i></button>`;
+                                                }
+                                            html +=`</span>`;
+                                        }
+
+                                html +=` <span>
+                                            <button type="button" onclick="descargar(${ data.USTR_NIDUSUARIOTRAMITE }, 'TRAM_${ data.USTR_CFOLIO }' )" title="Descargar" class="btn btn-link"><i class="fas fa-download" style="color: black"></i></button>
+                                        </span>`;         
+
+                                return html;
+                        }
+                    },
+                ],
+                searching: false,
+                ordering: true,
+                paging: true,
+                bLengthChange: true,
+                processing: true,
+                serverSide: true,
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, "Todos"]
+                ],
+                dom: 'Blrtip',
+                buttons: [{
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        }
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        },
+                        //className: 'btn btn-xs btn-primary p-5 m-0 width-35 assets-export-btn export-csv',
+                        charset: 'UTF-8',
+                        bom: true,
+                        customize: function (csv) {
+                            //Split the csv to get the rows
+                            var split_csv = csv.split("\n");
+
+                            //Remove the row one to personnalize the headers
+                            //split_csv[0] = '"field0","field1","field2","field3","field4","field5"';
+
+                            //For each row except the first one (header)
+                            $.each(split_csv.slice(1), function (index, csv_row) {
+                                //Split on quotes and comma to get each cell
+                                var csv_cell_array = [];
+                                csv_cell_array = csv_row.split('","');
+                                csv_cell_array[1] = csv_cell_array[1].concat("");
+                                split_csv[index+1] = csv_cell_array.join('","');                             
+                            });
+
+                            //Join the rows with line breck and return the final csv (datatables will take the returned csv and process it)
+                            csv = split_csv.join("\n");
+                            return csv;
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        }
+                    }
+                ]
+            });
+        }
+    }
 
     function verDetalle(id) {
         var host = window.location.origin;
@@ -937,6 +902,7 @@
 
     function asignarFuncionario() {
         listado = []; 
+        let self = this;
         var htmlid = $("#idTramite").val();
         var envio = {
                 USTR_NIDUSUARIOTRAMITE: $("#idTramite").val(),
@@ -950,22 +916,7 @@
             url: "tramite_servicio_cemr/asignar_tramite", 
             success: function(result){
                 $("#asignarFuncionarioModal").modal('hide');
-
-                if(envio.USUA_NIDUSUARIO == 0){
-                    $("#icon-"+htmlid).removeClass("fa fa-users");
-                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
-                    $("#icon-"+htmlid).addClass("fa fa-users");
-                    $("#icon-"+htmlid).attr("title", "Asignar funcionario");
-                    $("#asignado_"+ htmlid).val(0);
-                }else{
-                    $("#icon-"+htmlid).removeClass("fa fa-users");
-                    $("#icon-"+htmlid).removeClass("fa-solid fa-user-check");
-                    $("#icon-"+htmlid).addClass("fa-solid fa-user-check");
-                    $("#icon-"+htmlid).attr("title", "Reasignar funcionario");
-                    $("#asignado_"+ htmlid).val(envio.USUA_NIDUSUARIO);
-                }
-
-                //fa-solid fa-user-check
+                table.ajax.reload();
                 Swal.fire({
                     icon: result.estatus,
                     title: '',
