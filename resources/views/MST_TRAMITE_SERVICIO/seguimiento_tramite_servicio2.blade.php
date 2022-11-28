@@ -615,152 +615,154 @@
                                                 @endforeach
                                             @endif
                                             <div class="row form p-4" id="form_0" style="display: none;">
-                                                <table class="table" id="documentosP4">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">Seleccionar</th>
-                                                            <th scope="col"></th>
-                                                            <th scope="col">Nombre</th>
-                                                            <th scope="col">Tamaño</th>
-                                                            <th scope="col" class="text-center">Estatus</th>
-                                                            <th scope="col"></th>
-                                                            <th scope="col">Observaciones</th>
-                                                            <th scope="col"></th>
-                                                            <th scope="col"></th>
-                                                            <th scope="col"></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if (count($tramite['configuracion']['documentos']) > 0)
-                                                            @foreach ($tramite['configuracion']['documentos'] as $doc)
-                                                                <tr>
-                                                                    <td>
-                                                                        @switch($doc->TRAD_NESTATUS)
-                                                                            @case(2)
-                                                                                <div class="form-check">
-                                                                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled checked>
-                                                                                </div>
-                                                                            @break
-                                                                            @default
-                                                                                <div class="form-check">
-                                                                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
-                                                                                </div>
-                                                                            @break
-                                                                        @endswitch
-                                                                    
-                                                                        <div class="md-6 ml-2" id="btnVer" style="margin-left:40% !important;">
-                                                                            @if (!is_null($doc->id))
-                                                                                <a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$doc->TRAD_CRUTADOC}}" target="_blank">
-                                                                                    <i class="fa fa-eye p-0 m-0" ></i>
-                                                                                </a>
-                                                                            @endif
-                                                                        </div>
-                                                                    </td>
-
-                                                                    <td>
-                                                                        <div id="icon_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}">
-                                                                            @switch($doc->TRAD_CEXTENSION)
-                                                                                @case('jpg')
-                                                                                    <img src="{{ asset('assets/template/img/jpg.png') }}"
-                                                                                        width="25" height="25">
-                                                                                @break
-                                                                                @case('png')
-                                                                                    <img src="{{ asset('assets/template/img/png.png') }}"
-                                                                                        width="25" height="25">
-                                                                                @break
-                                                                                @case('pdf')
-                                                                                    <img src="{{ asset('assets/template/img/pdf.png') }}"
-                                                                                        width="25" height="25">
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm" id="documentosP4">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Seleccionar</th>
+                                                                <th scope="col"></th>
+                                                                <th scope="col">Nombre</th>
+                                                                <th scope="col">Tamaño</th>
+                                                                <th scope="col" class="text-center">Estatus</th>
+                                                                <th scope="col"></th>
+                                                                <th scope="col">Observaciones</th>
+                                                                <th scope="col"></th>
+                                                                <th scope="col"></th>
+                                                                <th scope="col"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (count($tramite['configuracion']['documentos']) > 0)
+                                                                @foreach ($tramite['configuracion']['documentos'] as $doc)
+                                                                    <tr>
+                                                                        <td>
+                                                                            @switch($doc->TRAD_NESTATUS)
+                                                                                @case(2)
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled checked>
+                                                                                    </div>
                                                                                 @break
                                                                                 @default
-                                                                                    <img src="{{ asset('assets/template/img/doc.png') }}"
-                                                                                        width="25" height="25">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
+                                                                                    </div>
                                                                                 @break
                                                                             @endswitch
                                                                         
-                                                                        </div>
-                                                                    </td>
+                                                                            <div class="md-6 ml-2" id="btnVer" style="margin-left:40% !important;">
+                                                                                @if (!is_null($doc->id))
+                                                                                    <a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$doc->TRAD_CRUTADOC}}" target="_blank">
+                                                                                        <i class="fa fa-eye p-0 m-0" ></i>
+                                                                                    </a>
+                                                                                @endif
+                                                                            </div>
+                                                                        </td>
 
-                                                                    <td>
-                                                                        {{ $doc->TRAD_CNOMBRE }}
+                                                                        <td>
+                                                                            <div id="icon_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}">
+                                                                                @switch($doc->TRAD_CEXTENSION)
+                                                                                    @case('jpg')
+                                                                                        <img src="{{ asset('assets/template/img/jpg.png') }}"
+                                                                                            width="25" height="25">
+                                                                                    @break
+                                                                                    @case('png')
+                                                                                        <img src="{{ asset('assets/template/img/png.png') }}"
+                                                                                            width="25" height="25">
+                                                                                    @break
+                                                                                    @case('pdf')
+                                                                                        <img src="{{ asset('assets/template/img/pdf.png') }}"
+                                                                                            width="25" height="25">
+                                                                                    @break
+                                                                                    @default
+                                                                                        <img src="{{ asset('assets/template/img/doc.png') }}"
+                                                                                            width="25" height="25">
+                                                                                    @break
+                                                                                @endswitch
+                                                                            
+                                                                            </div>
+                                                                        </td>
 
-                                                                        @if ($doc->TRAD_NOBLIGATORIO == 1)
-                                                                            <span class="text-danger">*</span>
-                                                                        @endif
+                                                                        <td>
+                                                                            {{ $doc->TRAD_CNOMBRE }}
 
-                                                                    </td>
-                                                                    <td>
-                                                                        @if (!is_null($doc->id))
-                                                                            <div id="size_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"> </div>
-                                                                        @endif
-                                                                    </td>
-                                                                    
-                                                                    <td class="text-center">
-                                                                        @switch($doc->TRAD_NESTATUS)
-                                                                            @case(0)  Pendiente revisión @break
-                                                                            @case(1)  Con observaciones  @break
-                                                                            @case(2)  Aceptado @break
-                                                                            @default  @break
-                                                                        @endswitch
-                                                                    </td>
-                                                                    <td class="text-center">
-                                                                        @switch($doc->TRAD_NESTATUS)
-                                                                            @case(0)
-                                                                                <img src="{{ asset('assets/template/img/pendiente.png') }}" width="20"
-                                                                                    height="20">
-                                                                            @break
-                                                                            @case(1)
-                                                                                <img src="{{ asset('assets/template/img/warning.png') }}" width="20"
-                                                                                    height="20">
-                                                                            @break
-                                                                            @case(2)
-                                                                                <img src="{{ asset('assets/template/img/check.png') }}" width="20"
-                                                                                    height="20">
-                                                                            @break
-                                                                        @endswitch
-                                                                    </td>
-                                                                    <td>
-                                                                        @if ($doc->TRAD_NESTATUS == 1)
-                                                                            <span class="text-danger">{{ $doc->TRAD_COBSERVACION }}</span>
-                                                                        @endif
-                                                                    </td>
-                                                                    <td style="width: 100px;">
-                                                                        <?php $disbledInputFile = $tramite['disabled'] == 'disabled' ?
-                                                                        'btn-file-disabled btn-file-disabled-action' : ''; ?>
-                                                                        <div id="documentos-add"></div>
-                                                                        <input type="hidden"
-                                                                            name="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}_{{ $doc->id }}"
-                                                                            id="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
-                                                                            value="{{ $doc->TRAD_CRUTADOC }}_{{ $doc->TRAD_CEXTENSION }}_{{ $doc->TRAD_NPESO }}_{{ $doc->TRAD_CNOMBRE }}">
-                                                                        <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' :
-                                                                        ''; ?>
-                                                                        <input
-                                                                            class="file-select documentos {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
-                                                                            name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
-                                                                            id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
-                                                                            data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
-                                                                            {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
-                                                                            {{ $_required_file }}>
-                                                                    </td>
-                                                                    <td>
-                                                                        @if ($doc->TRAD_NMULTIPLE == 1)
+                                                                            @if ($doc->TRAD_NOBLIGATORIO == 1)
+                                                                                <span class="text-danger">*</span>
+                                                                            @endif
+
+                                                                        </td>
+                                                                        <td>
+                                                                            @if (!is_null($doc->id))
+                                                                                <div id="size_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"> </div>
+                                                                            @endif
+                                                                        </td>
+                                                                        
+                                                                        <td class="text-center">
+                                                                            @switch($doc->TRAD_NESTATUS)
+                                                                                @case(0)  Pendiente revisión @break
+                                                                                @case(1)  Con observaciones  @break
+                                                                                @case(2)  Aceptado @break
+                                                                                @default  @break
+                                                                            @endswitch
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            @switch($doc->TRAD_NESTATUS)
+                                                                                @case(0)
+                                                                                    <img src="{{ asset('assets/template/img/pendiente.png') }}" width="20"
+                                                                                        height="20">
+                                                                                @break
+                                                                                @case(1)
+                                                                                    <img src="{{ asset('assets/template/img/warning.png') }}" width="20"
+                                                                                        height="20">
+                                                                                @break
+                                                                                @case(2)
+                                                                                    <img src="{{ asset('assets/template/img/check.png') }}" width="20"
+                                                                                        height="20">
+                                                                                @break
+                                                                            @endswitch
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($doc->TRAD_NESTATUS == 1)
+                                                                                <span class="text-danger" style="font-size:10px;width:500px;">{{ $doc->TRAD_COBSERVACION }}</span>
+                                                                            @endif
+                                                                        </td>
+                                                                        <td style="width: 100px;">
+                                                                            <?php $disbledInputFile = $tramite['disabled'] == 'disabled' ?
+                                                                            'btn-file-disabled btn-file-disabled-action' : ''; ?>
+                                                                            <div id="documentos-add"></div>
+                                                                            <input type="hidden"
+                                                                                name="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}_{{ $doc->id }}"
+                                                                                id="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
+                                                                                value="{{ $doc->TRAD_CRUTADOC }}_{{ $doc->TRAD_CEXTENSION }}_{{ $doc->TRAD_NPESO }}_{{ $doc->TRAD_CNOMBRE }}">
+                                                                            <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' :
+                                                                            ''; ?>
+                                                                            <input
+                                                                                class="file-select documentos {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
+                                                                                name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
+                                                                                id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
+                                                                                data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
+                                                                                {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
+                                                                                {{ $_required_file }}>
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($doc->TRAD_NMULTIPLE == 1)
+                                                                                <h5 class="font-weight-bold"><span
+                                                                                        class="circle-multi {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
+                                                                                        onclick="TRAM_FN_AGREGAR_ROW('{{ $doc->TRAD_CNOMBRE }}')">+</span>
+                                                                                </h5>
+                                                                            @endif
+                                                                        </td>
+                                                                        <td>
                                                                             <h5 class="font-weight-bold"><span
-                                                                                    class="circle-multi {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
-                                                                                    onclick="TRAM_FN_AGREGAR_ROW('{{ $doc->TRAD_CNOMBRE }}')">+</span>
+                                                                                    class="circle-error-multi {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
+                                                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}','{{ $doc->TRAD_CNOMBRE }}')">x</span>
                                                                             </h5>
-                                                                        @endif
-                                                                    </td>
-                                                                    <td>
-                                                                        <h5 class="font-weight-bold"><span
-                                                                                class="circle-error-multi {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
-                                                                                onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}','{{ $doc->TRAD_CNOMBRE }}')">x</span>
-                                                                        </h5>
-                                                                    </td>
-                                                                </tr>
-                                                                @endforeach
-                                                        @endif
-                                                    </tbody>
-                                                </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                            @endif
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </form>
                                         <div>
