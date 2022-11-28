@@ -410,8 +410,9 @@ class TramiteService
             }else{
                 $query = DB::table('tram_vw_tramite_seguimiento as v')
                     ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
+                    ->join('tram_mdv_usuariotramite_analista as a','v.USTR_NIDUSUARIOTRAMITE','=','a.USTR_NIDUSUARIOTRAMITE')
                     ->where('v.USTR_NESTATUS','!=',1)
-                    ->select('v.*');
+                    ->select('v.*', 'a.USUA_FECHA as fecha_asignacion');
             }
             
         }
