@@ -732,7 +732,7 @@
                                                                             name="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}_{{ $doc->id }}"
                                                                             id="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                             value="{{ $doc->TRAD_CRUTADOC }}_{{ $doc->TRAD_CEXTENSION }}_{{ $doc->TRAD_NPESO }}_{{ $doc->TRAD_CNOMBRE }}">
-                                                                        <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' :
+                                                                        <?php $_required_file = $doc->TRAD_CRUTADOC == '' || $doc->TRAD_CRUTADOC == null || $doc->TRAD_CRUTADOC == '0' ? 'required' :
                                                                         ''; ?>
                                                                         <input
                                                                             class="file-select documentos {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
@@ -2337,6 +2337,7 @@
         }
 
         function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre) {
+            console.log("elim");
             $("#file_"+id).show();
             $("#docs_file_" + id).val("0_0_0_" + nombre);
             $("#size_file_" + id).html("0 Bytes");
