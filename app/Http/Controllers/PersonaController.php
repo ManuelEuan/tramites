@@ -177,6 +177,30 @@ class PersonaController extends Controller
         return response()->json($items);
     }
 
+    public function findAnalistaArea($area){
+        $items      = [];
+        $order_by   = 'USUA_CPRIMER_APELLIDO';
+        $array      = [];
+
+        //Comienza el Query
+        $queryunidad = DB::table('TRAM_AUX_UNIDAD_USUARIO_PERTENECE');
+        $queryunidad->where("UNIDUP_NIDUSUARIO", $area);
+        $items = $queryunidad->get();
+        for($i=0; $i<count($items); $i++){
+            $array[] = $items[$i]->UNIDUP_NIDUNIDAD;
+        }
+
+        //Comienza el Query
+        $query = DB::table('tram_mst_usuario')
+        ->join('TRAM_AUX_UNIDAD_USUARIO_PERTENECE as t','t.UNIDUP_NIDUSUARIO','=','tram_mst_usuario.USUA_NIDUSUARIO')
+        ->select('*');
+        $query->where("USUA_NIDROL", 9);
+        $query->whereIn("t.UNIDUP_NIDUNIDAD", $array);
+        $query->orderBy($order_by, 'asc');
+        $items = $query->distinct()->get();
+        return response()->json($items);
+    }
+
     public function status(Request $request){
         $item = Cls_PersonaFisicaMoral::find($request->id);
         
