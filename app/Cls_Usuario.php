@@ -85,23 +85,22 @@ class Cls_Usuario extends Model
 
     static function TRAM_SP_VALIDAR_CORREO_OBTIENE_ID($StrCorreo)
     {
-
-        $ObjUser = DB::selectOne(
-            'call TRAM_SP_VALIDAR_CORREO(?)',
-            array(
-                $StrCorreo
-            )
-        );
-        if ($ObjUser == null) {
-            $Obj = null;
-        } else {
-            $Obj = new Cls_Usuario();
-            $Obj->USUA_NIDUSUARIO = $ObjUser->USUA_NIDUSUARIO;
-            $Obj->USUA_CNOMBRES = $ObjUser->USUA_CNOMBRES;
-            $Obj->USUA_NTIPO_PERSONA = $ObjUser->USUA_NTIPO_PERSONA;
-            $Obj->USUA_CRAZON_SOCIAL = $ObjUser->USUA_CRAZON_SOCIAL;
+        $item = null;
+        $query = DB::select('SELECT tram_sp_validar_correo(?)', array(
+            $StrCorreo
+        ));
+        $user = json_decode($query[0]->tram_sp_validar_correo);
+       
+        
+        if (!is_null($user)) {
+            $item = new Cls_Usuario();
+            $item->USUA_NIDUSUARIO       = $user->usua_nidusuario;
+            $item->USUA_CNOMBRES         = $user->usua_cnombres;
+            $item->USUA_NTIPO_PERSONA    = $user->usua_ntipo_persona;
+            $item->USUA_CRAZON_SOCIAL    = $user->usua_crazon_social;
         }
-        return $Obj;
+        
+        return $item;
     }
 
     static function TRAM_SP_CONTAR_ACCESO_NO_VALIDO($IntIdUsuario)
