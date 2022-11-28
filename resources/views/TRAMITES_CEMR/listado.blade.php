@@ -129,6 +129,14 @@
                                             <th>RFC</th>
                                             <th>Trámite</th>
                                             <th>Estatus</th>
+                                            <?php 
+                                                $usuario    = Auth::user();
+                                                $rol        = $usuario->TRAM_CAT_ROL;
+                                                if($rol->ROL_CCLAVE == 'VLDR'){
+                                                    echo('<th>Asignado a</th>');
+                                                }
+                                                else{}
+                                            ?>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -394,7 +402,7 @@
                             "data": null,
                             render: function(data, type, row) {
                                 var fecha = "";
-                                if (data.fecha_asignacion != null) {
+                                if (data.fecha_asignacion) {
                                     fecha = data.fecha_asignacion;
                                 } else {
                                     fecha = 'S/R';
@@ -405,9 +413,6 @@
                         {
                             "data": "USTR_CFOLIO"
                         },
-                        /* {
-                            "data": "USTR_CNOMBRE_COMPLETO"
-                        },*/
                         {
                             "data": null,
                             render: function(data, type, row) {
@@ -624,9 +629,6 @@
                         {
                             "data": "USTR_CFOLIO"
                         },
-                        /* {
-                            "data": "USTR_CNOMBRE_COMPLETO"
-                        },*/
                         {
                             "data": null,
                             render: function(data, type, row) {
@@ -680,6 +682,35 @@
                             }
                         },
                         {
+                            data: null,
+                            render: function(data, type, row) {
+                                if(data && data.responsable){
+                                    const responsable = analistas.find(x => x.USUA_NIDUSUARIO == data.responsable);
+                                    if(responsable){
+                                        var nombre = "";
+
+                                        if(responsable.USUA_CNOMBRES){
+                                            nombre += responsable.USUA_CNOMBRES
+                                        }
+
+                                        if(responsable.USUA_CPRIMER_APELLIDO){
+                                            nombre += responsable.USUA_CPRIMER_APELLIDO
+                                        }
+
+                                        if(responsable.USUA_CSEGUNDO_APELLIDO){
+                                            nombre += responsable.USUA_CSEGUNDO_APELLIDO
+                                        }
+
+                                        if(nombre){
+                                            return nombre;
+                                        }
+                                    }
+                                }
+
+                                return "SIN ASIGNACÍON";
+                            }
+                        },
+                        {
                             /**
                              * !configurar para mostrar el botón asignar 
                              */
@@ -728,13 +759,13 @@
                     buttons: [{
                             extend: 'excelHtml5',
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5]
+                                columns: [0, 1, 2, 3, 4, 5, 6]
                             }
                         },
                         {
                             extend: 'csvHtml5',
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5]
+                                columns: [0, 1, 2, 3, 4, 5, 6]
                             },
                             //className: 'btn btn-xs btn-primary p-5 m-0 width-35 assets-export-btn export-csv',
                             charset: 'UTF-8',
@@ -763,7 +794,7 @@
                         {
                             extend: 'pdfHtml5',
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5]
+                                columns: [0, 1, 2, 3, 4, 5, 6]
                             }
                         }
                     ]
