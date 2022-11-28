@@ -180,6 +180,7 @@ Route::group(['prefix' => 'personasfsicasmorales'], function () {
 });
 
 Route::get('/ListaAnalistas', 'PersonaController@findAnalista');
+Route::get('/ListaAnalistasArea/{area}', 'PersonaController@findAnalistaArea');
 
 Route::group(['prefix' => 'notificaciones'], function () {
     Route::post('/', 'NotificacionController@getNotificaciones');
