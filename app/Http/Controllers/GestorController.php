@@ -17,8 +17,6 @@ use  Illuminate\Pagination\Paginator;
 use App\Http\Controllers\FormularioController;
 use  Illuminate\Pagination\LengthAwarePaginator;
 
-use App\Cls_SeccionFormRol;
-
 class GestorController extends Controller
 {
     /**
@@ -267,14 +265,7 @@ class GestorController extends Controller
     //Obtener formularios activos
     public function consultar_formulario()
     {
-        $usuario    = Auth::user();
-
-        $depPertenece   = DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-        $uniPertenece   = DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-        $tramPertenece  = DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-
         $StrNombreFormulario = null;
-        $mostrar=[];
 
         if ($StrNombreFormulario === null) {
             $StrNombreFormulario = "";
@@ -283,53 +274,9 @@ class GestorController extends Controller
         $formularios = new Cls_Gestor();
         $formularios->StrNombreFormulario = $StrNombreFormulario;
         $registros = $formularios->TRAM_SP_CONSULTAR_FORMULARIO();
-
-        if(count($depPertenece)>0){
-            foreach ($registros as $llave => $index) {
-                $relationdependencia = Cls_SeccionFormRol::dependenciaForm($index->FORM_NIDFORMULARIO);
-                foreach ($relationdependencia as $key => $indice) {
-                    foreach ($depPertenece as $us => $indus) {
-                        if($indus->DEPUP_NIDDEPENCIA == $indice->FORM_NIDDEPENDENCIA){
-                            if(count($uniPertenece)>0){
-                                foreach ($uniPertenece as $unit => $unitindex) {
-                                    $uniadmin = Cls_SeccionFormRol::areasXDependencia($indice->FORM_NIDDEPENDENCIA);
-                                    foreach ($uniadmin as $unitrel => $unitrelindex) {
-                                        if($unitindex->UNIDUP_NIDUNIDAD == $unitrelindex->NID_AREA_ADMINISTRATIVA){
-                                            $mostrar[]=$index;
-                                        }
-                                    }
-                                }
-                            }else{
-                                $mostrar[]=$index;
-                            }
-                            
-                        }
-                    }
-                }
-            }
-        }else{
-            $mostrar=$registros;
-        }
-        
-        /*
-        
-            
-            $mostrar[] = $registros[$i].FORM_NIDFORMULARIO;
-            
-            for($j=0; count($depPertenece); $j++){
-                //$userdependencia = $depPertenece[$j].DEPUP_NIDDEPENCIA;
-                for($h=0; count($userdependencia); $h++){
-                    if(depPertenece[$j].DEPUP_NIDDEPENCIA == $userdependencia[$h].FORM_NIDDEPENDENCIA){
-                        $mostrar[] = $registros[$i];
-                    }
-                }
-            }
-        */
        
         $response = [
-            'data' => $mostrar,
-
-            'mostrar' => $registros,
+            'data' => $registros,
         ];
 
         return response()->json($response);

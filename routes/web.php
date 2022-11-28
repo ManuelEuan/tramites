@@ -142,9 +142,6 @@ Route::group(['prefix' => 'tramite_servicio_cemr'], function () {
 Route::group(['prefix' => 'formulario'], function () {
     Route::get('/', 'FormularioController@list');
     Route::get('/secciones', 'FormularioController@secciones');
-    Route::get('/roles', 'FormularioController@roles');
-    Route::get('/areasXDependencia/{id}', 'FormularioController@areasXDependencia');
-    Route::get('/dependencias_formulario/{id}', 'FormularioController@dependencias_formulario');
     Route::get('/find', 'FormularioController@find');
     Route::post('/store', 'FormularioController@store');
     Route::post('/status', 'FormularioController@status');
@@ -152,11 +149,6 @@ Route::group(['prefix' => 'formulario'], function () {
     Route::post('/delete', 'FormularioController@delete');
     Route::get('/detalle', 'FormularioController@detalle');
     Route::post('/preguntas', 'FormularioController@preguntas');
-
-    Route::post('/seccion_roles', 'FormularioController@seccion_roles');
-    Route::post('/seccion_rol_asigna', 'FormularioController@seccion_rol_asigna');
-    Route::post('/dependencia_asigna_area', 'FormularioController@dependencia_asigna_area');
-    Route::post('/seccion_asigna_dependencia', 'FormularioController@seccion_asigna_dependencia');
     
 });
 

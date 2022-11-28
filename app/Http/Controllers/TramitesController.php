@@ -9,7 +9,6 @@ use Exception;
 use ZipArchive;
 use Carbon\Carbon;
 use App\Cls_Usuario;
-use App\Cls_SeccionFormRol;
 use Illuminate\Support\Str;
 use App\Cls_Usuario_Tramite;
 use Illuminate\Http\Request;
