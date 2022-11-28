@@ -802,10 +802,12 @@
                         soloLetras: "La campo solamente puede tener caracteres alfabéticos y espacios."
                     },
                     correoPersonaAutorizada: {
-                        required: ""
+                        required: "",
+                        email: "",
                     },
                     ConfirmCorreoPersonaAutorizada: {
-                        required: ""
+                        required: "",
+                        email: "",
                     },
                     txtConfirmacion: {
                         required: ""
@@ -1058,32 +1060,32 @@
 
         //Correo
         $('#txtCorreo_Electronico').change(function(){
-            // $('.rdbTipo_Persona').empty();
             var value = $( this ).val();
             var tipo = 'FISICA';
-            // var tipoPersona = $('.rdbTipo_Persona').val();
-            // console.log(tipoPersona);
             emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+            
+            $("#resultadoExistCorreo").html('');
+
             if(value != ""){
                 if (emailRegex.test(value)) {
-                    $("#resultadoExistCorreo").html('');
                     TRAM_AJX_VALIDAR_CORREO(value,tipo);
                 } else {
                     $("#resultadoExistCorreo").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
                 }
             }
+
+            validtxtConfirmacionCorreo_ElectronicoFisica();
         });
+
         $('#txtCorreo_ElectronicoMoral').change(function(){
-            // $('.rdbTipo_Persona').empty();
             var value = $( this ).val();
             var tipo = 'MORAL';
-            // var tipoPersona = $('.rdbTipo_Persona').val();
-            // console.log(tipoPersona);
             emailRegex = /^([a-zA-Z0-9_.+-])+\@(\.)+([a-zA-Z0-9]{2,4})+$/i;
-            console.log(emailRegex.test(value));
+
+            $("#resultadoExistCorreoMoral").html('');
+            
             if(value != ""){
                 if (!emailRegex.test(value)) {
-                    $("#resultadoExistCorreoMoral").html('');
                     TRAM_AJX_VALIDAR_CORREO(value,tipo);
                 } else {
                     $("#resultadoExistCorreoMoral").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
@@ -1101,83 +1103,86 @@
                     $("#resultadoAlterno").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
                 }
             }
+            validtxtConfirmacionCorreo_Alternativo();
         });
 
         $('#txtConfirmacionCorreo_Electronico').change(function(){
-            var value = $( this ).val();
-            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-            var correoprincipal = $('#txtConfirmacionCorreo_Electronico').val();
-            console.log(value, correoprincipal);
-            if(value != ""){
-                if (!emailRegex.test(value)) {
-                    $("#correoEsIgual").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
-                }
-               else{
-                $("#correoEsIgual").html("");
-               }
-            }
+            validtxtConfirmacionCorreo_Electronico();
         });
-        $('#txtConfirmacionCorreo_ElectronicoFisica').change(function(){
-            var value = $( this ).val();
-            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-            var correoprincipal = $('#txtCorreo_Electronico').val();
-            if(value != ""){
-                if (emailRegex.test(value)) {
-                    if(value == correoprincipal){
-                    $("#correoEsIgualFisica").html('');
-                    }
-                    else {
-                        $("#correoEsIgualFisica").html("<span style='color: red;'> Los correos no coinciden</span>");
-                    }
-                } else {
-                    $("#correoEsIgualFisica").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
-                }
-               
-            }
-        });
-        $('#txtConfirmacionCorreo_Alternativo').change(function(){
-            var value = $( this ).val();
-            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-            var correoprincipal = $('#txtCorreo_Alternativo').val();
+
+        function validtxtConfirmacionCorreo_Electronico(){
+            const value = $('#txtConfirmacionCorreo_Electronico').val();
+            const correoprincipal = $('#txtCorreo_ElectronicoMoral').val();
+
+            $("#correoEsIgual").html('');
 
             if(value != ""){
-                if (emailRegex.test(value)) {
-                    if(value == correoprincipal){
-                    $("#alternativoEsIgual").html('');
-                    }
-                    else {
-                        $("#alternativoEsIgual").html("<span style='color: red;'> Los correos no coinciden</span>");
-                    }
-                    // $("#alternativoEsIgual").html('');
-                } else {
-                    $("#alternativoEsIgual").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");
+                if(value != correoprincipal){
+                    $("#correoEsIgual").html("<span style='color: red;'> Los correos no coinciden</span>");
+                    return
                 }
             }
+        }
+
+        $('#txtConfirmacionCorreo_ElectronicoFisica').change(function(){
+            validtxtConfirmacionCorreo_ElectronicoFisica();
         });
+
+        function validtxtConfirmacionCorreo_ElectronicoFisica(){
+            const value = $('#txtConfirmacionCorreo_ElectronicoFisica').val();
+            const correoprincipal = $('#txtCorreo_Electronico').val();
+            $("#correoEsIgualFisica").html('');
+            if(value != ""){
+                if(value != correoprincipal){
+                    $("#correoEsIgualFisica").html("<span style='color: red;'> Los correos no coinciden</span>");
+                }
+            }
+        }
+
+        $('#txtConfirmacionCorreo_Alternativo').change(function(){
+            validtxtConfirmacionCorreo_Alternativo();
+        });
+
+        function validtxtConfirmacionCorreo_Alternativo(){
+            const value = $('#txtConfirmacionCorreo_Alternativo').val();
+            const correoprincipal = $('#txtCorreo_Alternativo').val();
+            $("#alternativoEsIgual").html('');
+            if(value != ""){
+                if(value != correoprincipal){
+                    $("#alternativoEsIgual").html("<span style='color: red;'> Los correos no coinciden</span>");
+                }
+            }
+        }
 
         $('#correoPersonaAutorizada').change(function(){
             var value = $( this ).val();
             emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
             var correoprincipal = $('#txtCorreo_Alternativo').val();
+            $("#resultadocorreoPersonaAutorizada").html("");   
 
             if(value != ""){
                 if (!emailRegex.test(value)) {
                     $("#resultadocorreoPersonaAutorizada").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");   
                 }
             }
+
+            validConfirmCorreoPersonaAutorizada();
         });
 
         $('#ConfirmCorreoPersonaAutorizada').change(function(){
-            var value = $( this ).val();
-            emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-            var correoprincipal = $('#txtCorreo_Alternativo').val();
-
-            if(value != ""){
-                if (!emailRegex.test(value)) {
-                    $("#resultadoConfirmCorreoPersonaAutorizada").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");   
-                }
-            }
+            validConfirmCorreoPersonaAutorizada(); 
         });
+
+        function validConfirmCorreoPersonaAutorizada(){
+            const value = $('#ConfirmCorreoPersonaAutorizada').val();
+            const correoprincipal = $('#correoPersonaAutorizada').val();
+            $("#resultadoConfirmCorreoPersonaAutorizada").html("");
+            if(value != ""){
+                if(value != correoprincipal){
+                    $("#resultadoConfirmCorreoPersonaAutorizada").html("<span style='color: red;'> Los correos no coinciden</span>");
+                } 
+            }
+        }
         
 
         $('#txtCorreo_ElectronicoMoral').change(function(){
@@ -1190,6 +1195,8 @@
                     $("#resultadoExistCorreoMoral").html("<span style='color: red;'> El correo que se agregó no es válido, se requiere verificar.</span>");   
                 }
             }
+
+            validtxtConfirmacionCorreo_Electronico();
         });
 
 
@@ -1642,22 +1649,18 @@
                     $("#txtRfc").attr("aria-invalid", "true");
                     $("#txtRfc").addClass("error");
                     if(tipo == 'FISICA'){
-
                         $("#resultadoExistCorreo").html("<span style='color: red;'>"+ data.message +"</span>");
                     }else{
-
                         $("#resultadoExistCorreoMoral").html("<span style='color: red;'>"+ data.message +"</span>");
                     }
                 }else {
-                    $("#txtRfc").attr("aria-invalid", "false");
+                    /*$("#txtRfc").attr("aria-invalid", "false");
                     $("#txtRfc").removeClass("error");
                     if(tipo == 'FISICA'){
-
                         $("#resultadoExistCorreo").html("");
                     }else{
-
                         $("#resultadoExistCorreoMoral").html("");
-                    }
+                    }*/
                 }
             });
         };
