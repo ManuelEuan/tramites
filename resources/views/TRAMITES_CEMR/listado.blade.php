@@ -119,7 +119,7 @@
                                             <?php 
                                                 $usuario    = Auth::user();
                                                 $rol        = $usuario->TRAM_CAT_ROL;
-                                                if($rol->ROL_CCLAVE == 'ANTA'){
+                                                if($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR'){
                                                     echo('<th>Fecha Asignación</th>');
                                                 }
                                                 else{}
@@ -297,7 +297,7 @@
                 cmbEstatus: null,
             };
 
-            if(rol == 'ANTA'){
+            if(rol == 'ANTA' || rol == 'VLDR'){
                 table = $('#example').DataTable({
                 "language": {
                     url: "/assets/template/plugins/DataTables/language/Spanish.json",
