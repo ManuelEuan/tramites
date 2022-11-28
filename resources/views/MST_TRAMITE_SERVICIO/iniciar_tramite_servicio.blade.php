@@ -1561,9 +1561,13 @@
     }
 
     function TRAM_FN_LIMPIARROW_DOCUMENTO(id,nombre){
+        $("#file_"+id).show();
         $("#docs_file_" + id).val("0_0_0_"+nombre);
         $("#size_file_" + id).html("0 Bytes");
         $("#icon_file_" + id).html("<img src='{{ asset('assets/template/img/doc.png') }}'' width='20' height='20'>");
+        $("#chck_file_" + id).prop("checked", false);
+        $('#file_'+id).attr("required", "required");
+        $("#btnEnviar").hide();
     }
 
     function TRAM_FN_VALIDAR(){
@@ -1631,106 +1635,129 @@
     }
 
     function TRAM_AJX_GUARDAR(){
-        $("#loading-text").html("Guardando...");
-        $('#loading_save').show();
-        $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
-        const full  = document.getElementsByClassName('full');
-            const arr   = [...full].map(input => input.value);
+        if($("#cmbModulo").val() == null){
+            Swal.fire({
+                        title: '¡Aviso!',
+                        text: "Favor de seleccionar un módulo.",
+                        icon: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Aceptar'
+                    });
+        }
+        else {
+            $("#loading-text").html("Guardando...");
+            $('#loading_save').show();
+            $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
+            const full  = document.getElementsByClassName('full');
+                const arr   = [...full].map(input => input.value);
 
-            var divVal = "";
-            arr.forEach(function(idDiv) {
-                divVal = $('#form_'+idDiv+' :input').valid()
-                $("#span_"+idDiv).empty();
-                if(!divVal){
-                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
-                }else{
-                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
-                }
+                var divVal = "";
+                arr.forEach(function(idDiv) {
+                    divVal = $('#form_'+idDiv+' :input').valid()
+                    $("#span_"+idDiv).empty();
+                    if(!divVal){
+                        $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                    }else{
+                        $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                    }
 
-            })
-        catalogos.forEach(element => {
-            let respuestas  = element.respuesta;
-            let id          = element.pregunta;
-            let valor       = [];
+                })
+            catalogos.forEach(element => {
+                let respuestas  = element.respuesta;
+                let id          = element.pregunta;
+                let valor       = [];
 
-            respuestas.forEach(item => {
-                let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
-                valor.push(obj);
+                respuestas.forEach(item => {
+                    let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                    valor.push(obj);
+                });
+
+                $("#"+ id + "_input").val(JSON.stringify(valor));
+
             });
 
-            $("#"+ id + "_input").val(JSON.stringify(valor));
-
-        });
-
-        $.ajax({
-            data: $('#frmForm').serialize(),
-            url: "/tramite_servicio/guardar",
-            type: "POST",
-            dataType: 'json',
-            success: function (data) {
-                if(data.status == "success"){
+            $.ajax({
+                data: $('#frmForm').serialize(),
+                url: "/tramite_servicio/guardar",
+                type: "POST",
+                dataType: 'json',
+                success: function (data) {
+                    if(data.status == "success"){
+                        Swal.fire({
+                            title: '¡Éxito!',
+                            text: data.message,
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
+                            }
+                        });
+                    }else {
+                        Swal.fire({
+                            title: '¡Aviso!',
+                            text: data.message,
+                            icon: 'info',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                    $('#loading_save').hide();
+                },
+                error: function (data) {
                     Swal.fire({
-                        title: '¡Éxito!',
+                        icon: data.status,
+                        title: '',
                         text: data.message,
-                        icon: 'success',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Aceptar'
-                        }).then((result) => {
-                        if (result.isConfirmed) {
-                            document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
-                        }
+                        footer: ''
                     });
-                }else {
-                    Swal.fire({
-                        title: '¡Aviso!',
-                        text: data.message,
-                        icon: 'info',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Aceptar'
-                    });
+                    $('#loading_save').hide();
                 }
-                $('#loading_save').hide();
-            },
-            error: function (data) {
-                Swal.fire({
-                    icon: data.status,
-                    title: '',
-                    text: data.message,
-                    footer: ''
-                });
-                $('#loading_save').hide();
-            }
-        });
+            });
+        }
     }
 
     function TRAM_AJX_ENVIAR(){
-        catalogos.forEach(element => {
-            let respuestas  = element.respuesta;
-            let id          = element.pregunta;
-            let valor       = [];
+        if($("#cmbModulo").val() == null){
+            Swal.fire({
+                        title: '¡Aviso!',
+                        text: "Favor de seleccionar un módulo.",
+                        icon: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Aceptar'
+                    });
+        }
+        else {
+            catalogos.forEach(element => {
+                let respuestas  = element.respuesta;
+                let id          = element.pregunta;
+                let valor       = [];
 
-            respuestas.forEach(item => {
-                let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
-               valor.push(obj);
+                respuestas.forEach(item => {
+                    let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                valor.push(obj);
+                });
+
+                $("#"+ id + "_input").val(JSON.stringify(valor));
             });
 
-            $("#"+ id + "_input").val(JSON.stringify(valor));
-        });
-
-        Swal.fire({
-            title: '',
-            text: '¿Está seguro de enviar su trámite?',
-            icon: 'success',
-            showCancelButton: true,
-            cancelButtonText: 'No, cancelar',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Sí enviar',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false,
-        }).then((result) => {
+            Swal.fire({
+                title: '',
+                text: '¿Está seguro de enviar su trámite?',
+                icon: 'success',
+                showCancelButton: true,
+                cancelButtonText: 'No, cancelar',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Sí enviar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+            }).then((result) => {
                 if (result.isConfirmed) {
                     $("#loading-text").html("Enviando...");
                     $('#loading_save').show();
@@ -1793,6 +1820,7 @@
                     });
                 }
             });
+        }
     };
 
     //Convertir byte a (Kb, Mb, Gb, Tb)

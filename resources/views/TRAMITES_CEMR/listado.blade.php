@@ -119,7 +119,7 @@
                                             <?php 
                                                 $usuario    = Auth::user();
                                                 $rol        = $usuario->TRAM_CAT_ROL;
-                                                if($rol->ROL_CCLAVE == 'ANTA'){
+                                                if($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR'){
                                                     echo('<th>Fecha Asignación</th>');
                                                 }
                                                 else{}
@@ -190,6 +190,7 @@
     var isVencido   = false;
     var analistas   = [];
     var rol   =<?php echo("'".$rol->ROL_CCLAVE."';") ?>
+    var id_user   =<?php echo($usuario->USUA_NIDUSUARIO.";") ?>
 
     var estatus_seguimiento_antiguo = [{
             id: 1,
@@ -304,7 +305,7 @@
                 cmbEstatus: null,
             };
 
-            if(rol == 'ANTA'){
+            if(rol == 'ANTA' || rol == 'VLDR'){
                 table = $('#example').DataTable({
                 "language": {
                     url: "/assets/template/plugins/DataTables/language/Spanish.json",
@@ -881,20 +882,37 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $.ajax({
-            type: 'GET',
-            url: "/ListaAnalistas", 
-            success: function(result){
-                analistas = result;
-                html += '<option value="'+0+'" >Sin Asignación</option>';
-                for(i=0; i<result.length; i++){
-                    var nombre = result[i].USUA_CPRIMER_APELLIDO+' '+result[i].USUA_CSEGUNDO_APELLIDO+' '+result[i].USUA_CNOMBRES;
-                    html += '<option value="'+result[i].USUA_NIDUSUARIO+'" >'+nombre+'</option>';
-                }
-                $("#tipoIdres").html(result);
-                $("#analistaSelec").html(html);
-            }}
-        );
+        if(rol=='ADM'){
+            $.ajax({
+                type: 'GET',
+                url: "/ListaAnalistas/", 
+                success: function(result){
+                    analistas = result;
+                    html += '<option value="'+0+'" >Sin Asignación</option>';
+                    for(i=0; i<result.length; i++){
+                        var nombre = result[i].USUA_CPRIMER_APELLIDO+' '+result[i].USUA_CSEGUNDO_APELLIDO+' '+result[i].USUA_CNOMBRES;
+                        html += '<option value="'+result[i].USUA_NIDUSUARIO+'" >'+nombre+'</option>';
+                    }
+                    $("#tipoIdres").html(result);
+                    $("#analistaSelec").html(html);
+                }}
+            );
+        }else{
+            $.ajax({
+                type: 'GET',
+                url: "/ListaAnalistasArea/"+id_user, 
+                success: function(result){
+                    analistas = result;
+                    html += '<option value="'+0+'" >Sin Asignación</option>';
+                    for(i=0; i<result.length; i++){
+                        var nombre = result[i].USUA_CPRIMER_APELLIDO+' '+result[i].USUA_CSEGUNDO_APELLIDO+' '+result[i].USUA_CNOMBRES;
+                        html += '<option value="'+result[i].USUA_NIDUSUARIO+'" >'+nombre+'</option>';
+                    }
+                    $("#tipoIdres").html(result);
+                    $("#analistaSelec").html(html);
+                }}
+            );
+        }
     }
 
     // ! modalito
