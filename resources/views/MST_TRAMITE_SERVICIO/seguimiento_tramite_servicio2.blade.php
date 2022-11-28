@@ -344,15 +344,19 @@
                                                                             <div class="col-md-4">
                                                                                 <div class="form-group {{ $preg->estatus == 1 ? 'error-input' : '' }}">
                                                                                     <label for="resp_{{ $preg->FORM_NID }}">{{ $preg->FORM_CPREGUNTA }}</label>
+                                                                                    @php  
+                                                                                        $validacion = strpos(strtolower($preg->FORM_CPREGUNTA), 'interbancaria') !== false ? 'minlength=18 maxlength=18' : "";
+                                                                                        $tipo       = $validacion ? "number" : "text"; 
+                                                                                    @endphp 
                                                                                     @if ($preg->respuestas > 0)
                                                                                         @foreach ($preg->respuestas as $resp)
-                                                                                            <input type="text" class="form-control"
+                                                                                            <input type="{{$tipo}}" class="form-control"
                                                                                                 name="resp_{{ $preg->FORM_NID }}_0_{{ $resp->id }}"
                                                                                                 id="resp_{{ $preg->FORM_NID }}_0"
                                                                                                 placeholder="{{ $preg->FORM_CPREGUNTA }}"
                                                                                                 value="{{ $resp->FORM_CVALOR_RESPUESTA }}"
-                                                                                                {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
-                                                                                                required>
+                                                                                                {{-- {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} --}}
+                                                                                                required {{$validacion}}>
                                                                                         @endforeach
                                                                                     @endif
                                                                                     @if ($preg->estatus == 1)
@@ -564,9 +568,11 @@
                                                                                         @foreach ($preg->respuestas as $resp)
                                                                                             @foreach ($resp->catalogos as $cat)
                                                                                                 <?php
-                                                                                                    $selected = "";
+                                                                                                    $antSel     = array();
+                                                                                                    $selected   = "";
                                                                                                     if($resp->FORM_CVALOR == 'tram_cat_giros'){
                                                                                                         foreach($resp->respArray  as $respArray){
+                                                                                                            array_push($antSel, $respArray->id);
                                                                                                             if($respArray->id == $cat->id){
                                                                                                                 $selected = "selected";
                                                                                                                 break;
@@ -1615,7 +1621,9 @@
             vertical-align: middle;
             color: #7F7F7F;
         }
-
+        .selectCatalogos, .dropdown-item{
+            white-space: break-spaces;
+        }
     </style>
 @endsection
 
@@ -1624,6 +1632,7 @@
     <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
     <script>
         var catalogos   = <?php echo json_encode($tramite['giros']); ?>;
+        var antSel      = <?php echo json_encode($antSel); ?>; 
         var catGiros    = [];
         var anios       = [];
 
@@ -1649,6 +1658,7 @@
         // }
         var idtramiteAccede = "{{ $tramite['idtramiteaccede'] }}";
         var selectedVentanilla = "{{ $tramite['ubicacion_ventanilla_sin_cita'] }}";
+
         if(selectedVentanilla != 0){
             //loadSelectedEdificio(idtramiteAccede, selectedVentanilla);
             loadModulos(idtramiteAccede, selectedVentanilla);
@@ -2044,6 +2054,8 @@
 
             jQuery.extend(jQuery.validator.messages, {
                 required: "Es requerido",
+                maxlength: "El valor agregado solo puede ser a 18 digitos.",
+                minlength: "El valor agregado solo puede ser a 18 digitos.",
             });
 
             $('.secconceptos').each(function() {
@@ -2566,7 +2578,10 @@
                 showCancelButton: true,
                 cancelButtonText: 'No, cancelar',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Sí enviar'
+                confirmButtonText: 'Sí enviar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
             }).then((result) => {
                 if (result.isConfirmed) {
                     $("#loading-text").html("Enviando...");
@@ -2584,7 +2599,22 @@
                                     icon: 'success',
                                     showCancelButton: false,
                                     confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
+                                    confirmButtonText: 'Aceptar',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    allowEnterKey: false,
+                                    willClose: (el) => {
+                                        Swal.fire({
+                                            title: 'Espere un momento porfavor...',
+                                            text: "",
+                                            showConfirmButton: false,
+                                            showCancelButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                            allowEnterKey: false,
+                                        })
+                                        return false;
+                                    },
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         //location.reload();
@@ -2639,7 +2669,10 @@
                 showCancelButton: true,
                 cancelButtonText: 'No, cancelar',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Sí enviar'
+                confirmButtonText: 'Sí enviar',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
             }).then((result) => {
                 if (result.isConfirmed) {
                     $("#loading-text").html("Enviando...");
@@ -2657,7 +2690,22 @@
                                     icon: 'success',
                                     showCancelButton: false,
                                     confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
+                                    confirmButtonText: 'Aceptar',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    allowEnterKey: false,
+                                    willClose: (el) => {
+                                        Swal.fire({
+                                            title: 'Espere un momento porfavor...',
+                                            text: "",
+                                            showConfirmButton: false,
+                                            showCancelButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                            allowEnterKey: false,
+                                        })
+                                        return false;
+                                    },
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         //location.reload();
@@ -2730,7 +2778,22 @@
                             icon: 'success',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'Aceptar'
+                            confirmButtonText: 'Aceptar',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            willClose: (el) => {
+                                Swal.fire({
+                                    title: 'Espere un momento porfavor...',
+                                    text: "",
+                                    showConfirmButton: false,
+                                    showCancelButton: false,
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    allowEnterKey: false,
+                                })
+                                return false;
+                            },
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $(location).attr('href', '/tramite_servicio/seguimiento_tramite/' + id);
@@ -2773,7 +2836,10 @@
                     showCancelButton: true,
                     cancelButtonText: 'No, cancelar',
                     confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí enviar'
+                    confirmButtonText: 'Sí enviar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $("#loading-text").html("Guardando...");
@@ -2796,7 +2862,22 @@
                                         icon: 'success',
                                         showCancelButton: false,
                                         confirmButtonColor: '#3085d6',
-                                        confirmButtonText: 'Aceptar'
+                                        confirmButtonText: 'Aceptar',
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        allowEnterKey: false,
+                                        willClose: (el) => {
+                                            Swal.fire({
+                                                title: 'Espere un momento porfavor...',
+                                                text: "",
+                                                showConfirmButton: false,
+                                                showCancelButton: false,
+                                                allowOutsideClick: false,
+                                                allowEscapeKey: false,
+                                                allowEnterKey: false,
+                                            })
+                                            return false;
+                                        },
                                     }).then((result) => {
                                         if (result.isConfirmed) {
                                             $(location).attr('href',
@@ -2824,7 +2905,11 @@
                                     icon: 'error',
                                     showCancelButton: false,
                                     confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
+                                    confirmButtonText: 'Aceptar',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    allowEnterKey: false,
+                                    showConfirmButton: false,
                                 });
                                 $(location).attr('href', '/tramite_servicio/seguimiento_tramite/' + id);
                                 $("#btnSaveUbication").prop("disabled", false);
@@ -2919,8 +3004,15 @@
             let valor   = {"id": select, "valor": $("#"+select+"_input").val()} ;
 
             if(items.length > 4){
+                $(".selectCatalogos option[value="+id+"]").attr("selected", false);
+                $('.selectpicker').selectpicker('deselectAll');
+                $('.selectpicker').selectpicker('val', antSel);
+                $('.selectpicker').selectpicker('refresh');
                 mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
                 return;
+            }
+            else{
+                antSel = items;
             }
 
             if(valor != ""){
@@ -2965,6 +3057,15 @@
             }
         });
 
+        function mensajeError(icon = 'error', message = ''){
+            console.log(message);
+            Swal.fire({
+                icon: icon,
+                title: '',
+                text: message,
+                footer: ''
+            });
+        }
     </script>
 
 
@@ -3349,7 +3450,5 @@
 
     </script>
     
-
-
 
 @endsection

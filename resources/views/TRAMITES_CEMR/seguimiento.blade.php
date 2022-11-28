@@ -98,6 +98,10 @@
                 <div class="col-md-10" style="text-align: left;">
                     <h2 class="titulo">{{$tramite->USTR_CNOMBRE_TRAMITE}}</h2><br><br>
                     <h2 class="subtitulo">{{$tramite->USTR_CCENTRO}}</h2>
+                    @if($tramite->USTR_NESTATUS == 9)
+                        <h2 class="titulo">MOTIVO DE RECHAZO</h2><br>
+                        <h2 class="subtitulo">{{$tramite->USTR_CMOTIVORECHAZO}}</h2>
+                    @endif
                 </div>
                 <div class="col-md-2" style="text-align: center;">
                     <p style="margin: 0px; font-size: 1rem; color:#393939;">Estatus de trámite</p>
@@ -139,10 +143,20 @@
 
             <ul id="rowTab" class="nav nav-tabs">
                 @foreach($secciones as $seccion)
+                    @php
+                        $previousIndex = $loop->index - 1;
+                        $PREVIOUS_SSEGTRA_NIDSECCION_SEGUIMIENTO = -1;
+
+                        if($previousIndex>=0){
+                            $previousSeccion = $secciones[$previousIndex];
+                            $PREVIOUS_SSEGTRA_NIDSECCION_SEGUIMIENTO = $previousSeccion->SSEGTRA_NIDSECCION_SEGUIMIENTO;
+                        }
+                    @endphp
+
                     @switch($seccion->SSEGTRA_CNOMBRE_SECCION)
                         @case('Revisión de documentación')
                             <li>
-                                <a class="nav-link" data-toggle="tab" href="#tab_formulario_{{$secciones[0]->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_REVISION_DOCUMENTACION({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}, {{$secciones[$loop->index - 1]->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Revisión de documentación
+                                <a class="nav-link" data-toggle="tab" href="#tab_formulario_{{$secciones[0]->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_REVISION_DOCUMENTACION({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}, {{$PREVIOUS_SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Revisión de documentación
                                     @if($seccion->SSEGTRA_NIDESTATUS == 2)
                                     <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
                                     @endif
@@ -235,13 +249,23 @@
                         <div class="col-md-12">
                             <div class="tab-content">
                                 @foreach($secciones as $seccion)
+                                    @php
+                                        $previousIndex = $loop->index - 1;
+                                        $PREVIOUS_SSEGTRA_NIDESTATUS = 2;
+
+                                        if($previousIndex>=0){
+                                            $previousSeccion = $secciones[$previousIndex];
+                                            $PREVIOUS_SSEGTRA_NIDESTATUS = $previousSeccion->SSEGTRA_NIDESTATUS;
+                                        }
+                                    @endphp
+
                                     @switch($seccion->SSEGTRA_CNOMBRE_SECCION)
                                         @case('Revisión de documentación')
 
                                             @break
                                         @case('Citas en línea')
                                             <div id="tab_cita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                @if(!($PREVIOUS_SSEGTRA_NIDESTATUS == 2))
                                                     <div class="row columna">
                                                         <div class=" col-md-12">
                                                             <div class="alert alert-warning" role="alert" style="font-size: 16px;">
@@ -330,13 +354,13 @@
                                                 </div>
                                                 <br>
                                                 <div class="row columna_2">
-                                                    @if ($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8)
+                                                    @if ($PREVIOUS_SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8)
                                                         <div style="width:100%">
                                                             <div class="row" style="margin-bottom: 80px;">
                                                                 <div class="col-md-12">
                                                                     <h3 class="indicaciones">Notificación al solicitante</h3>
                                                                     <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
-                                                                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
+                                                                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1500 carácteres con HTML.</small>
                                                                     <textarea name="txtAreaCita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}"></textarea>
                                                                 </div>
                                                             </div>
@@ -364,7 +388,7 @@
 
                                         @case('Ventanilla sin cita')
                                             <div id="tab_sincita_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                @if(!($PREVIOUS_SSEGTRA_NIDESTATUS == 2))
                                                     <div class="row columna">
                                                         <div class=" col-md-12">
                                                             <div class="alert alert-warning" role="alert" style="font-size: 16px;">
@@ -436,7 +460,7 @@
                                                 </div>
                                                 <br>
 
-                                                @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8)
+                                                @if($PREVIOUS_SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8)
                                                     <div class="col-md-12 mt-5">
                                                         <div class="text-right botones">
                                                             @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
@@ -455,7 +479,7 @@
 
                                         @case('Pago en línea')
                                             <div id="tab_pago_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                @if(!($PREVIOUS_SSEGTRA_NIDESTATUS == 2))
                                                     <div class="row columna">
                                                         <div class=" col-md-12">
                                                             <div class="alert alert-warning" role="alert" style="font-size: 16px;">
@@ -471,7 +495,7 @@
                                                     </div>
                                                 @endif
 
-                                                @if($conceptos > 0 && $tramite->USTR_NESTATUS < 8) <form id="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" name="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
+                                                @if(count($conceptos) > 0 && $tramite->USTR_NESTATUS < 8) <form id="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" name="frmFormConceptos_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
                                                     <input type="hidden" name="txtIdUsuarioTramite" value="{{$tramite->USTR_NIDUSUARIOTRAMITE}}">
                                                     <input type="hidden" name="txtIdSeccion" value="{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}">
                                                     <table class="table">
@@ -582,7 +606,7 @@
 
                                                 <br>
                                                 <div class="row columna_2">
-                                                    @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_PAGADO == 1)
+                                                    @if($PREVIOUS_SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_PAGADO == 1)
                                                         <div style="width:100%">
                                                             <div class="row">
                                                                 <div class="col-md-12">
@@ -605,7 +629,7 @@
 
                                         @case('Módulo de análisis interno del área')
                                             <div id="tab_analisis_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                @if(!($PREVIOUS_SSEGTRA_NIDESTATUS == 2))
                                                     <div class="row columna">
                                                         <div class=" col-md-12">
                                                             <div class="alert alert-warning" role="alert" style="font-size: 16px;">
@@ -641,7 +665,7 @@
                                                     </div>
                                                 </div>
                                                 <br>
-                                                @if($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8)
+                                                @if($PREVIOUS_SSEGTRA_NIDESTATUS == 2 && $seccion->SSEGTRA_NIDESTATUS != 2 && $tramite->USTR_NESTATUS < 8)
                                                     <div class="col-md-12 mt-5 contenedorBtn">
                                                         <div class="text-right botones">
                                                             @if (Auth::user()->TRAM_CAT_ROL->ROL_NIDROL == 9)
@@ -659,7 +683,7 @@
 
                                         @case('Resolutivo electrónico')
                                             <div id="tab_resolutivo_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" class="tab-pane fade pestana">
-                                                @if(!($secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2))
+                                                @if(!($PREVIOUS_SSEGTRA_NIDESTATUS == 2))
                                                     <div class="row columna">
                                                         <div class=" col-md-12">
                                                             <div class="alert alert-warning" role="alert" style="font-size: 16px;">
@@ -713,7 +737,7 @@
                                                     </div>
                                                 </div>
 
-                                                @if($seccion->SSEGTRA_NIDESTATUS != 2 && $secciones[$loop->index - 1]->SSEGTRA_NIDESTATUS == 2 && $tramite->USTR_NESTATUS < 8) <form enctype="multipart/form-data">
+                                                @if($seccion->SSEGTRA_NIDESTATUS != 2 && $PREVIOUS_SSEGTRA_NIDESTATUS == 2 && $tramite->USTR_NESTATUS < 8) <form enctype="multipart/form-data">
                                                     <div class="row columna">
                                                         <div class="col-md-4">
                                                             <label class="titulo_pequeno">Estatus del resolutivo</label>
@@ -791,7 +815,7 @@
                                                         <div class="col-md-12">
                                                             <h3 class="indicaciones">Notificación al solicitante</h3>
                                                             <label>Favor de indicar los puntos que el solicitante requiere atender para validar este paso de su solicitud</label>
-                                                            <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
+                                                            <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1500 carácteres con HTML.</small>
                                                             <textarea name="txtAreaRevision"></textarea>
                                                         </div>
                                                     </div>
@@ -867,7 +891,7 @@
                 <br>
                 <div class="form-group">
                     <label for="textRechazarTramite" class="col-form-label">Motivos de rechazo</label>
-                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1000 carácteres con HTML.</small>
+                    <small style="font-size: 12px; margin-top:5px; margin-bottom: 2px;" class="form-text text-muted">La notificación esta limitada a 1500 carácteres con HTML.</small>
                     <textarea class="form-control" name="textRechazarTramite" id="textRechazarTramite" cols="30" rows="10"></textarea>
                 </div>
             </div>
@@ -1719,7 +1743,7 @@
                 showCharCount: true,
                 countHTML: true,
                 maxWordCount: -1,
-                maxCharCount: 1000,
+                maxCharCount: 1500,
             }
         });
         // CKEDITOR.replace('txtAreaCita');
@@ -1731,7 +1755,7 @@
                 showCharCount: true,
                 countHTML: true,
                 maxWordCount: -1,
-                maxCharCount: 1000,
+                maxCharCount: 1500,
             }
         });
 
@@ -2678,7 +2702,7 @@
                     showCharCount: true,
                     countHTML: true,
                     maxWordCount: -1,
-                    maxCharCount: 1000,
+                    maxCharCount: 1500,
                 }
             });
 
@@ -3580,7 +3604,8 @@
             "nombre_tramite": "{{$tramite->USTR_CNOMBRE_TRAMITE}}",
             "folio_tramite": "{{$tramite->USTR_CFOLIO}}",
             "CONF_PREGUNTAS": [],
-            "IDCITA": "{{ @$tramite->cita['ID'] }}"
+            "IDCITA": "{{ @$tramite->cita['ID'] }}",
+            "USTR_CMOTIVORECHAZO": ""
         };
 
         var txtMotivoRechazo = CKEDITOR.instances['textRechazarTramite'].getData();
@@ -3597,6 +3622,7 @@
         }
 
         seccion_formulario.CONF_NOTIFICACION = txtMotivoRechazo;
+        seccion_formulario.USTR_CMOTIVORECHAZO = txtMotivoRechazo;
 
         $("#txt_loading").text("Guardando Trámite...");
         $("#loading_").show();

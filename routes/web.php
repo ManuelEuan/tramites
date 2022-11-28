@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+Route::get('/email/verify/{id}/{token}', 'LoginController@verificacion');
+Auth::routes(['verify' => true]);
+
 Route::get('/', 'LoginController@index')->name("login");
 Route::post('/login', 'LoginController@login');
 Route::get('/logout', 'LoginController@logout');
@@ -30,6 +34,7 @@ Route::get('/registrar', function () {
 Route::post('/registrar/agregar', array('uses' => 'RegistroController@agregar'));
 Route::get('/registrar/validar_rfc/{StrRfc}', array('uses' => 'RegistroController@validar_rfc'));
 Route::get('/registrar/validar_correo/{StrCorreo}', array('uses' => 'RegistroController@validar_correo'));
+Route::get('/registrar/validar_curp/{StrCurp}', array('uses' => 'RegistroController@validar_curp'));
 Route::get('/registrar/localidades/{Strlocalidad}', array('uses' => 'RegistroController@localidades'));
 Route::get('/registrar/estados', array('uses' => 'RegistroController@estados'));
 Route::get('/registrar/municipios', array('uses' => 'RegistroController@municipios'));

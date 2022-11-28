@@ -243,6 +243,12 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="resp_{{$preg->FORM_NID}}">{{$preg->FORM_CPREGUNTA}} </label>
+                                                                @php  
+                                                                    $validacion = strpos(strtolower($preg->FORM_CPREGUNTA), 'interbancaria') !== false ? 'minlength=18 maxlength=18' : "";
+                                                                    $tipo       = $validacion ? "number" : "text";
+                                                                    $clase      = $validacion ? "" : "txt_abierta";
+                                                                @endphp 
+
                                                                 @if($preg->respuestas > 0)
                                                                     @foreach($preg->respuestas as $resp)
                                                                     <?php 
@@ -251,10 +257,11 @@
                                                                     }else{
                                                                     $resARR[] = $preg->FORM_NID;
                                                                     ?>
-                                                                        <input type="text" class="form-control txt_abierta" 
+                                                                        <input type="{{$tipo}}" class="form-control {{$clase}}" 
                                                                         name="resp_{{$preg->FORM_NID}}_0" 
                                                                         id="resp_{{$preg->FORM_NID}}_0" 
-                                                                        placeholder="{{$preg->FORM_CPREGUNTA}}" vinculacion="<?php echo(isset($preg->FORM_CVALORASIGNACION)? ($preg->FORM_CVALORASIGNACION):"" )?>" required> 
+                                                                        placeholder="{{$preg->FORM_CPREGUNTA}}" vinculacion="<?php echo(isset($preg->FORM_CVALORASIGNACION)? ($preg->FORM_CVALORASIGNACION):"" )?>"
+                                                                        required {{$validacion}}> 
                                                                     <?php };    ?>
                                                                     @endforeach
                                                                 @endif
@@ -961,6 +968,7 @@
     var catalogos   = [];
     var catGiros    = [];
     var catBancos   = [];
+    var antSel      = [];
 
     //0 no es gestor
     if(es_gestor == 0){
@@ -1414,6 +1422,8 @@
 
         jQuery.extend(jQuery.validator.messages, {
             required: "Es requerido",
+            maxlength: "El valor agregado solo puede ser a 18 digitos.",
+            minlength: "El valor agregado solo puede ser a 18 digitos.",
         });
 
         $(".selectCatalogos").selectpicker({
@@ -1710,8 +1720,11 @@
             showCancelButton: true,
             cancelButtonText: 'No, cancelar',
             confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Sí enviar'
-            }).then((result) => {
+            confirmButtonText: 'Sí enviar',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+        }).then((result) => {
                 if (result.isConfirmed) {
                     $("#loading-text").html("Enviando...");
                     $('#loading_save').show();
@@ -1728,8 +1741,23 @@
                                     icon: 'success',
                                     showCancelButton: false,
                                     confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
-                                    }).then((result) => {
+                                    confirmButtonText: 'Aceptar',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    allowEnterKey: false,
+                                    willClose: (el) => {
+                                        Swal.fire({
+                                            title: 'Espere un momento porfavor...',
+                                            text: "",
+                                            showConfirmButton: false,
+                                            showCancelButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                            allowEnterKey: false,
+                                        })
+                                        return false;
+                                    },
+                                }).then((result) => {
                                     if (result.isConfirmed) {
                                         document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
                                         //location.reload();
@@ -1863,8 +1891,15 @@
         let html = '';
         
         if(items.length > 4){
+            $('.selectpicker').selectpicker('deselectAll');
+            $('.selectpicker').selectpicker('val', antSel);
+            $('.selectpicker').selectpicker('refresh');
+
             mensajeError("info", "Solo es posible seleccionar hasta 4 especialidades.");
             return;
+        }
+        else{
+            antSel = items;
         }
 
         items.forEach(element => {

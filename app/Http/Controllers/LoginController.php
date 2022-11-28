@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Exception;
-use App\Cls_Bloqueo;
 Use App\Cls_Usuario;
+use App\Cls_Bloqueo;
 use App\Cls_Bitacora;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,6 +63,12 @@ class LoginController extends Controller
 			//Validar si la cuenta esta bloquedo
 			//Validar si encontro un usuario con el correo indicado
 			if($IntIdUsuario != null){
+				$user = User::find($IntIdUsuario->USUA_NIDUSUARIO);
+				if(is_null($user->email_verified_at)){
+					$validator->errors()->add('verificacion', ' Estimado usuario, su cuenta no se ha verificado, favor de verificar.');
+					return Redirect::back()->withErrors($validator);
+				}
+
 				$ObjBloqueo = Cls_Bloqueo::TRAM_SP_VALIDAR_BLOQUEO($IntIdUsuario->USUA_NIDUSUARIO);
 
 				if($ObjBloqueo != null){
@@ -77,51 +84,53 @@ class LoginController extends Controller
 			}
 
 			if($IntIdUsuario != null){
-					//Validar credenciales de acceso
-					$ObjUser = Cls_Usuario::TRAM_SP_LOGIN($request->txtUsuario, $request->txtContrasenia);
-					//Credenciales invalidas
-					if($ObjUser == null) {
+				//Validar credenciales de acceso
+				$ObjUser = Cls_Usuario::TRAM_SP_LOGIN($request->txtUsuario, $request->txtContrasenia);
 
-						//Validar si encontro un usuario con el correo indicado
-						if($IntIdUsuario != null){
-							//Insertar acceso invalido
-							Cls_Usuario::TRAM_SP_AGREGAR_ACCESO($IntIdUsuario->USUA_NIDUSUARIO, false);
+				//Credenciales invalidas
+				if($ObjUser == null) {
+
+					//Validar si encontro un usuario con el correo indicado
+					if($IntIdUsuario != null){
+						//Insertar acceso invalido
+						Cls_Usuario::TRAM_SP_AGREGAR_ACCESO($IntIdUsuario->USUA_NIDUSUARIO, false);
+
+						//Insertar bitacora
+						$ObjBitacora = new Cls_Bitacora();
+						$ObjBitacora->BITA_NIDUSUARIO = $IntIdUsuario->USUA_NIDUSUARIO;
+						$ObjBitacora->BITA_CMOVIMIENTO = "Acceso fallido";
+						$ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
+						$ObjBitacora->BITA_CIP = $request->ip();
+						Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+
+						//Validar si el usuario ya supero el limite de intentos
+						/* SE comenta el bloqueo de las cuentas de correo 
+						if(Cls_Usuario::TRAM_SP_CONTAR_ACCESO_NO_VALIDO($IntIdUsuario->USUA_NIDUSUARIO) == 5){
+							//Insertar en la tabla de bloqueo
+							Cls_Bloqueo::TRAM_SP_AGREGAR_BLOQUEO($IntIdUsuario->USUA_NIDUSUARIO, true, encrypt($IntIdUsuario->USUA_NIDUSUARIO));
 
 							//Insertar bitacora
 							$ObjBitacora = new Cls_Bitacora();
 							$ObjBitacora->BITA_NIDUSUARIO = $IntIdUsuario->USUA_NIDUSUARIO;
-							$ObjBitacora->BITA_CMOVIMIENTO = "Acceso fallido";
-							$ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
+							$ObjBitacora->BITA_CMOVIMIENTO = "Cuenta bloqueada";
+							$ObjBitacora->BITA_CTABLA = "tram_dat_bloqueusuario";
 							$ObjBitacora->BITA_CIP = $request->ip();
 							Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
 
-							//Validar si el usuario ya supero el limite de intentos
-							if(Cls_Usuario::TRAM_SP_CONTAR_ACCESO_NO_VALIDO($IntIdUsuario->USUA_NIDUSUARIO) == 5){
-								//Insertar en la tabla de bloqueo
-								Cls_Bloqueo::TRAM_SP_AGREGAR_BLOQUEO($IntIdUsuario->USUA_NIDUSUARIO, true, encrypt($IntIdUsuario->USUA_NIDUSUARIO));
-
-								//Insertar bitacora
-								$ObjBitacora = new Cls_Bitacora();
-								$ObjBitacora->BITA_NIDUSUARIO = $IntIdUsuario->USUA_NIDUSUARIO;
-								$ObjBitacora->BITA_CMOVIMIENTO = "Cuenta bloqueada";
-								$ObjBitacora->BITA_CTABLA = "tram_dat_bloqueusuario";
-								$ObjBitacora->BITA_CIP = $request->ip();
-								Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-
-								//Retornar respuesta al usuario, que su cuenta fue bloqueado
-								$validator->after(function($validator)
-								{
-									$validator->errors()->add('bloqueado', ' Estimado usuario, su cuenta ha sido bloqueada temporalmente debido al fallo en el intento de ingreso, favor de restablecer su contraseña.');
-								});
-								return Redirect::back()->withErrors($validator);
-							}
-						}
-						$validator->after(function($validator)
+							//Retornar respuesta al usuario, que su cuenta fue bloqueado
+							$validator->after(function($validator)
 							{
-								$validator->errors()->add('credenciales', ' La contraseña no es valida, favor de verificarla.');
+								$validator->errors()->add('bloqueado', ' Estimado usuario, su cuenta ha sido bloqueada temporalmente debido al fallo en el intento de ingreso, favor de restablecer su contraseña.');
 							});
 							return Redirect::back()->withErrors($validator);
+						} */
 					}
+					$validator->after(function($validator)
+						{
+							$validator->errors()->add('credenciales', ' La contraseña no es valida, favor de verificarla.');
+						});
+						return Redirect::back()->withErrors($validator);
+				}
 			}else{
 				$validator->after(function($validator)
 				{
@@ -341,4 +350,18 @@ class LoginController extends Controller
 		}
 		return view('MSTP_LOGIN.index');
 	}
+
+
+	/**
+	 * Verificacion de la cuenta del usuario
+	 */
+	public function verificacion($id, $token, Request $request){
+		$user = User::find($id);
+		if(!is_null($user)){
+			$user->email_verified_at = now();
+			$user->save();
+		}
+		
+		return Redirect::to('/');
+    }
 }

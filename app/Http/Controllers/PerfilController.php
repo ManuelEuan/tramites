@@ -213,40 +213,54 @@ class PerfilController extends Controller
                 //$request->txtTelefono = "";
             $request->txtExtension = "";
             $request->txtUsuario = "";
-            Cls_Usuario::TRAM_SP_MODIFICARUSUARIO($request);
 
-            //Eliminar sucursal actuales
-            Cls_Sucursal::TRAM_SP_ELIMINARSUCURSAL_USUARIO($request->txtIdUsuario);
-
-            //Agregar sucursales
-            if(isset($request->lstSucursal)){
-                foreach ($request->lstSucursal as $value) {
-                    $ObjSucursal = array(
-                        'txtUsuario' => $request->txtIdUsuario,
-                        'txtCalle' => $value['txtCalle_Sucursal'],
-                        'txtNumero_Interior' => $value['txtNumero_Interior_Sucursal'],
-                        'txtNumero_Exterior' => $value['txtNumero_Exterior_Sucursal'],
-                        'txtCP' => $value['txtCP_Sucursal'],
-                        'cmbColonia' => $value['cmbColonia_Sucursal'],
-                        'cmbMunicipio' => $value['cmbMunicipio_Sucursal'],
-                        'cmbEstado' => $value['cmbEstado_Sucursal'],
-                        'cmbPais' => $value['cmbPais_Sucursal']
-                    );
-                    Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
+            $existUser = Cls_Usuario::where("USUA_CCURP", $request->txtCurp)->first();
+            if($existUser){
+                if($existUser->USUA_NIDUSUARIO != $request->txtIdUsuario){
+                    $response = [
+                        'codigo' => 400,
+                        'status' => "error",
+                        'message' => 'CURP HA SIDO REGISTRADO POR ALGUIEN MAS'
+                    ];
                 }
             }
-            //Insertar bitacora
-            $ObjBitacora = new Cls_Bitacora();
-            $ObjBitacora->BITA_NIDUSUARIO = Auth::user()->USUA_NIDUSUARIO;
-            $ObjBitacora->BITA_CMOVIMIENTO = "Edición de perfil";
-            $ObjBitacora->BITA_CTABLA = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "CDNS" ? "tram_mst_usuario" : "tram_mst_usuario y tram_mdv_sucursal";
-            $ObjBitacora->BITA_CIP = $request->ip();
-            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-            $response = [
-                'codigo' => 200,
-                'status' => "success",
-                'message' => '¡Éxito! Los datos se han guardado correctamente.'
-            ];
+
+            if(count($response)<=0){
+                Cls_Usuario::TRAM_SP_MODIFICARUSUARIO($request);
+
+                //Eliminar sucursal actuales
+                Cls_Sucursal::TRAM_SP_ELIMINARSUCURSAL_USUARIO($request->txtIdUsuario);
+
+                //Agregar sucursales
+                if(isset($request->lstSucursal)){
+                    foreach ($request->lstSucursal as $value) {
+                        $ObjSucursal = array(
+                            'txtUsuario' => $request->txtIdUsuario,
+                            'txtCalle' => $value['txtCalle_Sucursal'],
+                            'txtNumero_Interior' => $value['txtNumero_Interior_Sucursal'],
+                            'txtNumero_Exterior' => $value['txtNumero_Exterior_Sucursal'],
+                            'txtCP' => $value['txtCP_Sucursal'],
+                            'cmbColonia' => $value['cmbColonia_Sucursal'],
+                            'cmbMunicipio' => $value['cmbMunicipio_Sucursal'],
+                            'cmbEstado' => $value['cmbEstado_Sucursal'],
+                            'cmbPais' => $value['cmbPais_Sucursal']
+                        );
+                        Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
+                    }
+                }
+                //Insertar bitacora
+                $ObjBitacora = new Cls_Bitacora();
+                $ObjBitacora->BITA_NIDUSUARIO = Auth::user()->USUA_NIDUSUARIO;
+                $ObjBitacora->BITA_CMOVIMIENTO = "Edición de perfil";
+                $ObjBitacora->BITA_CTABLA = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "CDNS" ? "tram_mst_usuario" : "tram_mst_usuario y tram_mdv_sucursal";
+                $ObjBitacora->BITA_CIP = $request->ip();
+                Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+                $response = [
+                    'codigo' => 200,
+                    'status' => "success",
+                    'message' => '¡Éxito! Los datos se han guardado correctamente.'
+                ];
+            }
         } catch (Exception $e) {
             $response = [
                 'codigo' => 400,
