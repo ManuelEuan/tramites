@@ -2338,6 +2338,7 @@
 
         function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre, requerido = false) {
             $("#file_"+id).show();
+            $(".btnEnviar").hide();
             $("#file_"+id).val("");
             $("#docs_file_" + id).val("0_0_0_" + nombre);
             $("#size_file_" + id).html("0 Bytes");
@@ -2347,7 +2348,6 @@
             if(requerido){
                 $('#file_'+id).attr("required", "required");
             }
-            $("#btnEnviar").hide();
         }
 
         //____________________________________
