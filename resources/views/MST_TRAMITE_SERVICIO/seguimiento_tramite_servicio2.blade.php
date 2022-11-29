@@ -739,7 +739,7 @@
                                                                                 id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                                 data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
                                                                                 {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
-                                                                                {{ $doc->TRAD_NOBLIGATORIO == 1 && $doc->TRAD_CRUTADOC == '' ? 'required' : '' }} >
+                                                                                {{ $doc->TRAD_NOBLIGATORIO == 1 && $doc->TRAD_CRUTADOC == '0' ? 'required' : '' }} >
                                                                         </td>
                                                                         <td>
                                                                             @if ($doc->TRAD_NMULTIPLE == 1)
