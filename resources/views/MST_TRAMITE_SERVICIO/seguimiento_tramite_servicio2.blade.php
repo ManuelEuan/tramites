@@ -686,7 +686,7 @@
                                                                             {{ $doc->TRAD_CNOMBRE }}
 
                                                                             @if ($doc->TRAD_NOBLIGATORIO == 1)
-                                                                                <span class="text-danger">*</span>
+                                                                                <span class="text-dangedocr">*</span>
                                                                             @endif
 
                                                                         </td>
@@ -733,15 +733,13 @@
                                                                                 name="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}_{{ $doc->id }}"
                                                                                 id="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                                 value="{{ $doc->TRAD_CRUTADOC }}_{{ $doc->TRAD_CEXTENSION }}_{{ $doc->TRAD_NPESO }}_{{ $doc->TRAD_CNOMBRE }}">
-                                                                            <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' :
-                                                                            ''; ?>
                                                                             <input
                                                                                 class="file-select documentos {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
                                                                                 name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                                 id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                                 data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
                                                                                 {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
-                                                                                {{ $_required_file }}>
+                                                                                {{ $doc->TRAD_NOBLIGATORIO == 1 ? 'required' : '' }} >
                                                                         </td>
                                                                         <td>
                                                                             @if ($doc->TRAD_NMULTIPLE == 1)
