@@ -49,13 +49,13 @@ class LoginController extends Controller
 		}
 		else{
 			//Valida reRECAPTCHA
-			/*$ArrRecaptcha = Cls_Usuario::TRAM_FN_VALIDAR_RECAPTCHA($request['g-recaptcha-response']);
+			$ArrRecaptcha = Cls_Usuario::TRAM_FN_VALIDAR_RECAPTCHA($request['g-recaptcha-response']);
 			if($ArrRecaptcha["success"] != '1') {
 			 	$validator->after(function($validator){
 			 		$validator->errors()->add('recaptcha', ' El campo No soy un robot es requerido.');
 			 	}); 
 			 	return Redirect::back()->withErrors($validator);
-			}*/
+			}
 
 			//Validamos que al menos el correo sea correcto, de ser así se obtiene el id del usuario e insertamos en la tabla de acesso, con estatus no valido
 			$IntIdUsuario = Cls_Usuario::TRAM_SP_VALIDAR_CORREO_OBTIENE_ID($request->txtUsuario);
