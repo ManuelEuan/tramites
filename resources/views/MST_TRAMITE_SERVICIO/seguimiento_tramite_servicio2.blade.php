@@ -754,7 +754,7 @@
                                                                         <td>
                                                                             <h5 class="font-weight-bold"><span
                                                                                     class="circle-error-multi {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
-                                                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}','{{ $doc->TRAD_CNOMBRE }}')">x</span>
+                                                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}','{{ $doc->TRAD_CNOMBRE }}', '{{$doc->TRAD_NOBLIGATORIO}}')">x</span>
                                                                             </h5>
                                                                         </td>
                                                                     </tr>
@@ -2338,15 +2338,17 @@
                 +'</tr>');
         }
 
-        function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre) {
-            console.log("elim");
+        function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre, requerido = false) {
             $("#file_"+id).show();
+            $("#file_"+id).val("");
             $("#docs_file_" + id).val("0_0_0_" + nombre);
             $("#size_file_" + id).html("0 Bytes");
             $("#icon_file_" + id).html(
             "<img src='{{ asset('assets/template/img/doc.png') }}'' width='20' height='20'>");
             $("#chck_file_" + id).prop("checked", false);
-            $('#file_'+id).attr("required", "required");
+            if(requerido){
+                $('#file_'+id).attr("required", "required");
+            }
             $("#btnEnviar").hide();
         }
 
