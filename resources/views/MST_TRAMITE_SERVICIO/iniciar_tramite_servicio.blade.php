@@ -597,7 +597,7 @@
                                                 <input type="hidden" value="{{$doc->TRAD_NOBLIGATORIO}}" id="valida_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
                                                 <input class="file-select documentos" name="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
                                                     id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file"  accept="application/pdf"
-                                                    data-doctype="{{$doc->TRAD_CNOMBRE}}" {{$doc->TRAD_NOBLIGATORIO == 1 && $doc->TRAD_CRUTADOC == '' ? 'required' : '' }}>
+                                                    data-doctype="{{$doc->TRAD_CNOMBRE}}" {{$doc->TRAD_NOBLIGATORIO == 1 ? 'required' : '' }}>
                                             </td>
                                             <td>
                                             @if($doc->TRAD_NMULTIPLE == 1)
