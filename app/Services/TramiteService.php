@@ -466,7 +466,7 @@ class TramiteService
             $creacion   = new DateTime($item->USTR_DFECHACREACION);
             $fecha_asig = new DateTime($item->fecha_asignacion);
             $item->USTR_DFECHACREACION_FORMAT   = $creacion->format('d-m-Y H:i:s');
-            $item->fecha_asignacion             = $fecha_asig->format('d-m-Y H:i:s');
+            $item->fecha_asignacion             = $item->fecha_asignacion ? $fecha_asig->format('d-m-Y H:i:s') : "";
         }
 
         return [ "result" => $resultado, "total" =>  $total];
