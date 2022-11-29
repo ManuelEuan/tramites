@@ -111,30 +111,32 @@
                     <div class="seguimiento">
                         <div class="row">
                             <div class="col-12">
-                                <table id="example" class="table table-bordered" style="width: 100%">
-                                   @php
-                                        $usuario    = Auth::user();
-                                        $rol        = $usuario->TRAM_CAT_ROL;
-                                   @endphp
-                                    <thead class="bg-gob">
-                                        <tr>
-                                            <th></th>
-                                            <th>Fecha</th>
-                                            @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
-                                                <td>Fecha Asignación</td>
-                                            @endif
-                                            <th>Folio</th>
-                                            <th>Nombre</th>
-                                            <th>RFC</th>
-                                            <th>Trámite</th>
-                                            <th>Estatus</th>
-                                            @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
-                                                <td>Asignado</td>
-                                            @endif
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                                <div class="table-responsive">
+                                    <table id="example" class="table table-bordered table-sm" style="width: 100%">
+                                    @php
+                                            $usuario    = Auth::user();
+                                            $rol        = $usuario->TRAM_CAT_ROL;
+                                    @endphp
+                                        <thead class="bg-gob">
+                                            <tr>
+                                                <th></th>
+                                                <th>Fecha</th>
+                                                @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
+                                                    <td>Fecha Asignación</td>
+                                                @endif
+                                                <th>Folio</th>
+                                                <th>Nombre</th>
+                                                <th>RFC</th>
+                                                <th>Trámite</th>
+                                                <th>Estatus</th>
+                                                @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
+                                                    <td>Asignado</td>
+                                                @endif
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -403,7 +405,7 @@
                             if (data.fecha_asignacion) {
                                 fecha = data.fecha_asignacion;
                             } else {
-                                fecha = 'S/R';
+                                fecha = '';
                             }
                             return fecha;
                         }
