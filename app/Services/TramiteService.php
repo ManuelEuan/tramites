@@ -407,14 +407,26 @@ class TramiteService
                     ->leftJoin('tram_mdv_usuariotramite_analista as ua','v.USTR_NIDUSUARIOTRAMITE','=','ua.USTR_NIDUSUARIOTRAMITE')
                     ->leftJoin('tram_mst_usuario as anaNom', 'anaNom.USUA_NIDUSUARIO' ,'=', 'ua.USUA_NIDUSUARIO')
                     ->where('v.USTR_NESTATUS','!=',1)
-                    ->select('v.*', 'ua.USUA_FECHA as fecha_asignacion', DB::raw("concat(anaNom.USUA_CNOMBRES, ' ', anaNom.USUA_CPRIMER_APELLIDO, ' ', anaNom.USUA_CSEGUNDO_APELLIDO) as analista"));
+                    ->select(
+                        'v.*', 
+                        'ua.USUA_FECHA as fecha_asignacion', 
+                        DB::raw("concat(anaNom.USUA_CNOMBRES, ' ', anaNom.USUA_CPRIMER_APELLIDO, ' ', anaNom.USUA_CSEGUNDO_APELLIDO) as analista"),
+                        DB::raw("(SELECT tur.USRE_CRESPUESTA FROM tram_mdv_usuariorespuestas as tur WHERE tur.USRE_NIDUSUARIOTRAMITE=v.USTR_NIDUSUARIOTRAMITE and tur.USRE_NIDPREGUNTA=510 limit 1) as tram_razon_social"),
+                        DB::raw("(SELECT tur.USRE_CRESPUESTA FROM tram_mdv_usuariorespuestas as tur WHERE tur.USRE_NIDUSUARIOTRAMITE=v.USTR_NIDUSUARIOTRAMITE and tur.USRE_NIDPREGUNTA=526 limit 1) as tram_rfc")
+                    );
             }else{
                 $query = DB::table('tram_vw_tramite_seguimiento as v')
                     ->join('tram_mst_tramite as t','v.USTR_NIDTRAMITE','=','t.TRAM_NIDTRAMITE')
                     ->leftJoin('tram_mdv_usuariotramite_analista as ua','v.USTR_NIDUSUARIOTRAMITE','=','ua.USTR_NIDUSUARIOTRAMITE')
                     ->leftJoin('tram_mst_usuario as anaNom', 'anaNom.USUA_NIDUSUARIO' ,'=', 'ua.USUA_NIDUSUARIO')
                     ->where('v.USTR_NESTATUS','!=',1)
-                    ->select('v.*', 'ua.USUA_FECHA as fecha_asignacion', DB::raw("concat(anaNom.USUA_CNOMBRES, ' ', anaNom.USUA_CPRIMER_APELLIDO, ' ', anaNom.USUA_CSEGUNDO_APELLIDO) as analista"));
+                    ->select(
+                        'v.*', 
+                        'ua.USUA_FECHA as fecha_asignacion', 
+                        DB::raw("concat(anaNom.USUA_CNOMBRES, ' ', anaNom.USUA_CPRIMER_APELLIDO, ' ', anaNom.USUA_CSEGUNDO_APELLIDO) as analista"),
+                        DB::raw("(SELECT tur.USRE_CRESPUESTA FROM tram_mdv_usuariorespuestas as tur WHERE tur.USRE_NIDUSUARIOTRAMITE=v.USTR_NIDUSUARIOTRAMITE and tur.USRE_NIDPREGUNTA=510 limit 1) as tram_razon_social"),
+                        DB::raw("(SELECT tur.USRE_CRESPUESTA FROM tram_mdv_usuariorespuestas as tur WHERE tur.USRE_NIDUSUARIOTRAMITE=v.USTR_NIDUSUARIOTRAMITE and tur.USRE_NIDPREGUNTA=526 limit 1) as tram_rfc")
+                    );
             }
             
         }
