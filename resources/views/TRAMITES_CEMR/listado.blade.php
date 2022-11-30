@@ -134,10 +134,14 @@
                                                 @endif
                                                 <th data-priority="1">Folio</th>
                                                 <th data-priority="2">Nombre</th>
-                                                <th data-priority="2">RFC</th>
+                                                @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
+                                                    <th data-priority="3">RFC Interno</th>
+                                                @endif
                                                 <th data-priority="3">Trámite</th>
-                                                <th data-priority="3">Nombre Interno</th>
-                                                <th data-priority="3">RFC Interno</th>
+                                                @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
+                                                    <th data-priority="3">Nombre Interno</th>
+                                                @endif
+                                                <th data-priority="2">RFC</th>
                                                 <th data-priority="1">Estatus</th>
                                                 @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
                                                     <td data-priority="4">Asignado</td>
@@ -456,60 +460,17 @@
                             return nombre;
                         }
                     },
-                   
                     {
-                        "data": "USTR_CRFC"
-                        /*
-                        "data": null,
-                        render: function(data, type, row) {
-                            var nombre = "";
-                            if(data.tram_razon_social){
-                                nombre = data.tram_rfc;
-                            } else {
-                                nombre = data.USTR_CRFC;
-                            }
-                            return nombre;
-                        }
-                        */
+                        "data": "tram_rfc"
                     },
                     {
                         "data": "USTR_CNOMBRE_TRAMITE"
                     },
                     {
                         "data": "tram_razon_social",
-                        /*
-                        render: function(data, type, row) {
-                            var nombre = "";
-
-                            if(data.tram_razon_social){
-                                nombre = data.tram_razon_social;
-                            } else {
-                                if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
-                                    if(data.USTR_CTIPO_PERSONA == 'FISICA'){
-                                        if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
-                                        nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO;
-                                        } else {
-                                            nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
-                                        }
-                                    }else{
-                                        nombre = data.USTR_CRAZON_SOCIAL;
-                                    }
-                                } else {
-                                    if(data.USTR_CTIPO_PERSONA == 'FISICA'){
-                                        nombre = data.USTR_CNOMBRE_COMPLETO;
-                                    }else{
-                                        nombre = data.USTR_CRAZON_SOCIAL;
-                                    }
-                                }
-                            }
-
-                            return nombre;
-                        }
-                        */
                     },
-
                     {
-                        "data": "tram_rfc"
+                        "data": "USTR_CRFC"
                     },
                     {
                         data: 'USTR_NESTATUS',
@@ -733,10 +694,10 @@
                         }
                     },
                     {
-                        "data": "USTR_CRFC"
+                        "data": "USTR_CNOMBRE_TRAMITE"
                     },
                     {
-                        "data": "USTR_CNOMBRE_TRAMITE"
+                        "data": "USTR_CRFC"
                     },
                     {
                         data: 'USTR_NESTATUS',
