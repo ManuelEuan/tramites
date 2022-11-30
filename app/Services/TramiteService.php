@@ -472,7 +472,7 @@ class TramiteService
         $order_by   = !is_null($order_by)  ? $order_by : "v.USTR_DFECHACREACION";
         $start      = !is_null($request->start) ? $request->start : 0;
         $total      = $query->count();
-        $resultado  = $query->orderBy($order_by, $order)->offset($start)->limit($registros)->get();
+        $resultado  = $query->orderBy($order_by, $order)->limit($registros)->get();//->offset($start)
 
         foreach($resultado as $item){
             $creacion   = new DateTime($item->USTR_DFECHACREACION);

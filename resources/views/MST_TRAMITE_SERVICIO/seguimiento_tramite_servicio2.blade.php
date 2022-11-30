@@ -2336,18 +2336,19 @@
                 +'</tr>');
         }
 
-        function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre, requerido = false) {
+        function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre, requerido = 0) {
             $("#file_"+id).show();
+            $(".btnEnviar").hide();
             $("#file_"+id).val("");
             $("#docs_file_" + id).val("0_0_0_" + nombre);
             $("#size_file_" + id).html("0 Bytes");
             $("#icon_file_" + id).html(
             "<img src='{{ asset('assets/template/img/doc.png') }}'' width='20' height='20'>");
             $("#chck_file_" + id).prop("checked", false);
-            if(requerido){
+            console.log(Number(requerido));
+            if(Number(requerido) == 1){
                 $('#file_'+id).attr("required", "required");
             }
-            $("#btnEnviar").hide();
         }
 
         //____________________________________
