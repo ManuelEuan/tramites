@@ -134,14 +134,12 @@
                                                 @endif
                                                 <th data-priority="1">Folio</th>
                                                 <th data-priority="2">Nombre</th>
-                                                @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
-                                                    <th data-priority="3">RFC Interno</th>
-                                                @endif
+                                                <th data-priority="2">RFC</th>
                                                 <th data-priority="3">Trámite</th>
                                                 @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
                                                     <th data-priority="3">Nombre Interno</th>
+                                                    <th data-priority="3">RFC Interno</th>
                                                 @endif
-                                                <th data-priority="2">RFC</th>
                                                 <th data-priority="1">Estatus</th>
                                                 @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
                                                     <td data-priority="4">Asignado</td>
@@ -460,8 +458,9 @@
                             return nombre;
                         }
                     },
+                   
                     {
-                        "data": "tram_rfc"
+                        "data": "USTR_CRFC"
                     },
                     {
                         "data": "USTR_CNOMBRE_TRAMITE"
@@ -469,8 +468,9 @@
                     {
                         "data": "tram_razon_social",
                     },
+
                     {
-                        "data": "USTR_CRFC"
+                        "data": "tram_rfc"
                     },
                     {
                         data: 'USTR_NESTATUS',
@@ -694,10 +694,10 @@
                         }
                     },
                     {
-                        "data": "USTR_CNOMBRE_TRAMITE"
+                        "data": "USTR_CRFC"
                     },
                     {
-                        "data": "USTR_CRFC"
+                        "data": "USTR_CNOMBRE_TRAMITE"
                     },
                     {
                         data: 'USTR_NESTATUS',
