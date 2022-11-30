@@ -465,6 +465,7 @@ class TramiteService
 
 
         $registros  = !is_null($request->length) ? $request->length : 10; 
+        $registros  = $registros == -1 ? 1000000 : $registros;
         $order      = isset($request->order[0]['dir']) ? $request->order[0]['dir'] : 'desc';
         $order      = $request->order[0]['column'] == 0 ? 'desc' : 'asc';
         $order_by   = $request->columns[$request->order[0]['column']]['data'];
