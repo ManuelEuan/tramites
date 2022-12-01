@@ -14,12 +14,11 @@ class Cls_UsuarioTramiteAnalista extends Model
     static function AsignarTramite(Request $request){//Request $request
         try {
             $existe = DB::table('tram_mdv_usuariotramite_analista')->where('USTR_NIDUSUARIOTRAMITE', $request->USTR_NIDUSUARIOTRAMITE)->first();
-            
             if(!is_null($existe)){
                 DB::table('tram_mdv_usuariotramite_analista')->where('USTR_NIDUSUARIOTRAMITE', $request->USTR_NIDUSUARIOTRAMITE)->update([
                     'USUA_NIDUSUARIO'           => $request->USUA_NIDUSUARIO, 
                     'USUA_NIDUSUARIOREGISTRO'   => $request->USUA_NIDUSUARIOREGISTRO,
-                    'USUA_FECHA'                => now()
+                    'USUA_FECHA'                => $request->USUA_NIDUSUARIO != 0 ? now() : null,
                 ]);
             }else{
                 DB::table('tram_mdv_usuariotramite_analista')->insert([

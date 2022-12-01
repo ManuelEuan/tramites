@@ -111,30 +111,42 @@
                     <div class="seguimiento">
                         <div class="row">
                             <div class="col-12">
-                                <table id="example" class="table table-bordered" style="width: 100%">
-                                   @php
-                                        $usuario    = Auth::user();
-                                        $rol        = $usuario->TRAM_CAT_ROL;
-                                   @endphp
-                                    <thead class="bg-gob">
-                                        <tr>
-                                            <th></th>
-                                            <th>Fecha</th>
-                                            @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
-                                                <td>Fecha Asignación</td>
-                                            @endif
-                                            <th>Folio</th>
-                                            <th>Nombre</th>
-                                            <th>RFC</th>
-                                            <th>Trámite</th>
-                                            <th>Estatus</th>
-                                            @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
-                                                <td>Asignado</td>
-                                            @endif
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                                <div class="table-responsive">
+                                    <style>
+                                        .child{
+                                            text-align: left;
+                                        }
+                                        tbody{
+                                            text-align: center; 
+                                        }
+                                    </style>
+                                    <table id="example" class="table table-bordered table-sm" style="width: 100%">
+                                    @php
+                                            $usuario    = Auth::user();
+                                            $rol        = $usuario->TRAM_CAT_ROL;
+                                    @endphp
+                                        <thead class="bg-gob">
+                                            <tr>
+                                                <th data-priority="1"></th>
+                                                <th data-priority="4">Fecha</th>
+                                                @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
+                                                    <td data-priority="4">Fecha Asignación</td>
+                                                @endif
+                                                <th data-priority="1">Folio</th>
+                                                <th data-priority="2">Nombre</th>
+                                                <th data-priority="2">RFC</th>
+                                                <th data-priority="3">Trámite</th>
+                                                <th data-priority="3">Nombre Interno</th>
+                                                <th data-priority="3">RFC Interno</th>
+                                                <th data-priority="1">Estatus</th>
+                                                @if ($rol->ROL_CCLAVE == 'ANTA' || $rol->ROL_CCLAVE == 'VLDR')
+                                                    <td data-priority="4">Asignado</td>
+                                                @endif
+                                                <th  data-priority="2">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -304,6 +316,7 @@
 
         if(rol == 'ANTA' || rol == 'VLDR'){
             table = $('#example').DataTable({
+            responsive: true,
             "language": {
                 url: "/assets/template/plugins/DataTables/language/Spanish.json",
                 "search": "Filtrar resultados:",
@@ -325,6 +338,12 @@
                         "curp": $('#txtCURP').val(),
                         "estatus": $('#txtEstatus').val(),
                     });
+                },
+                "beforesend": function(){
+                    alert('mi mensaje');// to debug error
+                },
+                "error": function(thrownError){
+                    alert('mi mensaje');// to debug error
                 }
             },
             "columns": [
@@ -403,7 +422,7 @@
                             if (data.fecha_asignacion) {
                                 fecha = data.fecha_asignacion;
                             } else {
-                                fecha = 'S/R';
+                                fecha = '';
                             }
                             return fecha;
                         }
@@ -416,8 +435,6 @@
                         render: function(data, type, row) {
                             var nombre = "";
                             if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
-
-                            
                                 if(data.USTR_CTIPO_PERSONA == 'FISICA'){
 
                                     if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
@@ -439,11 +456,60 @@
                             return nombre;
                         }
                     },
+                   
                     {
                         "data": "USTR_CRFC"
+                        /*
+                        "data": null,
+                        render: function(data, type, row) {
+                            var nombre = "";
+                            if(data.tram_razon_social){
+                                nombre = data.tram_rfc;
+                            } else {
+                                nombre = data.USTR_CRFC;
+                            }
+                            return nombre;
+                        }
+                        */
                     },
                     {
                         "data": "USTR_CNOMBRE_TRAMITE"
+                    },
+                    {
+                        "data": "tram_razon_social",
+                        /*
+                        render: function(data, type, row) {
+                            var nombre = "";
+
+                            if(data.tram_razon_social){
+                                nombre = data.tram_razon_social;
+                            } else {
+                                if (data.USTR_CNOMBRE_COMPLETO == "" || data.USTR_CNOMBRE_COMPLETO == null) {
+                                    if(data.USTR_CTIPO_PERSONA == 'FISICA'){
+                                        if (data.USTR_CSEGUNDO_APELLIDO == null || data.USTR_CSEGUNDO_APELLIDO == "") {
+                                        nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO;
+                                        } else {
+                                            nombre = data.USTR_CNOMBRE + " " + data.USTR_CPRIMER_APELLIDO + " " + data.USTR_CSEGUNDO_APELLIDO;
+                                        }
+                                    }else{
+                                        nombre = data.USTR_CRAZON_SOCIAL;
+                                    }
+                                } else {
+                                    if(data.USTR_CTIPO_PERSONA == 'FISICA'){
+                                        nombre = data.USTR_CNOMBRE_COMPLETO;
+                                    }else{
+                                        nombre = data.USTR_CRAZON_SOCIAL;
+                                    }
+                                }
+                            }
+
+                            return nombre;
+                        }
+                        */
+                    },
+
+                    {
+                        "data": "tram_rfc"
                     },
                     {
                         data: 'USTR_NESTATUS',
@@ -515,19 +581,20 @@
                 buttons: [{
                         extend: 'excelHtml5',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'csvHtml5',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'pdfHtml5',
+                        orientation: 'landscape',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
                         }
                     }
                 ]
@@ -535,6 +602,7 @@
         }
         else{
             table = $('#example').DataTable({
+            responsive: true,
             "language": {
                 url: "/assets/template/plugins/DataTables/language/Spanish.json",
                 "search": "Filtrar resultados:",
@@ -556,6 +624,12 @@
                         "curp": $('#txtCURP').val(),
                         "estatus": $('#txtEstatus').val(),
                     });
+                },
+                "beforesend": function(){
+                    alert('mi mensaje');// to debug error
+                },
+                "error": function(thrownError){
+                    alert('mi mensaje');// to debug error
                 }
             },
             "columns": [
@@ -731,13 +805,13 @@
                 buttons: [{
                         extend: 'excelHtml5',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'csvHtml5',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         },
                         //className: 'btn btn-xs btn-primary p-5 m-0 width-35 assets-export-btn export-csv',
                         charset: 'UTF-8',
@@ -765,8 +839,9 @@
                     },
                     {
                         extend: 'pdfHtml5',
+                        orientation: 'landscape',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
                         }
                     }
                 ]

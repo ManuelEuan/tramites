@@ -609,7 +609,7 @@
                                             <td>
                                                 <h5 class="font-weight-bold">
                                                     <span class="circle-error-multi"  
-                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}')" >x</span>
+                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}', '{{$doc->TRAD_NOBLIGATORIO}}')" >x</span>
                                                 </h5>
                                             </td>
                                         </tr>
@@ -1560,17 +1560,20 @@
         +'</tr>');
     }
 
-    function TRAM_FN_LIMPIARROW_DOCUMENTO(id,nombre){
+    function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre, requerido = false){
         $("#file_"+id).show();
+        $("#file_"+id).val("");
         $("#docs_file_" + id).val("0_0_0_"+nombre);
         $("#size_file_" + id).html("0 Bytes");
         $("#icon_file_" + id).html("<img src='{{ asset('assets/template/img/doc.png') }}'' width='20' height='20'>");
         $("#chck_file_" + id).prop("checked", false);
-        $('#file_'+id).attr("required", "required");
+        if(requerido){
+            $('#file_'+id).attr("required", "required");
+        }
         $("#btnEnviar").hide();
     }
 
-    function TRAM_FN_VALIDAR(){
+    function TRAM_FN_VALIDAR(showMessage=true){
         $(".txtEnriquecido").each(function() {
             var id = this.id;
             var editor_val = CKEDITOR.instances[id].getData();
@@ -1581,6 +1584,7 @@
                 $("#error_" + id).html("");
             }
         });
+
         if (!$("#frmForm").valid()){
             const full  = document.getElementsByClassName('full');
             const arr   = [...full].map(input => input.value);
@@ -1606,8 +1610,9 @@
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Aceptar'
             });
-            return;
-        }else {
+
+            return false;
+        } else {
             const full  = document.getElementsByClassName('full');
             const arr   = [...full].map(input => input.value);
 
@@ -1622,15 +1627,21 @@
                 }
 
             })
-            Swal.fire({
-                title: '',
-                text: 'El formulario ha sido completado, y está listo para enviar a revisión.',
-                icon: 'info',
-                showCancelButton: false,
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Aceptar'
-            });
+            
+            if(showMessage){
+                Swal.fire({
+                    title: '',
+                    text: 'El formulario ha sido completado, y está listo para enviar a revisión.',
+                    icon: 'info',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+
             $("#btnEnviar").show();
+
+            return true;
         }
     }
 
@@ -1724,102 +1735,104 @@
     function TRAM_AJX_ENVIAR(){
         if($("#cmbModulo").val() == null){
             Swal.fire({
-                        title: '¡Aviso!',
-                        text: "Favor de seleccionar un módulo.",
-                        icon: 'warning',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Aceptar'
-                    });
+                title: '¡Aviso!',
+                text: "Favor de seleccionar un módulo.",
+                icon: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Aceptar'
+            });
         }
         else {
-            catalogos.forEach(element => {
-                let respuestas  = element.respuesta;
-                let id          = element.pregunta;
-                let valor       = [];
+            if(TRAM_FN_VALIDAR(false)){
+                catalogos.forEach(element => {
+                    let respuestas  = element.respuesta;
+                    let id          = element.pregunta;
+                    let valor       = [];
 
-                respuestas.forEach(item => {
-                    let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
-                valor.push(obj);
+                    respuestas.forEach(item => {
+                        let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                        valor.push(obj);
+                    });
+
+                    $("#"+ id + "_input").val(JSON.stringify(valor));
                 });
 
-                $("#"+ id + "_input").val(JSON.stringify(valor));
-            });
-
-            Swal.fire({
-                title: '',
-                text: '¿Está seguro de enviar su trámite?',
-                icon: 'success',
-                showCancelButton: true,
-                cancelButtonText: 'No, cancelar',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Sí enviar',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $("#loading-text").html("Enviando...");
-                    $('#loading_save').show();
-                    $.ajax({
-                        data: $('#frmForm').serialize(),
-                        url: "/tramite_servicio/enviar",
-                        type: "POST",
-                        dataType: 'json',
-                        success: function (data) {
-                            if(data.status == "success"){
+                Swal.fire({
+                    title: '',
+                    text: '¿Está seguro de enviar su trámite?',
+                    icon: 'success',
+                    showCancelButton: true,
+                    cancelButtonText: 'No, cancelar',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí enviar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("#loading-text").html("Enviando...");
+                        $('#loading_save').show();
+                        $.ajax({
+                            data: $('#frmForm').serialize(),
+                            url: "/tramite_servicio/enviar",
+                            type: "POST",
+                            dataType: 'json',
+                            success: function (data) {
+                                if(data.status == "success"){
+                                    Swal.fire({
+                                        title: '¡Éxito!',
+                                        text: data.message,
+                                        icon: 'success',
+                                        showCancelButton: false,
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'Aceptar',
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        allowEnterKey: false,
+                                        willClose: (el) => {
+                                            Swal.fire({
+                                                title: 'Espere un momento porfavor...',
+                                                text: "",
+                                                showConfirmButton: false,
+                                                showCancelButton: false,
+                                                allowOutsideClick: false,
+                                                allowEscapeKey: false,
+                                                allowEnterKey: false,
+                                            })
+                                            return false;
+                                        },
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
+                                            //location.reload();
+                                        }
+                                    });
+                                }else {
+                                    Swal.fire({
+                                        title: '¡Aviso!',
+                                        text: data.message,
+                                        icon: 'info',
+                                        showCancelButton: false,
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'Aceptar'
+                                    });
+                                }
+                                $('#loading_save').hide();
+                            },
+                            error: function (data) {
                                 Swal.fire({
-                                    title: '¡Éxito!',
+                                    icon: data.status,
+                                    title: '',
                                     text: data.message,
-                                    icon: 'success',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar',
-                                    allowOutsideClick: false,
-                                    allowEscapeKey: false,
-                                    allowEnterKey: false,
-                                    willClose: (el) => {
-                                        Swal.fire({
-                                            title: 'Espere un momento porfavor...',
-                                            text: "",
-                                            showConfirmButton: false,
-                                            showCancelButton: false,
-                                            allowOutsideClick: false,
-                                            allowEscapeKey: false,
-                                            allowEnterKey: false,
-                                        })
-                                        return false;
-                                    },
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
-                                        //location.reload();
-                                    }
+                                    footer: ''
                                 });
-                            }else {
-                                Swal.fire({
-                                    title: '¡Aviso!',
-                                    text: data.message,
-                                    icon: 'info',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
-                                });
+                                $('#loading_save').hide();
                             }
-                            $('#loading_save').hide();
-                        },
-                        error: function (data) {
-                            Swal.fire({
-                                icon: data.status,
-                                title: '',
-                                text: data.message,
-                                footer: ''
-                            });
-                            $('#loading_save').hide();
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
+            }
         }
     };
 

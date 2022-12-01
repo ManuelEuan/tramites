@@ -686,7 +686,7 @@
                                                                             {{ $doc->TRAD_CNOMBRE }}
 
                                                                             @if ($doc->TRAD_NOBLIGATORIO == 1)
-                                                                                <span class="text-danger">*</span>
+                                                                                <span class="text-dangedocr">*</span>
                                                                             @endif
 
                                                                         </td>
@@ -733,15 +733,13 @@
                                                                                 name="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}_{{ $doc->id }}"
                                                                                 id="docs_file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                                 value="{{ $doc->TRAD_CRUTADOC }}_{{ $doc->TRAD_CEXTENSION }}_{{ $doc->TRAD_NPESO }}_{{ $doc->TRAD_CNOMBRE }}">
-                                                                            <?php $_required_file = $doc->TRAD_CRUTADOC == '' ? 'required' :
-                                                                            ''; ?>
                                                                             <input
                                                                                 class="file-select documentos {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
                                                                                 name="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                                 id="file_{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}"
                                                                                 data-docname="{{ $doc->TRAD_CNOMBRE }}" type="file" accept="application/pdf"
                                                                                 {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
-                                                                                {{ $_required_file }}>
+                                                                                {{ $doc->TRAD_NOBLIGATORIO == 1 && $doc->TRAD_CRUTADOC == '0' ? 'required' : '' }} >
                                                                         </td>
                                                                         <td>
                                                                             @if ($doc->TRAD_NMULTIPLE == 1)
@@ -754,7 +752,7 @@
                                                                         <td>
                                                                             <h5 class="font-weight-bold"><span
                                                                                     class="circle-error-multi {{ $doc->TRAD_NESTATUS == 1 && $tramite['atencion_formulario'] == 1 ? '' : $disbledInputFile }}"
-                                                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}','{{ $doc->TRAD_CNOMBRE }}')">x</span>
+                                                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{ $doc->TRAD_NIDTRAMITEDOCUMENTO }}','{{ $doc->TRAD_CNOMBRE }}', '{{$doc->TRAD_NOBLIGATORIO}}')">x</span>
                                                                             </h5>
                                                                         </td>
                                                                     </tr>
@@ -2338,16 +2336,19 @@
                 +'</tr>');
         }
 
-        function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre) {
-            console.log("elim");
+        function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre, requerido = 0) {
             $("#file_"+id).show();
+            $(".btnEnviar").hide();
+            $("#file_"+id).val("");
             $("#docs_file_" + id).val("0_0_0_" + nombre);
             $("#size_file_" + id).html("0 Bytes");
             $("#icon_file_" + id).html(
             "<img src='{{ asset('assets/template/img/doc.png') }}'' width='20' height='20'>");
             $("#chck_file_" + id).prop("checked", false);
-            $('#file_'+id).attr("required", "required");
-            $("#btnEnviar").hide();
+            console.log(Number(requerido));
+            if(Number(requerido) == 1){
+                $('#file_'+id).attr("required", "required");
+            }
         }
 
         //____________________________________
@@ -2380,7 +2381,7 @@
             });
         };
 
-        function TRAM_FN_VALIDAR() {
+        function TRAM_FN_VALIDAR(showMessage=true) {
             $(".txtEnriquecido").each(function() {
                 var id = this.id;
                 var editor_val = CKEDITOR.instances[id].getData();
@@ -2416,7 +2417,7 @@
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Aceptar'
                 });
-                return;
+                return false;
             } else {
 
                 const full  = document.getElementsByClassName('full');
@@ -2435,15 +2436,20 @@
 
                 })
 
-                Swal.fire({
-                    title: '',
-                    text: 'El formulario ha sido completado, y está listo para enviar a revisión.',
-                    icon: 'info',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Aceptar'
-                });
+                if(showMessage){
+                    Swal.fire({
+                        title: '',
+                        text: 'El formulario ha sido completado, y está listo para enviar a revisión.',
+                        icon: 'info',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+                
                 $(".btnEnviar").show();
+
+                return true;
             }
         };
 
@@ -2565,94 +2571,96 @@
         };
 
         function TRAM_AJX_ENVIAR() {
-            catalogos.forEach(element => {
-                let respuestas  = element.respuesta;
-                let id          = element.pregunta;
-                let valor       = [];
+            if(TRAM_FN_VALIDAR(false)){
+                catalogos.forEach(element => {
+                    let respuestas  = element.respuesta;
+                    let id          = element.pregunta;
+                    let valor       = [];
 
-                respuestas.forEach(item => {
-                    let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
-                valor.push(obj);
+                    respuestas.forEach(item => {
+                        let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                    valor.push(obj);
+                    });
+
+                    $("#"+ id + "_input").val(JSON.stringify(valor));
                 });
 
-                $("#"+ id + "_input").val(JSON.stringify(valor));
-            });
-
-            Swal.fire({
-                title: '',
-                text: '¿Está seguro de enviar su trámite?',
-                icon: 'success',
-                showCancelButton: true,
-                cancelButtonText: 'No, cancelar',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Sí enviar',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $("#loading-text").html("Enviando...");
-                    $('#loading_save').show();
-                    $.ajax({
-                        data: $('#frmForm').serialize(),
-                        url: "/tramite_servicio/enviar",
-                        type: "POST",
-                        dataType: 'json',
-                        success: function(data) {
-                            if (data.status == "success") {
+                Swal.fire({
+                    title: '',
+                    text: '¿Está seguro de enviar su trámite?',
+                    icon: 'success',
+                    showCancelButton: true,
+                    cancelButtonText: 'No, cancelar',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí enviar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("#loading-text").html("Enviando...");
+                        $('#loading_save').show();
+                        $.ajax({
+                            data: $('#frmForm').serialize(),
+                            url: "/tramite_servicio/enviar",
+                            type: "POST",
+                            dataType: 'json',
+                            success: function(data) {
+                                if (data.status == "success") {
+                                    Swal.fire({
+                                        title: '¡Éxito!',
+                                        text: data.message,
+                                        icon: 'success',
+                                        showCancelButton: false,
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'Aceptar',
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        allowEnterKey: false,
+                                        willClose: (el) => {
+                                            Swal.fire({
+                                                title: 'Espere un momento porfavor...',
+                                                text: "",
+                                                showConfirmButton: false,
+                                                showCancelButton: false,
+                                                allowOutsideClick: false,
+                                                allowEscapeKey: false,
+                                                allowEnterKey: false,
+                                            })
+                                            return false;
+                                        },
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            //location.reload();
+                                            $(location).attr('href',
+                                                '/tramite_servicio/seguimiento_tramite/' + id);
+                                        }
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: '¡Aviso!',
+                                        text: data.message,
+                                        icon: 'info',
+                                        showCancelButton: false,
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'Aceptar'
+                                    });
+                                }
+                                $('#loading_save').hide();
+                            },
+                            error: function(data) {
                                 Swal.fire({
-                                    title: '¡Éxito!',
-                                    text: data.message,
-                                    icon: 'success',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar',
-                                    allowOutsideClick: false,
-                                    allowEscapeKey: false,
-                                    allowEnterKey: false,
-                                    willClose: (el) => {
-                                        Swal.fire({
-                                            title: 'Espere un momento porfavor...',
-                                            text: "",
-                                            showConfirmButton: false,
-                                            showCancelButton: false,
-                                            allowOutsideClick: false,
-                                            allowEscapeKey: false,
-                                            allowEnterKey: false,
-                                        })
-                                        return false;
-                                    },
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        //location.reload();
-                                        $(location).attr('href',
-                                            '/tramite_servicio/seguimiento_tramite/' + id);
-                                    }
+                                    icon: data.status,
+                                    title: '',
+                                    text: 'Error',
+                                    footer: ''
                                 });
-                            } else {
-                                Swal.fire({
-                                    title: '¡Aviso!',
-                                    text: data.message,
-                                    icon: 'info',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
-                                });
+                                $('#loading_save').hide();
                             }
-                            $('#loading_save').hide();
-                        },
-                        error: function(data) {
-                            Swal.fire({
-                                icon: data.status,
-                                title: '',
-                                text: 'Error',
-                                footer: ''
-                            });
-                            $('#loading_save').hide();
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
+            }
         };
 
         function TRAM_AJX_ENVIAR_SEGUIMIENTO() {
