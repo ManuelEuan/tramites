@@ -9,9 +9,10 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
-    protected $connection   = 'mysql';
+    protected $connection   = 'pgsql';
     protected $table        = 'tram_mst_usuario';
     protected $primaryKey   = 'USUA_NIDUSUARIO';
+    protected $with         = ['TRAM_CAT_ROL', 'TRAM_MDV_SUCURSAL'];
     protected $fillable     = [
         'USUA_NIDUSUARIO',
         'USUA_NIDROL',
@@ -95,15 +96,14 @@ class User extends Authenticatable implements MustVerifyEmail
       $this->attributes['USUA_NIDUSUARIO'] = strtolower($value);
     }
 
-    protected $with = ['TRAM_CAT_ROL', 'TRAM_MDV_SUCURSAL'];
     public function TRAM_CAT_ROL()
     {
         //forean key, primay key
-        return $this->belongsTo('App\Cls_Rol', 'USUA_NIDROL', 'ROL_NIDROL');
+        return $this->belongsTo(Cls_Rol::class, 'USUA_NIDROL', 'ROL_NIDROL');
     }
     
     public function TRAM_MDV_SUCURSAL()
     {
-        return $this->hasMany('App\Cls_Sucursal', 'SUCU_NIDUSUARIO', 'USUA_NIDUSUARIO');
+        return $this->hasMany(Cls_Sucursal::class, 'SUCU_NIDUSUARIO', 'USUA_NIDUSUARIO');
     }
 }

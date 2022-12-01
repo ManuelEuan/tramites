@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Usuario extends Model
 {
-    protected $connection = 'mysql';
-    protected $table = 'tram_mst_usuario';
+    protected $connection   = 'pgsql';
+    protected $table        = 'tram_mst_usuario';
     static function TRAM_SP_VALIDAR_RFC($StrRfc)
     {
         return count(DB::select(
@@ -86,7 +86,7 @@ class Cls_Usuario extends Model
     static function TRAM_SP_VALIDAR_CORREO_OBTIENE_ID($StrCorreo)
     {
         $item = null;
-        $query = DB::select('SELECT tram_sp_validar_correo(?)', array(
+        $query = DB::select('call tram_sp_validar_correo(?)', array(
             $StrCorreo
         ));
         $user = json_decode($query[0]->tram_sp_validar_correo);
@@ -172,20 +172,18 @@ class Cls_Usuario extends Model
 
     static function TRAM_SP_AGREGAR_ACCESO($IntIdUsuario, $BolAccesoValido)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_ACCESO(?,?)',
-            array(
-                $IntIdUsuario, $BolAccesoValido
-            )
-        );
+        $ultimo = DB::table('tram_dat_acceso')->orderBy('ACCE_NIDACCESO', 'desc')->first();
+        return DB::table('tram_dat_acceso')->insert([
+            "ACCE_NIDACCESO"        => $ultimo->ACCE_NIDACCESO + 1,
+            "ACCE_NIDUSUARIO"       => $IntIdUsuario,
+            "ACCE_NACCESOVALIDO"    => $BolAccesoValido,
+            "ACCE_DFECHAACCESO"     => now(),
+        ]);
     }
 
     static function TRAM_SP_ELIMINAR_ACCESO_NO_VALIDO($IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_ELIMINAR_ACCESO_NO_VALIDO(?)',
-            array($IntIdUsuario)
-        );
+        DB::table('tram_dat_acceso')->where('ACCE_NIDUSUARIO', $IntIdUsuario)->delete();
     }
 
     static function TRAM_SP_CAMBIAR_CONTRASENA($IntIdUsuario, $StrContrasenia)
