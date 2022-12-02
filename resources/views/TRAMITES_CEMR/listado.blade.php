@@ -458,7 +458,6 @@
                             return nombre;
                         }
                     },
-                   
                     {
                         "data": "USTR_CRFC"
                     },
@@ -468,12 +467,11 @@
                     {
                         "data": "tram_razon_social",
                     },
-
                     {
                         "data": "tram_rfc"
                     },
                     {
-                        data: 'USTR_NESTATUS',
+                        data: null,//'USTR_NESTATUS',
                         render: function(data, type, row) {
                             if(isVencido){
                                 if (type === 'display') {
@@ -481,9 +479,13 @@
                                     return status;
                                 }
                             }else{
+                                var user_act = '';
                                 if (type === 'display') {
-                                    var status = estatus_seguimiento.find(x => x.id === parseInt(data));
-                                    return status.nombre;
+                                    var status = estatus_seguimiento.find(x => x.id === parseInt(data.USTR_NESTATUS));
+                                    if(data.USTR_NESTATUS == 2 && data.USTR_NBANDERA_PROCESO == 2){
+                                        user_act = '<br> El ciudadano ha actualizado su información';
+                                    }
+                                    return status.nombre+user_act;
                                 }
                             }
                             
@@ -700,7 +702,7 @@
                         "data": "USTR_CNOMBRE_TRAMITE"
                     },
                     {
-                        data: 'USTR_NESTATUS',
+                        data: null,//'USTR_NESTATUS',
                         render: function(data, type, row) {
                             if(isVencido){
                                 if (type === 'display') {
@@ -708,9 +710,13 @@
                                     return status;
                                 }
                             }else{
+                                var user_act = '';
                                 if (type === 'display') {
-                                    var status = estatus_seguimiento.find(x => x.id === parseInt(data));
-                                    return status.nombre;
+                                    var status = estatus_seguimiento.find(x => x.id === parseInt(data.USTR_NESTATUS));
+                                    if(data.USTR_NESTATUS == 2 && data.USTR_NBANDERA_PROCESO == 2){
+                                        user_act = '<br> El ciudadano ha actualizado su información';
+                                    }
+                                    return status.nombre+user_act;
                                 }
                             }
                             
