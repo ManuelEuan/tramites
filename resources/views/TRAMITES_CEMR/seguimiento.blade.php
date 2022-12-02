@@ -5,30 +5,35 @@
 
 <style>
     #mydiv {
-    position: absolute;
-    z-index: 9;
-    background-color: #f1f1f1;
-    text-align: center;
-    border: 1px solid #d3d3d3;
-    width: 600px; 
-    height: 400px;
-    overflow: hidden;
-    resize: both;
-    bottom: 20px;
-    right: 70px;
+        position: absolute;
+        z-index: 9;
+        background-color: #f1f1f1;
+        text-align: center;
+        border: 1px solid #d3d3d3;
+        width: 600px; 
+        height: 400px;
+        max-width: 1000px;
+        max-height: 800px;
+        min-width: 600px;
+        min-height: 400px;
+        overflow: hidden;
+        resize: both;
+        bottom: 20px;
+        right: 70px;
     }
     #mydivheader {
-    padding: 10px;
-    cursor: move;
-    z-index: 10;
-    background-color: #2196F3;
-    color: #fff;
+        padding: 10px;
+        cursor: move;
+        z-index: 10;
+        background-color: #2196F3;
+        color: #fff;
     }
 </style>
 
 <div id="mydiv" class="invisible">
     <div id="mydivheader">
-        <div class="row"><div class="col-9">
+        <div class="row">
+            <div class="col-9">
                 <h3>Click aqui para mover</h3>
             </div>
             <div class="col-3">
@@ -39,55 +44,54 @@
         </div>
     </div>
     
-    <div id="modalDocumentoPdf" style="height: 96%;">
-        <iframe class="modal-body" id="pdfDoc" title="Identificación Oficial" src="http://127.0.0.1:8000/files/documentos/23841297.pdf" style="width: 100%;height: 100%;"></iframe>
-    
-    </div>
+    <div id="modalDocumentoPdf" style="height: 96%;"></div>
 </div>
 
 <script>
+    var modalTop = 0;
+    
     //Make the DIV element draggagle:
     dragElement(document.getElementById("mydiv"));
 
     function dragElement(elmnt) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById(elmnt.id + "header")) {
-        /* if present, the header is where you move the DIV from:*/
-        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-    } else {
-        /* otherwise, move the DIV from anywhere inside the DIV:*/
-        elmnt.onmousedown = dragMouseDown;
-    }
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (document.getElementById(elmnt.id + "header")) {
+            /* if present, the header is where you move the DIV from:*/
+            document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+        } else {
+            /* otherwise, move the DIV from anywhere inside the DIV:*/
+            elmnt.onmousedown = dragMouseDown;
+        }
 
-    function dragMouseDown(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // get the mouse cursor position at startup:
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
-        document.onmousemove = elementDrag;
-    }
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
 
-    function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // calculate the new cursor position:
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // set the element's new position:
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // set the element's new position:
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
 
-    function closeDragElement() {
-        /* stop moving when mouse button is released:*/
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
+        function closeDragElement() {
+            /* stop moving when mouse button is released:*/
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
     }
 </script>
 
@@ -1846,7 +1850,7 @@
             $("#modalDocumento").modal('show');
 
         } else if (doc.extension === "pdf") {
-
+            $("#mydiv").css("top", modalTop);
             var documentView = '<iframe class="modal-body" id="pdfDoc" title="' + doc.nombre + '" src="' + rutaa + '" style="width: 100%;height: 100%;">' +
                 '</iframe>';
 
@@ -1865,8 +1869,8 @@
     });
 
     window.addEventListener("scroll", function(event) {
-        var top = this.scrollY;
-        $("#mydiv").css("top", top);
+        modalTop = this.scrollY;
+        $("#mydiv").css("top", modalTop);
     }, false);
 
     function TRAM_FN_DESCARGAR_DOCUMENTO(id) {
