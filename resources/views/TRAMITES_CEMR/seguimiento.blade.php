@@ -519,13 +519,13 @@
                                                                         <td>{{$con->USCON_CONCEPTO}}</td>
                                                                         <td>
                                                                             <div class="custom-control custom-checkbox">
-                                                                                <input class="custom-control-input" type="checkbox" name="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NIDUSUARIOCONCEPTO}}" {{$con->USCON_NACTIVO == 1 ? 'checked' : ''}}>
+                                                                                <input class="custom-control-input" type="checkbox" name="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NIDUSUARIOCONCEPTO}}" {{$con->USCON_NACTIVO == 1 ? 'checked' : ''}} {{$PREVIOUS_SSEGTRA_NIDESTATUS != 2 ? 'disabled' : ''}} />
                                                                                 <label class="custom-control-label" for="respc1_{{$con->USCON_NIDUSUARIOCONCEPTO}}"></label> 
                                                                             </div>
                                                                         </td>
                                                                         <td>
                                                                             <div class="form-group">
-                                                                                <input type="number" class="form-control" name="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NCANTIDAD}}">
+                                                                                <input type="number" class="form-control" name="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" id="respc2_{{$con->USCON_NIDUSUARIOCONCEPTO}}" value="{{$con->USCON_NCANTIDAD}}" {{$PREVIOUS_SSEGTRA_NIDESTATUS != 2 ? 'disabled' : ''}} />
                                                                             </div>
                                                                         </td>
                                                                     </tr>
@@ -534,13 +534,15 @@
                                                         </tbody>
                                                     </table>
                                                     </form>
-                                                    @if($seccion->SSEGTRA_PAGADO == 0)
-                                                        @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == "ANTA")
-                                                            <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;" {{($conceptos[0]->USCON_NCANTIDAD == '') ? "" : "disabled"}}>Guardar</button>
-                                                        @else
-                                                            <button type="submit" class="btn btn-success float-right" style="margin-right:10px;" disabled title="No disponible">Guardar</button>
+                                                    @if($PREVIOUS_SSEGTRA_NIDESTATUS == 2)
+                                                        @if($seccion->SSEGTRA_PAGADO == 0)
+                                                            @if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == "ANTA")
+                                                                <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;" {{($conceptos[0]->USCON_NCANTIDAD == '') ? "" : "disabled"}}>Guardar</button>
+                                                            @else
+                                                                <button type="submit" class="btn btn-success float-right" style="margin-right:10px;" disabled title="No disponible">Guardar</button>
+                                                            @endif
+                                                            {{-- <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;">Guardar</button> --}}
                                                         @endif
-                                                        {{-- <button type="submit" class="btn btn-success float-right" id="guardar_concepto_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_AJX_GUARDAR_CONCEPTOS({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})" style="margin-right:10px;">Guardar</button> --}}
                                                     @endif
                                                 @endif
 
