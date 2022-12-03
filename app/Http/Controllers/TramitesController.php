@@ -29,6 +29,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Cls_Seguimiento_Servidor_Publico;
 use App\Models\Cls_Formulario_Pregunta_Respuesta;
 
+use App\Cls_Tramite_Servicio;
+
 class TramitesController extends Controller
 {
     protected $variosService;
@@ -1116,5 +1118,12 @@ class TramitesController extends Controller
         }
 
         return response()->json(["url" => $archivo]);
+    }
+
+    public function asignar_persona(Request $request){//Request $request
+        
+        $respuesta = Cls_Tramite_Servicio::TRAM_TIPO_PERSONA($request);
+        
+        return $respuesta;
     }
 }

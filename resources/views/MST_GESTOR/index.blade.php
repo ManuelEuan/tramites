@@ -149,6 +149,17 @@
                                                     @endif
                                                 @endif
 
+                                                @if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != 'ANTA' )
+                                                    <div>
+                                                        <select id="{{ $data->TRAM_NIDTRAMITE_CONFIG }}">
+                                                        @if($data->TRAM_CTIPO_PERSONA == 0)<option value="0" selected>ambos</option>@else<option value="0">ambos</option>@endif
+                                                        @if($data->TRAM_CTIPO_PERSONA == 1)<option value="1" selected>fisica</option>@else<option value="1">fisica</option>@endif
+                                                        @if($data->TRAM_CTIPO_PERSONA == 2)<option value="2" selected>moral</option>@else<option value="2">moral</option>@endif
+                                                        </select><br>
+                                                        <button onclick="asignarPersona({{ $data->TRAM_NIDTRAMITE_CONFIG }})">guardar</button>
+                                                    </div>
+                                                @endif
+
                                             </div>
                                         @endif
                                     </div>
@@ -583,6 +594,38 @@
                     });
                 }
 
+            });
+        }
+        //Funcion para asignar el tipo de persona
+        function asignarPersona(id_tramite) {
+            var envio = {
+                    TRAM_NIDTRAMITE: id_tramite,
+                    TRAM_CTIPO_PERSONA: $("#"+id_tramite).val()
+                };
+        
+            $.ajax({
+                data: envio,
+                type: 'POST',
+                url: "gestores/asignar_persona", 
+                success: function(result){
+                    Swal.fire({
+                        icon: result.estatus,
+                        title: '',
+                        text: result.mensaje,
+                        footer: '',
+                        timer: 4000,
+                        showConfirmButton: false
+                    });
+                },
+                error: function(result) {
+                    Swal.fire({
+                        icon: "error",
+                        title: '',
+                        text: result.mensaje,
+                        footer: '',
+                        timer: 3000
+                    });
+                }
             });
         }
     </script>

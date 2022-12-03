@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Cls_Notificacion_Tramite;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Cls_Tramite_Servicio extends Model
 {
@@ -348,20 +349,48 @@ class Cls_Tramite_Servicio extends Model
     }
 
     static function TRAM_OBTENER_TRAMITES(){
-        $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
-
+        $user = Auth::user();
+        $rol =$user->USUA_NIDROL;
+        $persona_tipo = $user->USUA_NTIPO_PERSONA;
+        if($rol == 2){
+            switch ($persona_tipo) {
+                case 'FISICA':
+                    $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->where('TRAM_CTIPO_PERSONA', 1)->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
+                    break;
+                case 'MORAL':
+                    $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->where('TRAM_CTIPO_PERSONA', 2)->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
+                    break;
+                default:
+                $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->where('TRAM_CTIPO_PERSONA', 0)->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
+                    break;
+            }
+        }
+        else{
+            $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
+        }
         return $resp;
     }
+
+    static function TRAM_TIPO_PERSONA(Request $request){
+        try {
+            DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE', $request->TRAM_NIDTRAMITE)->update(['TRAM_CTIPO_PERSONA' => $request->TRAM_CTIPO_PERSONA]);
+
+            $response = [
+                "estatus" => "success",
+                "mensaje" => "¡Éxito! acción realizada con éxito.",
+                "codigo" => 200
+            ];
+        } catch (Throwable $th) {
+            $response = [
+                "estatus" => "error",
+                "mensaje" => "Ocurrió un error: " . $th->getMessage(),
+                "codigo" => 400
+            ];
+        }
+
+        return response()->json($response);
+    }
     
-
-
-
-
-
-    
-
- 
-
     static function getConfigDocArr() 
     {
         $response = DB::select('SELECT * FROM tram_mst_configdocumentos');
