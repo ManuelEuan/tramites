@@ -355,7 +355,7 @@
                                                                                                 id="resp_{{ $preg->FORM_NID }}_0"
                                                                                                 placeholder="{{ $preg->FORM_CPREGUNTA }}"
                                                                                                 value="{{ $resp->FORM_CVALOR_RESPUESTA }}"
-                                                                                                {{-- {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} --}}
+                                                                                                {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }}
                                                                                                 required {{$validacion}}>
                                                                                         @endforeach
                                                                                     @endif
