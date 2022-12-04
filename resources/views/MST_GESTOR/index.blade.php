@@ -149,13 +149,13 @@
                                                 @endif
 
                                                 @if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == 'ADM' )
-                                                    <div>
-                                                        <select id="{{ $data->TRAM_NIDTRAMITE_CONFIG }}">
-                                                        @if($data->TRAM_CTIPO_PERSONA == 0)<option value="0" selected>ambos</option>@else<option value="0">ambos</option>@endif
-                                                        @if($data->TRAM_CTIPO_PERSONA == 1)<option value="1" selected>fisica</option>@else<option value="1">fisica</option>@endif
-                                                        @if($data->TRAM_CTIPO_PERSONA == 2)<option value="2" selected>moral</option>@else<option value="2">moral</option>@endif
+                                                    <div style="position: absolute;">
+                                                        <select style="margin-top: 10px;width: 100%;" id="{{ $data->TRAM_NIDTRAMITE_CONFIG }}">
+                                                        @if($data->TRAM_CTIPO_PERSONA == 0)<option value="0" selected>Ambos</option>@else<option value="0">Ambos</option>@endif
+                                                        @if($data->TRAM_CTIPO_PERSONA == 1)<option value="1" selected>Física</option>@else<option value="1">Física</option>@endif
+                                                        @if($data->TRAM_CTIPO_PERSONA == 2)<option value="2" selected>Moral</option>@else<option value="2">Moral</option>@endif
                                                         </select><br>
-                                                        <button onclick="asignarPersona({{ $data->TRAM_NIDTRAMITE_CONFIG }})">guardar</button>
+                                                        <button class="btn-success" style="width: 100%;margin-top: 10px;" onclick="asignarPersona({{ $data->TRAM_NIDTRAMITE_CONFIG }})">Guardar</button>
                                                     </div>
                                                 @endif
 
