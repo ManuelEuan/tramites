@@ -1632,7 +1632,7 @@
     <script type="text/javascript" src="{{ URL::asset('js/citas.js') }}"></script>
     <script>
         var catalogos   = <?php echo json_encode($tramite['giros']); ?>;
-        var antSel      = <?php echo json_encode($antSel); ?>; 
+        var antSel      = <?php echo (isset($antSel) ? json_encode($antSel) : '""') ?>; 
         var catGiros    = [];
         var anios       = [];
 
