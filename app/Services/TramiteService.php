@@ -59,8 +59,11 @@ class TramiteService
             $tramite->TRAM_NIMPLEMENTADO = 1;
 
             $segundo = DB::table('tram_mst_tramite')->where(['TRAM_NIDTRAMITE_ACCEDE' => $tramite->remtisId, 'TRAM_NIMPLEMENTADO' => 1])->first();
-            if(!is_null($segundo))
+            if(!is_null($segundo)){
                 $tramite->TRAM_NIDTRAMITE_CONFIG = $segundo->TRAM_NIDTRAMITE;
+                $tramite->TRAM_CTIPO_PERSONA = $segundo->TRAM_CTIPO_PERSONA;
+            }
+                
         }
 
         return [ 'data' => $tramites];
