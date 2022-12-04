@@ -17,7 +17,6 @@
                         <h2>Datos de búsqueda</h2>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -149,7 +148,7 @@
                                                     @endif
                                                 @endif
 
-                                                @if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != 'ANTA' )
+                                                @if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == 'ADM' )
                                                     <div>
                                                         <select id="{{ $data->TRAM_NIDTRAMITE_CONFIG }}">
                                                         @if($data->TRAM_CTIPO_PERSONA == 0)<option value="0" selected>ambos</option>@else<option value="0">ambos</option>@endif
