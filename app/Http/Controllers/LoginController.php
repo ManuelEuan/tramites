@@ -47,13 +47,13 @@ class LoginController extends Controller
 		}
 		else{
 			//Valida reRECAPTCHA
-			$ArrRecaptcha = Cls_Usuario::TRAM_FN_VALIDAR_RECAPTCHA($request['g-recaptcha-response']);
+			/* $ArrRecaptcha = Cls_Usuario::TRAM_FN_VALIDAR_RECAPTCHA($request['g-recaptcha-response']);
 			if($ArrRecaptcha["success"] != '1') {
 			 	$validator->after(function($validator){
 			 		$validator->errors()->add('recaptcha', ' El campo No soy un robot es requerido.');
 			 	}); 
 			 	return Redirect::back()->withErrors($validator);
-			}
+			} */
 
 			$user = User::where('USUA_CCORREO_ELECTRONICO', $request->txtUsuario)->orWhere('USUA_CCORREO_ALTERNATIVO', $request->txtUsuario)->first();
 			if(!is_null($user)){
@@ -65,8 +65,7 @@ class LoginController extends Controller
 				$bloqueo = Cls_Bloqueo::where('BLUS_NIDUSUARIO', $user->USUA_NIDUSUARIO)->first();
 				if(!is_null($bloqueo)){
 					if($bloqueo->BLUS_NBLOQUEADO == 1){
-						$validator->after(function($validator)
-						{
+						$validator->after(function($validator) {
 							$validator->errors()->add('bloqueado', ' Estimado usuario, su cuenta se encuentra bloqueado temporalmente, favor de restablecer su contraseña.');
 						});
 						return Redirect::back()->withErrors($validator);
@@ -75,9 +74,9 @@ class LoginController extends Controller
 			}
 
 			if(!is_null($user)){
-				$ObjUser = $user->USUA_CCONTRASENIA == crypt($request->txtContrasenia, '$1$*$') ? $user : null;
+				$pass = $user->USUA_CCONTRASENIA == crypt($request->txtContrasenia, '$1$*$') ? $user : null;
 
-				if(is_null($ObjUser)) {
+				if(is_null($pass)) {
 					if(!is_null($user)){
 						Cls_Usuario::TRAM_SP_AGREGAR_ACCESO($user->USUA_NIDUSUARIO, false);
 						$ObjBitacora = new Cls_Bitacora();
@@ -110,34 +109,31 @@ class LoginController extends Controller
 							return Redirect::back()->withErrors($validator);
 						} */
 					}
-					$validator->after(function($validator)
-					{
+					$validator->after(function($validator) {
 						$validator->errors()->add('credenciales', ' La contraseña no es valida, favor de verificarla.');
 					});
 					return Redirect::back()->withErrors($validator);
 				}
 			}else{
-				$validator->after(function($validator)
-				{
+				$validator->after(function($validator) {
 					$validator->errors()->add('credenciales', ' Usuario no registrado, favor de verificar.');
 				});
 				return Redirect::back()->withErrors($validator);
 			}
 
-			if($ObjUser->USUA_NACTIVO != null && $ObjUser->USUA_NACTIVO == 1){
-				$validator->after(function($validator)
-				{
+			if($user->USUA_NACTIVO != null && $user->USUA_NACTIVO == 1){
+				$validator->after(function($validator) {
 					$validator->errors()->add('bloqueado', 'Usuario bloqueado, favor de contactar al Administrador.');
 				});
 				return Redirect::back()->withErrors($validator);
 			}
 
 			//Insertar acceso validos
-			Cls_Usuario::TRAM_SP_AGREGAR_ACCESO($ObjUser->USUA_NIDUSUARIO, true);
-			Cls_Usuario::TRAM_SP_ELIMINAR_ACCESO_NO_VALIDO($ObjUser->USUA_NIDUSUARIO);
+			Cls_Usuario::TRAM_SP_AGREGAR_ACCESO($user->USUA_NIDUSUARIO, true);
+			Cls_Usuario::TRAM_SP_ELIMINAR_ACCESO_NO_VALIDO($user->USUA_NIDUSUARIO);
 			
 			//Crea auth
-			Auth::loginUsingId($ObjUser->USUA_NIDUSUARIO);
+			Auth::loginUsingId($user->USUA_NIDUSUARIO);
 
 			//Insertar bitacora
 			$ObjBitacora = new Cls_Bitacora();

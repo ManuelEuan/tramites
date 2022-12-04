@@ -172,9 +172,7 @@ class Cls_Usuario extends Model
 
     static function TRAM_SP_AGREGAR_ACCESO($IntIdUsuario, $BolAccesoValido)
     {
-        $ultimo = DB::table('tram_dat_acceso')->orderBy('ACCE_NIDACCESO', 'desc')->first();
         return DB::table('tram_dat_acceso')->insert([
-            "ACCE_NIDACCESO"        => $ultimo->ACCE_NIDACCESO + 1,
             "ACCE_NIDUSUARIO"       => $IntIdUsuario,
             "ACCE_NACCESOVALIDO"    => $BolAccesoValido,
             "ACCE_DFECHAACCESO"     => now(),
