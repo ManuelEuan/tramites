@@ -355,13 +355,13 @@ class Cls_Tramite_Servicio extends Model
         if($rol == 2){
             switch ($persona_tipo) {
                 case 'FISICA':
-                    $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->whereRaw('TRAM_CTIPO_PERSONA = 1 OR TRAM_CTIPO_PERSONA = 0')->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
+                    $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->whereRaw('TRAM_CTIPO_PERSONA = 1 OR TRAM_CTIPO_PERSONA = 0 OR TRAM_CTIPO_PERSONA IS NULL')->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
                     break;
                 case 'MORAL':
-                    $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->whereRaw('TRAM_CTIPO_PERSONA = 2 OR TRAM_CTIPO_PERSONA = 0')->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
+                    $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->whereRaw('TRAM_CTIPO_PERSONA = 2 OR TRAM_CTIPO_PERSONA = 0 OR TRAM_CTIPO_PERSONA IS NULL')->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
                     break;
                 default:
-                $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->whereRaw('TRAM_CTIPO_PERSONA < 5')->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
+                $resp = DB::table('tram_mst_tramite')->where('TRAM_NIMPLEMENTADO', 1)->orderBy('TRAM_CTIPO_PERSONA','ASC')->get();
                     break;
             }
         }
