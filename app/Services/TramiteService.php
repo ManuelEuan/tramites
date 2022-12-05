@@ -22,10 +22,10 @@ class TramiteService
         $usuario    = Auth::user();
         $rol        = $usuario->TRAM_CAT_ROL;
 
-        $query = DB::connection('mysql2')->table('procedures as p')
+        $query = DB::connection('remtys')->table('procedures as p')
                     ->join('administrativeunits as a', 'p.IdAdministrativeUnit', '=', 'a.Id')
                     ->join('dependencies as d', 'a.IdDependency', '=', 'd.Id')
-                    ->select('p.id','p.iId as remtisId','p.CitizenDescription', 'p.name', 'd.name as nameDependencia', 'd.Description as descripcionDependencia', 'p.CreatedDate')
+                    ->select('p.Id','p.iId as remtisId','p.CitizenDescription', 'p.Name', 'd.Name as nameDependencia', 'd.Description as descripcionDependencia', 'p.CreatedDate')
                     ->where(['p.ProcedureState'=> 5, 'p.IsDeleted' => 0]);
 
         if($rol->ROL_CCLAVE != 'ADM'){
@@ -46,10 +46,11 @@ class TramiteService
             $registros = $data->registros;
 
         $tramites = $query->paginate($registros);
+
         foreach ($tramites as $tramite) {
             $tramite->TRAM_NIDTRAMITE           = $tramite->remtisId;
             $tramite->TRAM_NIDTRAMITE_CONFIG    = 0;
-            $tramite->TRAM_CNOMBRE              = $tramite->name;
+            $tramite->TRAM_CNOMBRE              = $tramite->Name;
             $tramite->TRAM_CDESCRIPCION         = $tramite->CitizenDescription;
             $tramite->UNAD_CNID                 = $tramite->descripcionDependencia;
             $tramite->UNAD_CNOMBRE              = $tramite->nameDependencia;
@@ -57,7 +58,6 @@ class TramiteService
             $tramite->TRAM_DFECHAACTUALIZACION  = $tramite->CreatedDate;
 
             $tramite->TRAM_NIMPLEMENTADO = 1;
-
             $segundo = DB::table('tram_mst_tramite')->where(['TRAM_NIDTRAMITE_ACCEDE' => $tramite->remtisId, 'TRAM_NIMPLEMENTADO' => 1])->first();
             if(!is_null($segundo)){
                 $tramite->TRAM_NIDTRAMITE_CONFIG = $segundo->TRAM_NIDTRAMITE;
@@ -75,7 +75,7 @@ class TramiteService
      * @return array
      */
     public function filtros(Request $data){
-        $dependencias = DB::connection('mysql2')->table('dependencies')
+        $dependencias = DB::connection('remtys')->table('dependencies')
                             ->select('Id as id', 'Name as name', 'Description as description', 'Acronym as acronym','iId' )
                             ->where('IsDeleted', false)->get();
         return [ 'dependencias' => $dependencias];
@@ -87,7 +87,7 @@ class TramiteService
      * @return Object
      */
     public function getTramite(int $tramiteID){
-        $query = DB::connection('mysql2')->table('procedures as p')
+        $query = DB::connection('remtys')->table('procedures as p')
                     ->join('administrativeunits as a', 'p.IdAdministrativeUnit', '=', 'a.Id')
                     ->join('dependencies as d', 'a.IdDependency', '=', 'd.Id')
                     ->join('instruments as i', 'p.IdInstrument', '=', 'i.Id')
@@ -97,8 +97,8 @@ class TramiteService
                     ->join('categories as cat', 'prcat.CategoryId', '=', 'cat.Id')
                     ->join('requesttypes as retyp', 'p.IdRequestType', '=', 'retyp.Id')
                     ->leftJoin('targettypes as tartyp', 'p.IdTargetType', '=', 'tartyp.Id')
-                    ->leftJoin('daysrange as v','p.idVigencyRange', '=', 'v.id')
-                    ->select('p.*', 'p.iId as remtisId','d.name as nameDependencia', 'p.CitizenDescription' ,'d.iId as dependenciaId' 
+                    ->leftJoin('daysrange as v','p.IdVigencyRange', '=', 'v.Id')
+                    ->select('p.*', 'p.iId as remtisId','d.Name as nameDependencia', 'p.CitizenDescription' ,'d.iId as dependenciaId' 
                     ,'i.Name as nameInstrumento', 'v.Name as tipoVigencia', 'c.Name as community', 'cat.Name as categories'
                     , 'retyp.Name as requesttypes', 'tartyp.Name as targettypes')
                     ->where('p.iId', $tramiteID)->first();
@@ -111,39 +111,40 @@ class TramiteService
      * @return array
      */
     public function getDetalle(string $tramiteID){
-        $documentos = DB::connection('mysql2')->table('procedurerequisit as pr')
+        $documentos = DB::connection('remtys')->table('procedurerequisit as pr')
                             ->join('requisits as r', 'pr.RequisitId', '=', 'r.Id')
                             ->join('naturetypes as n', 'pr.Nature', '=', 'n.Id')
                             ->join('naturepresentationtypes as np', 'pr.NatureHow', '=', 'np.Id')
                             ->select('r.*','r.Id as uuid', 'r.iId as Id' ,'n.Name as tipoDocumento', 'np.Name as presentacion')
                             ->where(['pr.IdProcedure' => $tramiteID, 'r.IsDeleted' => false])
-                            ->groupBy('r.Id','n.Name', 'np.Name')->get();
-        $requisitos = DB::connection('mysql2')->table('procedurerequisit as pr')
+                            ->groupBy('r.Id','n.Name', 'np.Name','r.Name','r.Description', 'r.IsDeleted','r.iId')->get();
+
+        $requisitos = DB::connection('remtys')->table('procedurerequisit as pr')
                             ->select('pr.Description', 'pr.RequisitId')
                             ->where(['pr.IdProcedure' => $tramiteID])->get();
 
-        $oficinas   = DB::connection('mysql2')->table('procedureoffices as po')
+        $oficinas   = DB::connection('remtys')->table('procedureoffices as po')
                             ->join('administrativeunitbuildings as a', 'po.IdAdministrativeUnitBuilding', '=', 'a.Id' )
                             ->join('sepomex as s','a.SepomexId', "=" ,'s.Id')
                             ->select('a.*', 's.PostalCode', 's.Colony', 's.Municipality', 's.State')
-                            ->where(['po.IdProcedure' => $tramiteID, 'a.isDeleted' => false])->get();
+                            ->where(['po.IdProcedure' => $tramiteID, 'a.IsDeleted' => false])->get();
 
-        $horarios   =   DB::connection('mysql2')->table('procedureoffices as po')
+        $horarios   =   DB::connection('remtys')->table('procedureoffices as po')
                             ->join('administrativeunitbuildings as a', 'po.IdAdministrativeUnitBuilding', '=', 'a.Id' )
                             ->leftjoin('administrativeunitbuildingdays as ad', 'ad.IdAdministrativeUnitBuildingId', "=" ,'a.Id')
                             ->join('days as d', 'ad.DayId', 'd.Id')
                             ->select('a.*', 'd.Name as diaNombre','d.Id as diaId')
-                            ->where(['po.IdProcedure' => $tramiteID, 'a.isDeleted' => false])->get();
+                            ->where(['po.IdProcedure' => $tramiteID, 'a.IsDeleted' => false])->get();
 
-        $funcionarios   = DB::connection('mysql2')->table('procedurecontacts as pc')
+        $funcionarios   = DB::connection('remtys')->table('procedurecontacts as pc')
                                 ->where(['IdProcedure' => $tramiteID, 'IsDeleted' => false])->get();
 
-        $lugaresPago    = DB::connection('mysql2')->table('procedurechanges as pc')
+        $lugaresPago    = DB::connection('remtys')->table('procedurechanges as pc')
                                 ->where(['IdProcedure' => $tramiteID, 'IsDeleted' => false])
                                 ->where(function ($query) {
-                                    $query->where("pc.property", "like","%Banc%")
-                                            ->orWhere("pc.property", "like","En línea%")
-                                            ->orWhere("pc.property", "like","%Tienda%");
+                                    $query->where("pc.Property", "like","%Banc%")
+                                            ->orWhere("pc.Property", "like","En línea%")
+                                            ->orWhere("pc.Property", "like","%Tienda%");
                                 })->get();
 
         return ["documentos" => $documentos, "requisitos" => $requisitos, "oficinas" => $oficinas, "horario" => $horarios, "funcionarios" => $funcionarios, "lugaresPago" => $lugaresPago];
@@ -344,7 +345,7 @@ class TramiteService
      * @return object
      */
     public function getEstadoandMunicipio(int $dependenciaID){
-        $datos = DB::connection('mysql2')->table('dependencies as d')
+        $datos = DB::connection('remtys')->table('dependencies as d')
                         ->join('states as s', 'd.IdState', '=', 's.Id')
                         ->join('municipalities as m', 'd.IdMunicipal', '=', 'm.Id')
                         ->select('s.Id as estadoId', 's.Name as estado', 'm.Id as municipioId', 'm.Name as municipio')
@@ -358,7 +359,7 @@ class TramiteService
      * @return object
      */
     public function getModulo(int $dependenciaID){
-        $datos = DB::connection('mysql2')->table('dependencies as d')
+        $datos = DB::connection('remtys')->table('dependencies as d')
                         ->join('states as s', 'd.IdState', '=', 's.Id')
                         ->join('municipalities as m', 'd.IdMunicipal', '=', 'm.Id')
                         ->select('s.Id as estadoId', 's.Name as estado', 'm.Id as municipioId', 'm.Name as municipio')
@@ -387,7 +388,7 @@ class TramiteService
      * @return Object
      */
     public function getRetys($tabla, $uuid){
-        return DB::connection('mysql2')->table($tabla)->where('Id', $uuid)->first();
+        return DB::connection('remtys')->table($tabla)->where('Id', $uuid)->first();
     }
 
     /**

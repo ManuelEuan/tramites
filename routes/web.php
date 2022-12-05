@@ -189,9 +189,9 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/', array('uses' => 'GestorController@index'))->name('gestor_index');
     Route::get('/validaTramite', 'GestorController@validaTramite');
     Route::post('/consultar', 'GestorController@consultar')->name('gestor_consultar');
-    Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@configurar_tramite'))->name("gestor_configurar_tramite");
+    Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', 'GestorController@configurar_tramite')->name("gestor_configurar_tramite");
     Route::get('/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
-    Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@consultar_tramite'))->name("gestor_consultar_tramite");
+    Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', 'GestorController@consultar_tramite')->name("gestor_consultar_tramite");
     Route::post('/asignar_persona', 'TramitesController@asignar_persona')->name('asignar_persona');
     
     Route::group(['prefix' => 'configuracion'], function () {

@@ -157,8 +157,12 @@ class GestorController extends Controller
 
         #################### Configuraciones anteriores ####################
         $tramites   = new Cls_Gestor();
-        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
+        /* $registro   = DB::table('tram_view_tramite_accede')->where([
+                            'TRAM_NIDTRAMITE'           => $tramiteID,
+                            'TRAM_NIDTRAMITE_CONFIG'    => 0,
 
+                        ])->first(); */ //$tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
+        $registro = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
         if (count($registro) > 0) {
             $tramite['VALIDO'] = true;
             $tramite['TRAM_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE;

@@ -13,7 +13,7 @@ class ServidoresService
      * @return array
      */
     public function getDependencias(){
-        return DB::connection('mysql2')->table('dependencies')->where(['IsDeleted' => 0])->select()->get();    
+        return DB::connection('remtys')->table('dependencies')->where(['IsDeleted' => 0])->select()->get();    
     }
 
     /**
@@ -22,7 +22,7 @@ class ServidoresService
      * @return array
      */
     public function getUnidadesAdministrativas($request){
-        $query = DB::connection('mysql2')->table('administrativeunits');
+        $query = DB::connection('remtys')->table('administrativeunits');
 
         if(!is_null($request->dependencia_id)){
             $array = explode(',',$request->dependencia_id );
@@ -38,7 +38,7 @@ class ServidoresService
      * @return array
      */
     public function getTramites($request){
-        $query      = DB::connection('mysql2')->table('procedures as p')
+        $query      = DB::connection('remtys')->table('procedures as p')
                         ->select()->where(['p.ProcedureState'=> 5, 'p.IsDeleted' => 0]);
 
         if($request->tipo != "all"){
@@ -55,7 +55,7 @@ class ServidoresService
      * @return array
      */
     public function getEdificios($request){
-        $query      = DB::connection('mysql2')->table('administrativeunitbuildings as e')->select('e.*', 'u.AdministrativeUnitId')
+        $query      = DB::connection('remtys')->table('administrativeunitbuildings as e')->select('e.*', 'u.AdministrativeUnitId')
                             ->join('administrativeunitbuildingsunits as u', 'e.Id', '=', 'u.AdministrativeUnitBuildingId');
 
         if($request->tipo != "all"){

@@ -79,7 +79,7 @@ class CatalogoService {
      * @return Object
      */
     public function getCondition($tabla, $match, $uuid){
-        return DB::connection('mysql2')->table($tabla)->where($match, $uuid)->get();
+        return DB::connection('remtys')->table($tabla)->where($match, $uuid)->get();
     }
 
     /**
@@ -88,6 +88,6 @@ class CatalogoService {
      * @return Object
      */
     public function get($tabla){
-        return DB::connection('mysql2')->table($tabla)->get();
+        return DB::connection('remtys')->table($tabla)->get();
     }
 }
