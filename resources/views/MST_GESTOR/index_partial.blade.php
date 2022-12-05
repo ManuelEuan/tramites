@@ -30,7 +30,7 @@
                                     @endif
 
                                     @if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == 'ADM' )
-                                        <div style="position: absolute;">
+                                        <div style="position: absolute; z-index:999;">
                                             <select style="margin-top: 10px;width: 100%;" id="{{ $data->TRAM_NIDTRAMITE_CONFIG }}">
                                             @if($data->TRAM_CTIPO_PERSONA == 0)<option value="0" selected>Ambos</option>@else<option value="0">Ambos</option>@endif
                                             @if($data->TRAM_CTIPO_PERSONA == 1)<option value="1" selected>Física</option>@else<option value="1">Física</option>@endif
