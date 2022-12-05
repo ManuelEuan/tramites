@@ -483,7 +483,7 @@
                                 if (type === 'display') {
                                     var status = estatus_seguimiento.find(x => x.id === parseInt(data.USTR_NESTATUS));
                                     if(data.USTR_NESTATUS == 2 && data.USTR_NBANDERA_PROCESO == 2){
-                                        user_act = '<br> El ciudadano ha actualizado su información';
+                                        user_act = '<br> Pendiente de revisión (observaciones atendidas)';
                                     }
                                     return status.nombre+user_act;
                                 }
@@ -714,7 +714,7 @@
                                 if (type === 'display') {
                                     var status = estatus_seguimiento.find(x => x.id === parseInt(data.USTR_NESTATUS));
                                     if(data.USTR_NESTATUS == 2 && data.USTR_NBANDERA_PROCESO == 2){
-                                        user_act = '<br> El ciudadano ha actualizado su información';
+                                        user_act = '<br> Pendiente de revisión (observaciones atendidas)';
                                     }
                                     return status.nombre+user_act;
                                 }
