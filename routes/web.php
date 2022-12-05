@@ -35,9 +35,9 @@ Route::post('/registrar/agregar', array('uses' => 'RegistroController@agregar'))
 Route::get('/registrar/validar_rfc/{StrRfc}', array('uses' => 'RegistroController@validar_rfc'));
 Route::get('/registrar/validar_correo/{StrCorreo}', array('uses' => 'RegistroController@validar_correo'));
 Route::get('/registrar/validar_curp/{StrCurp}', array('uses' => 'RegistroController@validar_curp'));
-Route::get('/registrar/localidades/{Strlocalidad}', array('uses' => 'RegistroController@localidades'));
+Route::get('/registrar/localidades/{id}', array('uses' => 'RegistroController@localidades'));
 Route::get('/registrar/estados', array('uses' => 'RegistroController@estados'));
-Route::get('/registrar/municipios', array('uses' => 'RegistroController@municipios'));
+Route::get('/registrar/municipios/{id}', array('uses' => 'RegistroController@municipios'));
 
 Route::group(['prefix' => 'perfil'], function () {
     Route::get('/', 'PerfilController@index');
@@ -192,7 +192,8 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@configurar_tramite'))->name("gestor_configurar_tramite");
     Route::get('/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
     Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@consultar_tramite'))->name("gestor_consultar_tramite");
-
+    Route::post('/asignar_persona', 'TramitesController@asignar_persona')->name('asignar_persona');
+    
     Route::group(['prefix' => 'configuracion'], function () {
         Route::get('/seccion_formulario', array('uses' => 'GestorController@view_formulario'))->name("seccion_formulario");
         Route::get('/seccion_revision', array('uses' => 'GestorController@view_revision'))->name("seccion_revision");

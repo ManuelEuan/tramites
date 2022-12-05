@@ -543,8 +543,9 @@ class Cls_Seguimiento_Servidor_Publico extends Model
         try {
             $hoy = "'".date('y-m-d h:i:s')."'";
             //Mantenemos el estatus general del trámite en 4 -> Información incompleta
+            //Ponemos USTR_NBANDERA_PROCESO = 1 para poner texto adicional de si el usuario contesto.
             DB::select(
-                'UPDATE tram_mdv_usuariotramite SET USTR_NESTATUS = 4, USTR_DFECHAESTATUS = '.$hoy.' WHERE USTR_NIDUSUARIOTRAMITE = ?',
+                'UPDATE tram_mdv_usuariotramite SET USTR_NESTATUS = 4, USTR_NBANDERA_PROCESO = 1, USTR_DFECHAESTATUS = '.$hoy.' WHERE USTR_NIDUSUARIOTRAMITE = ?',
                 array($CONF_NIDUSUARIOTRAMITE)
             );
 

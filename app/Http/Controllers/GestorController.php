@@ -34,7 +34,7 @@ class GestorController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        /* $this->middleware('auth'); */
         $this->tramiteService   = new TramiteService();
         $this->citasService     = new CitasService();
     }
@@ -520,29 +520,43 @@ class GestorController extends Controller
 
     private function TRAM_AGREGAR_DOCUMENTO($TRAM_LIST_DOCUMENTO, $TRAM_NIDTRAMITE)
     {
-        try {
-            //Eliminas secciones del trámite
-            $gestor = new Cls_Gestor();
-            $gestor->TRAM_SP_ELIMINAR_DOCUMENTO($TRAM_NIDTRAMITE);
+        $arrayId = array();
 
+        try {
             //Eliminar edificos, resolutivos y conceptos del trámite
+            $gestor = new Cls_Gestor();
             $gestor->TRAM_SP_ELIMINAR_EDIFICIO($TRAM_NIDTRAMITE);
             $gestor->TRAM_SP_ELIMINAR_RESOLUTIVO($TRAM_NIDTRAMITE);
             $gestor->TRAM_SP_ELIMINAR_CONCEPTO($TRAM_NIDTRAMITE);
 
-            foreach ($TRAM_LIST_DOCUMENTO as  $documentos) {
-                $gestor->TRAM_SP_AGREGAR_DOCUMENTO(
-                    $TRAM_NIDTRAMITE,
-                    $documentos['TRAD_NIDDOCUMENTO'],
-                    $documentos['TRAD_CNOMBRE'],
-                    $documentos['TRAD_CDESCRIPCION'],
-                    $documentos['TRAD_CEXTENSION'],
-                    $documentos['TRAD_NOBLIGATORIO'],
-                    $documentos['TRAD_NMULTIPLE']
-                );
+            foreach ($TRAM_LIST_DOCUMENTO as $documentos) {
+                array_push($arrayId, $documentos['TRAD_NIDDOCUMENTO']);
+                $item = DB::table('tram_mdv_documento_tramite')->where(['TRAD_NIDTRAMITE' => $TRAM_NIDTRAMITE, 'TRAD_NIDDOCUMENTO' => $documentos['TRAD_NIDDOCUMENTO']])->first();
+                
+                if(is_null($item)){
+                    $gestor->TRAM_SP_AGREGAR_DOCUMENTO(
+                        $TRAM_NIDTRAMITE,
+                        $documentos['TRAD_NIDDOCUMENTO'],
+                        $documentos['TRAD_CNOMBRE'],
+                        $documentos['TRAD_CDESCRIPCION'],
+                        $documentos['TRAD_CEXTENSION'],
+                        $documentos['TRAD_NOBLIGATORIO'],
+                        $documentos['TRAD_NMULTIPLE']
+                    );
+                }
+                else{
+                    DB::table('tram_mdv_documento_tramite')
+                        ->where(['TRAD_NIDTRAMITE' => $TRAM_NIDTRAMITE, 'TRAD_NIDDOCUMENTO' => $documentos['TRAD_NIDDOCUMENTO']])
+                        ->update([
+                            'TRAD_NOBLIGATORIO' => $documentos['TRAD_NOBLIGATORIO'],
+                            'TRAD_NMULTIPLE'    => $documentos['TRAD_NMULTIPLE']
+                        ]);
+                }
             }
+
+            //Elimino los que ya no van a estar
+            DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE)->whereNotIn('TRAD_NIDDOCUMENTO', $arrayId)->delete();
         } catch (EXception $ex) {
-            dd($ex);
             throw $ex;
         }
     }

@@ -59,8 +59,11 @@ class TramiteService
             $tramite->TRAM_NIMPLEMENTADO = 1;
 
             $segundo = DB::table('tram_mst_tramite')->where(['TRAM_NIDTRAMITE_ACCEDE' => $tramite->remtisId, 'TRAM_NIMPLEMENTADO' => 1])->first();
-            if(!is_null($segundo))
+            if(!is_null($segundo)){
                 $tramite->TRAM_NIDTRAMITE_CONFIG = $segundo->TRAM_NIDTRAMITE;
+                $tramite->TRAM_CTIPO_PERSONA = $segundo->TRAM_CTIPO_PERSONA;
+            }
+                
         }
 
         return [ 'data' => $tramites];
@@ -465,6 +468,7 @@ class TramiteService
 
 
         $registros  = !is_null($request->length) ? $request->length : 10; 
+        $registros  = $registros == -1 ? 1000000 : $registros;
         $order      = isset($request->order[0]['dir']) ? $request->order[0]['dir'] : 'desc';
         $order      = $request->order[0]['column'] == 0 ? 'desc' : 'asc';
         $order_by   = $request->columns[$request->order[0]['column']]['data'];
@@ -472,7 +476,7 @@ class TramiteService
         $order_by   = !is_null($order_by)  ? $order_by : "v.USTR_DFECHACREACION";
         $start      = !is_null($request->start) ? $request->start : 0;
         $total      = $query->count();
-        $resultado  = $query->orderBy($order_by, $order)->limit($registros)->get();//->offset($start)
+        $resultado  = $query->orderBy($order_by, $order)->offset($start)->limit($registros)->get();
 
         foreach($resultado as $item){
             $creacion   = new DateTime($item->USTR_DFECHACREACION);
