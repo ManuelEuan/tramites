@@ -350,7 +350,7 @@
                                                                                     @endphp 
                                                                                     @if ($preg->respuestas > 0)
                                                                                         @foreach ($preg->respuestas as $resp)
-                                                                                            <input type="{{$tipo}}" class="form-control"
+                                                                                            <input type="{{$tipo}}" class="form-control abierta"
                                                                                                 name="resp_{{ $preg->FORM_NID }}_0_{{ $resp->id }}"
                                                                                                 id="resp_{{ $preg->FORM_NID }}_0"
                                                                                                 placeholder="{{ $preg->FORM_CPREGUNTA }}"
@@ -564,7 +564,7 @@
                                                                                         @endif
                                                                                     @endforeach
 
-                                                                                    <select {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control {{$class}}" data-live-search="true" {{$multiple}} {{ $name }}  required>
+                                                                                    <select {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control {{$class}} iputCatalogo" data-live-search="true" {{$multiple}} {{ $name }}  required>
                                                                                         @foreach ($preg->respuestas as $resp)
                                                                                             @foreach ($resp->catalogos as $cat)
                                                                                                 <?php
@@ -1784,6 +1784,24 @@
             }
             // existeCita(idusuario, id, idtramiteAccede);
 
+            $( ".abierta" ).change(function() {
+                if (!$("#frmForm").valid()) {
+                    $(".btnEnviar").hide();
+                }
+            });
+
+            $( ".iputCatalogo" ).change(function() {
+                if (!$("#frmForm").valid()) {
+                    $(".btnEnviar").hide();
+                }
+            });
+
+            $( ".txt_abierta" ).change(function() {
+                if (!$("#frmForm").valid()) {
+                    $(".btnEnviar").hide();
+                }
+            });
+
             if ($('#sincita_edificios') != undefined) {
                 //obtenerEdificios(idtramiteAccede, false)
                 obtenerModulos(idtramiteAccede, false)
@@ -1929,6 +1947,8 @@
             TRAM_FN_OCULTAR_CONTENEDOR();
             TRAM_FN_OCULTAR_FORM();
 
+            
+
             //Get html
             $(".txtEnriquecido").each(function() {
                 var id = this.id;
@@ -2058,6 +2078,9 @@
                 minlength: "El valor agregado solo puede ser a 18 digitos.",
             });
 
+            
+
+        
             $('.secconceptos').each(function() {
                 var id = this.id;
                 var _arr = id.split("_");
