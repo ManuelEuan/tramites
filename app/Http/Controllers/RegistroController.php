@@ -17,8 +17,6 @@ class RegistroController extends Controller
 {
     protected $catalogoService;
     public function __construct(){
-        session(['retys' => request()->path()]);
-        $this->middleware('auth');
         $this->catalogoService  = new CatalogoService();
     }
     
