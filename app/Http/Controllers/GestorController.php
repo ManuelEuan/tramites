@@ -156,24 +156,19 @@ class GestorController extends Controller
         $edificios      = $datosGenerales['oficinas'];
 
         #################### Configuraciones anteriores ####################
-        $tramites   = new Cls_Gestor();
-        /* $registro   = DB::table('tram_view_tramite_accede')->where([
-                            'TRAM_NIDTRAMITE'           => $tramiteID,
-                            'TRAM_NIDTRAMITE_CONFIG'    => 0,
+        $tramites   = new Cls_Gestor();;
+        $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
 
-                        ])->first(); */ //$tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
-        $registro = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
-        if (count($registro) > 0) {
+        if (!is_null($registro)) {
             $tramite['VALIDO'] = true;
-            $tramite['TRAM_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE;
+            $tramite['TRAM_ID_TRAMITE']     = $registro->tram_nidtramite;
             $tramite['ACCE_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
             $tramite['ACCE_CLAVE_INTERNA']  = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-            $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['EDIFICIOS']           = $registro[0]->TRAM_CNOMBRE;
-            $tramite['TRAM_NIMPLEMENTADO']  = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
-            $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
+            $tramite['ACCE_NOMBRE_TRAMITE'] = $registro->tram_cnombre;
+            $tramite['EDIFICIOS']           = $registro->tram_cnombre;
+            $tramite['TRAM_NIMPLEMENTADO']  = $registro->tram_nimplementado != null ? intval($registro->tram_nimplementado) : intval($registro->tram_nimplementado);
+            $tramite['TRAM_NENLACEOFICIAL'] = $registro->tram_nenlaceoficial != null ? intval($registro->tram_nenlaceoficial) : intval($registro->tram_nenlaceoficial);
         } else {
-
             if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
                 $tramite['VALIDO'] = false;
                 $tramite['TRAM_ID_TRAMITE'] = NULL;
