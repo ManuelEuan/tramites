@@ -342,6 +342,17 @@ class Cls_Tramite_Servicio extends Model
         }
     }
 
+    static function TRAM_VISTO_NOTIFICACION($IntIdNotificacion)
+    {
+        try {
+
+            Cls_Notificacion_Tramite::where(['HNOTI_NIDNOTIFICACION' => $IntIdNotificacion])
+                ->update(['HNOTI_DFECHALEIDO' => date('Y-m-d H:i:s')]);
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+
     public function TRAM_CONSULTAR_DETALLE_NOTIFICACION($IntIdNotificacion){
         return Cls_Notificacion_Tramite::where('HNOTI_NIDNOTIFICACION', $IntIdNotificacion)
         ->select('*')
