@@ -31,13 +31,15 @@ Route::post('/cambiar_contrasena', array('uses' => 'LoginController@cambiar_cont
 Route::get('/registrar', function () {
     return view('MST_REGISTRO.index');
 });
-Route::post('/registrar/agregar', array('uses' => 'RegistroController@agregar'));
+
+Route::post('/registrar/agregar', 'RegistroController@agregar');
+
 Route::get('/registrar/validar_rfc/{StrRfc}', array('uses' => 'RegistroController@validar_rfc'));
 Route::get('/registrar/validar_correo/{StrCorreo}', array('uses' => 'RegistroController@validar_correo'));
 Route::get('/registrar/validar_curp/{StrCurp}', array('uses' => 'RegistroController@validar_curp'));
-Route::get('/registrar/localidades/{Strlocalidad}', array('uses' => 'RegistroController@localidades'));
+Route::get('/registrar/localidades/{id}', array('uses' => 'RegistroController@localidades'));
 Route::get('/registrar/estados', array('uses' => 'RegistroController@estados'));
-Route::get('/registrar/municipios', array('uses' => 'RegistroController@municipios'));
+Route::get('/registrar/municipios/{id}', array('uses' => 'RegistroController@municipios'));
 
 Route::group(['prefix' => 'perfil'], function () {
     Route::get('/', 'PerfilController@index');
@@ -142,9 +144,6 @@ Route::group(['prefix' => 'tramite_servicio_cemr'], function () {
 Route::group(['prefix' => 'formulario'], function () {
     Route::get('/', 'FormularioController@list');
     Route::get('/secciones', 'FormularioController@secciones');
-    Route::get('/roles', 'FormularioController@roles');
-    Route::get('/areasXDependencia/{id}', 'FormularioController@areasXDependencia');
-    Route::get('/dependencias_formulario/{id}', 'FormularioController@dependencias_formulario');
     Route::get('/find', 'FormularioController@find');
     Route::post('/store', 'FormularioController@store');
     Route::post('/status', 'FormularioController@status');
@@ -152,11 +151,6 @@ Route::group(['prefix' => 'formulario'], function () {
     Route::post('/delete', 'FormularioController@delete');
     Route::get('/detalle', 'FormularioController@detalle');
     Route::post('/preguntas', 'FormularioController@preguntas');
-
-    Route::post('/seccion_roles', 'FormularioController@seccion_roles');
-    Route::post('/seccion_rol_asigna', 'FormularioController@seccion_rol_asigna');
-    Route::post('/dependencia_asigna_area', 'FormularioController@dependencia_asigna_area');
-    Route::post('/seccion_asigna_dependencia', 'FormularioController@seccion_asigna_dependencia');
     
 });
 
@@ -180,6 +174,7 @@ Route::group(['prefix' => 'personasfsicasmorales'], function () {
 });
 
 Route::get('/ListaAnalistas', 'PersonaController@findAnalista');
+Route::get('/ListaAnalistasArea/{area}', 'PersonaController@findAnalistaArea');
 
 Route::group(['prefix' => 'notificaciones'], function () {
     Route::post('/', 'NotificacionController@getNotificaciones');
@@ -196,10 +191,11 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/', array('uses' => 'GestorController@index'))->name('gestor_index');
     Route::get('/validaTramite', 'GestorController@validaTramite');
     Route::post('/consultar', 'GestorController@consultar')->name('gestor_consultar');
-    Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@configurar_tramite'))->name("gestor_configurar_tramite");
+    Route::get('/configurar_tramite/{tramiteID}/{tramiteIDConfig}', 'GestorController@configurar_tramite')->name("gestor_configurar_tramite");
     Route::get('/detalle_configuracion_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@detalle_configuracion_tramite'))->name("detalle_configuracion_tramite");
-    Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', array('uses' => 'GestorController@consultar_tramite'))->name("gestor_consultar_tramite");
-
+    Route::get('/consultar_tramite/{tramiteID}/{tramiteIDConfig}', 'GestorController@consultar_tramite')->name("gestor_consultar_tramite");
+    Route::post('/asignar_persona', 'TramitesController@asignar_persona')->name('asignar_persona');
+    
     Route::group(['prefix' => 'configuracion'], function () {
         Route::get('/seccion_formulario', array('uses' => 'GestorController@view_formulario'))->name("seccion_formulario");
         Route::get('/seccion_revision', array('uses' => 'GestorController@view_revision'))->name("seccion_revision");

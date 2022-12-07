@@ -768,14 +768,14 @@
                                                                                     <label for="">Número
                                                                                         interior</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroInteriorParticular" name="txtNumeroInteriorParticular" value="{{ $usuario->USUA_NNUMERO_INTERIOR_PARTICULAR }}" placeholder="Número interior">
+                                                                                    <input type="text" class="form-control" id="txtNumeroInteriorParticular" name="txtNumeroInteriorParticular" value="{{ $usuario->USUA_NNUMERO_INTERIOR_PARTICULAR }}" placeholder="Número interior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Número
                                                                                         exterior</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroExteriorParticular" name="txtNumeroExteriorParticular" value="{{ $usuario->USUA_NNUMERO_EXTERIOR_PARTICULAR }}" placeholder="Número exterior">
+                                                                                    <input type="text" class="form-control" id="txtNumeroExteriorParticular" name="txtNumeroExteriorParticular" value="{{ $usuario->USUA_NNUMERO_EXTERIOR_PARTICULAR }}" placeholder="Número exterior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
@@ -792,30 +792,36 @@
                                                                         <div class="col-md-12">
                                                                             <div class="row justify-content-md-center">
                                                                                 <div class="col-md-3">
-                                                                                    <label for="">Colonia</label>
+                                                                                    <label for="">Pais</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtColoniaParticular" name="txtColoniaParticular" value="{{ $usuario->USUA_CCOLONIA_PARTICULAR }}" placeholder="Centro">
-                                                                                </div>
-
-                                                                                <div class="col-md-3">
-                                                                                    <label for="">Municipio</label>
-                                                                                    <br>
-                                                                                    <input type="text" class="form-control" id="txtMunicipioParticular" name="txtMunicipioParticular" value="{{ $usuario->USUA_CMUNICIPIO_PARTICULAR }}" placeholder="Querétaro">
+                                                                                    <!--<input type="text" class="form-control" id="txtPaisParticular" name="txtPaisParticular" value="{{ $usuario->USUA_CPAIS_PARTICULAR }}" placeholder="México">--->
+                                                                                    <div id="selectcmbPais_Particular"></div>
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Estado<nav>
                                                                                         </nav></label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtEstadoParticular" name="txtEstadoParticular" value="{{ $usuario->USUA_CESTADO_PARTICULAR }}" placeholder="Querétaro">
+                                                                                    <!-- <input type="text" class="form-control" id="txtEstadoParticular" name="txtEstadoParticular" value="{{ $usuario->USUA_CESTADO_PARTICULAR }}" placeholder="Querétaro">-->
+                                                                                    <div id="selectcmbEstado_Particular"></div>
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
-                                                                                    <label for="">Pais</label>
+                                                                                    <label for="">Municipio</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtPaisParticular" name="txtPaisParticular" value="{{ $usuario->USUA_CPAIS_PARTICULAR }}" placeholder="México">
+                                                                                    <!-- <input type="text" class="form-control" id="txtMunicipioParticular" name="txtMunicipioParticular" value="{{ $usuario->USUA_CMUNICIPIO_PARTICULAR }}" placeholder="Querétaro">-->
+                                                                                    <div id="selectcmbMunicipio_Particular"></div>
                                                                                 </div>
 
+                                                                                <div class="col-md-3">
+                                                                                    <label for="">Colonia</label>
+                                                                                    <br>
+                                                                                    <!-- <input type="text" class="form-control" id="txtColoniaParticular" name="txtColoniaParticular" value="{{ $usuario->USUA_CCOLONIA_PARTICULAR }}" placeholder="Centro">-->
+                                                                                    <select class="combobox form-control optionsColoniaParticular" name="txtColoniaParticular"
+                                                                                        id="txtColoniaParticular" title="Colonia">
+                                                                                        <option value="" selected="true" disabled="disabled">Selecione una colonia.</option>
+                                                                                    </select>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -875,30 +881,36 @@
                                                                         <div class="col-md-12">
                                                                             <div class="row justify-content-md-center">
                                                                                 <div class="col-md-3">
-                                                                                    <label for="">Colonia</label>
+                                                                                    <label for="">Pais</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtColoniaFiscal" name="txtColoniaFiscal" value="{{ $usuario->USUA_CCOLONIA }}" placeholder="Centro">
-                                                                                </div>
-
-                                                                                <div class="col-md-3">
-                                                                                    <label for="">Municipio</label>
-                                                                                    <br>
-                                                                                    <input type="text" class="form-control" id="txtMunicipioFiscal" name="txtMunicipioFiscal" value="{{ $usuario->USUA_CMUNICIPIO }}" placeholder="Querétaro">
+                                                                                    <!-- <input type="text" class="form-control" id="txtPaisFiscal" name="txtPaisFiscal" value="{{ $usuario->USUA_CPAIS }}" placeholder="México">-->
+                                                                                    <div id="selectcmbPais_Fiscal"></div>
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Estado<nav>
                                                                                         </nav></label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtEstadoFiscal" name="txtEstadoFiscal" value="{{ $usuario->USUA_CESTADO }}" placeholder="Querétaro">
+                                                                                    <!-- <input type="text" class="form-control" id="txtEstadoFiscal" name="txtEstadoFiscal" value="{{ $usuario->USUA_CESTADO }}" placeholder="Querétaro">-->
+                                                                                    <div id="selectcmbEstado_Fiscal"></div>
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
-                                                                                    <label for="">Pais</label>
+                                                                                    <label for="">Municipio</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtPaisFiscal" name="txtPaisFiscal" value="{{ $usuario->USUA_CPAIS }}" placeholder="México">
+                                                                                    <!--<input type="text" class="form-control" id="txtMunicipioFiscal" name="txtMunicipioFiscal" value="{{ $usuario->USUA_CMUNICIPIO }}" placeholder="Querétaro">-->
+                                                                                    <div id="selectcmbMunicipio_Fiscal"></div>
                                                                                 </div>
 
+                                                                                <div class="col-md-3">
+                                                                                    <label for="">Colonia</label>
+                                                                                    <br>
+                                                                                    <select class="combobox form-control optionsColoniaFiscal" name="txtColoniaFiscal"
+                                                                                        id="txtColoniaFiscal" title="Colonia">
+                                                                                        <option value="" selected="true" disabled="disabled">Selecione un Municipio.</option>
+                                                                                    </select>
+                                                                                    <!--<input type="text" class="form-control" id="txtColoniaFiscal" name="txtColoniaFiscal" value="{{ $usuario->USUA_CCOLONIA }}" placeholder="Centro">-->
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -967,29 +979,38 @@
                                                                                                 <div class="row">
                                                                                                     <div class="col-md-3">
                                                                                                         <div class="form-group">
-                                                                                                            <label for="cmbColonia_Sucursal">Colonia
+                                                                                                            <label for="cmbPais_Sucursal">País
                                                                                                             </label>
-                                                                                                            <input type="text" class="form-control cmbColonia_Sucursal" name="cmbColonia_Sucursal" id="{{ $IntIndex }}_cmbColonia_Sucursal" placeholder="Centro" value="{{ $item->SUCU_CCOLONIA }}">
+                                                                                                            <select class="combobox form-control cmbPais_Sucursal optionsPaisesSucursal" name="cmbPais_Sucursal" title="País" id="{{ $IntIndex }}_cmbPais_Sucursal" value="{{ $item->SUCU_CPAIS }}">
+                                                                                                            </select>
+                                                                                                            <!-- <input type="text" class="form-control cmbPais_Sucursal" name="cmbPais_Sucursal" id="{{ $IntIndex }}_cmbPais_Sucursal" placeholder="México" value="{{ $item->SUCU_CPAIS }}"> -->
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-md-3">
+                                                                                                        <div class="form-group">
+                                                                                                            <label for="cmbEstado_Sucursal">Estado</label>
+                                                                                                            <select class="combobox form-control cmbEstado_Sucursal optionsEstadosSucursal" name="cmbEstado_Sucursal" title="Estado" id="{{ $IntIndex }}_cmbEstado_Sucursal" value="{{ $item->SUCU_CESTADO }}">
+                                                                                                            </select>
+                                                                                                            <!-- <input type="text" class="form-control cmbEstado_Sucursal" name="cmbEstado_Sucursal" id="{{ $IntIndex }}_cmbEstado_Sucursal" placeholder="Querétaro" value="{{ $item->SUCU_CESTADO }}"> -->
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-3">
                                                                                                         <div class="form-group">
                                                                                                             <label for="cmbMunicipio_Sucursal">Municipio
                                                                                                             </label>
-                                                                                                            <input type="text" class="form-control cmbMunicipio_Sucursal" name="cmbMunicipio_Sucursal" id="{{ $IntIndex }}_cmbMunicipio_Sucursal" placeholder="Querétaro" value="{{ $item->SUCU_CMUNICIPIO }}">
+                                                                                                            <select class="combobox form-control cmbMunicipio_Sucursal optionsMunicipioSucursal" name="cmbMunicipio_Sucursal" title="Municipio" id="{{ $IntIndex }}_cmbMunicipio_Sucursal" value="{{ $item->SUCU_CMUNICIPIO }}">
+                                                                                                            </select>
+                                                                                                            <!-- <input type="text" class="form-control cmbMunicipio_Sucursal" name="cmbMunicipio_Sucursal" id="{{ $IntIndex }}_cmbMunicipio_Sucursal" placeholder="Querétaro" value="{{ $item->SUCU_CMUNICIPIO }}"> -->
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-3">
                                                                                                         <div class="form-group">
-                                                                                                            <label for="cmbEstado_Sucursal">Estado</label>
-                                                                                                            <input type="text" class="form-control cmbEstado_Sucursal" name="cmbEstado_Sucursal" id="{{ $IntIndex }}_cmbEstado_Sucursal" placeholder="Querétaro" value="{{ $item->SUCU_CESTADO }}">
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div class="col-md-3">
-                                                                                                        <div class="form-group">
-                                                                                                            <label for="cmbPais_Sucursal">País
+                                                                                                            <label for="cmbColonia_Sucursal">Colonia
                                                                                                             </label>
-                                                                                                            <input type="text" class="form-control cmbPais_Sucursal" name="cmbPais_Sucursal" id="{{ $IntIndex }}_cmbPais_Sucursal" placeholder="México" value="{{ $item->SUCU_CPAIS }}">
+                                                                                                            <select class="combobox form-control cmbColonia_Sucursal optionscmbColonia_Sucursal" name="cmbColonia_Sucursal" title="Colonia" id="{{ $IntIndex }}_cmbColonia_Sucursal" value="{{ $item->SUCU_CCOLONIA }}">
+                                                                                                                <option value="" selected="true" disabled="disabled">Selecione un Municipio.</option> 
+                                                                                                            </select>
+                                                                                                            <!-- <input type="text" class="form-control cmbColonia_Sucursal" name="cmbColonia_Sucursal" id="{{ $IntIndex }}_cmbColonia_Sucursal" placeholder="Centro" value="{{ $item->SUCU_CCOLONIA }}"> -->
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
@@ -1042,29 +1063,34 @@
                                                                                                 <div class="row">
                                                                                                     <div class="col-md-3">
                                                                                                         <div class="form-group">
-                                                                                                            <label for="cmbColonia_Sucursal">Colonia
+                                                                                                            <label for="cmbPais_Sucursal">País
                                                                                                             </label>
-                                                                                                            <input type="text" class="form-control cmbColonia_Sucursal" name="cmbColonia_Sucursal" id="cmbColonia_Sucursal" placeholder="Centro" value="">
+                                                                                                            <select class="combobox form-control cmbPais_Sucursal optionsPaisesSucursal" name="cmbPais_Sucursal" title="País">
+                                                                                                            </select>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-md-3">
+                                                                                                        <div class="form-group">
+                                                                                                            <label for="cmbEstado_Sucursal">Estado</label>
+                                                                                                            <select class="combobox form-control cmbEstado_Sucursal optionsEstadosSucursal" name="cmbEstado_Sucursal" title="Estado">
+                                                                                                            </select>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-3">
                                                                                                         <div class="form-group">
                                                                                                             <label for="cmbMunicipio_Sucursal">Municipio
                                                                                                             </label>
-                                                                                                            <input type="text" class="form-control cmbMunicipio_Sucursal" name="cmbMunicipio_Sucursal" id="cmbMunicipio_Sucursal" placeholder="Querétaro" value="">
+                                                                                                            <select class="combobox form-control cmbMunicipio_Sucursal optionsMunicipioSucursal" name="cmbMunicipio_Sucursal" title="Municipio" onchange="TRAM_AJX_CARGAR_LOCALIDADES_SUCURSAL(this)">
+                                                                                                            </select>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="col-md-3">
                                                                                                         <div class="form-group">
-                                                                                                            <label for="cmbEstado_Sucursal">Estado</label>
-                                                                                                            <input type="text" class="form-control cmbEstado_Sucursal" name="cmbEstado_Sucursal" id="cmbEstado_Sucursal" placeholder="Querétaro" value="">
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div class="col-md-3">
-                                                                                                        <div class="form-group">
-                                                                                                            <label for="cmbPais_Sucursal">País
+                                                                                                            <label for="cmbColonia_Sucursal">Colonia
                                                                                                             </label>
-                                                                                                            <input type="text" class="form-control cmbPais_Sucursal" name="cmbPais_Sucursal" id="cmbPais_Sucursal" placeholder="México" value="">
+                                                                                                            <select class="combobox form-control cmbColonia_Sucursal optionscmbColonia_Sucursal" name="cmbColonia_Sucursal" title="Colonia">
+                                                                                                                <option value="" selected="true" disabled="disabled">Selecione un Municipio.</option> 
+                                                                                                            </select>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
@@ -1340,6 +1366,13 @@
     var emailPAValido = 1;
 
     var curpPrincipalValido = 1;
+
+    var estadoParticular = '{{ $usuario->USUA_CESTADO_PARTICULAR }}';
+    var estadoFiscal = '{{ $usuario->USUA_CESTADO }}';
+    var municipioParticular = '{{ $usuario->USUA_CMUNICIPIO_PARTICULAR }}';
+    var municipioFiscal = '{{ $usuario->USUA_CMUNICIPIO }}';
+    var coloniaParticular = '{{ $usuario->USUA_CCOLONIA_PARTICULAR }}';
+    var coloniaFiscal = '{{ $usuario->USUA_CCOLONIA }}';
     
 
     function GET_VISTA_PREDIOS() {
@@ -1364,6 +1397,7 @@
         var StrTipoPersona = '{{ $usuario->USUA_NTIPO_PERSONA }}';
         var BolSucursal = '{{ count($usuario->TRAM_MDV_SUCURSAL) > 0 ? false : true }}';
         var rolCat = '{{ $usuario->TRAM_CAT_ROL->ROL_CCLAVE }}';
+        
         GET_VISTA_PREDIOS()
 
         $('#frmForm').on('submit', function(e) {
@@ -1564,328 +1598,64 @@
 
 
         //Validate form registro
-        // $("#frmForm").validate({
-        //     focusInvalid: false,
-        //     invalidHandler: function() {
-        //         $(this).find(":input.error:first").focus();
-        //     },
-        //     rules: {
-        //         txtRfc: {
-        //             minlength: 13,
-        //             maxlength: 13
-        //         },
-        //         txtNombres: {
-        //             minlength: 2,
-        //             maxlength: 100,
-        //             lettersonly: true
-        //         },
-        //         txtPrimer_Apellido: {
-        //             minlength: 2,
-        //             maxlength: 100
-        //         },
-        //         txtSegundo_Apellido: {
-        //             minlength: 2,
-        //             maxlength: 100
-        //         },
-        //         txtCalleParticular: {
-        //             minlength: 2,
-        //             maxlength: 100
-        //         },
-        //         txtCalleFiscal: {
-        //             minlength: 2,
-        //             maxlength: 100
-        //         },
-        //         txtNumeroInteriorParticular: {
-        //             minlength: 1,
-        //             maxlength: 10
-        //         },
-        //         txtNumeroExteriorParticular: {
-        //             minlength: 1,
-        //             maxlength: 10
-        //         },
-        //         txtNumeroInteriorFiscal: {
-        //             minlength: 1,
-        //             maxlength: 10
-
-
-        //         },
-        //         txtNumeroExteriorFiscal: {
-        //             minlength: 1,
-        //             maxlength: 10
-
-        //         },
-        //         txtCPParticular: {
-        //             minlength: 5,
-        //             maxlength: 5
-        //         },
-        //         txtCPFiscal: {
-        //             minlength: 5,
-        //             maxlength: 5
-        //         },
-        //         txtCorreo_Electronico: {
-        //             email: true
-        //         },
-        //         txtCorreo_Alternativo: {
-        //             email: true
-        //         }
-        //     },
-        //     messages: {
-        //         txtRfc: {
-        //             minlength: "",
-        //             maxlength: "",
-        //             required: ""
-        //         },
-        //         txtNombres: {
-        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             required: "",
-        //             lettersonly: "El nombre (s) solamente puede tener caracteres alfabéticos y espacios."
-        //         },
-        //         txtPrimer_Apellido: {
-        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             required: ""
-        //         },
-        //         txtSegundo_Apellido: {
-        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             required: ""
-        //         },
-        //         txtCalleParticular: {
-        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             required: ""
-        //         },
-        //         txtCalleFiscal: {
-        //             minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-        //             required: ""
-        //         },
-        //         txtNumeroInteriorParticular: {
-        //             minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-        //             maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-        //             required: ""
-        //         },
-        //         txtNumeroExteriorParticular: {
-        //             minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-        //             maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-        //             required: ""
-        //         },
-        //         txtNumeroInteriorFiscal: {
-        //             minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-        //             maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-        //             required: ""
-        //         },
-        //         txtNumeroExteriorFiscal: {
-        //             minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-        //             maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-        //             required: ""
-        //         },
-        //         txtCPParticular: {
-        //             minlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-        //             maxlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-        //             required: ""
-        //         },
-        //         txtCPFiscal: {
-        //             minlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-        //             maxlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-        //             required: ""
-        //         },
-        //         txtCorreo_Electronico: {
-        //             email: "¡Error! El correo que se agregó no es válido, favor de verificar.",
-        //             required: ""
-        //         },
-        //         txtCorreo_Alternativo: {
-        //             email: "¡Error! El correo que se agregó no es válido, favor de verificar.",
-        //             required: ""
-        //         },
-        //         cmbColoniaParticular: {
-        //             required: ""
-        //         },
-        //         cmbMunicipioParticular: {
-        //             required: ""
-        //         },
-        //         cmbEstadoParticular: {
-        //             required: ""
-        //         },
-        //         cmbPaisParticular: {
-        //             required: ""
-        //         },
-        //         cmbColoniaFiscal: {
-        //             required: ""
-        //         },
-        //         cmbMunicipioFiscal: {
-        //             required: ""
-        //         },
-        //         cmbEstadoFiscal: {
-        //             required: ""
-        //         },
-        //         cmbPaisFiscal: {
-        //             required: ""
-        //         }
-        //     }
-        // });
-
-        setTimeout(function() {
-            $(".txtCalle_Sucursal").each(function() {
-                $(this).rules('add', {
-                    required: true,
-                    minlength: 2,
-                    maxlength: 100,
-                    messages: {
-                        required: "",
-                        minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                        maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                    }
-                });
-            });
-            $(".txtNumero_Interior_Sucursal").each(function() {
-                $(this).rules('add', {
-                    required: false,
-                    minlength: 2,
-                    maxlength: 10,
-                    messages: {
-                        required: "",
-                        minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                        maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    }
-                });
-            });
-            $(".txtNumero_Exterior_Sucursal").each(function() {
-                $(this).rules('add', {
-                    required: true,
-                    minlength: 2,
-                    maxlength: 10,
-                    messages: {
-                        required: "",
-                        minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                        maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                    }
-                });
-            });
-            $(".txtCP_Sucursal").each(function() {
-                $(this).rules('add', {
-                    required: true,
+        $("#frmForm").validate({
+            focusInvalid: false,
+            invalidHandler: function() {
+                $(this).find(":input.error:first").focus();
+            },
+            rules: {
+                txtNumeroCPParticular: {
                     minlength: 5,
-                    maxlength: 5,
-                    messages: {
-                        required: "",
-                        minlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-                        maxlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
-                    }
-                });
-            });
-        }, 1000);
+                    maxlength: 5
+                },
+                txtCPFiscal: {
+                    minlength: 5,
+                    maxlength: 5
+                }
+            },
+            messages: {
+                txtNumeroCPParticular: {
+                    minlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
+                    maxlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
+                    required: ""
+                },
+                txtCPFiscal: {
+                    minlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
+                    maxlength: "El tamaño del campo debe contener 5 dígitos, sin espacios ni guiones.",
+                    required: ""
+                }
+            }
+        });
+
+        
 
         $('.repeater').repeater({
             initEmpty: BolSucursal,
-            show: function(item) {
+            ready: function () {
+                var element = $(this);
+                var index = element.index();
                 $(this).slideDown();
-                $(this).attr('id', 'item_sucursal_' + $(this).index());
-
-                $("input[name='lstSucursal[" + $(this).index() + "][txtCalle_Sucursal]']").prop(
-                    "disabled", false);
-                $("input[name='lstSucursal[" + $(this).index() + "][txtNumero_Interior_Sucursal]']")
-                    .prop("disabled", false);
-                $("input[name='lstSucursal[" + $(this).index() + "][txtNumero_Exterior_Sucursal]']")
-                    .prop("disabled", false);
-                $("input[name='lstSucursal[" + $(this).index() + "][txtCP_Sucursal]']").prop(
-                    "disabled", false);
-                $("select[name='lstSucursal[" + $(this).index() + "][cmbColonia_Sucursal]']").prop(
-                    "disabled", false);
-                $("select[name='lstSucursal[" + $(this).index() + "][cmbMunicipio_Sucursal]']")
-                    .prop("disabled", false);
-                $("select[name='lstSucursal[" + $(this).index() + "][cmbEstado_Sucursal]']").prop(
-                    "disabled", false);
-                $("select[name='lstSucursal[" + $(this).index() + "][cmbPais_Sucursal]']").prop(
-                    "disabled", false);
-                $("#item_sucursal_" + $(this).index()).find($("input[name='lstSucursal[" + $(this)
-                    .index() + "][txtCalle_Sucursal]']")).attr('id', $(this).index() +
-                    '_txtCalle_Sucursal');
-                $("#item_sucursal_" + $(this).index()).find($("input[name='lstSucursal[" + $(this)
-                    .index() + "][txtNumero_Interior_Sucursal]']")).attr('id', $(this).index() +
-                    '_txtNumero_Interior_Sucursal');
-                $("#item_sucursal_" + $(this).index()).find($("input[name='lstSucursal[" + $(this)
-                    .index() + "][txtNumero_Exterior_Sucursal]']")).attr('id', $(this).index() +
-                    '_txtNumero_Exterior_Sucursal');
-                $("#item_sucursal_" + $(this).index()).find($("input[name='lstSucursal[" + $(this)
-                    .index() + "][txtCP_Sucursal]']")).attr('id', $(this).index() +
-                    '_txtCP_Sucursal');
-                $("#item_sucursal_" + $(this).index()).find($("select[name='lstSucursal[" + $(this)
-                    .index() + "][cmbColonia_Sucursal]']")).attr('id', $(this).index() +
-                    '_cmbColonia_Sucursal');
-                $("#item_sucursal_" + $(this).index()).find($("select[name='lstSucursal[" + $(this)
-                    .index() + "][cmbMunicipio_Sucursal]']")).attr('id', $(this).index() +
-                    '_cmbMunicipio_Sucursal');
-                $("#item_sucursal_" + $(this).index()).find($("select[name='lstSucursal[" + $(this)
-                    .index() + "][cmbEstado_Sucursal]']")).attr('id', $(this).index() +
-                    '_cmbEstado_Sucursal');
-                $("#item_sucursal_" + $(this).index()).find($("select[name='lstSucursal[" + $(this)
-                    .index() + "][cmbPais_Sucursal]']")).attr('id', $(this).index() +
-                    '_cmbPais_Sucursal');
-                $("#item_sucursal_" + $(this).index()).find(".icon-edit").hide();
-
-                var numinterir = $(this).index() + "_txtNumero_Interior_Sucursal";
-                var numexterior = $(this).index() + "_txtNumero_Exterior_Sucursal";
-                var cpsucu = $(this).index() + "_txtCP_Sucursal";
-
-                $("#" + numinterir).keydown(function(e) {
-                    if (invalidChars.includes(e.key)) {
-                        e.preventDefault();
-                    }
-                });
-
-
-                $("#" + numexterior).keydown(function(e) {
-                    if (invalidChars.includes(e.key)) {
-                        e.preventDefault();
-                    }
-                });
-
-
-                $("#" + cpsucu).keydown(function(e) {
-                    if (invalidChars.includes(e.key)) {
-                        e.preventDefault();
-                    }
+                TRAM_AJX_CARGAR_MUNICIPIOS_SUCURSAL(index);
+                TRAM_AJX_CARGAR_ESTADOS_SUCURSAL(index);
+                TRAM_AJX_CARGAR_PAISES_SUCURSAL(index);
+            },
+            show: function () {
+                var element = $(this);
+                var index = element.index();
+                $(this).slideDown();
+                TRAM_AJX_CARGAR_MUNICIPIOS_SUCURSAL(index);
+                TRAM_AJX_CARGAR_ESTADOS_SUCURSAL(index);
+                TRAM_AJX_CARGAR_PAISES_SUCURSAL(index);
+                $('.optionsMunicipioSucursal').change(function(){              
+                    var value = $(this).val();
+                    var name = $(this).attr("name");
+                    var resultado = name.split("]");
+                    
+                    TRAM_AJX_CARGAR_LOCALIDADES_SUCURSAL(value,index);
+                        
                 });
 
                 setTimeout(function() {
-                    $(".txtCalle_Sucursal").each(function() {
-                        $(this).rules('add', {
-                            required: true,
-                            minlength: 2,
-                            maxlength: 100,
-                            messages: {
-                                required: "",
-                                minlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                                maxlength: "El tamaño del campo no puede ser menor de 2 caracteres ni mayor de 100 caracteres.",
-                            }
-                        });
-                    });
-                    $(".txtNumero_Interior_Sucursal").each(function() {
-                        $(this).rules('add', {
-                            required: false,
-                            minlength: 2,
-                            maxlength: 10,
-                            messages: {
-                                required: "",
-                                minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                                maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                            }
-                        });
-                    });
-                    $(".txtNumero_Exterior_Sucursal").each(function() {
-                        $(this).rules('add', {
-                            required: true,
-                            minlength: 2,
-                            maxlength: 10,
-                            messages: {
-                                required: "",
-                                minlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                                maxlength: "El tamaño campo no puede ser menor de 1 carácter ni mayor de 10 caracteres.",
-                            }
-                        });
-                    });
                     $(".txtCP_Sucursal").each(function() {
                         $(this).rules('add', {
                             required: true,
@@ -1898,23 +1668,7 @@
                             }
                         });
                     });
-                }, 1000);
-            },
-            hide: function(deleteElement) {
-                Swal.fire({
-                    title: '¡Confirmar!',
-                    text: "¿Desea eliminar la información?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    confirmButtonText: 'Aceptar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $(this).slideUp(deleteElement);
-                    }
-                });
+                }, 3000);
             }
         });
 
@@ -3051,6 +2805,206 @@
                 listarDocs();
             }
         })
+    }
+
+    var listadoMunicipios = [];
+    var listadoEstados    = [];
+    var listadoPaises     = [];
+    var listadoLocalidades     = [];
+
+    function TRAM_AJX_CARGAR_PAISES(){
+        var paisDefault = 'México';
+        
+            var html = '<select class="combobox form-control" name="txtPaisParticular" id="txtPaisParticular"  title="País">';
+            var htmlFiscal = '<select class="combobox form-control" name="txtPaisFiscal" id="txtPaisFiscal" title="País">';
+
+            listadoPaises.push({"DESCRIPCION": paisDefault});
+
+            html += '<option value="'+ paisDefault +'">' + paisDefault + '</option>';
+            htmlFiscal  += '<option value="'+ paisDefault +'">' + paisDefault + '</option>';
+        
+            html += '</select>';
+            htmlFiscal += '</select>';
+
+            $("#selectcmbPais_Particular").html(html);
+            $("#selectcmbPais_Fiscal").html(htmlFiscal);
+    }
+    TRAM_AJX_CARGAR_PAISES();
+
+    function TRAM_AJX_CARGAR_ESTADOS(){
+        var url = '/registrar/estados';
+        $.get(url, function (data) {
+            listadoEstados = data;
+            var selectedParticular = "";
+            var selectedFiscal = "";
+            
+            var html = '<select class="combobox form-control" name="txtEstadoParticular" id="txtEstadoParticular" onchange="TRAM_AJX_CARGAR_MUNICIPIOS(this, 1)" title="Estado">';
+            var htmlFiscal = '<select class="combobox form-control" name="txtEstadoFiscal" id="txtEstadoFiscal" onchange="TRAM_AJX_CARGAR_MUNICIPIOS(this, 2)" title="Estado">';
+            
+            data.forEach(function(value) {
+                if(value.Id == Number(estadoParticular)){
+                    selectedParticular = "selected";
+                    let selValP = {"value": estadoParticular};
+                    TRAM_AJX_CARGAR_MUNICIPIOS(selValP, 1);
+                }else {
+                    selectedParticular = "";
+                }
+                if(value.Id == estadoFiscal){
+                    selectedFiscal = "selected";
+                    let selValF = {"value": estadoFiscal};
+                    TRAM_AJX_CARGAR_MUNICIPIOS(selValF, 2);
+                }else {
+                    selectedFiscal = "";
+                }
+
+                html        += '<option value="">Selecciona un estado</option>';
+                html        += '<option value="'+ value.Id +'" '+selectedParticular+'>' + value.Name + '</option>';
+                htmlFiscal  += '<option value="">Selecciona un estado</option>';;
+                htmlFiscal  += '<option value="'+ value.Id +'" '+selectedFiscal+'>' + value.Name + '</option>';
+                
+            });
+            html += '</select>';
+            htmlFiscal += '</select>';
+
+            $("#selectcmbEstado_Particular").html(html);
+            $("#selectcmbEstado_Fiscal").html(htmlFiscal);
+            
+        });
+    }
+    TRAM_AJX_CARGAR_ESTADOS();
+
+    function TRAM_AJX_CARGAR_MUNICIPIOS(id, type){
+        var url = '/registrar/municipios/'+id.value;
+        $.get(url, function (data) {
+            listadoMunicipios = data;
+            var selectedParticular2 = "";
+            var selectedFiscal2 = "";
+
+            var html = '<select class="combobox form-control" name="txtMunicipioParticular" id="txtMunicipioParticular" onchange="TRAM_AJX_CARGAR_LOCALIDADES(this, 1)" title="Municipio">';
+            var htmlFiscal = '<select class="combobox form-control" name="txtMunicipioFiscal" id="txtMunicipioFiscal" onchange="TRAM_AJX_CARGAR_LOCALIDADES(this, 2)" title="Municipio">';
+            var htmlSucursal = '';
+
+            html        += '<option value="" selected="true" disabled="disabled">Seleccione...</option>';
+            htmlFiscal  += '<option value="" selected="true" disabled="disabled">Seleccione...</option>';
+            htmlSucursal += '<option value="" selected="true" disabled="disabled">Seleccione...</option>';
+
+            data.forEach(function(value) {
+                if(value.Id == municipioParticular){
+                    selectedParticular2 = "selected";
+                    let selValP = {"value": municipioParticular};
+                    TRAM_AJX_CARGAR_LOCALIDADES(selValP, 1);
+                }else {
+                    selectedParticular2 = "";
+                }
+                if(value.Id == municipioFiscal){
+                    selectedFiscal2 = "selected";
+                    let selValF = {"value": municipioFiscal};
+                    TRAM_AJX_CARGAR_LOCALIDADES(selValF, 2);
+                }else {
+                    selectedFiscal2 = "";
+                }
+
+                html        += '<option value="'+ value.Id +'" '+selectedParticular2+'>' + value.Name + '</option>';
+                htmlFiscal  += '<option value="'+ value.Id +'" '+selectedFiscal2+'>' + value.Name + '</option>';
+                htmlSucursal += '<option value="'+ value.Id +'">' + value.Name + '</option>';
+            
+            });
+            html += '</select>';
+            htmlFiscal += '</select>';
+
+            if(type == 1){
+                $("#selectcmbMunicipio_Particular").html(html);
+            }else if(type == 2){
+                $("#selectcmbMunicipio_Fiscal").html(htmlFiscal);
+            }
+        });
+    }
+
+    function TRAM_AJX_CARGAR_LOCALIDADES(id, type){
+        var url = '/registrar/localidades/'+id.value;
+        $.get(url, function (data) {          
+            listadoLocalidades = data;
+            var html = "";
+            var htmlFiscal = "";
+            var selectedParticular3 = "";
+            var selectedFiscal3 = "";
+
+            if(data.length == 0){
+                html = '<option value="">Sin localidades</option>';
+            }else {
+                data.forEach(function(value) {
+                    if(value.Id == coloniaParticular){
+                        selectedParticular3 = "selected";
+                    }else {
+                        selectedParticular3 = "";
+                    }
+                    if(value.Id == coloniaFiscal){
+                        selectedFiscal3 = "selected";
+                    }else {
+                        selectedFiscal3 = "";
+                    }
+                    html += '<option value="'+ value.Id +'" '+selectedParticular3+'>' + value.Name + '</option>';
+                    htmlFiscal += '<option value="'+ value.Id +'" '+selectedFiscal3+'>' + value.Name + '</option>';
+                });
+            }
+
+            if(type == 1){
+                $(".optionsColoniaParticular").html(html);
+            }else if(type == 2){
+                $(".optionsColoniaFiscal").html(htmlFiscal);
+            }
+        });
+    }
+
+    function TRAM_AJX_CARGAR_PAISES_SUCURSAL(index){
+        var paisDefault = 'México';
+        var htmlSucursal = ''; 
+        if(listadoPaises.length == 0){
+            htmlSucursal += '<option value="'+ paisDefault +'">' + paisDefault + '</option>';
+        }else{
+            listadoPaises.forEach(function(value) {
+                    htmlSucursal += '<option value="'+ value.DESCRIPCION +'">' + value.DESCRIPCION + '</option>';
+                    });
+        }
+        var element = document.getElementsByName('lstSucursal['+index+'][cmbPais_Sucursal]');
+        $(element).empty();
+        $(element).append(htmlSucursal);
+    }
+
+    function TRAM_AJX_CARGAR_ESTADOS_SUCURSAL(index){
+        var htmlSucursal = '';   
+        listadoEstados.forEach(function(value) {
+            htmlSucursal += '<option value="'+ value.Id +'">' + value.Name + '</option>';
+        });
+        
+        var element = document.getElementsByName('lstSucursal['+index+'][cmbEstado_Sucursal]');
+        $(element).empty();
+        $(element).append(htmlSucursal);
+    }
+
+    function TRAM_AJX_CARGAR_MUNICIPIOS_SUCURSAL(index){
+        var htmlSucursal = '<option value="" selected="true" disabled="disabled">Seleccione...</option>';   
+        listadoMunicipios.forEach(function(value) {
+            htmlSucursal += '<option value="'+ value.Id +'">' + value.Name + '</option>';
+        });
+            
+        var element = document.getElementsByName('lstSucursal['+index+'][cmbMunicipio_Sucursal]');
+        $(element).empty();
+        $(element).append(htmlSucursal);
+    }
+
+    function TRAM_AJX_CARGAR_LOCALIDADES_SUCURSAL(municipio, index){
+        $.get('/registrar/localidades/'+municipio, function (data) {          
+
+            var html = '';   
+            data.forEach(function(value) {
+                html += '<option value="'+ value.Id +'">' + value.Name + '</option>';
+            });
+
+            var element = document.getElementsByName('lstSucursal['+index+'][cmbColonia_Sucursal]');
+            $(element).empty();
+            $(element).append(html);
+        });
     }
 </script>
 @endsection

@@ -17,8 +17,6 @@ use  Illuminate\Pagination\Paginator;
 use App\Http\Controllers\FormularioController;
 use  Illuminate\Pagination\LengthAwarePaginator;
 
-use App\Cls_SeccionFormRol;
-
 class GestorController extends Controller
 {
     /**
@@ -36,7 +34,7 @@ class GestorController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        /* $this->middleware('auth'); */
         $this->tramiteService   = new TramiteService();
         $this->citasService     = new CitasService();
     }
@@ -158,20 +156,19 @@ class GestorController extends Controller
         $edificios      = $datosGenerales['oficinas'];
 
         #################### Configuraciones anteriores ####################
-        $tramites   = new Cls_Gestor();
+        $tramites   = new Cls_Gestor();;
         $registro   = $tramites->TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig);
 
-        if (count($registro) > 0) {
+        if (!is_null($registro)) {
             $tramite['VALIDO'] = true;
-            $tramite['TRAM_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE;
+            $tramite['TRAM_ID_TRAMITE']     = $registro->tram_nidtramite;
             $tramite['ACCE_ID_TRAMITE']     = $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
             $tramite['ACCE_CLAVE_INTERNA']  = 'Clave Accede: ' . $registro[0]->TRAM_NIDTRAMITE_ACCEDE;
-            $tramite['ACCE_NOMBRE_TRAMITE'] = $registro[0]->TRAM_CNOMBRE;
-            $tramite['EDIFICIOS']           = $registro[0]->TRAM_CNOMBRE;
-            $tramite['TRAM_NIMPLEMENTADO']  = $registro[0]->TRAM_NIMPLEMENTADO != null ? intval($registro[0]->TRAM_NIMPLEMENTADO) : intval($registro[0]->TRAM_NIMPLEMENTADO);
-            $tramite['TRAM_NENLACEOFICIAL'] = $registro[0]->TRAM_NENLACEOFICIAL != null ? intval($registro[0]->TRAM_NENLACEOFICIAL) : intval($registro[0]->TRAM_NENLACEOFICIAL);
+            $tramite['ACCE_NOMBRE_TRAMITE'] = $registro->tram_cnombre;
+            $tramite['EDIFICIOS']           = $registro->tram_cnombre;
+            $tramite['TRAM_NIMPLEMENTADO']  = $registro->tram_nimplementado != null ? intval($registro->tram_nimplementado) : intval($registro->tram_nimplementado);
+            $tramite['TRAM_NENLACEOFICIAL'] = $registro->tram_nenlaceoficial != null ? intval($registro->tram_nenlaceoficial) : intval($registro->tram_nenlaceoficial);
         } else {
-
             if (is_numeric($tramiteIDConfig) && intval($tramiteIDConfig) > 0) {
                 $tramite['VALIDO'] = false;
                 $tramite['TRAM_ID_TRAMITE'] = NULL;
@@ -267,14 +264,7 @@ class GestorController extends Controller
     //Obtener formularios activos
     public function consultar_formulario()
     {
-        $usuario    = Auth::user();
-
-        $depPertenece   = DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-        $uniPertenece   = DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-        $tramPertenece  = DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-
         $StrNombreFormulario = null;
-        $mostrar=[];
 
         if ($StrNombreFormulario === null) {
             $StrNombreFormulario = "";
@@ -283,53 +273,9 @@ class GestorController extends Controller
         $formularios = new Cls_Gestor();
         $formularios->StrNombreFormulario = $StrNombreFormulario;
         $registros = $formularios->TRAM_SP_CONSULTAR_FORMULARIO();
-
-        if(count($depPertenece)>0){
-            foreach ($registros as $llave => $index) {
-                $relationdependencia = Cls_SeccionFormRol::dependenciaForm($index->FORM_NIDFORMULARIO);
-                foreach ($relationdependencia as $key => $indice) {
-                    foreach ($depPertenece as $us => $indus) {
-                        if($indus->DEPUP_NIDDEPENCIA == $indice->FORM_NIDDEPENDENCIA){
-                            if(count($uniPertenece)>0){
-                                foreach ($uniPertenece as $unit => $unitindex) {
-                                    $uniadmin = Cls_SeccionFormRol::areasXDependencia($indice->FORM_NIDDEPENDENCIA);
-                                    foreach ($uniadmin as $unitrel => $unitrelindex) {
-                                        if($unitindex->UNIDUP_NIDUNIDAD == $unitrelindex->NID_AREA_ADMINISTRATIVA){
-                                            $mostrar[]=$index;
-                                        }
-                                    }
-                                }
-                            }else{
-                                $mostrar[]=$index;
-                            }
-                            
-                        }
-                    }
-                }
-            }
-        }else{
-            $mostrar=$registros;
-        }
-        
-        /*
-        
-            
-            $mostrar[] = $registros[$i].FORM_NIDFORMULARIO;
-            
-            for($j=0; count($depPertenece); $j++){
-                //$userdependencia = $depPertenece[$j].DEPUP_NIDDEPENCIA;
-                for($h=0; count($userdependencia); $h++){
-                    if(depPertenece[$j].DEPUP_NIDDEPENCIA == $userdependencia[$h].FORM_NIDDEPENDENCIA){
-                        $mostrar[] = $registros[$i];
-                    }
-                }
-            }
-        */
        
         $response = [
-            'data' => $mostrar,
-
-            'mostrar' => $registros,
+            'data' => $registros,
         ];
 
         return response()->json($response);
@@ -573,29 +519,43 @@ class GestorController extends Controller
 
     private function TRAM_AGREGAR_DOCUMENTO($TRAM_LIST_DOCUMENTO, $TRAM_NIDTRAMITE)
     {
-        try {
-            //Eliminas secciones del trámite
-            $gestor = new Cls_Gestor();
-            $gestor->TRAM_SP_ELIMINAR_DOCUMENTO($TRAM_NIDTRAMITE);
+        $arrayId = array();
 
+        try {
             //Eliminar edificos, resolutivos y conceptos del trámite
+            $gestor = new Cls_Gestor();
             $gestor->TRAM_SP_ELIMINAR_EDIFICIO($TRAM_NIDTRAMITE);
             $gestor->TRAM_SP_ELIMINAR_RESOLUTIVO($TRAM_NIDTRAMITE);
             $gestor->TRAM_SP_ELIMINAR_CONCEPTO($TRAM_NIDTRAMITE);
 
-            foreach ($TRAM_LIST_DOCUMENTO as  $documentos) {
-                $gestor->TRAM_SP_AGREGAR_DOCUMENTO(
-                    $TRAM_NIDTRAMITE,
-                    $documentos['TRAD_NIDDOCUMENTO'],
-                    $documentos['TRAD_CNOMBRE'],
-                    $documentos['TRAD_CDESCRIPCION'],
-                    $documentos['TRAD_CEXTENSION'],
-                    $documentos['TRAD_NOBLIGATORIO'],
-                    $documentos['TRAD_NMULTIPLE']
-                );
+            foreach ($TRAM_LIST_DOCUMENTO as $documentos) {
+                array_push($arrayId, $documentos['TRAD_NIDDOCUMENTO']);
+                $item = DB::table('tram_mdv_documento_tramite')->where(['TRAD_NIDTRAMITE' => $TRAM_NIDTRAMITE, 'TRAD_NIDDOCUMENTO' => $documentos['TRAD_NIDDOCUMENTO']])->first();
+                
+                if(is_null($item)){
+                    $gestor->TRAM_SP_AGREGAR_DOCUMENTO(
+                        $TRAM_NIDTRAMITE,
+                        $documentos['TRAD_NIDDOCUMENTO'],
+                        $documentos['TRAD_CNOMBRE'],
+                        $documentos['TRAD_CDESCRIPCION'],
+                        $documentos['TRAD_CEXTENSION'],
+                        $documentos['TRAD_NOBLIGATORIO'],
+                        $documentos['TRAD_NMULTIPLE']
+                    );
+                }
+                else{
+                    DB::table('tram_mdv_documento_tramite')
+                        ->where(['TRAD_NIDTRAMITE' => $TRAM_NIDTRAMITE, 'TRAD_NIDDOCUMENTO' => $documentos['TRAD_NIDDOCUMENTO']])
+                        ->update([
+                            'TRAD_NOBLIGATORIO' => $documentos['TRAD_NOBLIGATORIO'],
+                            'TRAD_NMULTIPLE'    => $documentos['TRAD_NMULTIPLE']
+                        ]);
+                }
             }
+
+            //Elimino los que ya no van a estar
+            DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE)->whereNotIn('TRAD_NIDDOCUMENTO', $arrayId)->delete();
         } catch (EXception $ex) {
-            dd($ex);
             throw $ex;
         }
     }

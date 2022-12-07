@@ -168,3 +168,5 @@ Route::group(['prefix' => 'citas'], function () {
     Route::post('/delete', 'CitasController@delete');
     Route::delete('/{id}', 'CitasController@deleteCita');
 });
+
+Route::post('/webhook/pago_status', 'WebHookController@PagoEstatus');

@@ -504,27 +504,28 @@
                                             //$TXT_STAT=''.$VIG_TXT.'..v: '.$VIGENCIA_FIN.'..va: '.$tramite['DOCS_BASE'][$nmbres][5].'..id: '.$tramite['DOCS_BASE'][$nmbres][6];
                                             
                                             ?>
+
                                             <td>
                                             @foreach($tramite['repositorio'] as $rep)
                                                 @if($rep->USDO_CDOCNOMBRE == $nmbres)
                                                     <div class="custom-control custom-checkbox">
-                                                        
                                                         <div class="row">
                                                             <div class="md-6">   
-                                                            <input class="form-check-input chckdfiles" type="checkbox" 
-                                                        onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}',
-                                                        '{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}',
-                                                        'file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" 
-                                                        value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                        title="Elegir archivo existente" checked>                                                     <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" 
-                                                            target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  >
-                                                            <i title='Descargar documento' class='fas fa-download'></i>
-                                                        </a></div>
-                                                            <div class="md-6 ml-2" ><a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank"><i class="fa fa-eye p-0 m-0" ></i></a></div>
+                                                                <input class="form-check-input chckdfiles" type="checkbox" 
+                                                                    onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}','{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}','file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" 
+                                                                    value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
+                                                                    title="Elegir archivo existente" checked>                                                     
+                                                                    <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  >
+                                                                        <i title='Descargar documento' class='fas fa-download'></i>
+                                                                    </a>
+                                                            </div>
+                                                            <div class="md-6 ml-2" >
+                                                                <a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank">
+                                                                    <i class="fa fa-eye p-0 m-0" ></i>
+                                                                </a>
+                                                            </div>
                                                         </div>
-
                                                     </div>
-                                                    
                                                     @break;
                                                 @endif
                                             @endforeach
@@ -554,9 +555,9 @@
                                             <?php echo $otrotest;?>
                                             {{$doc->TRAD_CNOMBRE}}
 
-                                                @if($doc->TRAD_NOBLIGATORIO == 1 )
-                                                    <span class="text-danger">*</span>
-                                                @endif
+                                            @if($doc->TRAD_NOBLIGATORIO == 1 )
+                                                <span class="text-danger">*</span>
+                                            @endif
                                             <br>
                                             <p style="font-size: 12px;color: red;"><b>5Mb máximo</b></p>
                                             </td>
@@ -591,11 +592,12 @@
                                             </td>
                                             <td style="width: 70px;">
                                                 <input type="hidden" name="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="0_0_0_{{$doc->TRAD_CNOMBRE}}">
+                                                    id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="0_0_0_{{$doc->TRAD_CNOMBRE}}">
 
+                                                <input type="hidden" value="{{$doc->TRAD_NOBLIGATORIO}}" id="valida_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
                                                 <input class="file-select documentos" name="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file"  accept="application/pdf"
-                                                data-doctype="{{$doc->TRAD_CNOMBRE}}" {{$doc->TRAD_NOBLIGATORIO == 1 ? 'required' : '' }}>
+                                                    id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file"  accept="application/pdf"
+                                                    data-doctype="{{$doc->TRAD_CNOMBRE}}" {{$doc->TRAD_NOBLIGATORIO == 1 ? 'required' : '' }}>
                                             </td>
                                             <td>
                                             @if($doc->TRAD_NMULTIPLE == 1)
@@ -607,7 +609,7 @@
                                             <td>
                                                 <h5 class="font-weight-bold">
                                                     <span class="circle-error-multi"  
-                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}')" >x</span>
+                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}', '{{$doc->TRAD_NOBLIGATORIO}}')" >x</span>
                                                 </h5>
                                             </td>
                                         </tr>
@@ -1041,9 +1043,13 @@
             $("#docs_" + id).val("0_0_0_"+nombre);
             $('#chck_'+id).attr("title", "Elegir archivo existente.")
             $('#'+id).show();
-            $('#'+id).attr("required", "required");
+            /* $('#'+id).attr("required", "required"); */
             $("#link_"+id).hide();
             setDocData(nombre, "", "", id);
+
+            if($("#valida_"+id).val() == 1){
+                $('#'+id).attr("required", "required");
+            }
         }
     }
 
@@ -1554,13 +1560,22 @@
         +'</tr>');
     }
 
-    function TRAM_FN_LIMPIARROW_DOCUMENTO(id,nombre){
+    function TRAM_FN_LIMPIARROW_DOCUMENTO(id, nombre, requerido = false){
+        $("#file_"+id).show();
+        $("#file_"+id).val("");
         $("#docs_file_" + id).val("0_0_0_"+nombre);
         $("#size_file_" + id).html("0 Bytes");
         $("#icon_file_" + id).html("<img src='{{ asset('assets/template/img/doc.png') }}'' width='20' height='20'>");
+        $("#chck_file_" + id).prop("checked", false);
+
+        if($("#valida_file_"+id).val() == 1){
+            $('#file_'+id).attr("required", "required");
+        }
+
+        $("#btnEnviar").hide();
     }
 
-    function TRAM_FN_VALIDAR(){
+    function TRAM_FN_VALIDAR(showMessage=true){
         $(".txtEnriquecido").each(function() {
             var id = this.id;
             var editor_val = CKEDITOR.instances[id].getData();
@@ -1571,6 +1586,7 @@
                 $("#error_" + id).html("");
             }
         });
+
         if (!$("#frmForm").valid()){
             const full  = document.getElementsByClassName('full');
             const arr   = [...full].map(input => input.value);
@@ -1596,8 +1612,9 @@
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Aceptar'
             });
-            return;
-        }else {
+
+            return false;
+        } else {
             const full  = document.getElementsByClassName('full');
             const arr   = [...full].map(input => input.value);
 
@@ -1612,181 +1629,213 @@
                 }
 
             })
-            Swal.fire({
-                title: '',
-                text: 'El formulario ha sido completado, y está listo para enviar a revisión.',
-                icon: 'info',
-                showCancelButton: false,
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Aceptar'
-            });
+            
+            if(showMessage){
+                Swal.fire({
+                    title: '',
+                    text: 'El formulario ha sido completado, y está listo para enviar a revisión.',
+                    icon: 'info',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+
             $("#btnEnviar").show();
+
+            return true;
         }
     }
 
     function TRAM_AJX_GUARDAR(){
-        $("#loading-text").html("Guardando...");
-        $('#loading_save').show();
-        $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
-        const full  = document.getElementsByClassName('full');
-            const arr   = [...full].map(input => input.value);
+        if($("#cmbModulo").val() == null){
+            Swal.fire({
+                        title: '¡Aviso!',
+                        text: "Favor de seleccionar un módulo.",
+                        icon: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Aceptar'
+                    });
+        }
+        else {
+            $("#loading-text").html("Guardando...");
+            $('#loading_save').show();
+            $('#frmForm').append("<input type='hidden' name='txtMunicipio' value='"+ $('#cmbMunicipio').val() +"'/>");
+            const full  = document.getElementsByClassName('full');
+                const arr   = [...full].map(input => input.value);
 
-            var divVal = "";
-            arr.forEach(function(idDiv) {
-                divVal = $('#form_'+idDiv+' :input').valid()
-                $("#span_"+idDiv).empty();
-                if(!divVal){
-                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
-                }else{
-                    $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
-                }
+                var divVal = "";
+                arr.forEach(function(idDiv) {
+                    divVal = $('#form_'+idDiv+' :input').valid()
+                    $("#span_"+idDiv).empty();
+                    if(!divVal){
+                        $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/error.png') }}" width="20" height="20"></span>');
+                    }else{
+                        $("#span_"+idDiv).append('<span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>');
+                    }
 
-            })
-        catalogos.forEach(element => {
-            let respuestas  = element.respuesta;
-            let id          = element.pregunta;
-            let valor       = [];
+                })
+            catalogos.forEach(element => {
+                let respuestas  = element.respuesta;
+                let id          = element.pregunta;
+                let valor       = [];
 
-            respuestas.forEach(item => {
-                let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
-                valor.push(obj);
+                respuestas.forEach(item => {
+                    let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                    valor.push(obj);
+                });
+
+                $("#"+ id + "_input").val(JSON.stringify(valor));
+
             });
 
-            $("#"+ id + "_input").val(JSON.stringify(valor));
-
-        });
-
-        $.ajax({
-            data: $('#frmForm').serialize(),
-            url: "/tramite_servicio/guardar",
-            type: "POST",
-            dataType: 'json',
-            success: function (data) {
-                if(data.status == "success"){
+            $.ajax({
+                data: $('#frmForm').serialize(),
+                url: "/tramite_servicio/guardar",
+                type: "POST",
+                dataType: 'json',
+                success: function (data) {
+                    if(data.status == "success"){
+                        Swal.fire({
+                            title: '¡Éxito!',
+                            text: data.message,
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
+                            }
+                        });
+                    }else {
+                        Swal.fire({
+                            title: '¡Aviso!',
+                            text: data.message,
+                            icon: 'info',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                    $('#loading_save').hide();
+                },
+                error: function (data) {
                     Swal.fire({
-                        title: '¡Éxito!',
+                        icon: data.status,
+                        title: '',
                         text: data.message,
-                        icon: 'success',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Aceptar'
-                        }).then((result) => {
-                        if (result.isConfirmed) {
-                            document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
-                        }
+                        footer: ''
                     });
-                }else {
-                    Swal.fire({
-                        title: '¡Aviso!',
-                        text: data.message,
-                        icon: 'info',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Aceptar'
-                    });
+                    $('#loading_save').hide();
                 }
-                $('#loading_save').hide();
-            },
-            error: function (data) {
-                Swal.fire({
-                    icon: data.status,
-                    title: '',
-                    text: data.message,
-                    footer: ''
-                });
-                $('#loading_save').hide();
-            }
-        });
+            });
+        }
     }
 
     function TRAM_AJX_ENVIAR(){
-        catalogos.forEach(element => {
-            let respuestas  = element.respuesta;
-            let id          = element.pregunta;
-            let valor       = [];
-
-            respuestas.forEach(item => {
-                let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
-               valor.push(obj);
+        if($("#cmbModulo").val() == null){
+            Swal.fire({
+                title: '¡Aviso!',
+                text: "Favor de seleccionar un módulo.",
+                icon: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Aceptar'
             });
+        }
+        else {
+            if(TRAM_FN_VALIDAR(false)){
+                catalogos.forEach(element => {
+                    let respuestas  = element.respuesta;
+                    let id          = element.pregunta;
+                    let valor       = [];
 
-            $("#"+ id + "_input").val(JSON.stringify(valor));
-        });
-
-        Swal.fire({
-            title: '',
-            text: '¿Está seguro de enviar su trámite?',
-            icon: 'success',
-            showCancelButton: true,
-            cancelButtonText: 'No, cancelar',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Sí enviar',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false,
-        }).then((result) => {
-                if (result.isConfirmed) {
-                    $("#loading-text").html("Enviando...");
-                    $('#loading_save').show();
-                    $.ajax({
-                        data: $('#frmForm').serialize(),
-                        url: "/tramite_servicio/enviar",
-                        type: "POST",
-                        dataType: 'json',
-                        success: function (data) {
-                            if(data.status == "success"){
-                                Swal.fire({
-                                    title: '¡Éxito!',
-                                    text: data.message,
-                                    icon: 'success',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar',
-                                    allowOutsideClick: false,
-                                    allowEscapeKey: false,
-                                    allowEnterKey: false,
-                                    willClose: (el) => {
-                                        Swal.fire({
-                                            title: 'Espere un momento porfavor...',
-                                            text: "",
-                                            showConfirmButton: false,
-                                            showCancelButton: false,
-                                            allowOutsideClick: false,
-                                            allowEscapeKey: false,
-                                            allowEnterKey: false,
-                                        })
-                                        return false;
-                                    },
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
-                                        //location.reload();
-                                    }
-                                });
-                            }else {
-                                Swal.fire({
-                                    title: '¡Aviso!',
-                                    text: data.message,
-                                    icon: 'info',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Aceptar'
-                                });
-                            }
-                            $('#loading_save').hide();
-                        },
-                        error: function (data) {
-                            Swal.fire({
-                                icon: data.status,
-                                title: '',
-                                text: data.message,
-                                footer: ''
-                            });
-                            $('#loading_save').hide();
-                        }
+                    respuestas.forEach(item => {
+                        let obj = {"id": item, "clave": $('#label_'+item).text(), "fecha": $('#fechaGiro_'+item).val()};
+                        valor.push(obj);
                     });
-                }
-            });
+
+                    $("#"+ id + "_input").val(JSON.stringify(valor));
+                });
+
+                Swal.fire({
+                    title: '',
+                    text: '¿Está seguro de enviar su trámite?',
+                    icon: 'success',
+                    showCancelButton: true,
+                    cancelButtonText: 'No, cancelar',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí enviar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("#loading-text").html("Enviando...");
+                        $('#loading_save').show();
+                        $.ajax({
+                            data: $('#frmForm').serialize(),
+                            url: "/tramite_servicio/enviar",
+                            type: "POST",
+                            dataType: 'json',
+                            success: function (data) {
+                                if(data.status == "success"){
+                                    Swal.fire({
+                                        title: '¡Éxito!',
+                                        text: data.message,
+                                        icon: 'success',
+                                        showCancelButton: false,
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'Aceptar',
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        allowEnterKey: false,
+                                        willClose: (el) => {
+                                            Swal.fire({
+                                                title: 'Espere un momento porfavor...',
+                                                text: "",
+                                                showConfirmButton: false,
+                                                showCancelButton: false,
+                                                allowOutsideClick: false,
+                                                allowEscapeKey: false,
+                                                allowEnterKey: false,
+                                            })
+                                            return false;
+                                        },
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            document.location.href = '/tramite_servicio/seguimiento_tramite/' + data.data;
+                                            //location.reload();
+                                        }
+                                    });
+                                }else {
+                                    Swal.fire({
+                                        title: '¡Aviso!',
+                                        text: data.message,
+                                        icon: 'info',
+                                        showCancelButton: false,
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'Aceptar'
+                                    });
+                                }
+                                $('#loading_save').hide();
+                            },
+                            error: function (data) {
+                                Swal.fire({
+                                    icon: data.status,
+                                    title: '',
+                                    text: data.message,
+                                    footer: ''
+                                });
+                                $('#loading_save').hide();
+                            }
+                        });
+                    }
+                });
+            }
+        }
     };
 
     //Convertir byte a (Kb, Mb, Gb, Tb)

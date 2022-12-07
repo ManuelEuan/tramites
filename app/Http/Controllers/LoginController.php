@@ -34,12 +34,10 @@ class LoginController extends Controller
 
 	//Login
 	public function login(Request $request) {
-		//dd($request);
 		$validator = Validator::make($request->all(), [
 			'Usuario' => 'required',
 			'Contraseña' => 'required',
 		]);
-
 
 		if($request->txtUsuario == "" || $request->txtUsuario == null ){
 			$validator->after(function($validator) {
@@ -49,33 +47,25 @@ class LoginController extends Controller
 		}
 		else{
 			//Valida reRECAPTCHA
-			$ArrRecaptcha = Cls_Usuario::TRAM_FN_VALIDAR_RECAPTCHA($request['g-recaptcha-response']);
+			/* $ArrRecaptcha = Cls_Usuario::TRAM_FN_VALIDAR_RECAPTCHA($request['g-recaptcha-response']);
 			if($ArrRecaptcha["success"] != '1') {
 			 	$validator->after(function($validator){
 			 		$validator->errors()->add('recaptcha', ' El campo No soy un robot es requerido.');
 			 	}); 
 			 	return Redirect::back()->withErrors($validator);
-			}
+			} */
 
-			//Validamos que al menos el correo sea correcto, de ser así se obtiene el id del usuario e insertamos en la tabla de acesso, con estatus no valido
-			$IntIdUsuario = Cls_Usuario::TRAM_SP_VALIDAR_CORREO_OBTIENE_ID($request->txtUsuario);
-
-			//Validar si la cuenta esta bloquedo
-			//Validar si encontro un usuario con el correo indicado
-			if($IntIdUsuario != null){
-				$user = User::find($IntIdUsuario->USUA_NIDUSUARIO);
+			$user = User::where('USUA_CCORREO_ELECTRONICO', $request->txtUsuario)->orWhere('USUA_CCORREO_ALTERNATIVO', $request->txtUsuario)->first();
+			if(!is_null($user)){
 				if(is_null($user->email_verified_at)){
 					$validator->errors()->add('verificacion', ' Estimado usuario, su cuenta no se ha verificado, favor de verificar.');
 					return Redirect::back()->withErrors($validator);
 				}
 
-				$ObjBloqueo = Cls_Bloqueo::TRAM_SP_VALIDAR_BLOQUEO($IntIdUsuario->USUA_NIDUSUARIO);
-
-				if($ObjBloqueo != null){
-					//Retornar respuesta al usuario, que su cuenta esta bloqueado
-					if($ObjBloqueo->BLUS_NBLOQUEADO == 1){
-						$validator->after(function($validator)
-						{
+				$bloqueo = Cls_Bloqueo::where('BLUS_NIDUSUARIO', $user->USUA_NIDUSUARIO)->first();
+				if(!is_null($bloqueo)){
+					if($bloqueo->BLUS_NBLOQUEADO == 1){
+						$validator->after(function($validator) {
 							$validator->errors()->add('bloqueado', ' Estimado usuario, su cuenta se encuentra bloqueado temporalmente, favor de restablecer su contraseña.');
 						});
 						return Redirect::back()->withErrors($validator);
@@ -83,26 +73,20 @@ class LoginController extends Controller
 				}
 			}
 
-			if($IntIdUsuario != null){
-				//Validar credenciales de acceso
-				$ObjUser = Cls_Usuario::TRAM_SP_LOGIN($request->txtUsuario, $request->txtContrasenia);
+			if(!is_null($user)){
+				$pass = $user->USUA_CCONTRASENIA == crypt($request->txtContrasenia, '$1$*$') ? $user : null;
 
-				//Credenciales invalidas
-				if($ObjUser == null) {
-
-					//Validar si encontro un usuario con el correo indicado
-					if($IntIdUsuario != null){
-						//Insertar acceso invalido
-						Cls_Usuario::TRAM_SP_AGREGAR_ACCESO($IntIdUsuario->USUA_NIDUSUARIO, false);
-
-						//Insertar bitacora
+				if(is_null($pass)) {
+					if(!is_null($user)){
+						Cls_Usuario::TRAM_SP_AGREGAR_ACCESO($user->USUA_NIDUSUARIO, false);
 						$ObjBitacora = new Cls_Bitacora();
-						$ObjBitacora->BITA_NIDUSUARIO = $IntIdUsuario->USUA_NIDUSUARIO;
-						$ObjBitacora->BITA_CMOVIMIENTO = "Acceso fallido";
-						$ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
-						$ObjBitacora->BITA_CIP = $request->ip();
-						Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-
+						$ObjBitacora->BITA_NIDUSUARIO	= $user->USUA_NIDUSUARIO;
+						$ObjBitacora->BITA_CMOVIMIENTO 	= "Acceso fallido";
+						$ObjBitacora->BITA_CTABLA 		= "tram_mst_usuario";
+						$ObjBitacora->BITA_CIP 			= $request->ip();
+						$ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+						$ObjBitacora->save();
+						
 						//Validar si el usuario ya supero el limite de intentos
 						/* SE comenta el bloqueo de las cuentas de correo 
 						if(Cls_Usuario::TRAM_SP_CONTAR_ACCESO_NO_VALIDO($IntIdUsuario->USUA_NIDUSUARIO) == 5){
@@ -125,51 +109,44 @@ class LoginController extends Controller
 							return Redirect::back()->withErrors($validator);
 						} */
 					}
-					$validator->after(function($validator)
-						{
-							$validator->errors()->add('credenciales', ' La contraseña no es valida, favor de verificarla.');
-						});
-						return Redirect::back()->withErrors($validator);
+					$validator->after(function($validator) {
+						$validator->errors()->add('credenciales', ' La contraseña no es valida, favor de verificarla.');
+					});
+					return Redirect::back()->withErrors($validator);
 				}
 			}else{
-				$validator->after(function($validator)
-				{
+				$validator->after(function($validator) {
 					$validator->errors()->add('credenciales', ' Usuario no registrado, favor de verificar.');
 				});
 				return Redirect::back()->withErrors($validator);
 			}
 
-			if($ObjUser->USUA_NACTIVO != null && $ObjUser->USUA_NACTIVO == 1){
-				$validator->after(function($validator)
-				{
+			if($user->USUA_NACTIVO != null && $user->USUA_NACTIVO == 1){
+				$validator->after(function($validator) {
 					$validator->errors()->add('bloqueado', 'Usuario bloqueado, favor de contactar al Administrador.');
 				});
 				return Redirect::back()->withErrors($validator);
 			}
 
 			//Insertar acceso validos
-			Cls_Usuario::TRAM_SP_AGREGAR_ACCESO($ObjUser->USUA_NIDUSUARIO, true);
-			//Eliminar intetos fallidos
-			Cls_Usuario::TRAM_SP_ELIMINAR_ACCESO_NO_VALIDO($ObjUser->USUA_NIDUSUARIO);
-			//Insertar en la tabla de bloqueo, bloqueo false
-			//Cls_Usuario::TRAM_SP_AGREGAR_BLOQUEO($IntIdUsuario->USUA_NIDUSUARIO, false, Uuid::uuid1()->toString());
-
+			Cls_Usuario::TRAM_SP_AGREGAR_ACCESO($user->USUA_NIDUSUARIO, true);
+			Cls_Usuario::TRAM_SP_ELIMINAR_ACCESO_NO_VALIDO($user->USUA_NIDUSUARIO);
+			
 			//Crea auth
-			Auth::loginUsingId($ObjUser->USUA_NIDUSUARIO);
+			Auth::loginUsingId($user->USUA_NIDUSUARIO);
 
 			//Insertar bitacora
 			$ObjBitacora = new Cls_Bitacora();
-			$ObjBitacora->BITA_NIDUSUARIO = Auth::user()->USUA_NIDUSUARIO;
-			$ObjBitacora->BITA_CMOVIMIENTO = "Acceso exitoso";
-			$ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
-			$ObjBitacora->BITA_CIP = $request->ip();
-			Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+			$ObjBitacora->BITA_NIDUSUARIO	= Auth::user()->USUA_NIDUSUARIO;
+			$ObjBitacora->BITA_CMOVIMIENTO 	= "Acceso exitoso";
+			$ObjBitacora->BITA_CTABLA	 	= "tram_mst_usuario";
+			$ObjBitacora->BITA_CIP 			= $request->ip();
+			$ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+			$ObjBitacora->save();
+
 			Cookie::forever("rol_clave", Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE);
 			$ruta 	= session('retys');
 			session()->forget('retys');
-
-			/* $getCookie = Cookie::get("rol_clave");
-			Cookie::queue($getCookie); */
 
 			switch( Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE){
 				case "CDNS":
@@ -177,7 +154,6 @@ class LoginController extends Controller
 						return Redirect::to('/tramite_servicio');
 					else
 						return Redirect::to("/".$ruta);
-
 					break;
 				case "ADM":
 					return Redirect::to('/gestores');
@@ -185,29 +161,7 @@ class LoginController extends Controller
 					return Redirect::to('/gestores');
 					break;
 			}
-
-			/* if($cookie){
-				Cookie::queue($getCookie);
-				switch($cookie->name){
-					case "CDNS":
-						if(str_ends_with($request->previous_url,"logout")){
-							return Redirect::to('/tramite_servicio')->withCookie($cookie);
-						}else{
-							return Redirect::to($request->previous_url->withCookie($cookie));
-						}
-						break;
-					case "ADM":
-						return Redirect::to('/gestores')->withCookie($cookie);
-						// dd("admin");
-						break;
-					default:
-						return Redirect::to('/gestores')->withCookie($cookie);
-						break;
-				}
-			} */
 		}
-
-
 	}
 
 	public function recuperar_contrasena(Request $request){

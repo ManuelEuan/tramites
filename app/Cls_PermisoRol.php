@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_PermisoRol extends Model
 {
-    protected $connection = 'mysql';
-    protected $table = 'tram_det_permisorol';
+    protected $connection   = 'pgsql';
+    protected $table        = 'tram_det_permisorol';
+    protected $with         = ['TRAM_CAT_PERMISO'];
 
     static function TRAM_SP_CONSULTARPERMISOROL($IntRolId){
         return DB::select('call TRAM_SP_CONSULTARPERMISOROL(?)'
@@ -27,11 +28,9 @@ class Cls_PermisoRol extends Model
                 , array($IntRolId));
     }
     
-    protected $with = ['TRAM_CAT_PERMISO'];
-    
     public function TRAM_CAT_PERMISO()
     {
         //forean key, primary key
-        return $this->belongsTo('App\Cls_Permiso', 'PROL_NIDPERMISO', 'PERMI_NIDPERMISO');
+        return $this->belongsTo(Cls_Permiso::class, 'PROL_NIDPERMISO', 'PERMI_NIDPERMISO');
     }
 }

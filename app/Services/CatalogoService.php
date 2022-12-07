@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Exception;
 use App\Models\Cls_Catalogo;
+use Illuminate\Support\Facades\DB;
 
 class CatalogoService {
 
@@ -68,5 +69,25 @@ class CatalogoService {
      */
     public function getCatalogoById($id) {
         return Cls_Catalogo::find($id);
+    }
+
+    /**
+     * retorna el registro de retys en base a la tabla que se indique
+     * @param String $tabla
+     * @param Sting $match
+     * @param String $uuid
+     * @return Object
+     */
+    public function getCondition($tabla, $match, $uuid){
+        return DB::connection('remtys')->table($tabla)->where($match, $uuid)->get();
+    }
+
+    /**
+     * retorna los registros de retys en base a la tabla que se indique
+     * @param String $tabla
+     * @return Object
+     */
+    public function get($tabla){
+        return DB::connection('remtys')->table($tabla)->get();
     }
 }

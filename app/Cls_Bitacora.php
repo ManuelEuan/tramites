@@ -7,16 +7,20 @@ use Illuminate\Http\Request;
 
 class Cls_Bitacora extends Model
 {
-    protected $connection = 'mysql';
-    protected $table = 'tram_his_bitacora';
+    protected $connection   = 'pgsql';
+    protected $table        = 'tram_his_bitacora';
+    protected $fillable     = ['BITA_NIDBITACORA', 'BITA_NIDUSUARIO', 'BITA_CMOVIMIENTO', 'BITA_CTABLA', 'BITA_FECHAMOVIMIENTO', 'BITA_CIP'];
+    protected $primaryKey   = 'BITA_NIDBITACORA';
+    public $timestamps      = false;
+
 
     //Atributos para filtro
-    public $StrTexto;
+    /* public $StrTexto;
     public $IntNumPagina;
     public $IntCantidadRegistros;
     public $StrOrdenColumna;
     public $StrOrdenDir;
-    public $IntUsuarioId;
+    public $IntUsuarioId; */
 
     public function TRAM_SP_CONSULTARBITACORA()
     {

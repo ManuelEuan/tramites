@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Permiso extends Model
 {
-    protected $connection = 'mysql';
-    protected $table = 'tram_cat_permiso';
-    
+    protected $connection   = 'pgsql';
+    protected $table        = 'tram_cat_permiso';
+    protected $with         = ['TRAM_CAT_CATEGORIA_PERMISO'];
+
     static function TRAM_SP_CONSULTARPERMISO(){
         return DB::select(
             'call TRAM_SP_CONSULTARPERMISO()'
@@ -44,12 +45,10 @@ class Cls_Permiso extends Model
         return DB::select('call TRAM_SP_ELIMINARPERMISO(?)'
                 , array($request->IntId));
     }
-
-    protected $with = ['TRAM_CAT_CATEGORIA_PERMISO'];
     
     public function TRAM_CAT_CATEGORIA_PERMISO()
     {
-        return $this->belongsTo('App\Cls_Categoria_Permiso', 'PERMI_NIDCATEGORIA_PERMISO', 'CPERMI_NIDCATEGORIA_PERMISO');
+        return $this->belongsTo(Cls_Categoria_Permiso::class, 'PERMI_NIDCATEGORIA_PERMISO', 'CPERMI_NIDCATEGORIA_PERMISO');
     }
     
 }

@@ -93,7 +93,7 @@ class TramiteServicioController extends Controller
         $tramites->IntCantidadRegistros = $request->ajax() ? $request->IntCantidadRegistros : 10;
         $tramites->StrOrdenColumna  = $request->ajax() ? $request->StrOrdenColumna : "";
         $tramites->StrOrdenDir      = $request->ajax() ? $request->StrOrdenDir : "";
-        $tramites->IntUsuarioId     = 3;//Auth::user()->USUA_NIDUSUARIO;
+        $tramites->IntUsuarioId     = Auth::user()->USUA_NIDUSUARIO;
         $registros                  = $tramites->TRAM_SP_CONSULTAR_TRAMITE_PUBLICO();
         $IntPaginaActual            = (int)$registros['pagination'][0]->PaginaActual;
         $IntTotalPaginas            = (int)$registros['pagination'][0]->TotalPaginas;
@@ -106,23 +106,35 @@ class TramiteServicioController extends Controller
     {
         $resultTram = Cls_Tramite_Servicio::TRAM_OBTENER_TRAMITES();
         $html = '';
-        foreach ($resultTram as $i) {
-            $html .= '<div class="card text-left" style="margin-bottom: 2rem;">
-                <div class="card-header text-primary titleCard">
-                    ' . $i->TRAM_CNOMBRE . ' <span class="badge badge-warning">' . $i->TRAM_CCENTRO . '</span>
-                </div>
+
+        if(count($resultTram)>0){
+            foreach ($resultTram as $i) {
+                $html .= '<div class="card text-left" style="margin-bottom: 2rem;">
+                    <div class="card-header text-primary titleCard">
+                        ' . $i->TRAM_CNOMBRE . ' <span class="badge badge-warning">' . $i->TRAM_CCENTRO . '</span>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-text" style="color: #212529;">
+                            ' . $i->TRAM_CDESCRIPCION . '
+                        </h6>
+                    </div>
+                    <div class="card-footer text-muted" style="background-color: transparent; border-top: none; border-bottom: none;">
+                        <span class="text-left" style="margin-right: 30px;">Creado: ' . date("d/m/Y", strtotime($i->created_at)) . '</span>
+                        <span class="text-left">Ultima Modificación: ' . date("d/m/Y", strtotime($i->updated_at)) . '</span>
+                        <a href="' . route('detalle_tramite', ['id' => $i->TRAM_NIDTRAMITE]) . '" class="btn btn-primary" style="float: right;">Ver trámite</a>
+                    </div>
+                </div>';
+            }
+        } else {
+            $html = '<div class="card text-left" style="margin-bottom: 2rem;">
                 <div class="card-body">
-                    <h6 class="card-text" style="color: #212529;">
-                        ' . $i->TRAM_CDESCRIPCION . '
+                    <h6 class="card-text" style="color: #212529; text-aling: center">
+                        Sin trámites que mostrar 
                     </h6>
-                </div>
-                <div class="card-footer text-muted" style="background-color: transparent; border-top: none; border-bottom: none;">
-                    <span class="text-left" style="margin-right: 30px;">Creado: ' . date("d/m/Y", strtotime($i->created_at)) . '</span>
-                    <span class="text-left">Ultima Modificación: ' . date("d/m/Y", strtotime($i->updated_at)) . '</span>
-                    <a href="' . route('detalle_tramite', ['id' => $i->TRAM_NIDTRAMITE]) . '" class="btn btn-primary" style="float: right;">Ver trámite</a>
                 </div>
             </div>';
         }
+        
         return $html;
     }
     //Aqui
@@ -336,6 +348,7 @@ class TramiteServicioController extends Controller
                 $tramite['repositorio'][] = $repodoc;
             };
         }
+        /* dd($tramite['configuracion']['documentos']); */
         //$tramite['descripcionesDoc'] = $arrayDocumentos;
         ///////////////////////////////////////////////////////////////////
 

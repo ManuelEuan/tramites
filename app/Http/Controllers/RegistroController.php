@@ -11,9 +11,15 @@ use App\Cls_Sucursal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Auth\Events\Registered;
+use App\Services\CatalogoService;
 
 class RegistroController extends Controller
 {
+    protected $catalogoService;
+    public function __construct(){
+        $this->catalogoService  = new CatalogoService();
+    }
+    
     public function agregar(Request $request){
         $response = [];
         $IntUsuarioId = 0;
@@ -141,56 +147,18 @@ class RegistroController extends Controller
 	
 	
     public function estados(){
-        //https://tramites-merida.azurewebsites.net/api/Tramite/Municipios
-        $url = 'https://retys-queretaro.azurewebsites.net/api/Tramite/Estados';
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-
-        $context  = stream_context_create($options);
-        $result   = file_get_contents($url, false, $context);
-
-        $list = json_decode($result, true);
-
-  
+        $list = $this->catalogoService->get("states");
         return Response()->json($list);
     }
 
-    public function municipios(){
-        //https://tramites-merida.azurewebsites.net/api/Tramite/Municipios
-        $url = 'https://retys-queretaro.azurewebsites.net/api/Tramite/Municipios';
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-
-        $context  = stream_context_create($options);
-        $result   = file_get_contents($url, false, $context);
-
-        $list = json_decode($result, true);
-
-  
+    public function municipios($id){
+        $list = $this->catalogoService->getCondition("municipalities", "IdState", $id);
         return Response()->json($list);
     }
 
-    public function localidades($Strlocalidad){
-        $url = 'https://vucapacita.chihuahua.gob.mx/api/vw_accede_localidades_municipio/'.$Strlocalidad;
-        $options = array(
-            'http' => array(
-                'method'  => 'GET',
-            )
-        );
-
-        $context  = stream_context_create($options);
-        $result   = file_get_contents($url, false, $context);
-
-        $listTramites = json_decode($result, true);
-
-  
-        return Response()->json($listTramites);
+    public function localidades($id){
+        $list = $this->catalogoService->getCondition("colonies", "IdMunicipality", $id);
+        return Response()->json($list);
     }
 
 }

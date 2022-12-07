@@ -9,7 +9,6 @@ use Exception;
 use ZipArchive;
 use Carbon\Carbon;
 use App\Cls_Usuario;
-use App\Cls_SeccionFormRol;
 use Illuminate\Support\Str;
 use App\Cls_Usuario_Tramite;
 use Illuminate\Http\Request;
@@ -29,6 +28,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Cls_Seguimiento_Servidor_Publico;
 use App\Models\Cls_Formulario_Pregunta_Respuesta;
+
+use App\Cls_Tramite_Servicio;
 
 class TramitesController extends Controller
 {
@@ -123,7 +124,7 @@ class TramitesController extends Controller
             //Marcar trámite del ciudadano como Recibido
             Cls_Seguimiento_Servidor_Publico::TRAM_MARCAR_ESTATUS_REVISION_TRAMITE($id);
             $tramite    = DB::table('tram_vw_tramite_seguimiento')->where('USTR_NIDUSUARIOTRAMITE', $id)->first();
-            $secciones  = Cls_Seccion_Seguimiento::where('SSEGTRA_NIDUSUARIOTRAMITE', $id)->orderBy('SSEGTRA_NIDSECCION_SEGUIMIENTO', 'desc')->get();
+            $secciones  = Cls_Seccion_Seguimiento::where('SSEGTRA_NIDUSUARIOTRAMITE', $id)->orderBy('SSEGTRA_NIDSECCION_SEGUIMIENTO', 'ASC')->get();
             $conceptos  = DB::table('tram_mdv_usuario_concepto')->where('USCON_NIDUSUARIOTRAMITE', $id)->get();
         
             $resolutivos= Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
@@ -1117,5 +1118,12 @@ class TramitesController extends Controller
         }
 
         return response()->json(["url" => $archivo]);
+    }
+
+    public function asignar_persona(Request $request){//Request $request
+        
+        $respuesta = Cls_Tramite_Servicio::TRAM_TIPO_PERSONA($request);
+        
+        return $respuesta;
     }
 }

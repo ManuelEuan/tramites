@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Rol extends Model
 {
-    protected $connection = 'mysql';
-    protected $table = 'tram_cat_rol';
+    protected $connection   = 'pgsql';
+    protected $table        = 'tram_cat_rol';
+    protected $fillable     = ['ROL_NIDROL', 'ROL_CNOMBRE', 'ROL_CDESCRIPCION', 'ROL_CCLAVE'];
+    protected $primaryKey   = 'ROL_NIDROL';
+    protected $with         = ['TRAM_DET_PERMISOROL'];
 
     static function TRAM_SP_CONSULTARROL(){
         return DB::select(
@@ -49,11 +52,7 @@ class Cls_Rol extends Model
                 , array((int)$request->IntId));
     }
 
-    protected $with = ['TRAM_DET_PERMISOROL'];
-    
-    public function TRAM_DET_PERMISOROL()
-    {
-        //forean key, primary key
-        return $this->hasMany('App\Cls_PermisoRol', 'PROL_NIDROL', 'ROL_NIDROL');
+    public function TRAM_DET_PERMISOROL(){
+        return $this->hasMany(Cls_PermisoRol::class, 'PROL_NIDROL', 'ROL_NIDROL');
     }
 }

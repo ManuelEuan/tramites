@@ -63,24 +63,19 @@ return [
             ]) : [],
         ],
 
-        'mysql2' => [
-            'driver'    => 'mysql',
-            'url'       => env('DATABASE_URL'),
-            'host'      => env('DB_HOST2', 'esz-devqa.mysql.database.azure.com'),
-            'port'      => env('DB_POR2', '3306'),
-            'database'  => env('DB_DATABASE2', 'remtys-qro-prod'),
-            'username'  => env('DB_USERNAME2', 'Angelica@esz-devqa'),
-            'password'  => env('DB_PASSWORD2', 'Michoacan548.'),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset'   => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix'    => '',
+        'remtys' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE2', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
             'prefix_indexes' => true,
-            'strict'    => true,
-            'engine'    => null,
-            'options'   => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : []
+            'schema' => 'public',
+            'sslmode' => 'prefer',
         ],
 
         'pgsql' => [
