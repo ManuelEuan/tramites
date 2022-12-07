@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cls_Gestor extends Model
 {
-    protected $connection = 'mysql';
+    protected $connection   = 'pgsql';
+   /*  protected $table        = 'tram_his_bitacora';
+    protected $fillable     = ['BITA_NIDBITACORA', 'BITA_NIDUSUARIO', 'BITA_CMOVIMIENTO', 'BITA_CTABLA', 'BITA_FECHAMOVIMIENTO', 'BITA_CIP'];
+    protected $primaryKey   = 'BITA_NIDBITACORA';
+    public $timestamps      = false; */
+
     public $StrNombreFormulario;
     public $IntTramite;
 
@@ -96,15 +101,6 @@ class Cls_Gestor extends Model
         return $data;
     }
 
-    //Obtiene los formularios activos
-    public function TRAM_SP_CONSULTAR_FORMULARIO()
-    {
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_FORMULARIO(?)',
-            array($this->StrNombreFormulario)
-        );
-    }
-
     //Obtiene el detalle del trámite
     public function TRAM_SP_OBTENER_DETALLE_TRAMITE()
     {
@@ -116,27 +112,7 @@ class Cls_Gestor extends Model
         );
     }
 
-    //Obtiene preguntas para resolutivo
-    public function TRAM_SP_OBTENER_PREGUNTAS_RESOLUTIVO()
-    {
-        return DB::select(
-            '
-            SELECT 
-            tff.FORM_NID AS FORMID,
-            tff.FORM_CNOMBRE,
-            tff.FORM_CDESCRIPCION,
-            tfp.FORM_NID AS PREID,
-            tfp.FORM_NSECCIONID,
-            tfp.FORM_CPREGUNTA,
-            tfp.FORM_BRESOLUTIVO 
-            FROM tram_form_formulario tff
-            INNER JOIN tram_form_pregunta tfp ON tff.FORM_NID = tfp.FORM_NFORMULARIOID
-            WHERE tff.FORM_BACTIVO = 1 
-            AND tfp.FORM_BRESOLUTIVO = 1
-            '
-        );
-    }
-
+   
     //Obtiene detalle de trámite con configuración
     public function TRAM_SP_OBTENER_DETALLE_TRAMITE_CONFIGURACION($tramiteID, $tramiteIDConfig)
     {
