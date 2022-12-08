@@ -74,10 +74,10 @@ class RegistroController extends Controller
             }
 
             $response = [
-                'codigo'    => is_null($usuario) ? 200 : 400, 
-                'status'    => is_null($usuario) ? "success" : "error",
-                'message'   => is_null($usuario) ? '¡Éxito! Acción realizada con éxito.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<asdas>>",
-                'data'      => is_null($usuario) ? $result['error'] : $usuario
+                'codigo'    => !is_null($usuario) ? 200 : 400, 
+                'status'    => !is_null($usuario) ? "success" : "error",
+                'message'   => !is_null($usuario) ? '¡Éxito! Acción realizada con éxito.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<asdas>>",
+                'data'      => !is_null($usuario) ? $result['error'] : $usuario
             ];
 
         return Response()->json($response);
