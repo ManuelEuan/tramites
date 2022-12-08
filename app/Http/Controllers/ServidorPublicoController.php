@@ -6,6 +6,7 @@ use App\User;
 use Exception;
 use App\Cls_Usuario;
 use App\Cls_Bitacora;
+use App\Cls_Rol;
 use Illuminate\Http\Request;
 use App\Services\TramiteService;
 use Illuminate\Support\Facades\DB;
@@ -165,7 +166,7 @@ class ServidorPublicoController extends Controller
     }
 
     public function editar($id){
-        $objUsuario =  Cls_Usuario::TRAM_SP_OBTENER_USUARIO($id);
+        $objUsuario = Cls_Usuario::TRAM_SP_OBTENER_USUARIO($id);
         $roles      = DB::table('tram_cat_rol')->get();
 
         //Areas pertenece
@@ -332,14 +333,14 @@ class ServidorPublicoController extends Controller
                     }
                 }
             }
-    
+
             $params                     = (object)["tipo" => 'all', 'unidad_id' => null];
             $data_edificios             = $this->servidoresService->getEdificios($params);
             $Obj->lstTramitePertence    = Cls_Usuario::TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE($id);
             $Obj->lstEdificioPertence   = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE($id);
             $num_tramites               = $num_tramites + count($Obj->lstTramitePertence);
             $num_edificios              = $num_edificios + count($Obj->lstEdificioPertence);
-            dd($Obj->lstEdificioPertence);
+
             foreach($Obj->lstEdificioPertence as $value){
                 $value->EDIFUP_CNOMBRE = "";
                 foreach($data_edificios as $item){
@@ -348,7 +349,7 @@ class ServidorPublicoController extends Controller
                     }
                 }
             }
-    
+
             //Areas acceso
             $Obj->lstDependenciaAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id);
             $num_dependen =  $num_dependen  + count($Obj->lstDependenciaAcceso);
@@ -375,7 +376,7 @@ class ServidorPublicoController extends Controller
     
             $Obj->lstUnidadAcceso   = Cls_Usuario::TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id);
             $num_unidades           =  $num_unidades  + count($Obj->lstUnidadAcceso);
-    
+
             foreach($Obj->lstUnidadAcceso as $value){
                 $value->UNIDUA_CNOMBRE = "";
                 foreach($data_unidad as $item){
@@ -390,7 +391,7 @@ class ServidorPublicoController extends Controller
             $Obj->lstEdificioAcceso = Cls_Usuario::TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id);
             $num_tramites           = $num_tramites + count($Obj->lstTramiteAcceso);
             $num_edificios          = $num_edificios + count($Obj->lstEdificioAcceso);
-    
+
             $data["unidad_id"]  = "0";
             $data["tipo"]       = "all";
     
