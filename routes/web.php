@@ -206,7 +206,7 @@ Route::group(['prefix' => 'gestores'], function () {
         Route::get('/seccion_resolutivo', array('uses' => 'GestorController@view_resolutivo'))->name("seccion_resolutivo");
     });
 
-    Route::get('/consultar_formulario', array('uses' => 'GestorController@consultar_formulario'))->name("gestor_consultar_formulario");
+    Route::get('/consultar_formulario', 'GestorController@consultar_formulario')->name("gestor_consultar_formulario");
     Route::get('/consultar_documento_tramite/{IntTramite}', array('uses' => 'GestorController@consultar_documento_tramite'))->name("gestor_consultar_documento_tramite");
     Route::post('/crear', 'GestorController@save')->name('gestor_crear_configuracion');
     Route::get('/consultar_configuracion_tramite/{TRAM_NIDTRAMITE_CONFIG}', 'GestorController@consultar_configuracion_tramite')->name("consultar_configuracion_tramite");
@@ -214,7 +214,7 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/consultar_concepto_pago/{TRAM_NIDTRAMITE_ACCEDE}', array('uses' => 'GestorController@consultar_concepto_pago'))->name("consultar_concepto_pago");
     Route::get('/consultar_filtro', array('uses' => 'GestorController@obtener_filtro'))->name("consultar_filtro_gestores");
     Route::get('/consultar_resolutivo', array('uses' => 'GestorController@consultar_resolutivo'))->name("consultar_resolutivo");
-    Route::get('/consultar_preguntas_formulario', array('uses' => 'GestorController@consultar_preguntas_formulario'))->name("consultar_preguntas_formulario");
+    Route::get('/consultar_preguntas_formulario', 'GestorController@consultar_preguntas_formulario')->name("consultar_preguntas_formulario");
     Route::get('/formulario', array('uses' => 'GestorController@formulario'))->name("formulario_gestor");
 
     Route::get('/detalleTramite/{id}', 'GestorController@detalleTramite');

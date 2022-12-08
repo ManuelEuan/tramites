@@ -822,7 +822,7 @@ class Cls_Seguimiento_Servidor_Publico extends Model
 
             DB::SELECT(
                 'INSERT INTO tram_his_notificacion_tramite (HNOTI_CITUTLO, HNOTI_CMENSAJE, HNOTI_NIDUSUARIOTRAMITE, HNOTI_CFOLIO, HNOTI_CNOMBRETRAMITE, HNOTI_NLEIDO,HNOTI_DFECHACREACION,HNOTI_DFECHALEIDO,HNOTI_CEMISOR,HNOTI_ROLEMISOR,HNOTI_CMENSAJECORTO, HNOTI_NIDCONFIGSECCION, HNOTI_NTIPO ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                array($titulo, $mensaje, $tramite->USTR_NIDUSUARIOTRAMITE, $tramite->USTR_CFOLIO, $nombre_tramite, 0, now(), now(), $emisor, $user->TRAM_CAT_ROL->ROL_CNOMBRE, $mensaje_corto, $SSEGTRA_NIDSECCION_SEGUIMIENTO, $NTIPO)
+                array($titulo, $mensaje, $tramite->USTR_NIDUSUARIOTRAMITE, $tramite->USTR_CFOLIO, $nombre_tramite, 0, now(), null, $emisor, $user->TRAM_CAT_ROL->ROL_CNOMBRE, $mensaje_corto, $SSEGTRA_NIDSECCION_SEGUIMIENTO, $NTIPO)
             );
         } catch (\Throwable $th) {
         }

@@ -665,6 +665,7 @@ class TramiteServicioController extends Controller
         $tramite['estatus'] = $detalle->TRAM_NESTATUS_PROCESO == null ? 1 : $detalle->TRAM_NESTATUS_PROCESO;
         $tramite['atencion_formulario'] = $this->atencion;
         $tramite['notificacion'] = $noti;
+        $tramites->TRAM_VISTO_NOTIFICACION($id);
 
         return view('MST_TRAMITE_SERVICIO.detalle_notificacion', compact('tramite'));
     }
@@ -673,7 +674,7 @@ class TramiteServicioController extends Controller
     {
         session(['consultarPen' => $noti]);
         $tramites = new Cls_Tramite_Servicio();
-        /* $tramites->TRAM_ESTATUS_NOTIFICACION($noti); */
+        /* $tramites->TRAM_VISTO_NOTIFICACION($noti); */
         $notificacion_det = $tramites->TRAM_CONSULTAR_DETALLE_NOTIFICACION($noti);
         $this->atencion = 1;
         $this->seccion_active = $notificacion_det->HNOTI_NIDCONFIGSECCION; //Activar seccion

@@ -6,6 +6,7 @@ use Exception;
 use App\Cls_Gestor;
 use App\Cls_Resolutivo;
 use Illuminate\Http\Request;
+use App\Models\Cls_Formulario;
 use App\Services\CitasService;
 use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
@@ -262,24 +263,9 @@ class GestorController extends Controller
     }
 
     //Obtener formularios activos
-    public function consultar_formulario()
-    {
-        $StrNombreFormulario = null;
-
-        if ($StrNombreFormulario === null) {
-            $StrNombreFormulario = "";
-        }
-
-        $formularios = new Cls_Gestor();
-        $formularios->StrNombreFormulario = $StrNombreFormulario;
-        $registros = $formularios->TRAM_SP_CONSULTAR_FORMULARIO();
-       
-        $response = [
-            'data' => $registros,
-        ];
-
-        return response()->json($response);
-        
+    public function consultar_formulario() {
+        $formularios = Cls_Formulario::where('FORM_BACTIVO', true)->get();
+        return response()->json([ 'data' => $formularios]);
     }
 
     //Obtener documentos necesarios del trámite
@@ -668,17 +654,18 @@ class GestorController extends Controller
     }
 
     //Obtener resolutivos
-    public function consultar_preguntas_formulario()
-    {
-        $gestor = new Cls_Gestor();
-        $formulariosPreguntas = $gestor->TRAM_SP_OBTENER_PREGUNTAS_RESOLUTIVO();
+    public function consultar_preguntas_formulario() {
+        $formulariosPreguntas = DB::table('tram_form_formulario as f')
+                                    ->join('tram_form_pregunta as fp','f.FORM_NID', '=', 'fp.FORM_NFORMULARIOID')
+                                    ->where([ 'f.FORM_BACTIVO' => true, 'fp.FORM_BRESOLUTIVO'  => true])
+                                    ->select('f.FORM_NID AS FORMID', 'f.FORM_CNOMBRE','f.FORM_CDESCRIPCION', 'fp.FORM_NSECCIONID',
+                                                'fp.FORM_NID AS PREID', 'fp.FORM_CPREGUNTA','fp.FORM_BRESOLUTIVO')
+                                    ->get();
 
         $formularios = array();
-
-        foreach ($formulariosPreguntas as $fkey => $formularioPreguntas) {
-
-            $inArray = false;
-            $data = array();
+        foreach ($formulariosPreguntas as $formularioPreguntas) {
+            $inArray    = false;
+            $data       = array();
             foreach ($formularios as $formulario) {
                 if ($formularioPreguntas->FORMID == $formulario["FORMID"]) {
                     $inArray = true;

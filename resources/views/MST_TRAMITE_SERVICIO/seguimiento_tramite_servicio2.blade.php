@@ -1152,7 +1152,7 @@
                                 <div class="card-header titleCard">
                                     {{ $noti->HNOTI_CEMISOR }} | {{ $noti->HNOTI_ROLEMISOR }} | Creado:
                                     {{ $noti->HNOTI_DFECHACREACION }} | Leído:
-                                    {{ $noti->HNOTI_NLEIDO == 0 ? 'Pendiente' : $noti->HNOTI_DFECHALEIDO }}
+                                    {{ $noti->HNOTI_DFECHALEIDO == null ? 'Pendiente' : $noti->HNOTI_DFECHALEIDO }}
                                     @if ($noti->HNOTI_NLEIDO == 0)
                                         <img src="{{ asset('assets/template/img/pendiente.png') }}" width="20" height="20">
                                     @else
