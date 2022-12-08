@@ -30,10 +30,8 @@ class Cls_Usuario extends Model
         ));
     }
 
-    static function getTipoDocs($tipoUser)
-    {
-        $docsUser = DB::select("SELECT * FROM `tram_mst_configdocumentos` WHERE TIPO_PERSONA = 'AMBAS' OR TIPO_PERSONA = '".$tipoUser."'");
-        return $docsUser;
+    static function getTipoDocs($tipoUser){
+        return DB::table('tram_mst_configdocumentos')->where('TIPO_PERSONA','AMBAS')->orWhere('TIPO_PERSONA',$tipoUser)->get();
     }
 
     static function getTipoDocsACT($idUSER, $nombre)
@@ -52,17 +50,15 @@ class Cls_Usuario extends Model
     }
 
     static function getDocsUser($id){
-        $docsUser = DB::select("SELECT * FROM `tram_mst_documentosbase` WHERE ID_USUARIO = $id AND isDelete != 1");
-        return $docsUser;
+        return DB::table('tram_mst_documentosbase')->where('ID_USUARIO', $id)->where('isDelete', '!=', true)->get();
     }
+
     static function getResolutivosUser($id){
-        $resolutivosUser = DB::select("SELECT tmur.USRE_NIDUSUARIOTRAMITE, tmur.USRE_CRUTADOC, tmur.USRE_CEXTENSION, tmur.USRE_NPESO, tmur.created_at, tmt.TRAM_CNOMBRE FROM tram_mdv_usuariotramite AS tmut
-        INNER JOIN tram_mdv_usuario_resolutivo AS tmur
-        ON tmut.USTR_NIDUSUARIOTRAMITE = tmur.USRE_NIDUSUARIOTRAMITE
-        INNER JOIN tram_mst_tramite AS tmt
-        ON tmt.TRAM_NIDTRAMITE = tmut.USTR_NIDTRAMITE
-        WHERE tmut.USTR_NIDUSUARIO = $id");
-        return $resolutivosUser;
+        return DB::table('tram_mdv_usuariotramite as ut')
+                ->join('tram_mdv_usuario_resolutivo as ur', 'ut.USTR_NIDUSUARIOTRAMITE', '=', 'ur.USRE_NIDUSUARIOTRAMITE')
+                ->join('tram_mst_tramite as t', 't.TRAM_NIDTRAMITE', '=', 'ut.USTR_NIDTRAMITE')
+                ->select('ur.USRE_NIDUSUARIOTRAMITE', 'ur.USRE_CRUTADOC', 'ur.USRE_CEXTENSION', 'ur.USRE_NPESO', 'ur.created_at', 't.TRAM_CNOMBRE')
+                ->where('ut.USTR_NIDUSUARIO', $id)->get();
     }
     static function TRAM_OBTENER_DOCS($idUser)
     {
@@ -392,8 +388,7 @@ class Cls_Usuario extends Model
         return $delete;
     }
     static function getHistoryDocs($user){
-        $getH = DB::select('SELECT * FROM tram_mdv_usuariordocumento WHERE USDO_NIDUSUARIOBASE = ?',[$user]);
-        return $getH;
+        return DB::table('tram_mdv_usuariordocumento')->where('USDO_NIDUSUARIOBASE', $user)->get();
     }
     static function getHistoryExpe($id, $user)
     {

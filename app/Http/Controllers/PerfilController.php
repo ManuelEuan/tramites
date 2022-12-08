@@ -156,11 +156,11 @@ class PerfilController extends Controller
      *
      */
     public function listarResolutivos(){
-        $ObjAuth = Auth::user();
-        $docsUser = Cls_Usuario::getResolutivosUser($ObjAuth->USUA_NIDUSUARIO);
-        $data = array();
-        $hoy = date('Y-m-d');
-        $host = $_SERVER["HTTP_HOST"];
+        $ObjAuth    = Auth::user();
+        $docsUser   = Cls_Usuario::getResolutivosUser($ObjAuth->USUA_NIDUSUARIO);
+        $data       = array();
+        $hoy        = date('Y-m-d');
+        $host       = $_SERVER["HTTP_HOST"];
         foreach ($docsUser as $key => $i) {
             // $tiene = false;
             $peso = '';
@@ -401,9 +401,9 @@ class PerfilController extends Controller
         return $rspt ? 'Documento eliminado con éxito!' : 'EL documento no se pudo eliminar';
     }
     public function getDocsHistory(){
-        $ObjAuth = Auth::user();
-        $rspt = Cls_Usuario::getHistoryDocs($ObjAuth->USUA_NIDUSUARIO);
-        $data = array();
+        $ObjAuth    = Auth::user();
+        $rspt       = Cls_Usuario::getHistoryDocs($ObjAuth->USUA_NIDUSUARIO);
+        $data       = array();
         foreach ($rspt as $key => $i) {
              $nombre= explode("/", $i->USDO_CRUTADOC);
              $ultimo = count($nombre) - 1;
