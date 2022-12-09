@@ -350,7 +350,7 @@
                                                                                     @endphp 
                                                                                     @if ($preg->respuestas > 0)
                                                                                         @foreach ($preg->respuestas as $resp)
-                                                                                            <input type="{{$tipo}}" class="form-control"
+                                                                                            <input type="{{$tipo}}" class="form-control abierta"
                                                                                                 name="resp_{{ $preg->FORM_NID }}_0_{{ $resp->id }}"
                                                                                                 id="resp_{{ $preg->FORM_NID }}_0"
                                                                                                 placeholder="{{ $preg->FORM_CPREGUNTA }}"
@@ -564,7 +564,7 @@
                                                                                         @endif
                                                                                     @endforeach
 
-                                                                                    <select {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control {{$class}}" data-live-search="true" {{$multiple}} {{ $name }}  required>
+                                                                                    <select {{ $preg->estatus == 1 && $tramite['atencion_formulario'] == 1 ? '' : $tramite['disabled'] }} id="resp_{{$preg->FORM_NID}}_0" class="selectpicker form-control {{$class}} iputCatalogo" data-live-search="true" {{$multiple}} {{ $name }}  required>
                                                                                         @foreach ($preg->respuestas as $resp)
                                                                                             @foreach ($resp->catalogos as $cat)
                                                                                                 <?php
@@ -1635,6 +1635,7 @@
         var antSel      = <?php echo (isset($antSel) ? json_encode($antSel) : '""') ?>; 
         var catGiros    = [];
         var anios       = [];
+        var oldFileValues = {};
 
         var id = "{{ $tramite['idusuariotramite'] }}";
         var encuesta_contestada = "{{ $tramite['encuesta_contestada'] }}";
@@ -1784,6 +1785,24 @@
             }
             // existeCita(idusuario, id, idtramiteAccede);
 
+            $( ".abierta" ).change(function() {
+                if (!$("#frmForm").valid()) {
+                    $(".btnEnviar").hide();
+                }
+            });
+
+            $( ".iputCatalogo" ).change(function() {
+                if (!$("#frmForm").valid()) {
+                    $(".btnEnviar").hide();
+                }
+            });
+
+            $( ".txt_abierta" ).change(function() {
+                if (!$("#frmForm").valid()) {
+                    $(".btnEnviar").hide();
+                }
+            });
+
             if ($('#sincita_edificios') != undefined) {
                 //obtenerEdificios(idtramiteAccede, false)
                 obtenerModulos(idtramiteAccede, false)
@@ -1929,6 +1948,8 @@
             TRAM_FN_OCULTAR_CONTENEDOR();
             TRAM_FN_OCULTAR_FORM();
 
+            
+
             //Get html
             $(".txtEnriquecido").each(function() {
                 var id = this.id;
@@ -1943,10 +1964,15 @@
                 var doctype = $(this).data("doctype");
                 var formData = new FormData();
                 var files = $("#" + id)[0].files[0];
-                var size = $("#" + id)[0].files[0].size;
                 var kb = (size / 1024)
                 var mb = (kb / 1024)
                 const fileType = files ? files.type : "unknown";
+
+                if(oldFileValues[id] && !files){
+                    return
+                }
+                
+                var size = files.size;
     
                 formData.append('file',files);
                 formData.append('doctype',doctype);
@@ -1987,6 +2013,11 @@
                     success: function(response) {
                         console.log(response);
                         if(response.extension=="pdf"){
+                            oldFileValues[id] = {
+                                file:files,
+                                value:document.getElementById(id).value
+                            };
+
                             Swal.fire({
                                 position: 'center',
                                 icon: 'success',
@@ -2058,6 +2089,9 @@
                 minlength: "El valor agregado solo puede ser a 18 digitos.",
             });
 
+            
+
+        
             $('.secconceptos').each(function() {
                 var id = this.id;
                 var _arr = id.split("_");
@@ -2349,6 +2383,8 @@
             if(Number(requerido) == 1){
                 $('#file_'+id).attr("required", "required");
             }
+
+            oldFileValues["file_"+id] = null;
         }
 
         //____________________________________
@@ -2393,6 +2429,7 @@
                     $("#error_" + id).html("");
                 }
             });
+            validOldDocuments();
             if (!$("#frmForm").valid()) {
                 const full  = document.getElementsByClassName('full');
                 const arr   = [...full].map(input => input.value);
@@ -3080,6 +3117,24 @@
                 text: message,
                 footer: ''
             });
+        }
+
+        function validOldDocuments(){
+            const form = document.getElementById("frmForm");
+            const formElements = Array.from(form.elements).filter(x => x.className.includes('documentos'));
+            for(var ele of formElements){
+                const id = ele.getAttribute("id").replace("file_", "");
+                const isRequired = $('#valida_file_'+id).val();
+                const checkDoc = document.getElementById('chck_file_'+id);
+
+                if(isRequired==1){
+                    const file = oldFileValues["file_"+id];
+                    ele.setAttribute("required", "required");
+                    if(file || (checkDoc && checkDoc.checked)){
+                        ele.removeAttribute("required");
+                    }
+                }
+            }
         }
     </script>
 
