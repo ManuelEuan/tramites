@@ -254,7 +254,9 @@ class PerfilController extends Controller
                 $ObjBitacora->BITA_CMOVIMIENTO = "Edición de perfil";
                 $ObjBitacora->BITA_CTABLA = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "CDNS" ? "tram_mst_usuario" : "tram_mst_usuario y tram_mdv_sucursal";
                 $ObjBitacora->BITA_CIP = $request->ip();
-                Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+                $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+                $ObjBitacora->save();
+                
                 $response = [
                     'codigo' => 200,
                     'status' => "success",

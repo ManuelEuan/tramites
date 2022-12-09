@@ -39,7 +39,7 @@ class TramiteService
         }
 
         if(!is_null($data->palabraClave))
-            $query->where('p.name', 'like','%'.$data->palabraClave.'%');
+            $query->where('p.name', 'ilike','%'.$data->palabraClave.'%');
         if(!is_null($data->dependencia) && $data->dependencia != "")
             $query->where('d.id', $data->dependencia);
         if(!is_null($data->registros))
@@ -142,9 +142,9 @@ class TramiteService
         $lugaresPago    = DB::connection('remtys')->table('procedurechanges as pc')
                                 ->where(['IdProcedure' => $tramiteID, 'IsDeleted' => false])
                                 ->where(function ($query) {
-                                    $query->where("pc.Property", "like","%Banc%")
-                                            ->orWhere("pc.Property", "like","En línea%")
-                                            ->orWhere("pc.Property", "like","%Tienda%");
+                                    $query->where("pc.Property", "ilike","%Banc%")
+                                            ->orWhere("pc.Property", "ilike","En línea%")
+                                            ->orWhere("pc.Property", "ilike","%Tienda%");
                                 })->get();
 
         return ["documentos" => $documentos, "requisitos" => $requisitos, "oficinas" => $oficinas, "horario" => $horarios, "funcionarios" => $funcionarios, "lugaresPago" => $lugaresPago];
@@ -451,19 +451,19 @@ class TramiteService
         
         //Parametros de busqueda
         if(!is_null($request->fecha))
-            $query->where('v.USTR_DFECHACREACION', 'like','%'.$request->fecha.'%');
+            $query->where('v.USTR_DFECHACREACION', 'ilike','%'.$request->fecha.'%');
         if(!is_null($request->folio))
-            $query->where('v.USTR_CFOLIO','like','%'.$request->folio.'%');
+            $query->where('v.USTR_CFOLIO','ilike','%'.$request->folio.'%');
         /* if(!is_null($request->tramite) || $request->tramite == 0 )
             $query->where('USTR_NIDTRAMITE', $request->tramite); */
         if(!is_null($request->razonSocial))
-            $query->where('v.USTR_CRAZON_SOCIAL','like','%'.$request->razonSocial.'%');
+            $query->where('v.USTR_CRAZON_SOCIAL','ilike','%'.$request->razonSocial.'%');
         if(!is_null($request->nombre))
-            $query->where('v.USTR_CNOMBRE_COMPLETO','like','%'.$request->nombre.'%');
+            $query->where('v.USTR_CNOMBRE_COMPLETO','ilike','%'.$request->nombre.'%');
         if(!is_null($request->rfc))
-            $query->where('v.USTR_CRFC','like','%'.$request->rfc.'%');
+            $query->where('v.USTR_CRFC','ilike','%'.$request->rfc.'%');
         if(!is_null($request->curp))
-            $query->where('v.USTR_CCURP','like','%'.$request->curp.'%');
+            $query->where('v.USTR_CCURP','ilike','%'.$request->curp.'%');
         if(!is_null($request->estatus) && $request->estatus != "0")
             $query->where('v.USTR_NESTATUS', $request->estatus);
 

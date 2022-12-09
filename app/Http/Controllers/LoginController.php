@@ -99,7 +99,8 @@ class LoginController extends Controller
 							$ObjBitacora->BITA_CMOVIMIENTO = "Cuenta bloqueada";
 							$ObjBitacora->BITA_CTABLA = "tram_dat_bloqueusuario";
 							$ObjBitacora->BITA_CIP = $request->ip();
-							Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+							$ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+							$ObjBitacora->save();
 
 							//Retornar respuesta al usuario, que su cuenta fue bloqueado
 							$validator->after(function($validator)

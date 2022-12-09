@@ -42,43 +42,43 @@ class PersonaController extends Controller
         $totalFiltered = DB::table('tram_mst_usuario');
 
         if(!is_null($request->nombre) && $request->nombre != ""){
-            $query->where('USUA_CNOMBRES','like','%'. $request->nombre .'%');
-            $totalFiltered->where('USUA_CNOMBRES','like','%'. $request->nombre .'%');
+            $query->where('USUA_CNOMBRES','ilike','%'. $request->nombre .'%');
+            $totalFiltered->where('USUA_CNOMBRES','ilike','%'. $request->nombre .'%');
         }
         if(!is_null($request->paterno) && $request->paterno != ""){
-            $query->where('USUA_CPRIMER_APELLIDO','like','%'. $request->paterno .'%');
-            $totalFiltered->where('USUA_CPRIMER_APELLIDO','like','%'. $request->paterno .'%');
+            $query->where('USUA_CPRIMER_APELLIDO','ilike','%'. $request->paterno .'%');
+            $totalFiltered->where('USUA_CPRIMER_APELLIDO','ilike','%'. $request->paterno .'%');
         }
         if(!is_null($request->materno) && $request->materno != ""){
-            $query->where('USUA_CSEGUNDO_APELLIDO','like','%'. $request->materno .'%');
-            $totalFiltered->where('USUA_CSEGUNDO_APELLIDO','like','%'. $request->materno .'%');
+            $query->where('USUA_CSEGUNDO_APELLIDO','ilike','%'. $request->materno .'%');
+            $totalFiltered->where('USUA_CSEGUNDO_APELLIDO','ilike','%'. $request->materno .'%');
         }
         if(!is_null($request->rfc) && $request->rfc != ""){
-            $query->where('USUA_CRFC','like','%'. $request->rfc .'%');
-            $totalFiltered->where('USUA_CRFC','like','%'. $request->rfc .'%');
+            $query->where('USUA_CRFC','ilike','%'. $request->rfc .'%');
+            $totalFiltered->where('USUA_CRFC','ilike','%'. $request->rfc .'%');
         }
         if(!is_null($request->curp) && $request->curp != ""){
-            $query->where('USUA_CCURP','like','%'. $request->curp .'%');
-            $totalFiltered->where('USUA_CCURP','like','%'. $request->curp .'%');
+            $query->where('USUA_CCURP','ilike','%'. $request->curp .'%');
+            $totalFiltered->where('USUA_CCURP','ilike','%'. $request->curp .'%');
         }
         if(!is_null($request->razon_social) && $request->razon_social != ""){
-            $query->where('USUA_CRAZON_SOCIAL','like','%'. $request->razon_social .'%');
-            $totalFiltered->where('USUA_CRAZON_SOCIAL','like','%'. $request->razon_social .'%');
+            $query->where('USUA_CRAZON_SOCIAL','ilike','%'. $request->razon_social .'%');
+            $totalFiltered->where('USUA_CRAZON_SOCIAL','ilike','%'. $request->razon_social .'%');
         }
         if(!is_null($request->tipo_persona) && $request->tipo_persona != ""){
-            $query->where('USUA_NTIPO_PERSONA','like','%'. $request->tipo_persona .'%');
-            $totalFiltered->where('USUA_NTIPO_PERSONA','like','%'. $request->tipo_persona .'%');
+            $query->where('USUA_NTIPO_PERSONA','ilike','%'. $request->tipo_persona .'%');
+            $totalFiltered->where('USUA_NTIPO_PERSONA','ilike','%'. $request->tipo_persona .'%');
         }
         if(!is_null($request->correo) && $request->correo != ""){
             $this->correo = $request->correo;
             $query->where(function ($query) {
-                $query->where("USUA_CCORREO_ELECTRONICO","like",'%'. $this->correo .'%')
-                    ->orWhere("USUA_CCORREO_ALTERNATIVO","like",'%'. $this->correo .'%');
+                $query->where("USUA_CCORREO_ELECTRONICO",'ilike','%'. $this->correo .'%')
+                    ->orWhere("USUA_CCORREO_ALTERNATIVO",'ilike','%'. $this->correo .'%');
             });
 
             $totalFiltered->where(function ($query) {
-                $totalFiltered->where("USUA_CCORREO_ELECTRONICO","like",'%'. $this->correo .'%')
-                    ->orWhere("USUA_CCORREO_ALTERNATIVO","like",'%'. $this->correo .'%');
+                $query->where("USUA_CCORREO_ELECTRONICO",'ilike','%'. $this->correo .'%')
+                    ->orWhere("USUA_CCORREO_ALTERNATIVO",'ilike','%'. $this->correo .'%');
             });
         }
         if(!is_null($request->activo)){

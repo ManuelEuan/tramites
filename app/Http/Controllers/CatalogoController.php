@@ -34,9 +34,9 @@ class CatalogoController extends Controller
         $query = DB::table('catalogos');
 
         if(!is_null($request->nombre))
-            $query->where('nombre', 'like','%'.$request->nombre.'%');
+            $query->where('nombre', 'ilike','%'.$request->nombre.'%');
         if(!is_null($request->descripcion))
-            $query->where('descripcion', 'like','%'.$request->descripcion.'%');
+            $query->where('descripcion', 'ilike','%'.$request->descripcion.'%');
         if(!is_null($request->activo)){
             $activo = $request->activo === 'true'? true: false;
             $query->where("activo","=", $activo);
