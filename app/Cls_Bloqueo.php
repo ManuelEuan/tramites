@@ -36,9 +36,4 @@ class Cls_Bloqueo extends Model
         }
         return $Obj;
     }
-    
-    static function TRAM_SP_DESBLOQUEAR($StrToken){
-        return DB::statement('call TRAM_SP_DESBLOQUEAR(?)'
-                , array($StrToken));
-    }
 }

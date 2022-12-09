@@ -160,16 +160,6 @@ class Cls_Usuario extends Model
         DB::table('tram_dat_acceso')->where('ACCE_NIDUSUARIO', $IntIdUsuario)->delete();
     }
 
-    static function TRAM_SP_CAMBIAR_CONTRASENA($IntIdUsuario, $StrContrasenia)
-    {
-        return DB::statement(
-            'call TRAM_SP_CAMBIAR_CONTRASENA(?,?)',
-            array(
-                $IntIdUsuario, crypt($StrContrasenia, '$1$*$')
-            )
-        );
-    }
-
     static function TRAM_SP_CONSULTAR_USUARIOS()
     {
         return DB::select('CALL TRAM_SP_CONSULTAR_USUARIOS()');

@@ -212,7 +212,7 @@ class LoginController extends Controller
 					//Envio de correo id ecriptado, para recuperar contraseña
 					$StrToken	= encrypt($user->USUA_NIDUSUARIO);
 					$StrUrl 	= $request->getHttpHost() . "/" . "recuperar/" . $StrToken;
-					
+
 					$ObjData['StrUrl'] 		= $StrUrl;
 					$ObjData['StrCorreo'] 	= $request->txtCorreo_Electronico;
 					$ObjData['StrUsuario'] 	= $user->USUA_NTIPO_PERSONA == "FISICA" ? $user->USUA_CNOMBRES : $user->USUA_CRAZON_SOCIAL;
@@ -258,9 +258,11 @@ class LoginController extends Controller
 	}
 
 	public function cambiar_contrasena(Request $request){
-		$response = [];
+		$response = ['codigo' => 200, 'status' => "success", 'message' => "Acción realizada con éxito."];
 		try {
-			Cls_Usuario::TRAM_SP_CAMBIAR_CONTRASENA($request->txtIntIdUsuario, $request->txtContrasena_Nueva);
+			$user = User::find($request->txtIntIdUsuario);
+			$user->USUA_CCONTRASENIA = crypt($request->txtContrasena_Nueva, '$1$*$');
+			$user->save();
 
 			//Insertar bitacora
 			$ObjBitacora = new Cls_Bitacora();
@@ -268,10 +270,14 @@ class LoginController extends Controller
 			$ObjBitacora->BITA_CMOVIMIENTO = "Cambiar contraseña";
 			$ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
 			$ObjBitacora->BITA_CIP = $request->ip();
-			Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+			$ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+			$ObjBitacora->save();
 
 			if($request->txtIntTipo == 0){
-				Cls_Bloqueo::TRAM_SP_DESBLOQUEAR($request->txtStrToken);
+				Cls_Bloqueo::where('BLUS_CTOKEN',$request->txtStrToken)->update([
+					'BLUS_NBLOQUEADO' 		=> 0,
+					'BLUS_DFECHADESBLOQUEO' => NOW()
+				]);
 
 				//Insertar bitacora
 				$ObjBitacora = new Cls_Bitacora();
@@ -279,13 +285,9 @@ class LoginController extends Controller
 				$ObjBitacora->BITA_CMOVIMIENTO = "Recuperar contraseña";
 				$ObjBitacora->BITA_CTABLA = "tram_mst_usuario y tram_dat_bloqueusuario";
 				$ObjBitacora->BITA_CIP = $request->ip();
-				Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+				$ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+				$ObjBitacora->save();
 			}
-			$response = [
-				'codigo' => 400,
-				'status' => "success",
-				'message' => "Acción realizada con éxito."
-			];
 		}
 		catch(Exception $e) {
 			$response = [
