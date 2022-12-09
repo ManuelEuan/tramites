@@ -50,8 +50,8 @@ class FormularioController extends Controller
         $totalFiltered = DB::table('tram_form_formulario');
 
         if(!is_null($request->nombre) && $request->nombre != ""){
-            $query->where('FORM_CNOMBRE','like','%'. $request->nombre .'%');
-            $totalFiltered->where('FORM_CNOMBRE','like','%'. $request->nombre .'%');
+            $query->where('FORM_CNOMBRE','ilike','%'. $request->nombre .'%');
+            $totalFiltered->where('FORM_CNOMBRE','ilike','%'. $request->nombre .'%');
         }
 
         if(!is_null($request->estatus) && $request->estatus != "" &&  $request->estatus != "Seleccionar"){

@@ -54,6 +54,13 @@ class PerfilController extends Controller
             );
         }
 
+        if($usuario->USUA_NTIPO_PERSONA == "MORAL"){
+            $personaFisica = Cls_Usuario::where("USUA_CCURP", $usuario->USUA_CCURP)->first();
+            if($personaFisica){
+                $usuario->USUA_DFECHA_NACIMIENTO = $personaFisica->USUA_DFECHA_NACIMIENTO;
+            }
+        }
+
         $usuario['documentos'] = $data;
         return view('MST_PERFIL.index', compact('usuario'));
     }
@@ -156,11 +163,11 @@ class PerfilController extends Controller
      *
      */
     public function listarResolutivos(){
-        $ObjAuth = Auth::user();
-        $docsUser = Cls_Usuario::getResolutivosUser($ObjAuth->USUA_NIDUSUARIO);
-        $data = array();
-        $hoy = date('Y-m-d');
-        $host = $_SERVER["HTTP_HOST"];
+        $ObjAuth    = Auth::user();
+        $docsUser   = Cls_Usuario::getResolutivosUser($ObjAuth->USUA_NIDUSUARIO);
+        $data       = array();
+        $hoy        = date('Y-m-d');
+        $host       = $_SERVER["HTTP_HOST"];
         foreach ($docsUser as $key => $i) {
             // $tiene = false;
             $peso = '';
@@ -254,7 +261,9 @@ class PerfilController extends Controller
                 $ObjBitacora->BITA_CMOVIMIENTO = "Edición de perfil";
                 $ObjBitacora->BITA_CTABLA = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "CDNS" ? "tram_mst_usuario" : "tram_mst_usuario y tram_mdv_sucursal";
                 $ObjBitacora->BITA_CIP = $request->ip();
-                Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+                $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+                $ObjBitacora->save();
+                
                 $response = [
                     'codigo' => 200,
                     'status' => "success",
@@ -401,9 +410,9 @@ class PerfilController extends Controller
         return $rspt ? 'Documento eliminado con éxito!' : 'EL documento no se pudo eliminar';
     }
     public function getDocsHistory(){
-        $ObjAuth = Auth::user();
-        $rspt = Cls_Usuario::getHistoryDocs($ObjAuth->USUA_NIDUSUARIO);
-        $data = array();
+        $ObjAuth    = Auth::user();
+        $rspt       = Cls_Usuario::getHistoryDocs($ObjAuth->USUA_NIDUSUARIO);
+        $data       = array();
         foreach ($rspt as $key => $i) {
              $nombre= explode("/", $i->USDO_CRUTADOC);
              $ultimo = count($nombre) - 1;

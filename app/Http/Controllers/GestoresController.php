@@ -67,8 +67,8 @@ class GestoresController extends Controller
         ->where('USUA_NIDUSUARIO','!=', Auth::user()->USUA_NIDUSUARIO)
         ->where(function($query) use ($request)
         {
-            $query->where('USUA_CCURP','like','%'.$request->txtBuscar.'%')
-                ->orWhere('USUA_CCURP','like','%'.$request->txtBuscar.'%');
+            $query->where('USUA_CCURP','ilike','%'.$request->txtBuscar.'%')
+                ->orWhere('USUA_CCURP','ilike','%'.$request->txtBuscar.'%');
         });
 
         //Parametros de paginacion y orden
@@ -117,7 +117,8 @@ class GestoresController extends Controller
 				$ObjBitacora->BITA_CMOVIMIENTO  = "Vinculacion gestor";
 				$ObjBitacora->BITA_CTABLA       = "tram_mdv_gestores";
                 $ObjBitacora->BITA_CIP          = $request->ip();
-                Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+                $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+                $ObjBitacora->save();
                 
                 $objNotificacion    = new Cls_Notificacion();
                 $objNotificacion->NOTI_NIDREMITENTE = $request->usuario_id;

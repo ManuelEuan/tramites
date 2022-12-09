@@ -30,10 +30,8 @@ class Cls_Usuario extends Model
         ));
     }
 
-    static function getTipoDocs($tipoUser)
-    {
-        $docsUser = DB::select("SELECT * FROM `tram_mst_configdocumentos` WHERE TIPO_PERSONA = 'AMBAS' OR TIPO_PERSONA = '".$tipoUser."'");
-        return $docsUser;
+    static function getTipoDocs($tipoUser){
+        return DB::table('tram_mst_configdocumentos')->where('TIPO_PERSONA','AMBAS')->orWhere('TIPO_PERSONA',$tipoUser)->get();
     }
 
     static function getTipoDocsACT($idUSER, $nombre)
@@ -52,17 +50,15 @@ class Cls_Usuario extends Model
     }
 
     static function getDocsUser($id){
-        $docsUser = DB::select("SELECT * FROM `tram_mst_documentosbase` WHERE ID_USUARIO = $id AND isDelete != 1");
-        return $docsUser;
+        return DB::table('tram_mst_documentosbase')->where('ID_USUARIO', $id)->where('isDelete', '!=', true)->get();
     }
+
     static function getResolutivosUser($id){
-        $resolutivosUser = DB::select("SELECT tmur.USRE_NIDUSUARIOTRAMITE, tmur.USRE_CRUTADOC, tmur.USRE_CEXTENSION, tmur.USRE_NPESO, tmur.created_at, tmt.TRAM_CNOMBRE FROM tram_mdv_usuariotramite AS tmut
-        INNER JOIN tram_mdv_usuario_resolutivo AS tmur
-        ON tmut.USTR_NIDUSUARIOTRAMITE = tmur.USRE_NIDUSUARIOTRAMITE
-        INNER JOIN tram_mst_tramite AS tmt
-        ON tmt.TRAM_NIDTRAMITE = tmut.USTR_NIDTRAMITE
-        WHERE tmut.USTR_NIDUSUARIO = $id");
-        return $resolutivosUser;
+        return DB::table('tram_mdv_usuariotramite as ut')
+                ->join('tram_mdv_usuario_resolutivo as ur', 'ut.USTR_NIDUSUARIOTRAMITE', '=', 'ur.USRE_NIDUSUARIOTRAMITE')
+                ->join('tram_mst_tramite as t', 't.TRAM_NIDTRAMITE', '=', 'ut.USTR_NIDTRAMITE')
+                ->select('ur.USRE_NIDUSUARIOTRAMITE', 'ur.USRE_CRUTADOC', 'ur.USRE_CEXTENSION', 'ur.USRE_NPESO', 'ur.created_at', 't.TRAM_CNOMBRE')
+                ->where('ut.USTR_NIDUSUARIO', $id)->get();
     }
     static function TRAM_OBTENER_DOCS($idUser)
     {
@@ -81,26 +77,6 @@ class Cls_Usuario extends Model
         $ObjUser = DB::select("SELECT * FROM tram_mst_usuario WHERE USUA_CCURP = '$StrCurp'");
 
         return $ObjUser;
-    }
-
-    static function TRAM_SP_VALIDAR_CORREO_OBTIENE_ID($StrCorreo)
-    {
-        $item = null;
-        $query = DB::select('call tram_sp_validar_correo(?)', array(
-            $StrCorreo
-        ));
-        $user = json_decode($query[0]->tram_sp_validar_correo);
-       
-        
-        if (!is_null($user)) {
-            $item = new Cls_Usuario();
-            $item->USUA_NIDUSUARIO       = $user->usua_nidusuario;
-            $item->USUA_CNOMBRES         = $user->usua_cnombres;
-            $item->USUA_NTIPO_PERSONA    = $user->usua_ntipo_persona;
-            $item->USUA_CRAZON_SOCIAL    = $user->usua_crazon_social;
-        }
-        
-        return $item;
     }
 
     static function TRAM_SP_CONTAR_ACCESO_NO_VALIDO($IntIdUsuario)
@@ -182,16 +158,6 @@ class Cls_Usuario extends Model
     static function TRAM_SP_ELIMINAR_ACCESO_NO_VALIDO($IntIdUsuario)
     {
         DB::table('tram_dat_acceso')->where('ACCE_NIDUSUARIO', $IntIdUsuario)->delete();
-    }
-
-    static function TRAM_SP_CAMBIAR_CONTRASENA($IntIdUsuario, $StrContrasenia)
-    {
-        return DB::statement(
-            'call TRAM_SP_CAMBIAR_CONTRASENA(?,?)',
-            array(
-                $IntIdUsuario, crypt($StrContrasenia, '$1$*$')
-            )
-        );
     }
 
     static function TRAM_SP_CONSULTAR_USUARIOS()
@@ -287,76 +253,52 @@ class Cls_Usuario extends Model
         );
     }
 
-    static function TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($IntIdUsuario)
+    static function TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id){
+        return DB::table('tram_aux_dependencia_usuario_acceso')->where('DEPUA_NIDUSUARIO', $id)->get();
+    }
+
+    static function TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE($id) {
+        return DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $id)->get();
+    }
+
+    static function TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($id){
+        return DB::table('tram_aux_edificio_usuario_acceso')->where('EDIFUA_NIDUSUARIO', $id)->get();
+    }
+
+    static function TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE($id){
+        return DB::table('tram_aux_edificio_usuario_pertenece')->where('EDIFUP_NIDUSUARIO', $id)->get();
+    }
+
+    static function TRAM_SP_CONSULTAR_TRAMITE_USUARIO_ACCESO($id)
     {
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO(?)',
-            array($IntIdUsuario)
-        );
+        return DB::table('tram_aux_tramite_usuario_acceso as a')
+                    ->join('accede_lista_tramites as b', 'a.TRAMUA_NIDTRAMITE', '=', 'b.ID_TRAM')
+                    ->where('TRAMUA_NIDUSUARIO', $id)
+                    ->select('a.*', 'b.TRAMITE as TRAMUA_CNOMBRE', 'b.ID_UNIDAD')->get();
     }
 
-    static function TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE($IntIdUsuario)
-    {
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_PERTENECE(?)',
-            array($IntIdUsuario)
-        );
+    static function CONSULTAR_TRAMITE_USUARIO_ACCESO($id) {
+        return DB::table('tram_aux_tramite_usuario_acceso')->where('TRAMUA_NIDUSUARIO', $id)->get();
     }
 
-    static function TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO($IntIdUsuario)
-    {
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_ACCESO(?)',
-            array($IntIdUsuario)
-        );
+    static function TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE($id)
+    { 
+        return DB::table('tram_aux_tramite_usuario_pertenece as a')
+                    ->join('accede_lista_tramites as b', 'a.TRAMUP_NIDTRAMITE', '=', 'b.ID_TRAM')
+                    ->where('TRAMUP_NIDUSUARIO', $id)
+                    ->select('a.*','b.TRAMITE as TRAMUP_CNOMBRE', 'b.ID_UNIDAD')->get();
     }
 
-    static function TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE($IntIdUsuario)
-    {
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_EDIFICIO_USUARIO_PERTENECE(?)',
-            array($IntIdUsuario)
-        );
+    static function CONSULTAR_TRAMITE_USUARIO_PERTENECE($id) {
+        return DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO', $id)->get();
     }
 
-    static function TRAM_SP_CONSULTAR_TRAMITE_USUARIO_ACCESO($IntIdUsuario)
-    {
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_TRAMITE_USUARIO_ACCESO(?)',
-            array($IntIdUsuario)
-        );
+    static function TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($id){
+        return DB::table('tram_aux_unidad_usuario_acceso')->where('UNIDUA_NIDUSUARIO', $id)->get();
     }
 
-    static function CONSULTAR_TRAMITE_USUARIO_ACCESO($IntIdUsuario) {
-        return DB::table('tram_aux_tramite_usuario_acceso')->where('TRAMUA_NIDUSUARIO', $IntIdUsuario)->get();
-    }
-
-    static function TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE($IntIdUsuario)
-    {
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_TRAMITE_USUARIO_PERTENECE(?)',
-            array($IntIdUsuario)
-        );
-    }
-
-    static function CONSULTAR_TRAMITE_USUARIO_PERTENECE($IntIdUsuario) {
-        return DB::table('TRAM_AUX_TRAMITE_USUARIO_PERTENECE')->where('TRAMUP_NIDUSUARIO', $IntIdUsuario)->get();
-    }
-
-    static function TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO($IntIdUsuario)
-    {
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_UNIDAD_USUARIO_ACCESO(?)',
-            array($IntIdUsuario)
-        );
-    }
-
-    static function TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE($IntIdUsuario)
-    {
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE(?)',
-            array($IntIdUsuario)
-        );
+    static function TRAM_SP_CONSULTAR_UNIDAD_USUARIO_PERTENECE($id){
+        return DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO', $id)->get();
     }
 
 
@@ -378,15 +320,12 @@ class Cls_Usuario extends Model
          return $registros;
      }
 
-    static function TRAM_SP_OBTENER_USUARIO($IntIdUsuario)
+    static function TRAM_SP_OBTENER_USUARIO($id)
     {
-        $Obj = DB::selectOne(
-            'call TRAM_SP_OBTENER_USUARIO(?)',
-            array(
-                $IntIdUsuario
-            )
-        );
-        return $Obj;
+        return DB::table('tram_mst_usuario as u')
+            ->leftJoin('tram_cat_rol as r','u.USUA_NIDROL', '=', 'r.ROL_NIDROL')
+            ->where('u.USUA_NIDUSUARIO', $id)
+            ->select('u.*', 'r.ROL_CNOMBRE')->first();
     }
 
     /* */
@@ -439,8 +378,7 @@ class Cls_Usuario extends Model
         return $delete;
     }
     static function getHistoryDocs($user){
-        $getH = DB::select('SELECT * FROM tram_mdv_usuariordocumento WHERE USDO_NIDUSUARIOBASE = ?',[$user]);
-        return $getH;
+        return DB::table('tram_mdv_usuariordocumento')->where('USDO_NIDUSUARIOBASE', $user)->get();
     }
     static function getHistoryExpe($id, $user)
     {

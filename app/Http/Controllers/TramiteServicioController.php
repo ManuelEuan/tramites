@@ -889,7 +889,8 @@ class TramiteServicioController extends Controller
             $ObjBitacora->BITA_CMOVIMIENTO = "Captura inicial trámite";
             $ObjBitacora->BITA_CTABLA = "tram_mdv_usuariotramite";
             $ObjBitacora->BITA_CIP = $request->ip();
-            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+            $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+            $ObjBitacora->save();
         } else {
             $IntIdUsuarioTramite = $exist->USTR_NIDUSUARIOTRAMITE;
             $TxtFolio = $exist->USTR_CFOLIO;
@@ -910,7 +911,8 @@ class TramiteServicioController extends Controller
             $ObjBitacora->BITA_CMOVIMIENTO = $cMovimiento;
             $ObjBitacora->BITA_CTABLA = "tram_mdv_usuariotramite";
             $ObjBitacora->BITA_CIP = $request->ip();
-            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+            $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+            $ObjBitacora->save();
 
             //Eliminar respuesta del usuario
             Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $IntIdUsuarioTramite)->delete();
@@ -1171,7 +1173,8 @@ class TramiteServicioController extends Controller
             $ObjBitacora->BITA_CMOVIMIENTO = "Trámite reenviado";
             $ObjBitacora->BITA_CTABLA = "tram_mdv_usuariotramite";
             $ObjBitacora->BITA_CIP = $request->ip();
-            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+            $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+            $ObjBitacora->save();
 
             //Guardar respuestas
             foreach ($respuestas as $key => $value) {

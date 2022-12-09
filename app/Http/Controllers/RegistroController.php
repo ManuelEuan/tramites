@@ -9,83 +9,76 @@ use App\Cls_Usuario;
 use App\Cls_Bitacora;
 use App\Cls_Sucursal;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Auth\Events\Registered;
+use App\Services\UsuarioService;
 use App\Services\CatalogoService;
+use Illuminate\Auth\Events\Registered;
 
 class RegistroController extends Controller
 {
     protected $catalogoService;
+    protected $userService;
     public function __construct(){
         $this->catalogoService  = new CatalogoService();
+        $this->userService      = new UsuarioService();
     }
     
     public function agregar(Request $request){
-        $response = [];
-        $IntUsuarioId = 0;
-        try {
-            $request->txtRol        = Cls_Rol::TRAM_SP_OBTENERROLPORCLAVE("CDNS");
-            $request->txtTelefono   = "";
-            $request->txtExtension  = "";
-            $request->txtUsuario    = "";
-            $request->txtCurp       = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCurpMoral : $request->txtCurp;
-            $request->txtCorreo_Electronico       = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCorreo_ElectronicoMoral : $request->txtCorreo_Electronico;
-            $IntUsuarioId           = Cls_Usuario::TRAM_SP_AGREGARUSUARIO($request);
-            $sucursales             = is_null($request->lstSucursal) ? [] : $request->lstSucursal;
-            $user                   = User::find($IntUsuarioId);
-            event(new Registered($user));
-            //Agregar sucursales
-            foreach ($sucursales as $value) {
-                $ObjSucursal = array(
-                    'txtUsuario'    => $IntUsuarioId,
-                    'txtCalle'      => '0',
-                    'txtNumero_Interior' => '0',
-                    'txtNumero_Exterior' => '0',
-                    'txtCP'         => '0',
-                    'cmbColonia'    => '0',
-                    'cmbMunicipio'  => '0',
-                    'cmbEstado'     => '0',
-                    'cmbPais'       => '0'
-                );
-                Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
-            }
-        }
-        catch(Exception $e) { dd($e);
-            $response = [
-                'codigo'    => 400, 
-                'status'    => "error", 
-                'message'   => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage(),
-                'data'      => $IntUsuarioId
-            ];
-        }
-        
-        //Envia correo
-		/*$ObjData['StrNombres'] = $request->txtNombres;
-		$ObjData['StrHost'] = $request->getHttpHost();
-		$ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
-		$ObjData['StrCorreoElectronico'] = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCorreo_ElectronicoMoral : $request->txtCorreo_Electronico;
-		$ObjData['StrRFC'] = $request->txtRfc;
-		Mail::send('MSTP_MAIL.registro', $ObjData, function ($message) use($ObjData) {
-			$message->from(env('MAIL_FROM_ADDRESS'), 'Sistema de Tramites Digitales Queretaro');
-			$message->to($ObjData['StrCorreoElectronico'], $request->txtNombres)->subject('Registro.');
-        });*/
-        
-        if($IntUsuarioId > 0){
-            //Insertar bitacora
-            $ObjBitacora = new Cls_Bitacora();
-            $ObjBitacora->BITA_NIDUSUARIO = $IntUsuarioId;
-            $ObjBitacora->BITA_CMOVIMIENTO = "Registro";
-            $ObjBitacora->BITA_CTABLA = "tram_mst_usuario y tram_mdv_sucursal";
-            $ObjBitacora->BITA_CIP = $request->ip();
-            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-        }
+        $response   = [];
+        $usuario    = null;
+        $rol  = Cls_Rol::TRAM_SP_OBTENERROLPORCLAVE("CDNS");
 
-        $response = [
-            'codigo'    => $IntUsuarioId > 0 ? 200 : 400, 
-            'status'    => $IntUsuarioId > 0 ? "success" : "error",
-            'message'   => $IntUsuarioId > 0 ? '¡Éxito! Acción realizada con éxito.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<asdas>>",
-            'data'      => $IntUsuarioId
-        ];
+        $request->rolId     = $rol->ROL_NIDROL;
+        $request->txtCurp   = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCurpMoral : $request->txtCurp;
+        $request->txtCorreo = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCorreo_ElectronicoMoral : $request->txtCorreo_Electronico;
+        $result             = $this->userService->store($request);
+        $sucursales         = is_null($request->lstSucursal) ? [] : $request->lstSucursal;
+            
+            if(is_null($result['error'])){
+                $usuario    = $result['item'];
+                event(new Registered($usuario));
+
+                //Agregar sucursales
+                foreach ($sucursales as $value) {
+                    $ObjSucursal = array(
+                        'txtUsuario'    => $usuario->USUA_NIDUSUARIO,
+                        'txtCalle'      => '0',
+                        'txtNumero_Interior' => '0',
+                        'txtNumero_Exterior' => '0',
+                        'txtCP'         => '0',
+                        'cmbColonia'    => '0',
+                        'cmbMunicipio'  => '0',
+                        'cmbEstado'     => '0',
+                        'cmbPais'       => '0'
+                    );
+                    Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
+                }
+
+                //Envia correo
+                /*$ObjData['StrNombres'] = $request->txtNombres;
+                $ObjData['StrHost'] = $request->getHttpHost();
+                $ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
+                $ObjData['StrCorreoElectronico'] = isset($request->rdbTipo_Persona) && $request->rdbTipo_Persona == "MORAL" ? $request->txtCorreo_ElectronicoMoral : $request->txtCorreo_Electronico;
+                $ObjData['StrRFC'] = $request->txtRfc;
+                Mail::send('MSTP_MAIL.registro', $ObjData, function ($message) use($ObjData) {
+                    $message->from(env('MAIL_FROM_ADDRESS'), 'Sistema de Tramites Digitales Queretaro');
+                    $message->to($ObjData['StrCorreoElectronico'], $request->txtNombres)->subject('Registro.');
+                });*/
+
+                $bitacora = new Cls_Bitacora();
+                $bitacora->BITA_NIDUSUARIO   = $usuario->USUA_NIDUSUARIO;
+                $bitacora->BITA_CMOVIMIENTO  = "Registro";
+                $bitacora->BITA_CTABLA       = "tram_mst_usuario y tram_mdv_sucursal";
+                $bitacora->BITA_CIP          = $request->ip();
+                $bitacora->BITA_FECHAMOVIMIENTO = now();
+                $bitacora->save();
+            }
+
+            $response = [
+                'codigo'    => !is_null($usuario) ? 200 : 400, 
+                'status'    => !is_null($usuario) ? "success" : "error",
+                'message'   => !is_null($usuario) ? '¡Éxito! Acción realizada con éxito.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<asdas>>",
+                'data'      => !is_null($usuario) ? $result['error'] : $usuario
+            ];
 
         return Response()->json($response);
     }

@@ -23,10 +23,10 @@ Auth::routes(['verify' => true]);
 Route::get('/', 'LoginController@index')->name("login");
 Route::post('/login', 'LoginController@login');
 Route::get('/logout', 'LoginController@logout');
-Route::post('/recuperar_contrasena', array('uses' => 'LoginController@recuperar_contrasena'));
+Route::post('/recuperar_contrasena', 'LoginController@recuperar_contrasena');
 Route::get('/recuperar_cuenta/{StrToken}', array('uses' => 'LoginController@recuperar_cuenta'));
 Route::get('/recuperar/{StrToken}', array('uses' => 'LoginController@recuperar'));
-Route::post('/cambiar_contrasena', array('uses' => 'LoginController@cambiar_contrasena'));
+Route::post('/cambiar_contrasena', 'LoginController@cambiar_contrasena');
 
 Route::get('/registrar', function () {
     return view('MST_REGISTRO.index');
@@ -55,8 +55,8 @@ Route::group(['prefix' => 'perfil'], function () {
     Route::post('/setActual', 'PerfilController@setActual');
 });
 
-Route::get('/bitacora', array('uses' => 'BitacoraController@index'));
-Route::get('/bitacora/consultar', array('uses' => 'BitacoraController@consultar'));
+Route::get('/bitacora', 'BitacoraController@index');
+Route::get('/bitacora/consultar', 'BitacoraController@consultar');
 
 Route::get('/permiso', array('uses' => 'PermisoController@index'))->middleware("permiso");
 Route::get('/permiso/consultar', array('uses' => 'PermisoController@consultar'));

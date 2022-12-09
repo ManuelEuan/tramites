@@ -35,9 +35,9 @@ class WebHookController extends Controller
             $registro->save();
 
 
-            return response()->json(["success" => "1"], 200);
+            return response()->json(["success" => "1", "msg" => ""], 200);
         } catch (Exception $ex) {
-            return response()->json(["success" => "o"], 200);
+            return response()->json(["success" => "0", "msg" => $ex->getMessage()], 200);
         }
     }
 }

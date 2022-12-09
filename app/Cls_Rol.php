@@ -24,14 +24,8 @@ class Cls_Rol extends Model
         , array($IntId))[0];
     }
     
-    static function TRAM_SP_OBTENERROLPORCLAVE($StrClave){
-
-        /*Solucion Antigua
-        return DB::select('call TRAM_SP_OBTENERROLPORCLAVE(?)'
-        , array($StrClave))[0]->ROL_NIDROL;*/
-        $ObjUser = DB::select("SELECT * FROM tram_cat_rol WHERE ROL_CCLAVE = '$StrClave'");
-
-        return $ObjUser[0]->ROL_NIDROL;
+    static function TRAM_SP_OBTENERROLPORCLAVE($clave){
+        return DB::table('tram_cat_rol')->where('ROL_CCLAVE', $clave)->first();
     }
     
     static function TRAM_SP_AGREGARROL(Request $request){

@@ -99,7 +99,8 @@ class LoginController extends Controller
 							$ObjBitacora->BITA_CMOVIMIENTO = "Cuenta bloqueada";
 							$ObjBitacora->BITA_CTABLA = "tram_dat_bloqueusuario";
 							$ObjBitacora->BITA_CIP = $request->ip();
-							Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+							$ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+							$ObjBitacora->save();
 
 							//Retornar respuesta al usuario, que su cuenta fue bloqueado
 							$validator->after(function($validator)
@@ -165,28 +166,30 @@ class LoginController extends Controller
 	}
 
 	public function recuperar_contrasena(Request $request){
-		$response = [];
-		$StrUrl = "";
+		$response	= [];
+		$StrUrl 	= "";
 
 		try {
-			$IntIdUsuario = Cls_Usuario::TRAM_SP_VALIDAR_CORREO_OBTIENE_ID($request->txtCorreo_Electronico);
-			if($IntIdUsuario == null){
+			$user = User::where('USUA_CCORREO_ELECTRONICO', $request->txtCorreo_Electronico)
+						->orWhere('USUA_CCORREO_ALTERNATIVO', $request->txtCorreo_Electronico)->first();
+
+			if(is_null($user)){
 				$response = [
-					'codigo' => 400,
-					'status' => "error",
-					'message' => "El usuario no tiene un registro en el sistema, verifique la información"
+					'codigo'	=> 400,
+					'status' 	=> "error",
+					'message' 	=> "El usuario no tiene un registro en el sistema, verifique la información"
 				];
-			}else {
-				$ObjBloqueo = Cls_Bloqueo::TRAM_SP_VALIDAR_BLOQUEO($IntIdUsuario->USUA_NIDUSUARIO);
-
-				if($ObjBloqueo != null){
+			}
+			else {
+				$bloqueo = Cls_Bloqueo::where('BLUS_NIDUSUARIO',$user->USUA_NIDUSUARIO)->first();
+				if(!is_null($bloqueo)){
 					//Envio de correo con token para recuperar contraseña y desbloquear cuenta
-					if($ObjBloqueo->BLUS_NBLOQUEADO == 1){
-						$StrUrl = $request->getHttpHost() . "/" . "recuperar_cuenta/" . $ObjBloqueo->BLUS_CTOKEN;
+					if($bloqueo->BLUS_NBLOQUEADO == 1){
+						$StrUrl = $request->getHttpHost() . "/" . "recuperar_cuenta/" . $bloqueo->BLUS_CTOKEN;
 
-						$ObjData['StrUrl'] = $StrUrl;
-						$ObjData['StrCorreo'] = $request->txtCorreo_Electronico;
-						$ObjData['StrUsuario'] = $IntIdUsuario->USUA_NTIPO_PERSONA == "FISICA" ? $IntIdUsuario->USUA_CNOMBRES : $IntIdUsuario->USUA_CRAZON_SOCIAL;
+						$ObjData['StrUrl'] 		= $StrUrl;
+						$ObjData['StrCorreo'] 	= $request->txtCorreo_Electronico;
+						$ObjData['StrUsuario']	= $user->USUA_NTIPO_PERSONA == "FISICA" ? $user->USUA_CNOMBRES : $user->USUA_CRAZON_SOCIAL;
 
 						Mail::send('MSTP_MAIL.recuperar_contrasena', $ObjData, function ($message) use($ObjData) {
 							$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
@@ -194,12 +197,12 @@ class LoginController extends Controller
 						});
 					}else {
 						//Envio de correo id ecriptado, para recuperar contraseña
-						$StrToken = encrypt($IntIdUsuario->USUA_NIDUSUARIO);
-						$StrUrl = $request->getHttpHost() . "/" . "recuperar/" . $StrToken;
+						$StrToken	= encrypt($user->USUA_NIDUSUARIO);
+						$StrUrl 	= $request->getHttpHost() . "/" . "recuperar/" . $StrToken;
 
-						$ObjData['StrUrl'] = $StrUrl;
-						$ObjData['StrCorreo'] = $request->txtCorreo_Electronico;
-						$ObjData['StrUsuario'] = $IntIdUsuario->USUA_NTIPO_PERSONA == "FISICA" ? $IntIdUsuario->USUA_CNOMBRES : $IntIdUsuario->USUA_CRAZON_SOCIAL;
+						$ObjData['StrUrl'] 		= $StrUrl;
+						$ObjData['StrCorreo'] 	= $request->txtCorreo_Electronico;
+						$ObjData['StrUsuario'] 	= $user->USUA_NTIPO_PERSONA == "FISICA" ? $user->USUA_CNOMBRES : $user->USUA_CRAZON_SOCIAL;
 
 						Mail::send('MSTP_MAIL.recuperar_contrasena', $ObjData, function ($message) use($ObjData) {
 							$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
@@ -208,12 +211,12 @@ class LoginController extends Controller
 					}
 				}else {
 					//Envio de correo id ecriptado, para recuperar contraseña
-					$StrToken = encrypt($IntIdUsuario->USUA_NIDUSUARIO);
-					$StrUrl = $request->getHttpHost() . "/" . "recuperar/" . $StrToken;
+					$StrToken	= encrypt($user->USUA_NIDUSUARIO);
+					$StrUrl 	= $request->getHttpHost() . "/" . "recuperar/" . $StrToken;
 
-					$ObjData['StrUrl'] = $StrUrl;
-					$ObjData['StrCorreo'] = $request->txtCorreo_Electronico;
-					$ObjData['StrUsuario'] = $IntIdUsuario->USUA_NTIPO_PERSONA == "FISICA" ? $IntIdUsuario->USUA_CNOMBRES : $IntIdUsuario->USUA_CRAZON_SOCIAL;
+					$ObjData['StrUrl'] 		= $StrUrl;
+					$ObjData['StrCorreo'] 	= $request->txtCorreo_Electronico;
+					$ObjData['StrUsuario'] 	= $user->USUA_NTIPO_PERSONA == "FISICA" ? $user->USUA_CNOMBRES : $user->USUA_CRAZON_SOCIAL;
 
 					Mail::send('MSTP_MAIL.recuperar_contrasena', $ObjData, function ($message) use($ObjData) {
 						$message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
@@ -256,9 +259,11 @@ class LoginController extends Controller
 	}
 
 	public function cambiar_contrasena(Request $request){
-		$response = [];
+		$response = ['codigo' => 200, 'status' => "success", 'message' => "Acción realizada con éxito."];
 		try {
-			Cls_Usuario::TRAM_SP_CAMBIAR_CONTRASENA($request->txtIntIdUsuario, $request->txtContrasena_Nueva);
+			$user = User::find($request->txtIntIdUsuario);
+			$user->USUA_CCONTRASENIA = crypt($request->txtContrasena_Nueva, '$1$*$');
+			$user->save();
 
 			//Insertar bitacora
 			$ObjBitacora = new Cls_Bitacora();
@@ -266,10 +271,14 @@ class LoginController extends Controller
 			$ObjBitacora->BITA_CMOVIMIENTO = "Cambiar contraseña";
 			$ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
 			$ObjBitacora->BITA_CIP = $request->ip();
-			Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+			$ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+			$ObjBitacora->save();
 
 			if($request->txtIntTipo == 0){
-				Cls_Bloqueo::TRAM_SP_DESBLOQUEAR($request->txtStrToken);
+				Cls_Bloqueo::where('BLUS_CTOKEN',$request->txtStrToken)->update([
+					'BLUS_NBLOQUEADO' 		=> 0,
+					'BLUS_DFECHADESBLOQUEO' => NOW()
+				]);
 
 				//Insertar bitacora
 				$ObjBitacora = new Cls_Bitacora();
@@ -277,13 +286,9 @@ class LoginController extends Controller
 				$ObjBitacora->BITA_CMOVIMIENTO = "Recuperar contraseña";
 				$ObjBitacora->BITA_CTABLA = "tram_mst_usuario y tram_dat_bloqueusuario";
 				$ObjBitacora->BITA_CIP = $request->ip();
-				Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+				$ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+				$ObjBitacora->save();
 			}
-			$response = [
-				'codigo' => 400,
-				'status' => "success",
-				'message' => "Acción realizada con éxito."
-			];
 		}
 		catch(Exception $e) {
 			$response = [

@@ -12,14 +12,6 @@ class Cls_Bloqueo extends Model
     protected $table        = 'tram_dat_bloqueusuario';
     protected $fillable     = [ 'BLUS_NIDBLOQUEUSUARIO', 'BLUS_NIDUSUARIO', 'BLUS_NBLOQUEADO', 'BLUS_CTOKEN', 'BLUS_DFECHABLOQUEO', 'BLUS_DFECHADESBLOQUEO' ];
     
-    static function TRAM_SP_VALIDAR_BLOQUEO($IntIdUsuario){
-        $Obj = DB::selectOne('call TRAM_SP_VALIDAR_BLOQUEO(?)'
-                , array($IntIdUsuario
-                )
-            );
-        return $Obj;
-    }
-    
     static function TRAM_SP_AGREGAR_BLOQUEO($IntIdUsuario, $BolBloqueado, $StrToken){
         return DB::statement('call TRAM_SP_AGREGAR_BLOQUEO(?,?,?)'
                 , array($IntIdUsuario
@@ -43,10 +35,5 @@ class Cls_Bloqueo extends Model
             $Obj->BLUS_DFECHADESBLOQUEO = $ObjBloqueo->BLUS_DFECHADESBLOQUEO;
         }
         return $Obj;
-    }
-    
-    static function TRAM_SP_DESBLOQUEAR($StrToken){
-        return DB::statement('call TRAM_SP_DESBLOQUEAR(?)'
-                , array($StrToken));
     }
 }
