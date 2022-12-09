@@ -54,6 +54,13 @@ class PerfilController extends Controller
             );
         }
 
+        if($usuario->USUA_NTIPO_PERSONA == "MORAL"){
+            $personaFisica = Cls_Usuario::where("USUA_CCURP", $usuario->USUA_CCURP)->first();
+            if($personaFisica){
+                $usuario->USUA_DFECHA_NACIMIENTO = $personaFisica->USUA_DFECHA_NACIMIENTO;
+            }
+        }
+
         $usuario['documentos'] = $data;
         return view('MST_PERFIL.index', compact('usuario'));
     }
