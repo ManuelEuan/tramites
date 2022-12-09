@@ -1635,6 +1635,7 @@
         var antSel      = <?php echo (isset($antSel) ? json_encode($antSel) : '""') ?>; 
         var catGiros    = [];
         var anios       = [];
+        var oldFileValues = {};
 
         var id = "{{ $tramite['idusuariotramite'] }}";
         var encuesta_contestada = "{{ $tramite['encuesta_contestada'] }}";
@@ -1963,10 +1964,15 @@
                 var doctype = $(this).data("doctype");
                 var formData = new FormData();
                 var files = $("#" + id)[0].files[0];
-                var size = $("#" + id)[0].files[0].size;
                 var kb = (size / 1024)
                 var mb = (kb / 1024)
                 const fileType = files ? files.type : "unknown";
+
+                if(oldFileValues[id] && !files){
+                    return
+                }
+                
+                var size = files.size;
     
                 formData.append('file',files);
                 formData.append('doctype',doctype);
@@ -2007,6 +2013,11 @@
                     success: function(response) {
                         console.log(response);
                         if(response.extension=="pdf"){
+                            oldFileValues[id] = {
+                                file:files,
+                                value:document.getElementById(id).value
+                            };
+
                             Swal.fire({
                                 position: 'center',
                                 icon: 'success',
@@ -2372,6 +2383,8 @@
             if(Number(requerido) == 1){
                 $('#file_'+id).attr("required", "required");
             }
+
+            oldFileValues["file_"+id] = null;
         }
 
         //____________________________________
@@ -2416,6 +2429,7 @@
                     $("#error_" + id).html("");
                 }
             });
+            validOldDocuments();
             if (!$("#frmForm").valid()) {
                 const full  = document.getElementsByClassName('full');
                 const arr   = [...full].map(input => input.value);
@@ -3103,6 +3117,24 @@
                 text: message,
                 footer: ''
             });
+        }
+
+        function validOldDocuments(){
+            const form = document.getElementById("frmForm");
+            const formElements = Array.from(form.elements).filter(x => x.className.includes('documentos'));
+            for(var ele of formElements){
+                const id = ele.getAttribute("id").replace("file_", "");
+                const isRequired = $('#valida_file_'+id).val();
+                const checkDoc = document.getElementById('chck_file_'+id);
+
+                if(isRequired==1){
+                    const file = oldFileValues["file_"+id];
+                    ele.setAttribute("required", "required");
+                    if(file || (checkDoc && checkDoc.checked)){
+                        ele.removeAttribute("required");
+                    }
+                }
+            }
         }
     </script>
 

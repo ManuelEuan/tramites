@@ -423,200 +423,200 @@
                         @endforeach
                     @endif
                     <div class="row form p-4" id="form_0" style="display: none">
-                        <table class="table" id="documentosP4">
-                            <thead>
-                              <tr>
+                        <div class="table-responsive">
+                            <table class="table table-sm" id="documentosP4">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Existente</th>
+                                    <th scope="col"></th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Descripción</th>
+                                    <th scope="col">Tamaño</th>
+                                    <th scope="col" class="text-center">Estatus</th>
+                                    <th scope="col"></th>
+                                    <th style="width: 50px;"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    @if(count($tramite['configuracion']['documentos'])> 0)
+                                        @foreach($tramite['configuracion']['documentos'] as $key => $doc)
+                                            <tr>
+                                                
+                                            <?php   $otrotest = '';$RowDocConf='';$P_NESTATUS='';
+                                                $TXT_STAT='';$DOCsolicitudes='';$TIPO_DOC='0';
 
-                                <th scope="col">Existente</th>
-                                <th scope="col"></th>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Descripción</th>
-                                <th scope="col">Tamaño</th>
-                                <th scope="col" class="text-center">Estatus</th>
-                                <th scope="col"></th>
-                                <th style="width: 70px;"></th>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                                @if(count($tramite['configuracion']['documentos'])> 0)
-                                    @foreach($tramite['configuracion']['documentos'] as $key => $doc)
-                                        <tr>
-                                            
-                                        <?php   $otrotest = '';$RowDocConf='';$P_NESTATUS='';
-                                            $TXT_STAT='';$DOCsolicitudes='';$TIPO_DOC='0';
+                                                //////////////////////////////////////////COLOCA EL NOMBRE CORRECTO
+                                                // Verificar existe el campo "TRAD_NID_CONFIGDOCUMENTO" en tram_mdv_documento_tramite
+                                                
+                                                //if(method_exists($doc,'TRAD_NID_CONFIGDOCUMENTO')){
+                                                    //SI EXISTE EL CAMPO
+                                                    $id_CONF = $doc->TRAD_NID_CONFIGDOCUMENTO;
+                                                    //Comprobar si existe algun dato en TRAD_NID_CONFIGDOCUMENTO
+                                                    if($id_CONF>0){
+                                                        //comprobar si existe el id en el array de tipos de documentos
+                                                        if (array_key_exists($id_CONF, $ARR_DOC_CON)) {
+                                                            $doc->TRAD_CNOMBRE = $ARR_DOC_CON[$id_CONF];
+                                                            $TIPO_DOC = $id_CONF;
 
-                                            //////////////////////////////////////////COLOCA EL NOMBRE CORRECTO
-                                            // Verificar existe el campo "TRAD_NID_CONFIGDOCUMENTO" en tram_mdv_documento_tramite
-                                            
-                                            //if(method_exists($doc,'TRAD_NID_CONFIGDOCUMENTO')){
-                                                //SI EXISTE EL CAMPO
-                                                $id_CONF = $doc->TRAD_NID_CONFIGDOCUMENTO;
-                                                //Comprobar si existe algun dato en TRAD_NID_CONFIGDOCUMENTO
-                                                if($id_CONF>0){
-                                                    //comprobar si existe el id en el array de tipos de documentos
-                                                    if (array_key_exists($id_CONF, $ARR_DOC_CON)) {
-                                                        $doc->TRAD_CNOMBRE = $ARR_DOC_CON[$id_CONF];
-                                                        $TIPO_DOC = $id_CONF;
+                                                        };
+                                                    }
+                                                //}else{
+                                                    // NO existe el campo "TRAD_NID_CONFIGDOCUMENTO" en tram_mdv_documento_tramite
+                                                //};//*/
+                                                ///////////////////////////////////////////////////////////////////
 
+                                                $nmbres = $doc->TRAD_CNOMBRE; 
+                                                $ARCH_RUTA = '0';
+                                                $ARCH_PESO = '0';
+                                                $ARCH_EXTENCION = '0';$VIGENCIA_FIN = '';
+                                                //VERIFICO SI EXISTE ALGUN ARCHIVO
+                                                foreach($tramite['repositorio'] as $rep){
+                                                    if($rep->USDO_CDOCNOMBRE == $doc->TRAD_CNOMBRE){ 
+                                                        $DOCsolicitudes = 'si';
+                                                        $ARCH_RUTA = $rep->USDO_CRUTADOC;
+                                                        $ARCH_PESO = $rep->USDO_NPESO;
+                                                        $ARCH_EXTENCION = $rep->USDO_CEXTENSION;
+                                                        $VIGENCIA_FIN = $rep->VIGENCIA_FIN;
                                                     };
                                                 }
-                                            //}else{
-                                                // NO existe el campo "TRAD_NID_CONFIGDOCUMENTO" en tram_mdv_documento_tramite
-                                            //};//*/
-                                            ///////////////////////////////////////////////////////////////////
 
-                                            $nmbres = $doc->TRAD_CNOMBRE; 
-                                            $ARCH_RUTA = '0';
-                                            $ARCH_PESO = '0';
-                                            $ARCH_EXTENCION = '0';$VIGENCIA_FIN = '';
-                                            //VERIFICO SI EXISTE ALGUN ARCHIVO
-                                            foreach($tramite['repositorio'] as $rep){
-                                                if($rep->USDO_CDOCNOMBRE == $doc->TRAD_CNOMBRE){ 
-                                                    $DOCsolicitudes = 'si';
-                                                    $ARCH_RUTA = $rep->USDO_CRUTADOC;
-                                                    $ARCH_PESO = $rep->USDO_NPESO;
-                                                    $ARCH_EXTENCION = $rep->USDO_CEXTENSION;
-                                                    $VIGENCIA_FIN = $rep->VIGENCIA_FIN;
-                                                };
-                                            }
-
-                                            $VIG_TXT='';
-                                            if($DOCsolicitudes=='si'){
-                                                if (array_key_exists($nmbres, $tramite['DOCS_BASE'])) {                                                    
-                                                    $P_NESTATUS = $tramite['DOCS_BASE'][$nmbres][3];
-                                                    $VIGENCIA_FIN = $tramite['DOCS_BASE'][$nmbres][5];
-                                                    $HOY = date("Y-m-d");
-                                                    if($VIGENCIA_FIN != '' &&$VIGENCIA_FIN < $HOY ){$VIG_TXT='VENCIDO';};
+                                                $VIG_TXT='';
+                                                if($DOCsolicitudes=='si'){
+                                                    if (array_key_exists($nmbres, $tramite['DOCS_BASE'])) {                                                    
+                                                        $P_NESTATUS = $tramite['DOCS_BASE'][$nmbres][3];
+                                                        $VIGENCIA_FIN = $tramite['DOCS_BASE'][$nmbres][5];
+                                                        $HOY = date("Y-m-d");
+                                                        if($VIGENCIA_FIN != '' &&$VIGENCIA_FIN < $HOY ){$VIG_TXT='VENCIDO';};
+                                                    }; 
                                                 }; 
-                                            }; 
-                                                 
-                                            //echo $P_NESTATUS;
-                                            if($P_NESTATUS==NULL&&$DOCsolicitudes!='si'){$TXT_STAT='';
-                                            }elseif($P_NESTATUS==0){$TXT_STAT='Pendiente revisión';
-                                                if($VIG_TXT!=''){$TXT_STAT = $VIG_TXT;};
-                                            }elseif($P_NESTATUS==1){$TXT_STAT='Rechazado';
-                                            }elseif($P_NESTATUS==2){
-                                                $TXT_STAT='';
-                                                if($VIG_TXT!=''){$TXT_STAT = $VIG_TXT;};
-                                            };
-                                            //$TXT_STAT=''.$VIG_TXT.'..v: '.$VIGENCIA_FIN.'..va: '.$tramite['DOCS_BASE'][$nmbres][5].'..id: '.$tramite['DOCS_BASE'][$nmbres][6];
-                                            
-                                            ?>
+                                                    
+                                                //echo $P_NESTATUS;
+                                                if($P_NESTATUS==NULL&&$DOCsolicitudes!='si'){$TXT_STAT='';
+                                                }elseif($P_NESTATUS==0){$TXT_STAT='Pendiente revisión';
+                                                    if($VIG_TXT!=''){$TXT_STAT = $VIG_TXT;};
+                                                }elseif($P_NESTATUS==1){$TXT_STAT='Rechazado';
+                                                }elseif($P_NESTATUS==2){
+                                                    $TXT_STAT='';
+                                                    if($VIG_TXT!=''){$TXT_STAT = $VIG_TXT;};
+                                                };
+                                                //$TXT_STAT=''.$VIG_TXT.'..v: '.$VIGENCIA_FIN.'..va: '.$tramite['DOCS_BASE'][$nmbres][5].'..id: '.$tramite['DOCS_BASE'][$nmbres][6];
+                                                
+                                                ?>
 
-                                            <td>
-                                            @foreach($tramite['repositorio'] as $rep)
-                                                @if($rep->USDO_CDOCNOMBRE == $nmbres)
-                                                    <div class="custom-control custom-checkbox">
-                                                        <div class="row">
-                                                            <div class="md-6">   
-                                                                <input class="form-check-input chckdfiles" type="checkbox" 
-                                                                    onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}','{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}','file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" 
-                                                                    value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                                    title="Elegir archivo existente" checked>                                                     
-                                                                    <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  >
-                                                                        <i title='Descargar documento' class='fas fa-download'></i>
-                                                                    </a>
-                                                            </div>
-                                                            <div class="md-6 ml-2" >
-                                                                <a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 22px; height: 22px; " href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank">
-                                                                    <i class="fa fa-eye p-0 m-0" ></i>
-                                                                </a>
+                                                <td>
+                                                @foreach($tramite['repositorio'] as $rep)
+                                                    @if($rep->USDO_CDOCNOMBRE == $nmbres)
+                                                        <div class="custom-control custom-checkbox">
+                                                            <div class="row">
+                                                                <div class="col-lg-12 col-md-12">
+                                                                   <div style="display: flex;align-items: center;justify-content: space-between;">
+                                                                        <input class="chckdfiles" type="checkbox" style="margin-left:0 !important;" 
+                                                                            onchange="seleccionarExistente('{{$rep->USDO_CDOCNOMBRE}}','{{$rep->USDO_CEXTENSION}}','{{$rep->USDO_CRUTADOC}}','{{$rep->USDO_NPESO}}','file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}')" 
+                                                                            value="" id="chck_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
+                                                                            title="Elegir archivo existente" checked> 
+                                                                        <a title="Ver archivo" class="btn btn-primary p-0 m-0"  style="width: 20px; height: 20px;" href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank">
+                                                                            <i class="fa fa-eye p-0 m-0" ></i>
+                                                                        </a>
+                                                                        <a href="{{ asset('') }}{{$rep->USDO_CRUTADOC}}" target="_blank"  id="link_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}"  >
+                                                                            <i title='Descargar documento' class='fas fa-download' style="font-size: 20px;"></i>
+                                                                        </a>
+                                                                   </div>
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                        @break;
+                                                    @endif
+                                                @endforeach
+                                                </td>
+
+
+                                                <td>
+                                                    <div id="icon_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
+                                                        @switch($doc->TRAD_CEXTENSION)
+                                                            @case('jpg')
+                                                                <img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">
+                                                                @break
+                                                            @case('png')
+                                                                <img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">
+                                                                @break
+                                                            @case('pdf')
+                                                                <img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">
+                                                                @break
+                                                            @default
+                                                                <img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">
+                                                                @break
+                                                        @endswitch
                                                     </div>
-                                                    @break;
+                                                </td>
+                                                <td>
+                                                
+                                                <?php echo $otrotest;?>
+                                                {{$doc->TRAD_CNOMBRE}}
+
+                                                @if($doc->TRAD_NOBLIGATORIO == 1 )
+                                                    <span class="text-danger">*</span>
                                                 @endif
-                                            @endforeach
-                                            </td>
-
-
-                                            <td>
-                                                <div id="icon_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
-                                                    @switch($doc->TRAD_CEXTENSION)
-                                                        @case('jpg')
-                                                            <img src="{{ asset('assets/template/img/jpg.png') }}" width="25" height="25">
+                                                <br>
+                                                <p style="font-size: 12px;color: red;"><b>5Mb máximo</b></p>
+                                                </td>
+                                                <!-- Aqui -->
+                                                    @if(count($descripcion)> 0)
+                                                        <?php $siEncontro = false ?>
+                                                        @foreach($descripcion as $d)
+                                                            @if($d[1] == $doc->TRAD_CNOMBRE)
+                                                            <td>
+                                                                {{$d[0]}}
+                                                                <?php $siEncontro = true ?>
+                                                            </td>
                                                             @break
-                                                        @case('png')
-                                                            <img src="{{ asset('assets/template/img/png.png') }}" width="25" height="25">
-                                                            @break
-                                                        @case('pdf')
-                                                            <img src="{{ asset('assets/template/img/pdf.png') }}" width="25" height="25">
-                                                            @break
-                                                        @default
-                                                            <img src="{{ asset('assets/template/img/doc.png') }}" width="25" height="25">
-                                                            @break
-                                                    @endswitch
-                                                </div>
-                                            </td>
-                                            <td>
-                                            
-                                            <?php echo $otrotest;?>
-                                            {{$doc->TRAD_CNOMBRE}}
-
-                                            @if($doc->TRAD_NOBLIGATORIO == 1 )
-                                                <span class="text-danger">*</span>
-                                            @endif
-                                            <br>
-                                            <p style="font-size: 12px;color: red;"><b>5Mb máximo</b></p>
-                                            </td>
-                                            <!-- Aqui -->
-                                                @if(count($descripcion)> 0)
-                                                    <?php $siEncontro = false ?>
-                                                    @foreach($descripcion as $d)
-                                                        @if($d[1] == $doc->TRAD_CNOMBRE)
-                                                        <td>
-                                                            {{$d[0]}}
-                                                            <?php $siEncontro = true ?>
-                                                        </td>
-                                                        @break
+                                                            @endif
+                                                        @endforeach
+                                                        @if(!$siEncontro)
+                                                            <td></td>
                                                         @endif
-                                                    @endforeach
-                                                    @if(!$siEncontro)
+                                                    @else
                                                         <td></td>
                                                     @endif
-                                                @else
-                                                    <td></td>
+                                                
+                                                <td>
+                                                    <div id="size_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">{{$TXT_STAT}}</td>
+                                                <td class="text-center">
+                                                @if($P_NESTATUS==1||$VIG_TXT=='VENCIDO')                                            
+                                                    <img src="{{ asset('assets/template/img/warning.png') }}" width="20" height="20">
                                                 @endif
-                                            
-                                            <td>
-                                                <div id="size_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
-                                                </div>
-                                            </td>
-                                            <td class="text-center">{{$TXT_STAT}}</td>
-                                            <td class="text-center">
-                                            @if($P_NESTATUS==1||$VIG_TXT=='VENCIDO')                                            
-                                                <img src="{{ asset('assets/template/img/warning.png') }}" width="20" height="20">
-                                            @endif
-                                            </td>
-                                            <td style="width: 70px;">
-                                                <input type="hidden" name="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                    id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="0_0_0_{{$doc->TRAD_CNOMBRE}}">
+                                                </td>
+                                                <td> <!--style="width: 70px;"-->
+                                                    <input type="hidden" name="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
+                                                        id="docs_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" value="0_0_0_{{$doc->TRAD_CNOMBRE}}">
+                                                    <input type="hidden" value="{{$doc->TRAD_NOBLIGATORIO}}" id="valida_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
+                                                    <input type="file" class="file-select documentos" name="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
+                                                        id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" accept="application/pdf"
+                                                        data-doctype="{{$doc->TRAD_CNOMBRE}}" >
+                                                </td>
+                                                <td>
+                                                @if($doc->TRAD_NMULTIPLE == 1)
+                                                    <h5 class="font-weight-bold"><span class="circle-multi"  
+                                                    onclick="TRAM_FN_AGREGAR_ROW('{{$doc->TRAD_CNOMBRE}}')" >+</span></h5>
+                                                @endif
+                                                </td>
 
-                                                <input type="hidden" value="{{$doc->TRAD_NOBLIGATORIO}}" id="valida_file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}">
-                                                <input class="file-select documentos" name="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" 
-                                                    id="file_{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}" type="file"  accept="application/pdf"
-                                                    data-doctype="{{$doc->TRAD_CNOMBRE}}" {{$doc->TRAD_NOBLIGATORIO == 1 ? 'required' : '' }}>
-                                            </td>
-                                            <td>
-                                            @if($doc->TRAD_NMULTIPLE == 1)
-                                                <h5 class="font-weight-bold"><span class="circle-multi"  
-                                                onclick="TRAM_FN_AGREGAR_ROW('{{$doc->TRAD_CNOMBRE}}')" >+</span></h5>
-                                            @endif
-                                            </td>
-
-                                            <td>
-                                                <h5 class="font-weight-bold">
-                                                    <span class="circle-error-multi"  
-                                                    onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}', '{{$doc->TRAD_NOBLIGATORIO}}')" >x</span>
-                                                </h5>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </tbody>
-                        </table>
+                                                <td>
+                                                    <h5 class="font-weight-bold">
+                                                        <span class="circle-error-multi"  
+                                                        onclick="TRAM_FN_LIMPIARROW_DOCUMENTO('{{$doc->TRAD_NIDTRAMITEDOCUMENTO}}','{{$doc->TRAD_CNOMBRE}}', '{{$doc->TRAD_NOBLIGATORIO}}')" >x</span>
+                                                    </h5>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -705,6 +705,7 @@
         right: 0;
         top: 0;
         bottom: 0;
+        cursor: pointer;
     }
 
     .file-select input[type="file"] {
@@ -958,6 +959,10 @@
     .selectCatalogos, .dropdown-item{
         white-space: break-spaces;
     }
+
+    .custom-control{
+        padding-left: 0 !important;
+    }
 </style>
 @endsection
 
@@ -971,6 +976,7 @@
     var catGiros    = [];
     var catBancos   = [];
     var antSel      = [];
+    var oldFileValues = {};
 
     //0 no es gestor
     if(es_gestor == 0){
@@ -1328,7 +1334,12 @@
             var doctype = $(this).data("doctype");
             var formData = new FormData();
             var files = $("#" + id)[0].files[0];
-            var size = $("#" + id)[0].files[0].size;
+
+            if(oldFileValues[id] && !files){
+                return
+            }
+           
+            var size = files.size;
             var kb = (size / 1024)
             var mb = (kb / 1024)
             const fileType = files ? files.type : "unknown";
@@ -1370,6 +1381,11 @@
                 processData: false,
                 success: function(response) {
                     if(response.extension=="pdf"){
+                        oldFileValues[id] = {
+                            file:files,
+                            value:document.getElementById(id).value
+                        };
+
                         Swal.fire({
                             position: 'center',
                             icon: 'success',
@@ -1572,6 +1588,8 @@
             $('#file_'+id).attr("required", "required");
         }
 
+        oldFileValues["file_"+id] = null;
+
         $("#btnEnviar").hide();
     }
 
@@ -1586,6 +1604,8 @@
                 $("#error_" + id).html("");
             }
         });
+
+        validOldDocuments();
 
         if (!$("#frmForm").valid()){
             const full  = document.getElementsByClassName('full');
@@ -1980,6 +2000,24 @@
         }
 
     });
+
+    function validOldDocuments(){
+        const form = document.getElementById("frmForm");
+        const formElements = Array.from(form.elements).filter(x => x.className.includes('documentos'));
+        for(var ele of formElements){
+            const id = ele.getAttribute("id").replace("file_", "");
+            const isRequired = $('#valida_file_'+id).val();
+            const checkDoc = document.getElementById('chck_file_'+id);
+
+            if(isRequired==1){
+                const file = oldFileValues["file_"+id];
+                ele.setAttribute("required", "required");
+                if(file || (checkDoc && checkDoc.checked)){
+                    ele.removeAttribute("required");
+                }
+            }
+        }
+    }
 
 </script>
 @endsection
