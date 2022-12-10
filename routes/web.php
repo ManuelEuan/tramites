@@ -78,7 +78,7 @@ Route::get('/download_tramite_detalle/{id}', 'TramiteServicioController@download
 Route::get('/consultar_pago/{id}', 'TramiteServicioController@consultar_pago')->name('consultar_pago');
 
 Route::group(['prefix' => 'tramite_servicio'], function () {
-    Route::get('/', array('uses' => 'TramiteServicioController@index'))->middleware("permiso");
+    Route::get('/', 'TramiteServicioController@index')->middleware("permiso");
     Route::post('/getTramites', 'TramiteServicioController@getTramites');
     Route::post('/consultar', 'TramiteServicioController@consultar')->name('consultar_tramites');;
     Route::get('/obtener_dependencias_unidad', 'TramiteServicioController@obtener_dependencias_unidad');
@@ -211,7 +211,7 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::post('/crear', 'GestorController@save')->name('gestor_crear_configuracion');
     Route::get('/consultar_configuracion_tramite/{TRAM_NIDTRAMITE_CONFIG}', 'GestorController@consultar_configuracion_tramite')->name("consultar_configuracion_tramite");
     Route::get('/implementar_tramite/{TRAM_NIDTRAMITE_CONFIG}/{TRAM_NIMPLEMENTADO}', array('uses' => 'GestorController@implementar_tramite'))->name("implementar_tramite");
-    Route::get('/consultar_concepto_pago/{TRAM_NIDTRAMITE_ACCEDE}', array('uses' => 'GestorController@consultar_concepto_pago'))->name("consultar_concepto_pago");
+    Route::get('/consultar_concepto_pago/{TRAM_NIDTRAMITE_ACCEDE}', 'GestorController@consultar_concepto_pago')->name("consultar_concepto_pago");
     Route::get('/consultar_filtro', array('uses' => 'GestorController@obtener_filtro'))->name("consultar_filtro_gestores");
     Route::get('/consultar_resolutivo', array('uses' => 'GestorController@consultar_resolutivo'))->name("consultar_resolutivo");
     Route::get('/consultar_preguntas_formulario', 'GestorController@consultar_preguntas_formulario')->name("consultar_preguntas_formulario");

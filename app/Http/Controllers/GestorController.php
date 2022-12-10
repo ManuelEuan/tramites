@@ -59,8 +59,7 @@ class GestorController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function consultar(Request $request)
-    {
+    public function consultar(Request $request){
         $tramite        =  $this->tramiteService->busqueda($request);
         $data_tramite   = $tramite['data'];
 

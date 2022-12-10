@@ -52,8 +52,8 @@ class TramitesController extends Controller
     public function find(Request $request){
         $response = [];
         try {
-            $seguimiento = new Cls_Seguimiento_Servidor_Publico();
-            $user = Auth::user();
+            $seguimiento    = new Cls_Seguimiento_Servidor_Publico();
+            $user           = Auth::user();
 
             $seguimiento->UsuarioID = $user->TRAM_CAT_ROL->ROL_CCLAVE == 'ADM' ? 0 : $user->USUA_NIDUSUARIO;
             $resultado      =  $this->tramiteService->listadoSeguimiento($request);
@@ -69,7 +69,7 @@ class TramitesController extends Controller
                 if($user->TRAM_CAT_ROL->ROL_CCLAVE != 'ANTA'){
                     $t->asignado    = Cls_UsuarioTramiteAnalista::VerificaAsignacion($t->USTR_NIDUSUARIOTRAMITE);
                     $t->responsable = null;
-                    
+
                     if($t->asignado){
                         $asignado = DB::table('tram_mdv_usuariotramite_analista')
                                         ->where('USTR_NIDUSUARIOTRAMITE', $t->USTR_NIDUSUARIOTRAMITE)->first();
