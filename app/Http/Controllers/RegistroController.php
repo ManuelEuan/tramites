@@ -83,24 +83,13 @@ class RegistroController extends Controller
         return Response()->json($response);
     }
 
-    public function validar_rfc($StrRfc){
-
-        try {
-            $IntResult = Cls_Usuario::TRAM_SP_VALIDAR_RFC($StrRfc);
-
-            $response = [
-                'codigo' => $IntResult > 0 ? 200 : 400, 
-                'status' => $IntResult > 0 ? "success" : "error", 
-                'message' => $IntResult > 0 ? 'El RFC ya existe en el sistema, por favor ingresa con tu usuario y contraseña.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<>>"
-            ];
-        }
-        catch(Exception $e) {
-            $response = [
-                'codigo' => 400, 
-                'status' => "error", 
-                'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage()
-            ];
-        }
+    public function validar_rfc($rfc){
+        $result = User::where('USUA_CRFC', $rfc)->first();
+        $response = [
+            'codigo'    => !is_null($result) ? 200 : 400, 
+            'status'    => !is_null($result) ? "success" : "error", 
+            'message'   => !is_null($result) ? 'El RFC ya existe en el sistema, por favor ingresa con tu usuario y contraseña.' : "El RFC esta disponible."
+        ];
         return Response()->json($response);
     }
 
@@ -116,25 +105,14 @@ class RegistroController extends Controller
         return Response()->json($response);
     }
 
-    public function validar_correo($StrCorreo){
+    public function validar_correo($correo){
+        $result = User::where('USUA_CCORREO_ELECTRONICO', $correo)->orWhere('USUA_CCORREO_ALTERNATIVO', $correo)->first();
+        $response = [
+            'codigo'    => !is_null($result) ? 200 : 400, 
+            'status'    => !is_null($result) ? "success" : "error", 
+            'message'   => !is_null($result) ? 'El correo electrónico ya existe en el sistema, por favor ingresa con tu usuario y contraseña.' : "Correo dispoonible."
+        ];
         
-        try {
-            $IntResult = Cls_Usuario::TRAM_SP_VALIDAR_CORREO($StrCorreo);
-            
-            $response = [
-                'codigo' => $IntResult > 0 ? 200 : 400, 
-                'status' => $IntResult > 0 ? "success" : "error", 
-                'message' => $IntResult > 0 ? 'El correo electrónico ya existe en el sistema, por favor ingresa con tu usuario y contraseña.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<>>"
-            ];
-        }
-        catch(Exception $e) {
-            $response = [
-                'codigo' => 400, 
-                'status' => "error", 
-                'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage()
-            ];
-        }
-        //dd($response);
         return Response()->json($response);
     }
 	

@@ -798,31 +798,29 @@
                             if (list_formularios.length > 0) {
 
                                 var formularioSelect = list_formularios.find(x => x.FORM_NIDFORMULARIO === id_formulario);
-
                                 if (typeof formularioSelect !== 'undefined') {
-
                                     var activo_ = formularioSelect.total > 0 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
-                                    var check = "checked";
+                                    var check   = "checked";
 
-                                    var itemFormulario = '<div class="row">' +
-                                        '<div class="col-10">' +
-                                        '<p>' +
-                                        '<h6 class="negritas">' + formularioSelect.FORM_CNOMBRE + '</h6>' +
-                                        '<h6>' + activo_ + '</h6>' +
-                                        '' + formularioSelect.FORM_CDESCRIPCION + '' +
-                                        '</p>' +
-                                        '<p style="margin-bottom: 0px; color:#6f6d6d;">Última edición: ' + formularioSelect.FORM_DFECHA + '</p>' +
-                                        '</div>' +
-                                        '<div class="col-2" style="align-items: center; display: flex; justify-content: center;">' +
-                                        '<div class="form-group">' +
-                                        '<div class="form-check">' +
-                                        '<input ' + check + ' data-formulario="' + formularioSelect.FORM_NIDFORMULARIO + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
-                                        '</div>' +
-                                        '</div>' +
-                                        '</div>' +
-                                        '</div>' +
-                                        '<hr class="division_2" />';
+                                    var itemFormulario =    `<div class="row">
+                                                                <div class="col-10">
+                                                                    <p>
+                                                                        <h6 class="negritas"> ${formularioSelect.FORM_CNOMBRE }</h6>
+                                                                        <h6> ${activo_} </h6>
+                                                                        ${formularioSelect.FORM_CDESCRIPCION}
+                                                                    </p>
+                                                                    <p style="margin-bottom: 0px; color:#6f6d6d;">Última edición: ${formularioSelect.FORM_DFECHA} </p>
+                                                                </div>
 
+                                                                <div class="col-2" style="align-items: center; display: flex; justify-content: center;">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check">
+                                                                            <input ${check}  data-formulario="${formularioSelect.FORM_NIDFORMULARIO}" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr class="division_2" />`;
                                     divSectionContainer.append(itemFormulario);
                                 }
                             }
@@ -836,24 +834,24 @@
                                 var activo_ = v.total > 0 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
                                 var check = v.FORM_NIDFORMULARIO === id_formulario ? "checked" : "";
 
-                                var itemFormulario = '<div class="row">' +
-                                    '<div class="col-10">' +
-                                    '<p>' +
-                                    '<h6 class="negritas">' + v.FORM_CNOMBRE + '</h6>' +
-                                    '<h6>' + activo_ + '</h6>' +
-                                    '' + v.FORM_CDESCRIPCION + '' +
-                                    '</p>' +
-                                    '<p style="margin-bottom: 0px; color:#6f6d6d;">Última edición: ' + v.FORM_DFECHA + '</p>' +
-                                    '</div>' +
-                                    '<div class="col-2" style="align-items: center; display: flex; justify-content: center;">' +
-                                    '<div class="form-group">' +
-                                    '<div class="form-check">' +
-                                    '<input ' + check + ' data-formulario="' + v.FORM_NIDFORMULARIO + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '<hr class="division_2" />';
+                                var itemFormulario =    `<div class="row">
+                                                            <div class="col-10">
+                                                                <p>
+                                                                    <h6 class="negritas"> ${v.FORM_CNOMBRE} </h6>
+                                                                    <h6> ${activo_} </h6>
+                                                                    ${v.FORM_CDESCRIPCION}
+                                                                </p>
+                                                                <p style="margin-bottom: 0px; color:#6f6d6d;">Última edición: ${v.FORM_DFECHA} </p>
+                                                            </div>
+                                                            <div class="col-2" style="align-items: center; display: flex; justify-content: center;">
+                                                                <div class="form-group">
+                                                                    <div class="form-check">
+                                                                        <input ${check} data-formulario=" ${v.FORM_NIDFORMULARIO} " style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr class="division_2" />`;
 
                                 divSectionContainer.append(itemFormulario);
                             });
