@@ -39,9 +39,9 @@ class TramiteService
         }
 
         if(!is_null($data->palabraClave))
-            $query->where('p.name', 'ilike','%'.$data->palabraClave.'%');
+            $query->where('p.Name', 'ilike','%'.$data->palabraClave.'%');
         if(!is_null($data->dependencia) && $data->dependencia != "")
-            $query->where('d.id', $data->dependencia);
+            $query->where('d.Id', $data->dependencia);
         if(!is_null($data->registros))
             $registros = $data->registros;
 
@@ -414,9 +414,9 @@ class TramiteService
                     ->select(
                         'v.*', 
                         'ua.USUA_FECHA as fecha_asignacion', 
-                        DB::raw("concat(anaNom.USUA_CNOMBRES, ' ', anaNom.USUA_CPRIMER_APELLIDO, ' ', anaNom.USUA_CSEGUNDO_APELLIDO) as analista"),
-                        DB::raw("(SELECT tur.USRE_CRESPUESTA FROM tram_mdv_usuariorespuestas as tur WHERE tur.USRE_NIDUSUARIOTRAMITE=v.USTR_NIDUSUARIOTRAMITE and tur.USRE_NIDPREGUNTA=510 limit 1) as tram_razon_social"),
-                        DB::raw("(SELECT tur.USRE_CRESPUESTA FROM tram_mdv_usuariorespuestas as tur WHERE tur.USRE_NIDUSUARIOTRAMITE=v.USTR_NIDUSUARIOTRAMITE and tur.USRE_NIDPREGUNTA=526 limit 1) as tram_rfc")
+                        DB::raw("concat(\"USUA_CNOMBRES\",' ',\"USUA_CPRIMER_APELLIDO\",' ',\"USUA_CSEGUNDO_APELLIDO\") as analista"),
+                        DB::raw("(SELECT tur.\"USRE_CRESPUESTA\" FROM tram_mdv_usuariorespuestas as tur WHERE tur.\"USRE_NIDUSUARIOTRAMITE\"=v\".USTR_NIDUSUARIOTRAMITE\" and \"tur.USRE_NIDPREGUNTA\"=510 limit 1) as tram_razon_social"),
+                        DB::raw("(SELECT tur.\"USRE_CRESPUESTA\" FROM tram_mdv_usuariorespuestas as tur WHERE tur.\"USRE_NIDUSUARIOTRAMITE\"=v.\"USTR_NIDUSUARIOTRAMITE\" and \"tur.USRE_NIDPREGUNTA\"=526 limit 1) as tram_rfc")
                     );
             }else{
                 $query = DB::table('tram_vw_tramite_seguimiento as v')
@@ -426,10 +426,10 @@ class TramiteService
                     ->where('v.USTR_NESTATUS','!=',1)
                     ->select(
                         'v.*', 
-                        'ua.USUA_FECHA as fecha_asignacion', 
-                        DB::raw("concat(anaNom.USUA_CNOMBRES, ' ', anaNom.USUA_CPRIMER_APELLIDO, ' ', anaNom.USUA_CSEGUNDO_APELLIDO) as analista"),
-                        DB::raw("(SELECT tur.USRE_CRESPUESTA FROM tram_mdv_usuariorespuestas as tur WHERE tur.USRE_NIDUSUARIOTRAMITE=v.USTR_NIDUSUARIOTRAMITE and tur.USRE_NIDPREGUNTA=510 limit 1) as tram_razon_social"),
-                        DB::raw("(SELECT tur.USRE_CRESPUESTA FROM tram_mdv_usuariorespuestas as tur WHERE tur.USRE_NIDUSUARIOTRAMITE=v.USTR_NIDUSUARIOTRAMITE and tur.USRE_NIDPREGUNTA=526 limit 1) as tram_rfc")
+                        'ua.USUA_FECHA as fecha_asignacion',
+                        DB::raw("concat(\"USUA_CNOMBRES\",' ',\"USUA_CPRIMER_APELLIDO\",' ',\"USUA_CSEGUNDO_APELLIDO\") as analista"),
+                        DB::raw("(SELECT tur.\"USRE_CRESPUESTA\" FROM tram_mdv_usuariorespuestas as tur WHERE tur.\"USRE_NIDUSUARIOTRAMITE\"=v.\"USTR_NIDUSUARIOTRAMITE\" and tur.\"USRE_NIDPREGUNTA\"=510 limit 1) as tram_razon_social"),
+                        DB::raw("(SELECT tur.\"USRE_CRESPUESTA\" FROM tram_mdv_usuariorespuestas as tur WHERE tur.\"USRE_NIDUSUARIOTRAMITE\"=v.\"USTR_NIDUSUARIOTRAMITE\" and tur.\"USRE_NIDPREGUNTA\"=526 limit 1) as tram_rfc")
                     );
             }
             
@@ -448,7 +448,7 @@ class TramiteService
             $asignados = DB::table('tram_mdv_usuariotramite_analista')->where('USUA_NIDUSUARIO', $usuario->id)->get();
             $query->whereIn('v.USTR_NIDUSUARIOTRAMITE', $asignados->pluck('USTR_NIDUSUARIOTRAMITE'));
         }
-        
+
         //Parametros de busqueda
         if(!is_null($request->fecha))
             $query->where('v.USTR_DFECHACREACION', 'ilike','%'.$request->fecha.'%');
@@ -546,5 +546,65 @@ class TramiteService
         }
 
         return $result;
+    }
+
+    /**
+     * Retorna los tramites para el publico
+     * @param object $request
+     * @return array
+     */
+    public function getTramitePublico(object $request){
+        /* $usuario    = User::find(973); // Auth::user();   
+        $rol        = $usuario->TRAM_CAT_ROL; */
+
+        /* if($usuario->USUA_NIDROL == 2){
+            if($usuario->USUA_NTIPO_PERSONA == 'FISICA')
+                $inTipoPersona = 1;
+            else
+                $inTipoPersona = $usuario->USUA_NTIPO_PERSONA == 'MORAL' ? 2 : 0;
+        } */
+        $tipoPersona = 0;
+       try {
+            
+       
+
+
+
+            $query  = DB::table('tram_view_tramite_publico')
+                       ->where('TRAM_NIMPLEMENTADO', true);
+   
+            if(isset($request->StrTexto) && $request->StrTexto != "")
+               $query->where('TRAM_CNOMBRE', 'ilike',"%".$request->StrTexto."%");
+            if(isset($request->dependenciaID))
+                $query->where('TRAM_NIDCENTRO', $request->dependenciaID);
+            /* if(isset($request->IntModalidad))
+                $IntModalidad = $request->IntModalidad; */
+            if(isset($request->IntClasificacion))
+                $query->where('TRAM_NTIPO', $request->IntClasificacion);
+            /* if(isset($request->StrAudiencia))
+                $StrAudiencia = $request->StrAudiencia; */
+           
+            $query->where('TRAM_TPERSONA', $tipoPersona);
+            
+
+
+
+
+               
+   
+               
+          
+           $order      = isset($request->order[0]['dir']) ? $request->order[0]['dir'] : 'desc';
+           $orderBy    = isset($request->order[0]['dir']) ? $request->columns[$request->order[0]['column']]['data'] : "TRAM_NIDTRAMITE";
+           $show       = isset($request->length) ? $request->length : 10;
+           $show       = $show == -1 ? 1000000 : $show;
+           $start      = isset($request->start) ? $request->start : 0;
+           $conteo     = $query;
+           $total      = $conteo->count();
+           $resultado  = $query->orderBy($orderBy, $order)->offset($start)->limit($show)->get();
+       } catch (Exception $ex) {
+            dd($ex);
+       }
+        return [ "data" => $resultado, "total" =>  $total];
     }
 }
