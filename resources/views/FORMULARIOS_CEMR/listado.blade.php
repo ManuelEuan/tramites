@@ -415,7 +415,7 @@
                                         <button type="button" onclick="abreModal(${ data.FORM_NID }, '${ data.FORM_CNOMBRE}', '${data.FORM_CDESCRIPCION }')" title="Editar" class="btn btn-link"><i class="fas fa-edit" style="color: black"></i></button>
                                     </span>
                                     <span>
-                                        <button type="button" onclick="Habilitar(${ data.FORM_NID },'${ data.FORM_BACTIVO}','${ data.FORM_CNOMBRE}')" title="${estatus}" class="btn btn-link">`;
+                                        <button type="button" onclick="Habilitar(${ data.FORM_NID })" title="${estatus}" class="btn btn-link">`;
 
                         if (data.FORM_BACTIVO == false)
                             html += `<i class="fas fa-toggle-off" style="color: black"></i>`;
@@ -515,7 +515,7 @@
         });
     }
 
-    function Habilitar($id, estatus = 'estatus', valor) {
+    /*function Habilitar($id, estatus = 'estatus', valor) {
 
         if (estatus == 0) {
             //activar el formulario
@@ -613,7 +613,7 @@
             });
         }
 
-    }
+    }*/
 
     function abreModal(id = 0, nombre = '', descripcion = '') {
         let valor = descripcion == 'null' ? '' : descripcion;
@@ -1695,6 +1695,90 @@
             $('#formulario').fadeToggle(500);
         } else if ('secciones') {
             $('#preguntas').fadeToggle(500);
+        }
+    }
+
+    function Habilitar(id) {
+        if (estatus == 0) {
+            Swal.fire({
+                title: 'Confirmar!',
+                text: "¿Desea habilitar el formulario " + valor + "?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/formulario/status",
+                        type: "post",
+                        data: {
+                            "id": id,
+                            "estatus": estatus
+                        },
+                        success: function(data) {
+                            buscar();
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'El formulario se ha habilitado con éxito.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            },
+                        error: function(data) {
+                            Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'se presento el siguiente error: ' + errorThrown
+                        });
+                        }
+                    });
+                }
+            });
+        } else {
+            //desactivar el formulario
+            estatus = 'estatus'
+            Swal.fire({
+                title: 'Confirmar!',
+                text: "¿Desea deshabilitar el formulario " + valor + "?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/formulario/status",
+                        type: "post",
+                        data: {
+                            "id": id,
+                            "estatus": estatus
+                        },
+                        success: function(data) {
+                            buscar();
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'El formulario se ha deshabilitado con éxito.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        },
+                        error: function(data) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'se presento el siguiente error: ' + errorThrown
+                            });
+                        }
+                    });
+                }
+            });
         }
     }
 </script>

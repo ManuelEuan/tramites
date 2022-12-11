@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\CatalogoService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\GeneralValidator;
+use App\Models\Cls_Catalogo;
 
 class CatalogoController extends Controller
 {
@@ -31,15 +32,15 @@ class CatalogoController extends Controller
      * @return Response
      */
     public function find(Request $request){
-        $query = DB::table('catalogos');
+        $query = new Cls_Catalogo();
 
         if(!is_null($request->nombre))
-            $query->where('nombre', 'ilike','%'.$request->nombre.'%');
+            $query = $query->where('nombre', 'ilike','%'.$request->nombre.'%');
         if(!is_null($request->descripcion))
-            $query->where('descripcion', 'ilike','%'.$request->descripcion.'%');
+            $query = $query->where('descripcion', 'ilike','%'.$request->descripcion.'%');
         if(!is_null($request->activo)){
             $activo = $request->activo === 'true'? true: false;
-            $query->where("activo","=", $activo);
+            $query = $query->where("activo","=", $activo);
         }
 
         ############ Orden y paginacion ############
@@ -47,7 +48,7 @@ class CatalogoController extends Controller
         $order_by    = !is_null($request->order_by)  ? $request->order_by : "id";
         $itemsShow  = !is_null($request->items_to_show) ? $request->items_to_show : 10;
 
-        $query->orderBy($order_by, $order);
+        $query = $query->orderBy($order_by, $order);
         if(!is_null($request->paginate) && $request->paginate == 'true') {
             $items = $query->paginate($itemsShow);
             return response()->json($items, 200);
