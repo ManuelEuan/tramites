@@ -35,73 +35,66 @@ class FormularioController extends Controller
         $draw = $request->get('draw');
         $start = $request->get("start");
 
-        if($request->start != 0)
+        if($request->start != 0){
             $page =  $request->length/ $request->start;
+        }
 
         $request->merge(['page' => $page]);
 
-
-        $totalRecords = DB::table('tram_form_formulario')->where('FORM_BACTIVO', true)->count();
-
-
+        $totalRecords = Cls_Formulario::where('FORM_BACTIVO', true)->count();
 
         //Comienza el Query
-        $query = DB::table('tram_form_formulario');
-        $totalFiltered = DB::table('tram_form_formulario');
+        $formularioModel = new Cls_Formulario();
 
         if(!is_null($request->nombre) && $request->nombre != ""){
-            $query->where('FORM_CNOMBRE','ilike','%'. $request->nombre .'%');
-            $totalFiltered->where('FORM_CNOMBRE','ilike','%'. $request->nombre .'%');
+            $formularioModel = $formularioModel->where('FORM_CNOMBRE','ilike','%'. $request->nombre .'%');
         }
 
         if(!is_null($request->estatus) && $request->estatus != "" &&  $request->estatus != "Seleccionar"){
             $estatus = $request->estatus == 'Activos' ? true : false;
-            $query->where('FORM_BACTIVO', $estatus);
-            $totalFiltered->where('FORM_BACTIVO', $estatus);
+            $formularioModel = $formularioModel->where('FORM_BACTIVO', $estatus);
         }
 
         if(!is_null($request->fecha_inicio)  && $request->fecha_inicio != ""){
-            $query->where('FORM_DFECHA',">=", $request->fecha_inicio);
-            $totalFiltered->where('FORM_DFECHA',">=", $request->fecha_inicio);
+            $formularioModel = $formularioModel->where('FORM_DFECHA',">=", $request->fecha_inicio);
         }
 
         if(!is_null($request->fecha_final)  && $request->fecha_final != ""){
-            $query->where('FORM_DFECHA',"<=", $request->fecha_final);
-            $totalFiltered->where('FORM_DFECHA',"<=", $request->fecha_final);
+            $formularioModel = $formularioModel->where('FORM_DFECHA',"<=", $request->fecha_final);
         }
 
-        $totalFilteredCount = $totalFiltered->count();
+        $totalFilteredCount = $formularioModel->count();
 
         //Parametros de paginacion y orden
         if(!is_null($request->order)){
             $order = $request->order[0]['dir'];
-
-            if($request->order[0]['column'] == 0)
+            if($request->order[0]['column'] == 0){
                 $order_by = "FORM_DFECHA";
-            elseif($request->order[0]['column'] == 1)
+            }elseif($request->order[0]['column'] == 1){
                 $order_by = "FORM_CNOMBRE";
-            elseif($request->order[0]['column'] == 2)
+            }
+            elseif($request->order[0]['column'] == 2){
                 $order_by = "FORM_CDESCRIPCION";
-            elseif($request->order[0]['column'] == 3)
+            }
+            elseif($request->order[0]['column'] == 3){
                 $order_by = "FORM_BACTIVO";
+            }
         }
 
-        $query->orderBy($order_by, $order);
+        $items = $formularioModel->orderBy($order_by, $order);
         if(is_null($request->paginate) || $request->paginate == "true" ){
             if(!is_null($request->length)){
                 $resultados = $request->length;
                 if($request->length == "-1")
                     $resultados = 1000000000;
             }
-
-            $items = $query->skip($start)->take($resultados)->get();
-        }
-        else{
-            $items = $query->get();
+            $items = $items->skip($start)->take($resultados)->get();
+        }else{
+            $items = $items->get();
             return response()->json(["data" => $items], 200);
         }
 
-        $final      = (object)[
+        $final = (object)[
             "data"              => $items,
             "recordsFiltered"   => $totalFilteredCount,
             "recordsTotal"      => $totalRecords,
@@ -163,10 +156,11 @@ class FormularioController extends Controller
                                 ->select('*')
                                 ->first('FORM_NID');
         $activo = true;
-        if($item->FORM_BACTIVO)
+        if($item->FORM_BACTIVO){
             $activo = false;
+        }
 
-        $response= Cls_Formulario::where('FORM_NID',$request->id)->update(['FORM_BACTIVO' => $activo ]);
+        $response = Cls_Formulario::where('FORM_NID',$request->id)->update(['FORM_BACTIVO' => $activo ]);
 
         return response()->json(['message'=> 'Operación exitosa'], 200);
     }
