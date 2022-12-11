@@ -19,6 +19,8 @@ use App\Services\VariosService;
 use PhpOffice\PhpWord\Settings;
 use App\Cls_Seccion_Seguimiento;
 use App\Services\TramiteService;
+use App\Services\UsuarioTramiteAnalistaService;
+use App\Services\SeguimientoServidorPublicoService;
 use Illuminate\Support\Facades\DB;
 use App\Cls_UsuarioTramiteAnalista;
 use App\Models\Cls_Citas_Calendario;
@@ -35,9 +37,13 @@ class TramitesController extends Controller
 {
     protected $variosService;
     protected $tramiteService;
+    protected $usuarioTramiteAnalistaService;
+    protected $seguimientoServidorPublicoService;
     public function __construct() {
-        $this->variosService    = new VariosService();
-        $this->tramiteService   = new TramiteService();
+        $this->variosService                        = new VariosService();
+        $this->tramiteService                       = new TramiteService();
+        $this->usuarioTramiteAnalistaService        = new UsuarioTramiteAnalistaService();
+        $this->seguimientoServidorPublicoService    = new SeguimientoServidorPublicoService();
     }
 
     public function listado() {
@@ -67,7 +73,7 @@ class TramitesController extends Controller
                 $fechaFinal = date('Y-m-d', strtotime($t->USTR_DFECHACREACION. ' + '.$diasH.' days'));
 
                 if($user->TRAM_CAT_ROL->ROL_CCLAVE != 'ANTA'){
-                    $t->asignado    = Cls_UsuarioTramiteAnalista::VerificaAsignacion($t->USTR_NIDUSUARIOTRAMITE);
+                    $t->asignado    = $this->usuarioTramiteAnalistaService->VerificaAsignacion($t->USTR_NIDUSUARIOTRAMITE); // Cls_UsuarioTramiteAnalista::VerificaAsignacion($t->USTR_NIDUSUARIOTRAMITE);
                     $t->responsable = null;
 
                     if($t->asignado){
@@ -112,7 +118,7 @@ class TramitesController extends Controller
 
     //Vista detalle
     public function detalle($id) {
-        $result = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
+        $result = $this->seguimientoServidorPublicoService->TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id); //Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_TRAMITE_SEGUIMIENTO($id);
         $tramite = $result[0];
         return view('TRAMITES_CEMR.detalles', compact('tramite'));
     }
@@ -122,12 +128,13 @@ class TramitesController extends Controller
         $var = $this->verifica_rol_analista_asignado($id);
         if($var){
             //Marcar trámite del ciudadano como Recibido
-            Cls_Seguimiento_Servidor_Publico::TRAM_MARCAR_ESTATUS_REVISION_TRAMITE($id);
+            $this->seguimientoServidorPublicoService->TRAM_MARCAR_ESTATUS_REVISION_TRAMITE($id); //Cls_Seguimiento_Servidor_Publico::TRAM_MARCAR_ESTATUS_REVISION_TRAMITE($id);
             $tramite    = DB::table('tram_vw_tramite_seguimiento')->where('USTR_NIDUSUARIOTRAMITE', $id)->first();
-            $secciones  = Cls_Seccion_Seguimiento::where('SSEGTRA_NIDUSUARIOTRAMITE', $id)->orderBy('SSEGTRA_NIDSECCION_SEGUIMIENTO', 'ASC')->get();
+            $secciones  = $this->seguimientoServidorPublicoService->TramiteSeccionSeguimiento($id); //Cls_Seccion_Seguimiento::where('SSEGTRA_NIDUSUARIOTRAMITE', $id)->orderBy('SSEGTRA_NIDSECCION_SEGUIMIENTO', 'ASC')->get();
             $conceptos  = DB::table('tram_mdv_usuario_concepto')->where('USCON_NIDUSUARIOTRAMITE', $id)->get();
-        
-            $resolutivos= Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
+            $resolutivos= $this->seguimientoServidorPublicoService->TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE); //Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
+            
+
             $objTramite = $this->tramiteService->getTramite($tramite->USTR_NIDTRAMITE_ACCEDE);
             $result     = $this->tramiteService->getDetalle($objTramite->Id);
             $tramite->infoModulo                    = (array) $result['oficinas'][0];
@@ -244,16 +251,19 @@ class TramitesController extends Controller
 
     //Obtener trámite en seguimiento
     public function obtener_tramite_seguimiento($id) {
-        $tramite = Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
+        $tramite = $this->seguimientoServidorPublicoService->TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id); //Cls_Seguimiento_Servidor_Publico::TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($id);
         $configaracion =  $tramite;
 
         $USTR_NIDUSUARIOTRAMITE = $tramite['tramite'][0]->USTR_NIDUSUARIOTRAMITE;
 
+        //dd($USTR_NIDUSUARIOTRAMITE);
+
         try {
             //Respuestas
-            $respuestas = Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)
+            $respuestas = $this->seguimientoServidorPublicoService->UsuarioRespuestas($USTR_NIDUSUARIOTRAMITE)->toArray();
+            /*Cls_Usuario_Respuesta::where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)
                 ->select('*')
-                ->get()->toArray();
+                ->get()->toArray();*/
     
             foreach ($configaracion['formularios'] as $form) {
                 foreach ($form->secciones as $sec) {
@@ -341,9 +351,13 @@ class TramitesController extends Controller
             }
     
             //Documentos
-            $documentos = Cls_Usuario_Documento::where('USDO_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)
+            $documentos = $this->seguimientoServidorPublicoService->UsuarioDocumentos($USTR_NIDUSUARIOTRAMITE)->toArray();
+
+            dd($documentos);
+            
+            /*Cls_Usuario_Documento::where('USDO_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)
                 ->select('*')
-                ->get()->toArray();
+                ->get()->toArray();*/
     
             foreach ($configaracion['documentos'] as $doc) {
                 $doc->TRAD_CRUTADOC = "";
@@ -366,12 +380,16 @@ class TramitesController extends Controller
                     }
                 }
             }
-    
-            $configaracion['secciones_estatus'] = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_SECCIONES_ESTATUS($id);
-            $configaracion['resolutivos_finales'] = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_FINALES($id);
-            $configaracion['resolutivos_configurados'] = Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($id);
-    
+            dd($configaracion);
+
+            $configaracion['secciones_estatus'] = $this->seguimientoServidorPublicoService->TRAM_OBTENER_SECCIONES_ESTATUS($id); //Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_SECCIONES_ESTATUS($id);
+            $configaracion['resolutivos_finales'] = $this->seguimientoServidorPublicoService->TRAM_OBTENER_RESOLUTIVOS_FINALES($id); //Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_FINALES($id);
+            $configaracion['resolutivos_configurados'] = $this->seguimientoServidorPublicoService->TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($id); //Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($id);
+            
+
             $tramite['configuracion'] = $configaracion;
+
+            
         } catch (Exception $ex) {
             dd($ex);
         }
@@ -388,7 +406,7 @@ class TramitesController extends Controller
             Cls_Seguimiento_Servidor_Publico::TRAM_ACEPTAR_SECCION_FORMULARIO($request->CONF_NIDUSUARIOTRAMITE, $request->SSEGTRA_NIDSECCION_SEGUIMIENTO);
             $this->enviar_correo_aprobacion($request->CONF_NIDUSUARIOTRAMITE);
             if($request->APROBAR_PAGO){
-                Cls_UsuarioTramiteAnalista::ApruebaTramite($request->CONF_NIDUSUARIOTRAMITE);
+                $this->usuarioTramiteAnalistaService->ApruebaTramite($request->CONF_NIDUSUARIOTRAMITE); //Cls_UsuarioTramiteAnalista::ApruebaTramite($request->CONF_NIDUSUARIOTRAMITE);
             }
             
             foreach($request->CONF_DOCUMENTOS as $key => $value){
@@ -1087,7 +1105,7 @@ class TramitesController extends Controller
 
     //--------------------------asignar--------------------
     public function asignar_tramite(Request $request){//Request $request
-        $respuesta = Cls_UsuarioTramiteAnalista::AsignarTramite($request);
+        $respuesta = $this->usuarioTramiteAnalistaService->AsignarTramite($request); //Cls_UsuarioTramiteAnalista::AsignarTramite($request);
         
         return $respuesta;
     }
@@ -1096,7 +1114,7 @@ class TramitesController extends Controller
         $retorno = true;
 
         if(Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == 'ANTA'){
-            $asignados  = Cls_UsuarioTramiteAnalista::AnalistaTramiteAsignado($idtramite, Auth::user()->USUA_NIDUSUARIO);
+            $asignados  = $this->usuarioTramiteAnalistaService->AnalistaTramiteAsignado($idtramite, Auth::user()->USUA_NIDUSUARIO); //Cls_UsuarioTramiteAnalista::AnalistaTramiteAsignado($idtramite, Auth::user()->USUA_NIDUSUARIO);
             $retorno    = count($asignados) > 0 ? true : false;
         }
 
