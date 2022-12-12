@@ -554,57 +554,98 @@ class TramiteService
      * @return array
      */
     public function getTramitePublico(object $request){
-        /* $usuario    = User::find(973); // Auth::user();   
-        $rol        = $usuario->TRAM_CAT_ROL; */
-
-        /* if($usuario->USUA_NIDROL == 2){
-            if($usuario->USUA_NTIPO_PERSONA == 'FISICA')
-                $inTipoPersona = 1;
-            else
-                $inTipoPersona = $usuario->USUA_NTIPO_PERSONA == 'MORAL' ? 2 : 0;
-        } */
+        $usuario = Auth::user();
+        
         $tipoPersona = 0;
-       try {
+        if($usuario->USUA_NIDROL == 2){
+            $tipoPersona = $usuario->USUA_NTIPO_PERSONA == 'FISICA' ? 1 : ($usuario->USUA_NTIPO_PERSONA == 'MORAL' ? 2 : 0);      
+        }
+
+        $StrOrdenDir = "ASC";
+        if(isset($request->StrOrdenDir) && $request->StrOrdenDir != ""){
+            $StrOrdenDir = $request->StrOrdenDir;
+        }
+
+        $StrOrdenColumna = "";
+        if(isset($request->StrOrdenColumna) && $request->StrOrdenColumna != ""){
+            $StrOrdenColumna = $request->StrOrdenColumna;
+        }
+
+        try {
+            //query filters
+            $query = Cls_Tramite::select(
+                'TRAM_NIDTRAMITE_ACCEDE AS TRAM_NIDTRAMITE',
+                'TRAM_NIDTRAMITE AS TRAM_NIDTRAMITE_CONFIG',
+                'TRAM_CNOMBRE AS TRAM_CNOMBRE',
+                'TRAM_CDESCRIPCION AS TRAM_CDESCRIPCION',
+                'TRAM_CCENTRO AS UNAD_CNOMBRE',
+                'TRAM_CCENTRO AS TRAM_CCENTRO',
+                'TRAM_NIDCENTRO AS TRAM_NIDCENTRO',
+                'TRAM_NIMPLEMENTADO AS TRAM_NIMPLEMENTADO',
+                'TRAM_NTIPO AS TRAM_NTIPO',
+                'TRAM_CTIPO_PERSONA AS TRAM_TPERSONA',
+                'TRAM_CTIPO_PERSONA AS TIPO_FIS_MOR',
+                'created_at AS created_at',
+                'updated_at AS updated_at',
+                DB::raw("\"TRAM_CTRAMITE_JSON\"::json->>'TIPO_PERSONA' as \"TRAM_CTIPO_PERSONA\""),
+            )->where('TRAM_NIMPLEMENTADO', 1); 
+
+            if(isset($request->StrTexto) && $request->StrTexto != ""){
+                $query = $query->where('TRAM_CNOMBRE', 'ilike',"%".$request->StrTexto."%");
+            }
+            if(isset($request->IntDependencia) && $request->IntDependencia > 0){
+                $query = $query->where('TRAM_NIDCENTRO', $request->IntDependencia);
+            }
+            if(isset($request->IntClasificacion) && $request->IntClasificacion > 0){
+                $query = $query->where('TRAM_NTIPO', $request->IntClasificacion);
+            }
+            if($tipoPersona>0){
+                $query = $query->where(function($query) use($tipoPersona) { 
+                    $query->orWhere('TRAM_CTIPO_PERSONA','=', $tipoPersona)
+                    ->orWhere('TRAM_CTIPO_PERSONA','=',0)
+                    ->orWhereNull('TRAM_CTIPO_PERSONA');
+                });
+            }
+
+            //query order arguments
+            if($StrOrdenDir != "ASC" && $StrOrdenDir != "DESC"){
+                $StrOrdenDir = "ASC";
+            }
+
+            $query = $query->orderBy('TRAM_CTIPO_PERSONA', $StrOrdenDir);
+
+            if($StrOrdenColumna != ""){
+                $query = $query->orderBy($StrOrdenColumna, $StrOrdenDir);
+            }
+        
+            //query paginate arguments
+            $page = 1;
+            if(isset($request->IntNumPagina) && $request->IntNumPagina > 0){
+                $page = $request->IntNumPagina;
+            }
             
-       
+            $limit = 10;
+            if(isset($request->IntCantidadRegistros) && $request->IntCantidadRegistros > 0){
+                $limit = $request->IntCantidadRegistros;
+            }
 
+            $offset = $limit*($page-1);
 
+            $total = $query->count();
+            $result  = $query->limit($limit)->offset($offset)->get();
 
-            $query  = DB::table('tram_view_tramite_publico')
-                       ->where('TRAM_NIMPLEMENTADO', true);
-   
-            if(isset($request->StrTexto) && $request->StrTexto != "")
-               $query->where('TRAM_CNOMBRE', 'ilike',"%".$request->StrTexto."%");
-            if(isset($request->dependenciaID))
-                $query->where('TRAM_NIDCENTRO', $request->dependenciaID);
-            /* if(isset($request->IntModalidad))
-                $IntModalidad = $request->IntModalidad; */
-            if(isset($request->IntClasificacion))
-                $query->where('TRAM_NTIPO', $request->IntClasificacion);
-            /* if(isset($request->StrAudiencia))
-                $StrAudiencia = $request->StrAudiencia; */
-           
-            $query->where('TRAM_TPERSONA', $tipoPersona);
-            
-
-
-
-
-               
-   
-               
-          
-           $order      = isset($request->order[0]['dir']) ? $request->order[0]['dir'] : 'desc';
-           $orderBy    = isset($request->order[0]['dir']) ? $request->columns[$request->order[0]['column']]['data'] : "TRAM_NIDTRAMITE";
-           $show       = isset($request->length) ? $request->length : 10;
-           $show       = $show == -1 ? 1000000 : $show;
-           $start      = isset($request->start) ? $request->start : 0;
-           $conteo     = $query;
-           $total      = $conteo->count();
-           $resultado  = $query->orderBy($orderBy, $order)->offset($start)->limit($show)->get();
+            return [
+                "data" => $result, 
+                "pagination" => [
+                    (object)[
+                        "TotalRegistros" => $total,
+                        "PaginaActual" => $page,
+                        "TotalPaginas" => ceil($total/$limit)
+                    ]
+                ]
+            ];
        } catch (Exception $ex) {
             dd($ex);
        }
-        return [ "data" => $resultado, "total" =>  $total];
     }
 }

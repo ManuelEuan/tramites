@@ -58,22 +58,25 @@ class TramiteServicioController extends Controller
     }
 
     public function index() {
-        $tramites = new Cls_Tramite_Servicio();
-        $tramites->StrTexto = "";
-        $tramites->IntDependencia = 0;
-        $tramites->IntModalidad = 0;
-        $tramites->IntClasificacion = 0;
-        $tramites->IntNumPagina = 1;
-        $tramites->IntCantidadRegistros = 10;
-        $tramites->StrOrdenColumna = "";
-        $tramites->StrOrdenDir = "";
-        $tramites->IntUsuarioId = Auth::user()->USUA_NIDUSUARIO;
+        $tramiteSrv = new TramiteService();
 
-        $registros          = $tramites->TRAM_SP_CONSULTAR_TRAMITE_PUBLICO();
+        $obj = (object)[
+            "StrTexto" => "",
+            "IntDependencia" => 0,
+            "IntModalidad" => 0,
+            "IntClasificacion" => 0,
+            "IntNumPagina" => 1,
+            "IntCantidadRegistros" => 10,
+            "StrOrdenColumna" => "",
+            "StrOrdenDir" => "",
+            "IntUsuarioId" => Auth::user()->USUA_NIDUSUARIO
+        ];
+
+        $registros = $tramiteSrv->getTramitePublico($obj);
         $IntPaginaActual    = (int)$registros['pagination'][0]->PaginaActual;
         $IntTotalPaginas    = (int)$registros['pagination'][0]->TotalPaginas;
         $IntTotalRegistros  = (int)$registros['pagination'][0]->TotalRegistros;
-        $data_tramite       = new LengthAwarePaginator($registros['data'], $IntTotalRegistros, $tramites->IntCantidadRegistros, $IntPaginaActual, [
+        $data_tramite       = new LengthAwarePaginator($registros['data'], $IntTotalRegistros, $obj->IntCantidadRegistros, $IntPaginaActual, [
             'path' => Paginator::resolveCurrentPath()
         ]);
 
@@ -83,22 +86,28 @@ class TramiteServicioController extends Controller
     public function consultar(Request $request) {
         $objDependencia             = $this->tramiteService->getRetys('dependencies',$request->IntDependencia);
         $dependenciaID              = is_null($objDependencia) ? 0 : $objDependencia->iId;
-        $tramites                   = new Cls_Tramite_Servicio();
-        $tramites->StrTexto         = $request->ajax() ? $request->StrTexto : "";
-        $tramites->IntDependencia   = $request->ajax() ? $dependenciaID : 0;
-        $tramites->StrModalidad     = $request->ajax() ? $request->IntModalidad : "";
-        $tramites->IntClasificacion = $request->ajax() ? $request->IntClasificacion  :0;
-        $tramites->StrAudiencia     = $request->ajax() ? $request->StrAudiencia : 0;
-        $tramites->IntNumPagina     = $request->ajax() ? $request->IntNumPagina : 1;
-        $tramites->IntCantidadRegistros = $request->ajax() ? $request->IntCantidadRegistros : 10;
-        $tramites->StrOrdenColumna  = $request->ajax() ? $request->StrOrdenColumna : "";
-        $tramites->StrOrdenDir      = $request->ajax() ? $request->StrOrdenDir : "";
-        $tramites->IntUsuarioId     = Auth::user()->USUA_NIDUSUARIO;
-        $registros                  = $tramites->TRAM_SP_CONSULTAR_TRAMITE_PUBLICO();
-        $IntPaginaActual            = (int)$registros['pagination'][0]->PaginaActual;
-        $IntTotalPaginas            = (int)$registros['pagination'][0]->TotalPaginas;
-        $IntTotalRegistros          = (int)$registros['pagination'][0]->TotalRegistros;
-        $data_tramite               = new LengthAwarePaginator($registros['data'], $IntTotalRegistros, $request->IntCantidadRegistros, $IntPaginaActual);
+
+        $obj = (object)[
+            "StrTexto" => $request->ajax() ? $request->StrTexto : "",
+            "IntDependencia" => $request->ajax() ? $dependenciaID : 0,
+            "IntModalidad" => $request->ajax() ? $request->IntModalidad : "",
+            "IntClasificacion" => $request->ajax() ? $request->IntClasificacion  :0,
+            "IntNumPagina" => $request->ajax() ? $request->IntNumPagina : 1,
+            "IntCantidadRegistros" => $request->ajax() ? $request->IntCantidadRegistros : 10,
+            "StrOrdenColumna" => $request->ajax() ? $request->StrOrdenColumna : "",
+            "StrOrdenDir" => $request->ajax() ? $request->StrOrdenDir : "",
+            "IntUsuarioId" => Auth::user()->USUA_NIDUSUARIO
+        ];
+
+        $registros = $this->tramiteService->getTramitePublico($obj);
+        
+        $IntPaginaActual = (int)$registros['pagination'][0]->PaginaActual;
+        $IntTotalPaginas = (int)$registros['pagination'][0]->TotalPaginas;
+        $IntTotalRegistros = (int)$registros['pagination'][0]->TotalRegistros;
+        $data_tramite = new LengthAwarePaginator($registros['data'], $IntTotalRegistros, $obj->IntCantidadRegistros, $IntPaginaActual, [
+            'path' => Paginator::resolveCurrentPath()
+        ]);
+
         return $request->ajax() ? response()->json(view('MST_TRAMITE_SERVICIO.index_partial', compact('data_tramite'))->render()) : response()->json($data_tramite);
     }
 
