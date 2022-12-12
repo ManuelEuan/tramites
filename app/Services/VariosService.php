@@ -36,7 +36,7 @@ class VariosService {
     public function subeArchivo($archivo, string $path='files/documentos/'){
         $extencion  = $archivo->getClientOriginalExtension();
         $tamaño     = $archivo->getSize();
-        $nombre     = rand().'.'.$extencion;
+        $nombre     = rand(1, 15).time().'.'.$extencion;
         $archivo->move(public_path($path), $nombre);
 
         return [

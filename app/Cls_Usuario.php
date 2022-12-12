@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Cls_DocumentosBase;
 use Illuminate\Database\Eloquent\Model;
 
 class Cls_Usuario extends Model
@@ -15,20 +16,6 @@ class Cls_Usuario extends Model
         return DB::table('tram_mst_configdocumentos')->where('TIPO_PERSONA','AMBAS')->orWhere('TIPO_PERSONA',$tipoUser)->get();
     }
 
-    static function getTipoDocsACT($idUSER, $nombre)
-    {
-        $docsUser = DB::select("SELECT * FROM `tram_mdv_usuariordocumento` 
-        WHERE USDO_NIDUSUARIOBASE = '".$idUSER."' AND USDO_CDOCNOMBRE ='".$nombre."' ");
-        
-        return $docsUser;
-    }
-    static function getVigDocsBASE($id)
-    {
-        $docsUser = DB::select("SELECT VIGENCIA_FIN AS VIG FROM `tram_mst_documentosbase` 
-        WHERE id ='".$id."' ORDER BY id DESC LIMIT 0,1");
-        
-        return $docsUser;
-    }
 
     static function getDocsUser($id){
         return DB::table('tram_mst_documentosbase')->where('ID_USUARIO', $id)->where('isDelete', '!=', true)->get();
@@ -330,34 +317,26 @@ class Cls_Usuario extends Model
             where tmu.USDO_NIDTRAMITEDOCUMENTO = ? and tmd.isActual = 1
         ', [ $vigencia, $id_documento]);
     }
-    static function guardarDocs($request, $idU, $nombre){
-        $hoy = date('Y-m-d');
-        $hoytime = date('Y-m-d H:i:s');
 
-        $actualizar = DB::update('update tram_mst_documentosbase set isActual = 0 where ID_CDOCUMENTOS = ?', [$request->tipo]);
-
-        $insert = DB::insert('insert into tram_mst_documentosbase (FORMATO, PESO, VIGENCIA_INICIO, VIGENCIA_FIN, ID_CDOCUMENTOS, 
-        ID_USUARIO, estatus, ruta, isDelete, isActual, create_at) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-            $request->formato,
-            $request->peso,
-            $hoy,
-            '',
-            $request->tipo,
-            $idU,
-            1,
-            'files/documentosUser/'.$idU.'/'.$nombre,
-            0,
-            1,
-            $hoytime
-        ]);
-
-        return $insert;
+    static function guardarDocs($request, $idU, $archivo){
+        Cls_DocumentosBase::where(['ID_CDOCUMENTOS' => $request->tipo, 'ID_USUARIO' => $idU])->update(['isActual' => false , 'update_at' => now()]);
+        $item = new Cls_DocumentosBase();
+        $item->FORMATO          = $archivo['extension'];
+        $item->PESO             = $archivo['size'];
+        $item->VIGENCIA_INICIO  = date('Y-m-d');
+        $item->VIGENCIA_FIN     = '';
+        $item->ID_CDOCUMENTOS   = $request->tipo;
+        $item->ID_USUARIO       = $idU;
+        $item->isDelete         = false;
+        $item->estatus          = 1;
+        $item->ruta             = $archivo['path'];
+        $item->isActual         = true;
+        $item->create_at        = now();
+        $item->update_at        = now();
+        $item->save();
+        return $item;
     }
-    static function eliminarDoc($id){
-        $delete = DB::update('UPDATE tram_mst_documentosbase SET isDelete = 1 WHERE id = ?',[$id->id]);
-        return $delete;
-    }
+
     static function getHistoryDocs($user){
         return DB::table('tram_mdv_usuariordocumento')->where('USDO_NIDUSUARIOBASE', $user)->get();
     }
