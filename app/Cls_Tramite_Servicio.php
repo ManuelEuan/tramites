@@ -65,10 +65,10 @@ class Cls_Tramite_Servicio extends Model
 
     public function TRAM_CONSULTAR_DETALLE_TRAMITE($TRAM_NIDTRAMITE_CONFIG){
         $response = DB::selectOne(
-            'SELECT a.*, b.USTR_NESTATUS as TRAM_NESTATUS_PROCESO, b.USTR_CFOLIO as TRAM_CFOLIO_SEGUIMIENTO, b.USTR_NENCUESTA_CONTESTADA 
+            'SELECT a.*, b."USTR_NESTATUS" as "TRAM_NESTATUS_PROCESO", b."USTR_CFOLIO" as "TRAM_CFOLIO_SEGUIMIENTO", b."USTR_NENCUESTA_CONTESTADA" 
             FROM tram_mst_tramite as a
-            LEFT JOIN tram_mdv_usuariotramite as b on a.TRAM_NIDTRAMITE = b.USTR_NIDTRAMITE
-            WHERE a.TRAM_NIDTRAMITE = ?',
+            LEFT JOIN tram_mdv_usuariotramite as b on a."TRAM_NIDTRAMITE" = b."USTR_NIDTRAMITE"
+            WHERE a."TRAM_NIDTRAMITE" = ?',
             array($TRAM_NIDTRAMITE_CONFIG)
         );
         return $response;
@@ -110,7 +110,7 @@ class Cls_Tramite_Servicio extends Model
         try {
             if($USTR_NIDUSUARIOTRAMITE == 0){
                 $response['secciones'] = DB::select(
-                    'SELECT * FROM tram_mdv_seccion_tramite where CONF_NIDTRAMITE = ? ORDER BY CONF_NORDEN',
+                    'SELECT * FROM tram_mdv_seccion_tramite where "CONF_NIDTRAMITE" = ? ORDER BY "CONF_NORDEN"',
                     array($TRAM_NIDTRAMITE_CONFIG)
                 );
             }else {
@@ -185,14 +185,14 @@ class Cls_Tramite_Servicio extends Model
             }
 
             $formularios = DB::select(
-                'SELECT * FROM tram_mst_formulario_tramite where FORM_NIDTRAMITE = ?',
+                'SELECT * FROM tram_mst_formulario_tramite where "FORM_NIDTRAMITE" = ?',
                 array($TRAM_NIDTRAMITE_CONFIG)
             );
             
             
         
             $secciones = DB::select(
-                'SELECT * FROM tram_cat_secciones where FORM_BACTIVO = ?',
+                'SELECT * FROM tram_cat_secciones where "FORM_BACTIVO" = ?',
                 array(1)
             );
 
@@ -200,22 +200,22 @@ class Cls_Tramite_Servicio extends Model
                 $form->secciones = [];
                 foreach($secciones as $sec){
                     $sec->preguntas = DB::select(
-                        'SELECT a.FORM_NID, a.FORM_NFORMULARIOID, a.FORM_NSECCIONID, a.FORM_CPREGUNTA, a.FORM_BTIENEASIGNACION, A.FORM_CVALORASIGNACION, b.FORM_CTIPORESPUESTA 
+                        'SELECT a."FORM_NID", a."FORM_NFORMULARIOID", a."FORM_NSECCIONID", a."FORM_CPREGUNTA", a."FORM_BTIENEASIGNACION", a."FORM_CVALORASIGNACION", b."FORM_CTIPORESPUESTA" 
                         FROM tram_form_pregunta as a
-                        LEFT JOIN tram_form_pregunta_respuestas as b on a.FORM_NID = b.FORM_NPREGUNTAID
-                        WHERE a.FORM_NFORMULARIOID = ? and a.FORM_NSECCIONID = ?
-                        GROUP BY a.FORM_NID, a.FORM_NFORMULARIOID, a.FORM_NSECCIONID, a.FORM_CPREGUNTA, b.FORM_CTIPORESPUESTA',
+                        LEFT JOIN tram_form_pregunta_respuestas as b on a."FORM_NID" = b."FORM_NPREGUNTAID"
+                        WHERE a."FORM_NFORMULARIOID" = ? and a."FORM_NSECCIONID" = ?
+                        GROUP BY a."FORM_NID", a."FORM_NFORMULARIOID", a."FORM_NSECCIONID", a."FORM_CPREGUNTA", b."FORM_CTIPORESPUESTA"',
                         array($form->FORM_NIDFORMULARIO, $sec->FORM_NID)
                     );
                     foreach($sec->preguntas as $preg){
-                        $preg->respuestas = DB::select('SELECT a.FORM_NID, a.FORM_NPREGUNTAID, a.FORM_CTIPORESPUESTA, a.FORM_CVALOR, a.FORM_BBLOQUEAR, b.FORM_CTIPORESPUESTA as FORM_CTIPORESPUESTAESPECIAL
+                        $preg->respuestas = DB::select('SELECT a."FORM_NID", a."FORM_NPREGUNTAID", a."FORM_CTIPORESPUESTA", a."FORM_CVALOR", a."FORM_BBLOQUEAR", b."FORM_CTIPORESPUESTA" as "FORM_CTIPORESPUESTAESPECIAL"
                         FROM tram_form_pregunta_respuestas as a
-                        LEFT JOIN tram_form_pregunta_respuestas_especial as b on b.FORM_NPREGUNTARESPUESTAID = a.FORM_NID
-                        WHERE a.FORM_NPREGUNTAID = ?
-                        GROUP BY a.FORM_NID, a.FORM_NPREGUNTAID, a.FORM_CTIPORESPUESTA, a.FORM_CVALOR, a.FORM_BBLOQUEAR, b.FORM_CTIPORESPUESTA', array($preg->FORM_NID)
+                        LEFT JOIN tram_form_pregunta_respuestas_especial as b on b."FORM_NPREGUNTARESPUESTAID" = a."FORM_NID"
+                        WHERE a."FORM_NPREGUNTAID" = ?
+                        GROUP BY a."FORM_NID", a."FORM_NPREGUNTAID", a."FORM_CTIPORESPUESTA", a."FORM_CVALOR", a."FORM_BBLOQUEAR", b."FORM_CTIPORESPUESTA"', array($preg->FORM_NID)
                         );
                         foreach($preg->respuestas as $resp){
-                            $resp->respuestas_especial =  DB::select('SELECT * FROM tram_form_pregunta_respuestas_especial where FORM_NPREGUNTARESPUESTAID = ?', [$resp->FORM_NID]);
+                            $resp->respuestas_especial =  DB::select('SELECT * FROM tram_form_pregunta_respuestas_especial where "FORM_NPREGUNTARESPUESTAID" = ?', [$resp->FORM_NID]);
 
                             if($preg->FORM_CTIPORESPUESTA == 'catalogo'){
                                 $resp->catalogos = [];
@@ -236,17 +236,17 @@ class Cls_Tramite_Servicio extends Model
 
             if($USTR_NIDUSUARIOTRAMITE == 0){
                 $response['documentos'] = DB::select(
-                    'SELECT * FROM tram_mdv_documento_tramite where TRAD_NIDTRAMITE = ?',
+                    'SELECT * FROM tram_mdv_documento_tramite where "TRAD_NIDTRAMITE" = ?',
                     array($TRAM_NIDTRAMITE_CONFIG)
                 );
             }else {
                 $requeridos = DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
                 $subidos    = DB::table('tram_mdv_usuariordocumento as a')
-                                    ->join('tram_mdv_documento_tramite as b', 'a.USDO_NIDTRAMITEDOCUMENTO', '=', 'b.TRAD_NIDTRAMITEDOCUMENTO')
-                                    ->select('a.USDO_NIDTRAMITEDOCUMENTO as TRAD_NIDTRAMITEDOCUMENTO', 'a.USDO_CEXTENSION as TRAD_CEXTENSION', 'a.USDO_CRUTADOC as TRAD_CRUTADOC', 'a.USDO_NPESO as TRAD_NPESO',
-                                                'a.USDO_NESTATUS as TRAD_NESTATUS', 'a.USDO_COBSERVACION as TRAD_COBSERVACION', 'a.USDO_CDOCNOMBRE as TRAD_CNOMBRE', 'b.TRAD_NMULTIPLE', 'b.TRAD_NOBLIGATORIO', 'a.USDO_NIDUSUARIORESP as id'
+                                    ->join('tram_mdv_documento_tramite as b', 'a."USDO_NIDTRAMITEDOCUMENTO"', '=', 'b."TRAD_NIDTRAMITEDOCUMENTO"')
+                                    ->select('a."USDO_NIDTRAMITEDOCUMENTO" as "TRAD_NIDTRAMITEDOCUMENTO"', 'a."USDO_CEXTENSION" as "TRAD_CEXTENSION"', 'a."USDO_CRUTADOC" as "TRAD_CRUTADOC"', 'a."USDO_NPESO" as "TRAD_NPESO"',
+                                                'a."USDO_NESTATUS" as "TRAD_NESTATUS"', 'a."USDO_COBSERVACION" as "TRAD_COBSERVACION"', 'a."USDO_CDOCNOMBRE" as "TRAD_CNOMBRE"', 'b."TRAD_NMULTIPLE"', 'b."TRAD_NOBLIGATORIO"', 'a."USDO_NIDUSUARIORESP" as id'
                                     )
-                                    ->where('a.USDO_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->get();
+                                    ->where('a."USDO_NIDUSUARIOTRAMITE"', $USTR_NIDUSUARIOTRAMITE)->get();
 
                 foreach($requeridos as $requerido){
                     $item = new stdClass();
@@ -272,24 +272,24 @@ class Cls_Tramite_Servicio extends Model
             }
 
             $response['edificios'] = DB::select(
-                'SELECT * FROM tram_mst_edificio where EDIF_NIDTRAMITE = ?',
+                'SELECT * FROM tram_mst_edificio where "EDIF_NIDTRAMITE" = ?',
                 array($TRAM_NIDTRAMITE_CONFIG)
             );
 
             if($USTR_NIDUSUARIOTRAMITE > 0){
                 $response['conceptos'] = DB::select(
-                    'SELECT * FROM tram_mdv_usuario_concepto where USCON_NIDUSUARIOTRAMITE = ? AND USCON_NACTIVO = ?',
+                    'SELECT * FROM tram_mdv_usuario_concepto where "USCON_NIDUSUARIOTRAMITE" = ? AND "USCON_NACTIVO" = ?',
                     array($USTR_NIDUSUARIOTRAMITE, 1)
                 );
             }
 
             $response['resolutivos'] = DB::select(
-                'SELECT * FROM tram_mdv_usuario_resolutivo where USRE_NIDUSUARIOTRAMITE = ?',
+                'SELECT * FROM tram_mdv_usuario_resolutivo where "USRE_NIDUSUARIOTRAMITE" = ?',
                 array($USTR_NIDUSUARIOTRAMITE)
             );
             
             $response['notificaciones'] = DB::select(
-                'SELECT * FROM tram_his_notificacion_tramite where HNOTI_NIDUSUARIOTRAMITE = ?',
+                'SELECT * FROM tram_his_notificacion_tramite where "HNOTI_NIDUSUARIOTRAMITE" = ?',
                 array($USTR_NIDUSUARIOTRAMITE)
             );
 
@@ -443,22 +443,21 @@ class Cls_Tramite_Servicio extends Model
 
 
         //FORMATO DE TRAMITE tram_mdv_documento_tramite
-        $sec = DB::select("SELECT 'TRAM' AS TIPO, USDO_NIDUSUARIORESP, USDO_CRUTADOC, USDO_NPESO, USDO_NESTATUS, 
-        USDO_COBSERVACION, USDO_NIDTRAMITEDOCUMENTO, created_at, updated_at,  USDO_CEXTENSION, USDO_NIDUSUARIOBASE, 
-        USDO_CDOCNOMBRE, idDocExpediente, VIGENCIA_FIN
+        $sec = DB::select('SELECT \'TRAM\' AS "TIPO", "USDO_NIDUSUARIORESP", "USDO_CRUTADOC", "USDO_NPESO", "USDO_NESTATUS", 
+        "USDO_COBSERVACION", "USDO_NIDTRAMITEDOCUMENTO", created_at, updated_at,  "USDO_CEXTENSION", "USDO_NIDUSUARIOBASE", 
+        "USDO_CDOCNOMBRE", "idDocExpediente", "VIGENCIA_FIN"
         FROM tram_mdv_usuariordocumento
-        WHERE USDO_NIDUSUARIOBASE =  ? 
+        WHERE "USDO_NIDUSUARIOBASE" =  ? 
         UNION        
-        SELECT 'EXP' AS TIPO, base.id AS USDO_NIDUSUARIORESP, base.ruta AS USDO_CRUTADOC, base.PESO AS USDO_NPESO, 
-        base.estatus AS USDO_NESTATUS, '' AS USDO_COBSERVACION, 0 AS USDO_NIDTRAMITEDOCUMENTO, 
-        base.create_at AS created_at, base.update_at AS updated_at, base.FORMATO AS USDO_CEXTENSION, 
-        base.ID_USUARIO AS USDO_NIDUSUARIOBASE, CONFIG.NOMBRE AS USDO_CDOCNOMBRE, 
-		  base.ID_CDOCUMENTOS AS idDocExpediente, base.VIGENCIA_FIN AS VIGENCIA_FIN
-        FROM tram_mst_documentosbase AS base  LEFT JOIN tram_mst_configdocumentos AS CONFIG
-        ON base.ID_CDOCUMENTOS = CONFIG.id
-        WHERE base.ID_USUARIO = ?
-        ORDER BY created_at DESC
-        ", [$idUSER, $idUSER]); 
+        SELECT \'EXP\' AS "TIPO", base.id AS "USDO_NIDUSUARIORESP", base.ruta AS "USDO_CRUTADOC", base."PESO" AS "USDO_NPESO", 
+        base.estatus AS "USDO_NESTATUS", \' \' AS "USDO_COBSERVACION", 0 AS "USDO_NIDTRAMITEDOCUMENTO", 
+        base.create_at AS created_at, base.update_at AS updated_at, base."FORMATO" AS "USDO_CEXTENSION", 
+        base."ID_USUARIO" AS "USDO_NIDUSUARIOBASE", "CONFIG"."NOMBRE" AS "USDO_CDOCNOMBRE", 
+		  base."ID_CDOCUMENTOS" AS idDocExpediente, base."VIGENCIA_FIN" AS "VIGENCIA_FIN"
+        FROM tram_mst_documentosbase AS base  LEFT JOIN tram_mst_configdocumentos AS "CONFIG"
+        ON base."ID_CDOCUMENTOS" = "CONFIG".id
+        WHERE base."ID_USUARIO" = ?
+        ORDER BY created_at DESC', [$idUSER, $idUSER]); 
          
               
         
