@@ -64,103 +64,70 @@ class Cls_Tramite_Servicio extends Model
     }
 
     public function TRAM_CONSULTAR_DETALLE_TRAMITE($TRAM_NIDTRAMITE_CONFIG){
-        $response = DB::selectOne(
-            'SELECT a.*, b."USTR_NESTATUS" as "TRAM_NESTATUS_PROCESO", b."USTR_CFOLIO" as "TRAM_CFOLIO_SEGUIMIENTO", b."USTR_NENCUESTA_CONTESTADA" 
-            FROM tram_mst_tramite as a
-            LEFT JOIN tram_mdv_usuariotramite as b on a."TRAM_NIDTRAMITE" = b."USTR_NIDTRAMITE"
-            WHERE a."TRAM_NIDTRAMITE" = ?',
-            array($TRAM_NIDTRAMITE_CONFIG)
-        );
-        return $response;
+        return  DB::table(' tram_mst_tramite as a')
+                    ->join('tram_mdv_usuariotramite as b', 'a.TRAM_NIDTRAMITE', '=', 'b.USTR_NIDTRAMITE')
+                    ->select('a.*','  b.USTR_NESTATUS as TRAM_NESTATUS_PROCESO', 'b.USTR_CFOLIO as TRAM_CFOLIO_SEGUIMIENTO', 'b.USTR_NENCUESTA_CONTESTADA')
+                    ->where('a.TRAM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->first();
     }
 
     public function TRAM_CONSULTAR_DETALLE_TRAMITE_SEGUIMIENTO($USTR_NIDUSUARIOTRAMITE){
-        $response = DB::selectOne(
-            'SELECT b.*, a.USTR_NESTATUS as TRAM_NESTATUS_PROCESO, a.USTR_CFOLIO as TRAM_CFOLIO_SEGUIMIENTO, a.USTR_NIDUSUARIOTRAMITE, a.USTR_NIDUSUARIO, a.USTR_NENCUESTA_CONTESTADA, a.USTR_CMODULO, a.USTR_NLATITUD, a.USTR_NLONGITUD FROM tram_mdv_usuariotramite as a
-            INNER JOIN tram_mst_tramite as b on b.TRAM_NIDTRAMITE = a.USTR_NIDTRAMITE
-            WHERE a.USTR_NIDUSUARIOTRAMITE = ?',
-            array($USTR_NIDUSUARIOTRAMITE)
-        );
-        return $response;
+        return DB::table(' FROM tram_mdv_usuariotramite as a')
+                    ->join('tram_mst_tramite as b', 'b.TRAM_NIDTRAMITE', '=', 'a.USTR_NIDTRAMITE')
+                    ->where('a.USTR_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)
+                    ->select('b.*', 'a.*' ,'a.USTR_NESTATUS as TRAM_NESTATUS_PROCESO', 'a.USTR_CFOLIO as TRAM_CFOLIO_SEGUIMIENTO')->first();
     }
 
     public function TRAM_CONSULTAR_CONFIGURACION_TRAMITE_CONCEPTO($ID_TRAMITE_ACCEDE){
-        $response = DB::selectOne(
-            'SELECT a.Referencia, a.`ID del trámite en ACCEDE` FROM config_trámites_conceptos as a
-
-            WHERE a.`ID del trámite en ACCEDE` = ?',
-            array($ID_TRAMITE_ACCEDE)
-        );
-        return $response;
+        return DB::table('config_trámites_conceptos')
+                 ->select('a.Referencia', 'ID del trámite en ACCEDE')
+                 ->where('ID del trámite en ACCEDE', $ID_TRAMITE_ACCEDE)->first();
     }
 
 
     public function TRAM_CONSULTAR_CONFIGURACION_TRAMITE_PUBLICO($TRAM_NIDTRAMITE_CONFIG, $USTR_NIDUSUARIOTRAMITE = 0)
     {
         $response = [
-            'tramite' => null,
-            'secciones' => [],
-            'formularios' => [],
-            'documentos' => [],
-            'edificios' => [],
-            'resolutivos' => [],
-            'conceptos' => [],
+            'tramite'       => null,
+            'secciones'     => [],
+            'formularios'   => [],
+            'documentos'    => [],
+            'edificios'     => [],
+            'resolutivos'   => [],
+            'conceptos'     => [],
         ];
 
         try {
             if($USTR_NIDUSUARIOTRAMITE == 0){
-                $response['secciones'] = DB::select(
-                    'SELECT * FROM tram_mdv_seccion_tramite where "CONF_NIDTRAMITE" = ? ORDER BY "CONF_NORDEN"',
-                    array($TRAM_NIDTRAMITE_CONFIG)
-                );
+                $response['secciones'] = DB::table('tram_mdv_seccion_tramite')->where('CONF_NIDTRAMITE',$TRAM_NIDTRAMITE_CONFIG)->orderBy('CONF_NORDEN','asc')->get();
             }else {
-                $response['secciones'] = DB::select(
-                    'SELECT a.SSEGTRA_NIDSECCION_SEGUIMIENTO, a.SSEGTRA_NIDSECCION_SEGUIMIENTO as CONF_NIDCONFIGURACION, a.SSEGTRA_NIDESTATUS as CONF_NESTATUS_SEGUIMIENTO, a.SSEGTRA_CNOMBRE_SECCION as CONF_NSECCION, a.SSEGTRA_PAGADO 
-                    FROM tram_aux_seccion_seguimiento_tramite as a
-                    WHERE a.SSEGTRA_NIDUSUARIOTRAMITE = ?',
-                    array($USTR_NIDUSUARIOTRAMITE)
-                );
+                $response['secciones'] = DB::table('tram_aux_seccion_seguimiento_tramite')
+                                        ->select('SSEGTRA_NIDSECCION_SEGUIMIENTO','SSEGTRA_NIDSECCION_SEGUIMIENTO as CONF_NIDCONFIGURACION','SSEGTRA_NIDESTATUS as CONF_NESTATUS_SEGUIMIENTO','SSEGTRA_CNOMBRE_SECCION as CONF_NSECCION', 'SSEGTRA_PAGADO')
+                                        ->where('SSEGTRA_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->get();
 
                 //Detalle secciones
                 if(count($response['secciones']) > 0){
                     foreach($response['secciones'] as $det){
                         switch($det->CONF_NSECCION){
                             case 'Ventanilla sin cita':
-                                $det->edificios = DB::select(
-                                    'SELECT * FROM tram_mst_edificio WHERE EDIF_NIDSECCION = ?',
-                                    array($det->CONF_NIDCONFIGURACION)
-                                );
-                                $det->sincita = DB::select(
-                                    'SELECT CONF_CDESCRIPCIONVENTANILLA FROM tram_mdv_seccion_tramite where CONF_NIDTRAMITE = ? AND CONF_NSECCION = "Ventanilla sin cita" ORDER BY CONF_NORDEN',
-                                    array($TRAM_NIDTRAMITE_CONFIG)
-                                );
+                                $det->edificios = DB::table('tram_mst_edificio')->where('EDIF_NIDSECCION',$det->CONF_NIDCONFIGURACION )->get();
+                                $det->sincita   = DB::table('tram_mdv_seccion_tramite')->select('CONF_CDESCRIPCIONVENTANILLA')->where('CONF_NIDTRAMITE',$TRAM_NIDTRAMITE_CONFIG)->where('CONF_NSECCION', 'Ventanilla sin cita')->orderBy('CONF_NORDEN', 'asc')->get();
                                 break;
                             case 'Pago en línea':
-                                $det->conceptos = DB::select(
-                                    'SELECT * FROM tram_mdv_usuario_concepto WHERE USCON_NIDUSUARIOTRAMITE = ? AND USCON_NIDSECCION = ? AND USCON_NACTIVO = ?',
-                                    array($USTR_NIDUSUARIOTRAMITE, $det->SSEGTRA_NIDSECCION_SEGUIMIENTO, 1)
-                                );
+                                $det->conceptos = DB::table('tram_mdv_usuario_concepto')->where(['USCON_NIDUSUARIOTRAMITE' => $USTR_NIDUSUARIOTRAMITE, 'USCON_NACTIVO' => '$det->SSEGTRA_NIDSECCION_SEGUIMIENTO', 'USCON_NACTIVO' => true])->get();
                                 break;
                             case 'Resolutivo electrónico':
-                                $det->resolutivos = DB::select(
-                                    'SELECT * FROM tram_mdv_usuario_resolutivo WHERE USRE_NIDUSUARIOTRAMITE = ? AND USRE_NIDSECCION = ?',
-                                    array($USTR_NIDUSUARIOTRAMITE, $det->SSEGTRA_NIDSECCION_SEGUIMIENTO)
-                                );
+                                $det->resolutivos = DB::table('tram_mdv_usuario_resolutivo')->where(['USRE_NIDUSUARIOTRAMITE' =>$USTR_NIDUSUARIOTRAMITE, 'USRE_NIDSECCION' =>$det->SSEGTRA_NIDSECCION_SEGUIMIENTO])->get();
                                 break;
                             case 'Citas en línea':
-                                $det->cita = DB::select(
-                                    'SELECT CONF_CDESCRIPCIONCITA FROM tram_mdv_seccion_tramite where CONF_NIDTRAMITE = ? AND CONF_NSECCION = "Citas en línea" ORDER BY CONF_NORDEN',
-                                    array($TRAM_NIDTRAMITE_CONFIG)
-                                );
+                                $det->cita  = DB::table('tram_mdv_seccion_tramite')->where(['CONF_NIDTRAMITE' => $TRAM_NIDTRAMITE_CONFIG,'CONF_NSECCION' => 'Citas en línea'])->orderBy('CONF_NORDEN','asc')->get();
                                 break;
                         }
                     }
                 }else {
-                    $response['secciones'] = DB::select(
-                        'SELECT a.*, a.CONF_NIDCONFIGURACION as SSEGTRA_NIDSECCION_SEGUIMIENTO,  a.CONF_ESTATUSSECCION as CONF_NESTATUS_SEGUIMIENTO FROM tram_mdv_seccion_tramite as a where a.CONF_NIDTRAMITE = ? ORDER BY CONF_NORDEN',
-                        array($TRAM_NIDTRAMITE_CONFIG)
-                    );
-
+                    $response['secciones'] = DB::table('tram_mdv_seccion_tramite as a')
+                                                ->select('a.*', 'a.CONF_NIDCONFIGURACION as SSEGTRA_NIDSECCION_SEGUIMIENTO', 'a.CONF_ESTATUSSECCION as CONF_NESTATUS_SEGUIMIENTO')
+                                                ->where('a.CONF_NIDTRAMITE',$TRAM_NIDTRAMITE_CONFIG)->orderBy('CONF_NORDEN', 'asc')->get();
+                    
                     //Detalle secciones
                     if(count($response['secciones']) > 0){
                         foreach($response['secciones'] as $det){
@@ -184,18 +151,8 @@ class Cls_Tramite_Servicio extends Model
                 }
             }
 
-            $formularios = DB::select(
-                'SELECT * FROM tram_mst_formulario_tramite where "FORM_NIDTRAMITE" = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-            
-            
-        
-            $secciones = DB::select(
-                'SELECT * FROM tram_cat_secciones where "FORM_BACTIVO" = ?',
-                array(1)
-            );
-
+            $formularios    = DB::table('tram_mst_formulario_tramite')->where('FORM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $secciones      = DB::table('tram_cat_secciones')->where('FORM_BACTIVO', true)->get();
             foreach($formularios as $form){
                 $form->secciones = [];
                 foreach($secciones as $sec){
@@ -235,10 +192,7 @@ class Cls_Tramite_Servicio extends Model
             $response['formularios'] = $formularios;
 
             if($USTR_NIDUSUARIOTRAMITE == 0){
-                $response['documentos'] = DB::select(
-                    'SELECT * FROM tram_mdv_documento_tramite where "TRAD_NIDTRAMITE" = ?',
-                    array($TRAM_NIDTRAMITE_CONFIG)
-                );
+                $response['documentos'] = DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
             }else {
                 $requeridos = DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
                 $subidos    = DB::table('tram_mdv_usuariordocumento as a')
@@ -271,30 +225,18 @@ class Cls_Tramite_Servicio extends Model
                 }
             }
 
-            $response['edificios'] = DB::select(
-                'SELECT * FROM tram_mst_edificio where "EDIF_NIDTRAMITE" = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-
+           
             if($USTR_NIDUSUARIOTRAMITE > 0){
-                $response['conceptos'] = DB::select(
-                    'SELECT * FROM tram_mdv_usuario_concepto where "USCON_NIDUSUARIOTRAMITE" = ? AND "USCON_NACTIVO" = ?',
-                    array($USTR_NIDUSUARIOTRAMITE, 1)
-                );
+                $response['conceptos'] = DB::table('tram_mdv_usuario_concepto')
+                                            ->where('USCON_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)
+                                            ->where('USCON_NACTIVO', true)->get();
             }
 
-            $response['resolutivos'] = DB::select(
-                'SELECT * FROM tram_mdv_usuario_resolutivo where "USRE_NIDUSUARIOTRAMITE" = ?',
-                array($USTR_NIDUSUARIOTRAMITE)
-            );
+            $response['edificios']      = DB::table('tram_mst_edificio')->where('EDIF_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['resolutivos']    = DB::table('tram_mdv_usuario_resolutivo')->where('USRE_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->get();
+            $response['notificaciones'] = DB::table('tram_his_notificacion_tramite')->where('HNOTI_NIDUSUARIOTRAMITE', $USTR_NIDUSUARIOTRAMITE)->get();
             
-            $response['notificaciones'] = DB::select(
-                'SELECT * FROM tram_his_notificacion_tramite where "HNOTI_NIDUSUARIOTRAMITE" = ?',
-                array($USTR_NIDUSUARIOTRAMITE)
-            );
-
             return $response;
-
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -413,10 +355,8 @@ class Cls_Tramite_Servicio extends Model
         return response()->json($response);
     }
     
-    static function getConfigDocArr() 
-    {
-        $response = DB::select('SELECT * FROM tram_mst_configdocumentos');
-        return $response;
+    static function getConfigDocArr(){
+        return DB::table('tram_mst_configdocumentos')->get();
     } 
  
 
