@@ -18,9 +18,9 @@ class UsuarioService {
         try {
             $user = new User();
             $user->USUA_NIDROL          = $request->rolId;
-            $user->USUA_NTIPO_PERSONA   = $request->rdbTipo_Persona;
-            $user->USUA_CRFC            = $request->txtRfc;
-            $user->USUA_CCURP           = $request->txtCurp;
+            $user->USUA_NTIPO_PERSONA   = is_null($request->rdbTipo_Persona) ? 'FISICA' : $request->rdbTipo_Persona;
+            $user->USUA_CRFC            = is_null($request->txtRfc) ? 'XAXX010101000' : $request->txtRfc;
+            $user->USUA_CCURP           = is_null($request->txtCurp) ? '11111111111111' : $request->txtCurp;
             $user->USUA_NTIPO_SEXO      = $request->rdbSexo;
             $user->USUA_CRAZON_SOCIAL   = $request->txtRazon_Social ?? '';
             $user->USUA_CNOMBRES        = $request->txtNombres;

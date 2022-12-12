@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cls_DocumentosBase;
@@ -71,39 +72,6 @@ class Cls_Usuario extends Model
         return $arrResponse;
     }
 
-    static function TRAM_SP_LOGIN($StrCorreo, $StrContrasenia)
-    {
-        $ObjUser = DB::selectOne(
-            'call TRAM_SP_LOGIN(?,?)',
-            array(
-                $StrCorreo, crypt($StrContrasenia, '$1$*$')
-            )
-        );
-        if ($ObjUser == null) {
-            $Obj = null;
-        } else {
-            $Obj = new Cls_Usuario();
-            $Obj->USUA_NIDUSUARIO = $ObjUser->USUA_NIDUSUARIO;
-            $Obj->USUA_CNOMBRES = $ObjUser->USUA_CNOMBRES;
-            $Obj->USUA_CPRIMER_APELLIDO = $ObjUser->USUA_CPRIMER_APELLIDO;
-            $Obj->USUA_CSEGUNDO_APELLIDO = $ObjUser->USUA_CSEGUNDO_APELLIDO;
-            $Obj->USUA_CRFC = $ObjUser->USUA_CRFC;
-            $Obj->USUA_CCORREO_ELECTRONICO = $ObjUser->USUA_CCORREO_ELECTRONICO;
-            $Obj->USUA_NACTIVO = $ObjUser->USUA_NACTIVO;
-        }
-        return $Obj;
-    }
-
-    static function TRAM_SP_AGREGARUSUARIO(Request $request)
-    {
-        return DB::select(
-            'call TRAM_SP_AGREGARUSUARIO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            array(
-                $request->txtRol, $request->rdbTipo_Persona, $request->txtRfc, $request->txtCurp, $request->rdbSexo, $request->txtRazon_Social ?? '', $request->txtNombres, $request->txtPrimer_Apellido, $request->txtSegundo_Apellido, $request->txtCalle_Fiscal ?? 0, $request->txtNumero_Interior_Fiscal ?? 0, $request->txtNumero_Exterior_Fiscal ?? 0, $request->txtCP_Fiscal ?? 0, $request->cmbColonia_Fiscal ?? 0, 0, $request->cmbMunicipio_Fiscal ?? 0, 0, $request->cmbEstado_Fiscal ?? 0, 0, $request->cmbPais_Fiscal ?? 0, 0, $request->txtCorreo_Electronico, $request->txtCorreo_Alternativo,  crypt($request->txtContrasenia, '$1$*$'), $request->txtCalle_Particular ?? 0, $request->txtNumero_Interior_Particular ?? 0, $request->txtNumero_Exterior_Particular ?? 0, $request->txtCP_Particular ?? 0, $request->cmbColonia_Particular ?? 0, 0, $request->cmbMunicipio_Particular ?? 0, 0, $request->cmbEstado_Particular ?? 0, 0, $request->cmbPais_Particular ?? 0, 0, $request->txtNumeroTelefono ?? 0, $request->txtExtension ?? 0, $request->txtUsuario ?? 0, 0, 0, $request->fechaNacimientoFisica ?? null, $request->txtNumeroTelefono ?? 0, $request->txtNumeroTelefono ?? 0, $request->fechaConstitucionMoral ?? null, $request->nombrePersonaAutorizada, $request->apellidoPrimerAutorizada, $request->apellidoSegundoAutorizada, $request->telefonoPersonaAutorizada ?? 0, $request->telefonoPersonaAutorizada ?? 0, $request->correoPersonaAutorizada
-            )
-        )[0]->{'LAST_INSERT_ID()'};
-    }
-
     static function TRAM_SP_MODIFICARUSUARIO(Request $request)
     {
         return DB::statement(
@@ -135,82 +103,66 @@ class Cls_Usuario extends Model
 
     static function TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO($IntIdDependencia, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO(?,?)',
-            array(
-                $IntIdDependencia, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_dependencia_usuario_acceso')->insert([
+            'DEPUA_NIDDEPENCIA' => $IntIdDependencia,
+            'DEPUA_NIDUSUARIO'  => $IntIdUsuario
+        ]);
     }
 
-    static function TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($IntIdDependencia, $IntIdUsuario)
+    static function TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($dependeciaId, $usuarioId)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE(?,?)',
-            array(
-                $IntIdDependencia, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_dependencia_usuario_pertenece')->insert([
+            'DEPUP_NIDDEPENCIA' => $dependeciaId,
+            'DEPUP_NIDUSUARIO'  => $usuarioId
+        ]);
     }
 
     static function TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO($IntIdEdificio, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO(?,?)',
-            array(
-                $IntIdEdificio, $IntIdUsuario
-            )
-        );
+        return  DB::table('tram_aux_edificio_usuario_acceso')->insert([
+                    'EDIFUA_NIDEDIFICIO'    => $IntIdEdificio,
+                    'EDIFUA_NIDUSUARIO'     => $IntIdUsuario
+                ]);
     }
 
     static function TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE($IntIdEdificio, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE(?,?)',
-            array(
-                $IntIdEdificio, $IntIdUsuario
-            )
-        );
+        return  DB::table('tram_aux_edificio_usuario_pertenece')->insert([
+            'EDIFUP_NIDEDIFICIO' => $IntIdEdificio,
+            'EDIFUP_NIDUSUARIO'  => $IntIdUsuario
+        ]);
     }
 
     static function TRAM_SP_AGREGAR_TRAMITE_USUARIO_ACCESO($IntIdTramite, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_TRAMITE_USUARIO_ACCESO(?,?)',
-            array(
-                $IntIdTramite, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_tramite_usuario_acceso')->insert([
+                    'TRAMUA_NIDTRAMITE' => $IntIdTramite,
+                    'TRAMUA_NIDUSUARIO' => $IntIdUsuario
+                ]);
     }
 
     static function TRAM_SP_AGREGAR_TRAMITE_USUARIO_PERTENECE($IntIdTramite, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_TRAMITE_USUARIO_PERTENECE(?,?)',
-            array(
-                $IntIdTramite, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_tramite_usuario_pertenece')->insert([
+                    'TRAMUP_NIDTRAMITE' => $IntIdTramite,
+                    'TRAMUP_NIDUSUARIO' => $IntIdUsuario
+                ]);
     }
 
     static function TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO($IntIdUnidad, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO(?,?)',
-            array(
-                $IntIdUnidad, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_unidad_usuario_acceso')->insert([
+                            'UNIDUA_NIDUNIDAD'  => $IntIdUnidad,
+                            'UNIDUA_NIDUSUARIO' => $IntIdUsuario
+                ]);
     }
 
     static function TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE($IntIdUnidad, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE(?,?)',
-            array(
-                $IntIdUnidad, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_unidad_usuario_pertenece')->insert([
+                            'UNIDUP_NIDUNIDAD'  => $IntIdUnidad,
+                            'UNIDUP_NIDUSUARIO' => $IntIdUsuario
+        ]);
     }
 
     static function TRAM_SP_ELIMINAR_AREAS_PERTENECE_ACCESO($IntIdUsuario)
