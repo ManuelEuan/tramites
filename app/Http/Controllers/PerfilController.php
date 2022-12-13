@@ -245,20 +245,19 @@ class PerfilController extends Controller
 
                 //Eliminar sucursal actuales
                 Cls_Sucursal::TRAM_SP_ELIMINARSUCURSAL_USUARIO($request->txtIdUsuario);
-
                 //Agregar sucursales
                 if(isset($request->lstSucursal)){
                     foreach ($request->lstSucursal as $value) {
                         $ObjSucursal = array(
-                            'txtUsuario' => $request->txtIdUsuario,
-                            'txtCalle' => $value['txtCalle_Sucursal'],
+                            'txtUsuario'    => $request->txtIdUsuario,
+                            'txtCalle'      => $value['txtCalle_Sucursal'],
+                            'txtCP'         => $value['txtCP_Sucursal'],
+                            'cmbColonia'    => $value['cmbColonia_Sucursal'],
+                            'cmbMunicipio'  => $value['cmbMunicipio_Sucursal'],
+                            'cmbEstado'     => $value['cmbEstado_Sucursal'],
+                            'cmbPais'       => $value['cmbPais_Sucursal'],
                             'txtNumero_Interior' => $value['txtNumero_Interior_Sucursal'],
                             'txtNumero_Exterior' => $value['txtNumero_Exterior_Sucursal'],
-                            'txtCP' => $value['txtCP_Sucursal'],
-                            'cmbColonia' => $value['cmbColonia_Sucursal'],
-                            'cmbMunicipio' => $value['cmbMunicipio_Sucursal'],
-                            'cmbEstado' => $value['cmbEstado_Sucursal'],
-                            'cmbPais' => $value['cmbPais_Sucursal']
                         );
                         Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
                     }

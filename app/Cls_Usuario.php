@@ -48,16 +48,6 @@ class Cls_Usuario extends Model
         return $ObjUser;
     }
 
-    static function TRAM_SP_CONTAR_ACCESO_NO_VALIDO($IntIdUsuario)
-    {
-        return count(DB::select(
-            'call TRAM_SP_CONTAR_ACCESO_NO_VALIDO(?)',
-            array(
-                $IntIdUsuario
-            )
-        ));
-    }
-
     static function TRAM_FN_VALIDAR_RECAPTCHA($StrRecaptcha)
     {
         $ch = curl_init();
@@ -163,14 +153,6 @@ class Cls_Usuario extends Model
                             'UNIDUP_NIDUNIDAD'  => $IntIdUnidad,
                             'UNIDUP_NIDUSUARIO' => $IntIdUsuario
         ]);
-    }
-
-    static function TRAM_SP_ELIMINAR_AREAS_PERTENECE_ACCESO($IntIdUsuario)
-    {
-        return DB::statement(
-            'call TRAM_SP_ELIMINAR_AREAS_PERTENECE_ACCESO(?)',
-            array($IntIdUsuario)
-        );
     }
 
     static function TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id){

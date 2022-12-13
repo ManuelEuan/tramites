@@ -21,7 +21,7 @@ class UsuarioService {
             $user->USUA_NTIPO_PERSONA   = is_null($request->rdbTipo_Persona) ? 'FISICA' : $request->rdbTipo_Persona;
             $user->USUA_CRFC            = is_null($request->txtRfc) ? 'XAXX010101000' : $request->txtRfc;
             $user->USUA_CCURP           = is_null($request->txtCurp) ? '11111111111111' : $request->txtCurp;
-            $user->USUA_NTIPO_SEXO      = $request->rdbSexo;
+            $user->USUA_NTIPO_SEXO      = is_null($request->rdbSexo) ? 'M' : $request->rdbSexo;
             $user->USUA_CRAZON_SOCIAL   = $request->txtRazon_Social ?? '';
             $user->USUA_CNOMBRES        = $request->txtNombres;
             $user->USUA_CPRIMER_APELLIDO    = $request->txtPrimer_Apellido;
@@ -65,7 +65,7 @@ class UsuarioService {
             $user->USUA_CSEGUNDOAPELLIDO_NOTIFICACION = $request->apellidoSegundoAutorizada;
             $user->USUA_CTEL_LOCAL_NOTIFICACION     = $request->telefonoPersonaAutorizada ?? 0;
             $user->USUA_CTEL_CELULAR_NOTIFICACION   = $request->telefonoPersonaAutorizada ?? 0;
-            $user->USUA_CCORREO_NOTIFICACION        = $request->correoPersonaAutorizada;
+            $user->USUA_CCORREO_NOTIFICACION        = is_null($request->correoPersonaAutorizada) ? $request->correoPersonaAutorizada : $request->txtCorreo;
             $user->USUA_NNUMERO_INTERIOR_PARTICULAR = $request->txtNumero_Interior_Particular ?? 0;
             $user->USUA_NNUMERO_EXTERIOR_PARTICULAR = $request->txtNumero_Exterior_Particular ?? 0;
             $user->save();
