@@ -447,15 +447,15 @@ class ServidorPublicoController extends Controller
         return view('CAT_SERVIDOR_PUBLICO.detalle', compact('Obj'));
     }
 
-    public function validar_correo($StrCorreo){
+    public function validar_correo($correo){
 
         try {
-            $IntResult = Cls_Usuario::TRAM_SP_VALIDAR_CORREO($StrCorreo);
+            $result = User::where('USUA_CCORREO_ELECTRONICO', $correo)->orWhere('USUA_CCORREO_ALTERNATIVO', $correo)->first();
 
             $response = [
-                'codigo' => $IntResult > 0 ? 200 : 400, 
-                'status' => $IntResult > 0 ? "success" : "error", 
-                'message' => $IntResult > 0 ? 'El correo electrónico ya existe en el sistema.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<>>"
+                'codigo' => !is_null($result) ? 200 : 400, 
+                'status' => !is_null($result) ? "success" : "error", 
+                'message'=> !is_null($result) ? 'El correo electrónico ya existe en el sistema.' : "Correo dispoonible."
             ];
         }
         catch(Exception $e) {

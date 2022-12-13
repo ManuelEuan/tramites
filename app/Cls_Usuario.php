@@ -10,25 +10,6 @@ class Cls_Usuario extends Model
 {
     protected $connection   = 'pgsql';
     protected $table        = 'tram_mst_usuario';
-    static function TRAM_SP_VALIDAR_RFC($StrRfc)
-    {
-        return count(DB::select(
-            'call TRAM_SP_VALIDAR_RFC(?)',
-            array(
-                $StrRfc
-            )
-        ));
-    }
-
-    static function TRAM_SP_VALIDAR_CORREO($StrCorreo)
-    {
-        return count(DB::select(
-            'call TRAM_SP_VALIDAR_CORREO(?)',
-            array(
-                $StrCorreo
-            )
-        ));
-    }
 
     static function getTipoDocs($tipoUser){
         return DB::table('tram_mst_configdocumentos')->where('TIPO_PERSONA','AMBAS')->orWhere('TIPO_PERSONA',$tipoUser)->get();
