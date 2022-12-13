@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use App\Cls_PermisoRol;
-use App\Cls_Rol;
 use Exception;
+use App\Cls_Rol;
+use App\Cls_PermisoRol;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RolController extends Controller
 {
@@ -30,72 +31,74 @@ class RolController extends Controller
     }
 
     public function agregar(Request $request){
-        $response = [];
+        $response = ['codigo' => 200, 'status' => "success", 'message' => 'Los datos se han guardado correctamente.'];
+        
         try {
-            $IntRolId = Cls_Rol::TRAM_SP_AGREGARROL($request);
-            
-            //Eliminar permisos
-            Cls_PermisoRol::TRAM_SP_ELIMINARPERMISOROL($IntRolId);
+            DB::beginTransaction();
+            $rol = new Cls_Rol();
+            $rol->ROL_CNOMBRE       = $request->StrNommbre;
+            $rol->ROL_CDESCRIPCION  = $request->StrDescripcion;
+            $rol->ROL_CCLAVE       =  strtoupper(substr($request->StrNommbre, 0, 3));
+            $rol->save();
 
-            //Agregar permisos
             foreach ($request->dLstPermisos as $value) {
-                Cls_PermisoRol::TRAM_SP_AGREGARPERMISOROL($value, $IntRolId);
+                $item = new Cls_PermisoRol();
+                $item->PROL_NIDPERMISO  = $value;
+                $item->PROL_NIDROL      = $rol->ROL_NIDROL;
+                $item->save();
             }
+            DB::commit();
         }
         catch(Exception $e) {
+            DB::rollBack();
             $response = [
-                'codigo' => 400, 
-                'status' => "error", 
-                'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage()
+                'codigo'    => 400, 
+                'status'    => "error", 
+                'message'   => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage()
             ];
         }
-
-        $response = [
-            'codigo' => 200, 
-            'status' => "success", 
-            'message' => 'Los datos se han guardado correctamente.'
-        ];
 
         return Response()->json($response);
     }
 
     public function modificar(Request $request){
-        $response = [];
+        $response = ['codigo' => 200, 'status' => "success", 'message' => 'Los datos se han guardado correctamente.'];
+
         try {
-            Cls_Rol::TRAM_SP_MODIFICARROL($request);
-
-            //Eliminar permisos
-            Cls_PermisoRol::TRAM_SP_ELIMINARPERMISOROL($request->IntId);
-
-            //Agregar permisos
+            DB::beginTransaction();
+            $rol = Cls_Rol::find($request->IntId);
+            $rol->ROL_CNOMBRE      = $request->StrNommbre;
+            $rol->ROL_CDESCRIPCION =  $request->StrDescripcion;
+            $rol->save();
+            
+            Cls_PermisoRol::where('PROL_NIDROL',$request->IntId)->delete();
             foreach ($request->dLstPermisos as $value) {
-                Cls_PermisoRol::TRAM_SP_AGREGARPERMISOROL($value, $request->IntId);
+                $item = new Cls_PermisoRol();
+                $item->PROL_NIDPERMISO  = $value;
+                $item->PROL_NIDROL      = $rol->ROL_NIDROL;
+                $item->save();
+
             }
+            DB::commit();
         }
         catch(Exception $e) {
+            DB::rollBack();
             $response = [
                 'codigo' => 400, 
                 'status' => "error", 
                 'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema " .$e->getMessage()
             ];
         }
-
-        $response = [
-            'codigo' => 200, 
-            'status' => "success", 
-            'message' => 'Los datos se han guardado correctamente.'
-        ];
 
         return Response()->json($response);
     }
 
     public function eliminar(Request $request){
-        $response = [];
+        $response = ['codigo' => 200, 'status' => "success", 'message' => 'Los datos se han guardado correctamente.'];
+
         try {
-            //Eliminar permisos
-            Cls_PermisoRol::TRAM_SP_ELIMINARPERMISOROL($request->IntId);
-            
-            Cls_Rol::TRAM_SP_ELIMINARROL($request);
+            Cls_PermisoRol::where('PROL_NIDROL',$request->IntId)->delete();
+            Cls_Rol::find($request->IntId)->delete();
         }
         catch(Exception $e) {
             $response = [
@@ -104,12 +107,6 @@ class RolController extends Controller
                 'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema " .$e->getMessage()
             ];
         }
-
-        $response = [
-            'codigo' => 200, 
-            'status' => "success", 
-            'message' => 'Los datos se han eliminado.'
-        ];
 
         return Response()->json($response);
     }
