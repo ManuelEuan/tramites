@@ -9,6 +9,7 @@ use App\Cls_Bitacora;
 use App\Cls_Rol;
 use Illuminate\Http\Request;
 use App\Services\TramiteService;
+use App\Services\UsuarioService;
 use Illuminate\Support\Facades\DB;
 use App\Services\ServidoresService;
 use Illuminate\Support\Facades\Mail;
@@ -19,9 +20,11 @@ class ServidorPublicoController extends Controller
 
     protected $servidoresService;
     protected $tramiteService;
+    protected  $usuarioService;
     public function __construct() {
         $this->servidoresService    = new ServidoresService();
         $this->tramiteService       = new TramiteService();
+        $this->usuarioService       = new UsuarioService();
     }
 
     public function index(Request $request) {
@@ -33,7 +36,10 @@ class ServidorPublicoController extends Controller
     }
 
     public function consultar(){
-        $result = Cls_Usuario::TRAM_SP_CONSULTAR_USUARIOS();
+        $result = DB::table('tram_mst_usuario as a')
+            ->join('tram_cat_rol as b', 'a.USUA_NIDROL', '=', 'b.ROL_NIDRO')
+            ->where( 'a.USUA_NIDROL', '!=', 2)->get();
+
         $response = [
             'data' => $result,
         ];
@@ -42,124 +48,102 @@ class ServidorPublicoController extends Controller
     }
 
     public function agregar(Request $request){
-        $response = [];
-        $IntUsuarioId = 0;
-        
-        try {
-            $request->txtRol            = $request->cmbRol;
-            $request->rdbTipo_Persona   = "FISICA";
-            $request->txtRfc            = "XAXX010101000";
-            $request->txtCurp           = "11111111111111";
-            $request->txtCalle_Fiscal   = "1";
-            $request->txtCP_Fiscal      = 11111;
-            $request->cmbColonia_Fiscal = "1";
-            $request->cmbEstado_Fiscal  = "1";
-            $request->cmbPais_Fiscal    = "1";
-            $request->txtNumero_Interior_Fiscal = 1;
-            $request->txtNumero_Exterior_Fiscal = 1;
-            $request->cmbMunicipio_Fiscal       = "1";
-            $request->txtNumeroTelefono         = $request->txtTelefono;
-            
-            DB::beginTransaction();
-            $IntUsuarioId = Cls_Usuario::TRAM_SP_AGREGARUSUARIO($request);
+        $response   = ['codigo' => 200, 'status' => 'success', 'message' => '¡Éxito! Acción realizada con éxito.', 'data' => null];
+        $result     = ["error" => null, "item" => null];
 
-            Cls_Usuario::TRAM_SP_ELIMINAR_AREAS_PERTENECE_ACCESO($IntUsuarioId);
+        try {
+            $request->rolId     = $request->cmbRol;
+            $request->txtCorreo = $request->txtCorreo_Electronico;
+            $request->txtNumeroTelefono = $request->txtTelefono;;
+
+            DB::beginTransaction();
+            $result     = $this->usuarioService->store($request);
+            $usuario    = $result['item'];
+
             //Agregar areas pertenece
-            
             if($request->lstDependenciaPertenece != null && count($request->lstDependenciaPertenece) > 0){
                 foreach ($request->lstDependenciaPertenece as $value) {
                     $retys = $this->tramiteService->getRetys('dependencies',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
 
             if( $request->lstUnidadPertence != null && count($request->lstUnidadPertence) > 0){
                 foreach ($request->lstUnidadPertence as $value) {
                     $retys = $this->tramiteService->getRetys('administrativeunits',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
 
             if( $request->lstTramitePertence != null && count($request->lstTramitePertence) > 0){
                 foreach ($request->lstTramitePertence as $value) {
-                    Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_PERTENECE($value, $IntUsuarioId);
+                   Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_PERTENECE($value, $usuario->USUA_NIDUSUARIO);
                 }
             }
-
 
             if(  $request->lstEdificioPertence != null && count($request->lstEdificioPertence) > 0){
                 foreach ($request->lstEdificioPertence as $value) {
                     $retys = $this->tramiteService->getRetys('administrativeunitbuildings',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
-       
 
             //Agregar areas acceso
             if($request->lstDependenciaAcceso != null && count($request->lstDependenciaAcceso) > 0){
                 foreach ($request->lstDependenciaAcceso as $value) {
                     $retys = $this->tramiteService->getRetys('dependencies',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
 
             if($request->lstUnidadAcceso != null && count($request->lstUnidadAcceso)> 0){
                 foreach ($request->lstUnidadAcceso as $value) {
                     $retys = $this->tramiteService->getRetys('administrativeunits',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
 
         
             if($request->lstTramiteAcceso  != null && count($request->lstTramiteAcceso) > 0){
                 foreach ($request->lstTramiteAcceso as $value) {
-                    Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_ACCESO($value, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_ACCESO($value, $usuario->USUA_NIDUSUARIO);
                 }
             }
             
             if($request->lstEdificioAcceso != null  && count($request->lstEdificioAcceso) > 0){
                 foreach ($request->lstEdificioAcceso as $value) {
                     $retys = $this->tramiteService->getRetys('administrativeunitbuildings',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
 
             //Envia correo
-            $ObjData['StrNombres'] = $request->txtNombres;
-            $ObjData['StrHost'] = $request->getHttpHost();
-            $ObjData['StrApellidos'] = $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
+            $ObjData['StrNombres']  = $request->txtNombres;
+            $ObjData['StrHost']     = $request->getHttpHost();
+            $ObjData['StrApellidos']= $request->txtPrimer_Apellido . " " . $request->txtSegundo_Apellido;;
             $ObjData['StrCorreoElectronico'] = $request->txtCorreo_Electronico;
             Mail::send('MSTP_MAIL.registro_funcionario', $ObjData, function ($message) use($ObjData) {
                 $message->from(env('MAIL_USERNAME'), 'Sistema de Tramites Digitales Queretaro');
                 $message->to($ObjData['StrCorreoElectronico'], '')->subject('Registro.');
             });
 
-            if($IntUsuarioId > 0){
-                //Insertar bitacora
-                $ObjBitacora = new Cls_Bitacora();
-                $ObjBitacora->BITA_NIDUSUARIO = $IntUsuarioId;
-                $ObjBitacora->BITA_CMOVIMIENTO = "Registro usuario servidor público";
-                $ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
-                $ObjBitacora->BITA_CIP = $request->ip();
-                Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
-            }
-
-            $response = [
-                'codigo' => $IntUsuarioId > 0 ? 200 : 400, 
-                'status' => $IntUsuarioId > 0 ? "success" : "error",
-                'message' => $IntUsuarioId > 0 ? '¡Éxito! Acción realizada con éxito.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<>>",
-                'data' => $IntUsuarioId
-            ];
-            
+            $ObjBitacora = new Cls_Bitacora();
+            $ObjBitacora->BITA_NIDUSUARIO   = $usuario->USUA_NIDUSUARIO;
+            $ObjBitacora->BITA_CMOVIMIENTO  = "Registro usuario servidor público";
+            $ObjBitacora->BITA_CTABLA       = "tram_mst_usuario";
+            $ObjBitacora->BITA_CIP          = $request->ip();
+            $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+            $ObjBitacora->save();
+            $response['data']   = $usuario;
             DB::commit();
         }
         catch(Exception $e) {
             DB::rollBack();
             $response = [
-                'codigo' => 400, 
-                'status' => "error", 
-                'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage(),
-                'data' => $IntUsuarioId
+                'codigo'    => 400, 
+                'status'    => "error", 
+                'message'   => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage(),
+                'data'      => $result['error']
             ];
         }
         return Response()->json($response);
@@ -188,69 +172,79 @@ class ServidorPublicoController extends Controller
         $response = [];
         try {          
             DB::beginTransaction();
-            $objUsuario = User::find($request->USUA_NIDUSUARIO);
-            $objUsuario->update($request->all());
-            
+            $usuario = User::find($request->USUA_NIDUSUARIO);
+            $usuario->update($request->all());
+
             //Insertar bitacora
             $ObjBitacora = new Cls_Bitacora();
-            $ObjBitacora->BITA_NIDUSUARIO = $request->USUA_NIDUSUARIO;
-            $ObjBitacora->BITA_CMOVIMIENTO = "Edición de usuario";
-            $ObjBitacora->BITA_CTABLA = "tram_mst_usuario";
-            $ObjBitacora->BITA_CIP = $request->ip();
-            Cls_Bitacora::TRAM_SP_AGREGARBITACORA($ObjBitacora);
+            $ObjBitacora->BITA_NIDUSUARIO   = $request->USUA_NIDUSUARIO;
+            $ObjBitacora->BITA_CMOVIMIENTO  = "Edición de usuario";
+            $ObjBitacora->BITA_CTABLA       = "tram_mst_usuario";
+            $ObjBitacora->BITA_CIP          = $request->ip();
+            $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+            $ObjBitacora->save();
 
-            $IntUsuarioId = $request->USUA_NIDUSUARIO;
-            Cls_Usuario::TRAM_SP_ELIMINAR_AREAS_PERTENECE_ACCESO($IntUsuarioId);
-
-            //Agregar areas pertenece
+            DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO',$usuario->USUA_NIDUSUARIO)->delete();
             if($request->lstDependenciaPertenece  != null && count($request->lstDependenciaPertenece) > 0){
                 foreach ($request->lstDependenciaPertenece as $value) {
                     $retys = $this->tramiteService->getRetys('dependencies',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
-                }
-            }
-            if($request->lstUnidadPertence  != null && count($request->lstUnidadPertence) > 0){
-                foreach ($request->lstUnidadPertence as $value) {
-                    $retys = $this->tramiteService->getRetys('administrativeunits',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
-                }
-            }
-            if($request->lstTramitePertence  != null && count($request->lstTramitePertence) > 0){
-                foreach ($request->lstTramitePertence as $value) {
-                    $retys = $this->tramiteService->getRetys('procedures',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
-                }
-            }
-            if($request->lstEdificioPertence  != null && count($request->lstEdificioPertence) > 0){
-                foreach ($request->lstEdificioPertence as $value) {
-                    $retys = $this->tramiteService->getRetys('administrativeunitbuildings',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
 
-            //Agregar areas acceso
+            DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO',$usuario->USUA_NIDUSUARIO)->delete();
+            if($request->lstUnidadPertence  != null && count($request->lstUnidadPertence) > 0){
+                foreach ($request->lstUnidadPertence as $value) {
+                    $retys = $this->tramiteService->getRetys('administrativeunits',$value);
+                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE($retys->iId, $usuario->USUA_NIDUSUARIO);
+                }
+            }
+
+            DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO',$usuario->USUA_NIDUSUARIO)->delete();
+            if($request->lstTramitePertence  != null && count($request->lstTramitePertence) > 0){
+                foreach ($request->lstTramitePertence as $value) {
+                    $retys = $this->tramiteService->getRetys('procedures',$value);
+                    Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_PERTENECE($retys->iId, $usuario->USUA_NIDUSUARIO);
+                }
+            }
+
+            DB::table('tram_aux_edificio_usuario_pertenece')->where('EDIFUP_NIDUSUARIO',$usuario->USUA_NIDUSUARIO)->delete();
+            if($request->lstEdificioPertence  != null && count($request->lstEdificioPertence) > 0){
+                foreach ($request->lstEdificioPertence as $value) {
+                    $retys = $this->tramiteService->getRetys('administrativeunitbuildings',$value);
+                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE($retys->iId, $usuario->USUA_NIDUSUARIO);
+                }
+            }
+
+            DB::table('tram_aux_dependencia_usuario_acceso')->where('DEPUA_NIDUSUARIO',$usuario->USUA_NIDUSUARIO)->delete();
             if($request->lstDependenciaAcceso  != null && count($request->lstDependenciaAcceso) > 0){
                 foreach ($request->lstDependenciaAcceso as $value) {
                     $retys = $this->tramiteService->getRetys('dependencies',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
+
+            DB::table('tram_aux_unidad_usuario_acceso')->where('UNIDUA_NIDUSUARIO',$usuario->USUA_NIDUSUARIO)->delete();
             if($request->lstUnidadAcceso != null && count($request->lstUnidadAcceso) > 0){
                 foreach ($request->lstUnidadAcceso as $value) {
                     $retys = $this->tramiteService->getRetys('administrativeunits',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
+
+            DB::table('tram_aux_tramite_usuario_acceso')->where('TRAMUA_NIDUSUARIO',$usuario->USUA_NIDUSUARIO)->delete();
             if($request->lstTramiteAcceso != null && count($request->lstTramiteAcceso) > 0){
                 foreach ($request->lstTramiteAcceso as $value) {
                     $retys = $this->tramiteService->getRetys('procedures',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_TRAMITE_USUARIO_ACCESO($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
+
+            DB::table('tram_aux_edificio_usuario_acceso')->where('EDIFUA_NIDUSUARIO',$usuario->USUA_NIDUSUARIO)->delete();
             if($request->lstEdificioAcceso != null && count($request->lstEdificioAcceso) > 0){
                 foreach ($request->lstEdificioAcceso as $value) {
                     $retys = $this->tramiteService->getRetys('administrativeunitbuildings',$value);
-                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO($retys->iId, $IntUsuarioId);
+                    Cls_Usuario::TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO($retys->iId, $usuario->USUA_NIDUSUARIO);
                 }
             }
             DB::commit();

@@ -117,7 +117,7 @@
                     { 
                         
                         data: null, render: function ( data, type, row ) {
-                            console.log(data.ROL_CCLAVE);
+                           
 
                             /*if(data.ROL_CCLAVE  == "ADM" || 
                              data.ROL_CCLAVE    == "CDNS" || 

@@ -11,22 +11,9 @@ class Cls_PermisoRol extends Model
     protected $connection   = 'pgsql';
     protected $table        = 'tram_det_permisorol';
     protected $with         = ['TRAM_CAT_PERMISO'];
+    protected $fillable     = ['PROL_NIDPERMISO', 'PROL_NIDROL'];
+    protected $primaryKey   = 'PROL_NIDPERMISOROL';
 
-    static function TRAM_SP_CONSULTARPERMISOROL($IntRolId){
-        return DB::select('call TRAM_SP_CONSULTARPERMISOROL(?)'
-                , array($IntRolId));
-    }
-
-    static function TRAM_SP_AGREGARPERMISOROL($IntPermisoId, $IntRolId){
-        return DB::select('call TRAM_SP_AGREGARPERMISOROL(?,?)'
-                , array($IntPermisoId
-                , $IntRolId));
-    }
-    
-    static function TRAM_SP_ELIMINARPERMISOROL($IntRolId){
-        return DB::select('call TRAM_SP_ELIMINARPERMISOROL(?)'
-                , array($IntRolId));
-    }
     
     public function TRAM_CAT_PERMISO()
     {

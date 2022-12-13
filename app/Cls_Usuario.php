@@ -2,8 +2,10 @@
 
 namespace App;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Cls_DocumentosBase;
 use Illuminate\Database\Eloquent\Model;
 
 class Cls_Usuario extends Model
@@ -15,20 +17,6 @@ class Cls_Usuario extends Model
         return DB::table('tram_mst_configdocumentos')->where('TIPO_PERSONA','AMBAS')->orWhere('TIPO_PERSONA',$tipoUser)->get();
     }
 
-    static function getTipoDocsACT($idUSER, $nombre)
-    {
-        $docsUser = DB::select("SELECT * FROM `tram_mdv_usuariordocumento` 
-        WHERE USDO_NIDUSUARIOBASE = '".$idUSER."' AND USDO_CDOCNOMBRE ='".$nombre."' ");
-        
-        return $docsUser;
-    }
-    static function getVigDocsBASE($id)
-    {
-        $docsUser = DB::select("SELECT VIGENCIA_FIN AS VIG FROM `tram_mst_documentosbase` 
-        WHERE id ='".$id."' ORDER BY id DESC LIMIT 0,1");
-        
-        return $docsUser;
-    }
 
     static function getDocsUser($id){
         return DB::table('tram_mst_documentosbase')->where('ID_USUARIO', $id)->where('isDelete', '!=', true)->get();
@@ -53,23 +41,6 @@ class Cls_Usuario extends Model
         return $docsExpedienteUSer;
     }
 
-    static function TRAM_SP_VALIDAR_CURP($StrCurp)
-    {
-        $ObjUser = DB::select("SELECT * FROM tram_mst_usuario WHERE USUA_CCURP = '$StrCurp'");
-
-        return $ObjUser;
-    }
-
-    static function TRAM_SP_CONTAR_ACCESO_NO_VALIDO($IntIdUsuario)
-    {
-        return count(DB::select(
-            'call TRAM_SP_CONTAR_ACCESO_NO_VALIDO(?)',
-            array(
-                $IntIdUsuario
-            )
-        ));
-    }
-
     static function TRAM_FN_VALIDAR_RECAPTCHA($StrRecaptcha)
     {
         $ch = curl_init();
@@ -82,49 +53,6 @@ class Cls_Usuario extends Model
         $arrResponse = json_decode($response, true);
 
         return $arrResponse;
-    }
-
-    static function TRAM_SP_LOGIN($StrCorreo, $StrContrasenia)
-    {
-        $ObjUser = DB::selectOne(
-            'call TRAM_SP_LOGIN(?,?)',
-            array(
-                $StrCorreo, crypt($StrContrasenia, '$1$*$')
-            )
-        );
-        if ($ObjUser == null) {
-            $Obj = null;
-        } else {
-            $Obj = new Cls_Usuario();
-            $Obj->USUA_NIDUSUARIO = $ObjUser->USUA_NIDUSUARIO;
-            $Obj->USUA_CNOMBRES = $ObjUser->USUA_CNOMBRES;
-            $Obj->USUA_CPRIMER_APELLIDO = $ObjUser->USUA_CPRIMER_APELLIDO;
-            $Obj->USUA_CSEGUNDO_APELLIDO = $ObjUser->USUA_CSEGUNDO_APELLIDO;
-            $Obj->USUA_CRFC = $ObjUser->USUA_CRFC;
-            $Obj->USUA_CCORREO_ELECTRONICO = $ObjUser->USUA_CCORREO_ELECTRONICO;
-            $Obj->USUA_NACTIVO = $ObjUser->USUA_NACTIVO;
-        }
-        return $Obj;
-    }
-
-    static function TRAM_SP_AGREGARUSUARIO(Request $request)
-    {
-        return DB::select(
-            'call TRAM_SP_AGREGARUSUARIO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            array(
-                $request->txtRol, $request->rdbTipo_Persona, $request->txtRfc, $request->txtCurp, $request->rdbSexo, $request->txtRazon_Social ?? '', $request->txtNombres, $request->txtPrimer_Apellido, $request->txtSegundo_Apellido, $request->txtCalle_Fiscal ?? 0, $request->txtNumero_Interior_Fiscal ?? 0, $request->txtNumero_Exterior_Fiscal ?? 0, $request->txtCP_Fiscal ?? 0, $request->cmbColonia_Fiscal ?? 0, 0, $request->cmbMunicipio_Fiscal ?? 0, 0, $request->cmbEstado_Fiscal ?? 0, 0, $request->cmbPais_Fiscal ?? 0, 0, $request->txtCorreo_Electronico, $request->txtCorreo_Alternativo,  crypt($request->txtContrasenia, '$1$*$'), $request->txtCalle_Particular ?? 0, $request->txtNumero_Interior_Particular ?? 0, $request->txtNumero_Exterior_Particular ?? 0, $request->txtCP_Particular ?? 0, $request->cmbColonia_Particular ?? 0, 0, $request->cmbMunicipio_Particular ?? 0, 0, $request->cmbEstado_Particular ?? 0, 0, $request->cmbPais_Particular ?? 0, 0, $request->txtNumeroTelefono ?? 0, $request->txtExtension ?? 0, $request->txtUsuario ?? 0, 0, 0, $request->fechaNacimientoFisica ?? null, $request->txtNumeroTelefono ?? 0, $request->txtNumeroTelefono ?? 0, $request->fechaConstitucionMoral ?? null, $request->nombrePersonaAutorizada, $request->apellidoPrimerAutorizada, $request->apellidoSegundoAutorizada, $request->telefonoPersonaAutorizada ?? 0, $request->telefonoPersonaAutorizada ?? 0, $request->correoPersonaAutorizada
-            )
-        )[0]->{'LAST_INSERT_ID()'};
-    }
-
-    static function TRAM_SP_MODIFICARUSUARIO(Request $request)
-    {
-        return DB::statement(
-            'call TRAM_SP_MODIFICARUSUARIO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            array(
-                $request->txtRol, $request->rdbTipo_Persona, $request->txtRfc, $request->txtCurp, $request->rdbSexo, $request->txtRazon_Social, $request->txtNombres, $request->txtPrimer_Apellido, $request->txtSegundo_Apellido, $request->txtCalleFiscal, $request->txtNumeroInteriorFiscal, $request->txtNumeroExteriorFiscal, $request->txtCPFiscal, $request->txtColoniaFiscal, 0,$request->txtMunicipioFiscal, 0,$request->txtEstadoFiscal, 0, $request->txtPaisFiscal, 0, $request->txtCorreo, $request->txtCorreoAlternativo, $request->txtCalleParticular, $request->txtNumeroInteriorParticular, $request->txtNumeroExteriorParticular, $request->txtNumeroCPParticular, $request->txtColoniaParticular,  0, $request->txtMunicipioParticular, 0, $request->txtEstadoParticular, 0,  $request->txtPaisParticular, 0, $request->txtIdUsuario,  $request->txtTelefono, $request->txtExtension, $request->txtUsuario, $request->fechaNacimientoFisica ?? null, $request->fechaConstitucionMoral ?? null, $request->nombrePersonaAutorizada, $request->telefonoPersonaAutorizada ?? 0, $request->correoPersonaAutorizada
-            )
-        );
     }
 
     static function TRAM_SP_AGREGAR_ACCESO($IntIdUsuario, $BolAccesoValido)
@@ -141,97 +69,68 @@ class Cls_Usuario extends Model
         DB::table('tram_dat_acceso')->where('ACCE_NIDUSUARIO', $IntIdUsuario)->delete();
     }
 
-    static function TRAM_SP_CONSULTAR_USUARIOS()
-    {
-        return DB::select('CALL TRAM_SP_CONSULTAR_USUARIOS()');
-    }
-
     static function TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO($IntIdDependencia, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO(?,?)',
-            array(
-                $IntIdDependencia, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_dependencia_usuario_acceso')->insert([
+            'DEPUA_NIDDEPENCIA' => $IntIdDependencia,
+            'DEPUA_NIDUSUARIO'  => $IntIdUsuario
+        ]);
     }
 
-    static function TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($IntIdDependencia, $IntIdUsuario)
+    static function TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE($dependeciaId, $usuarioId)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_PERTENECE(?,?)',
-            array(
-                $IntIdDependencia, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_dependencia_usuario_pertenece')->insert([
+            'DEPUP_NIDDEPENCIA' => $dependeciaId,
+            'DEPUP_NIDUSUARIO'  => $usuarioId
+        ]);
     }
 
     static function TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO($IntIdEdificio, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_EDIFICIO_USUARIO_ACCESO(?,?)',
-            array(
-                $IntIdEdificio, $IntIdUsuario
-            )
-        );
+        return  DB::table('tram_aux_edificio_usuario_acceso')->insert([
+                    'EDIFUA_NIDEDIFICIO'    => $IntIdEdificio,
+                    'EDIFUA_NIDUSUARIO'     => $IntIdUsuario
+                ]);
     }
 
     static function TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE($IntIdEdificio, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_EDIFICIO_USUARIO_PERTENECE(?,?)',
-            array(
-                $IntIdEdificio, $IntIdUsuario
-            )
-        );
+        return  DB::table('tram_aux_edificio_usuario_pertenece')->insert([
+            'EDIFUP_NIDEDIFICIO' => $IntIdEdificio,
+            'EDIFUP_NIDUSUARIO'  => $IntIdUsuario
+        ]);
     }
 
     static function TRAM_SP_AGREGAR_TRAMITE_USUARIO_ACCESO($IntIdTramite, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_TRAMITE_USUARIO_ACCESO(?,?)',
-            array(
-                $IntIdTramite, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_tramite_usuario_acceso')->insert([
+                    'TRAMUA_NIDTRAMITE' => $IntIdTramite,
+                    'TRAMUA_NIDUSUARIO' => $IntIdUsuario
+                ]);
     }
 
     static function TRAM_SP_AGREGAR_TRAMITE_USUARIO_PERTENECE($IntIdTramite, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_TRAMITE_USUARIO_PERTENECE(?,?)',
-            array(
-                $IntIdTramite, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_tramite_usuario_pertenece')->insert([
+                    'TRAMUP_NIDTRAMITE' => $IntIdTramite,
+                    'TRAMUP_NIDUSUARIO' => $IntIdUsuario
+                ]);
     }
 
     static function TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO($IntIdUnidad, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_UNIDAD_USUARIO_ACCESO(?,?)',
-            array(
-                $IntIdUnidad, $IntIdUsuario
-            )
-        );
+        return DB::table('tram_aux_unidad_usuario_acceso')->insert([
+                            'UNIDUA_NIDUNIDAD'  => $IntIdUnidad,
+                            'UNIDUA_NIDUSUARIO' => $IntIdUsuario
+                ]);
     }
 
     static function TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE($IntIdUnidad, $IntIdUsuario)
     {
-        return DB::statement(
-            'call TRAM_SP_AGREGAR_UNIDAD_USUARIO_PERTENECE(?,?)',
-            array(
-                $IntIdUnidad, $IntIdUsuario
-            )
-        );
-    }
-
-    static function TRAM_SP_ELIMINAR_AREAS_PERTENECE_ACCESO($IntIdUsuario)
-    {
-        return DB::statement(
-            'call TRAM_SP_ELIMINAR_AREAS_PERTENECE_ACCESO(?)',
-            array($IntIdUsuario)
-        );
+        return DB::table('tram_aux_unidad_usuario_pertenece')->insert([
+                            'UNIDUP_NIDUNIDAD'  => $IntIdUnidad,
+                            'UNIDUP_NIDUSUARIO' => $IntIdUsuario
+        ]);
     }
 
     static function TRAM_SP_CONSULTAR_DEPENDENCIA_USUARIO_ACCESO($id){
@@ -330,34 +229,26 @@ class Cls_Usuario extends Model
             where tmu.USDO_NIDTRAMITEDOCUMENTO = ? and tmd.isActual = 1
         ', [ $vigencia, $id_documento]);
     }
-    static function guardarDocs($request, $idU, $nombre){
-        $hoy = date('Y-m-d');
-        $hoytime = date('Y-m-d H:i:s');
 
-        $actualizar = DB::update('update tram_mst_documentosbase set isActual = 0 where ID_CDOCUMENTOS = ?', [$request->tipo]);
-
-        $insert = DB::insert('insert into tram_mst_documentosbase (FORMATO, PESO, VIGENCIA_INICIO, VIGENCIA_FIN, ID_CDOCUMENTOS, 
-        ID_USUARIO, estatus, ruta, isDelete, isActual, create_at) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-            $request->formato,
-            $request->peso,
-            $hoy,
-            '',
-            $request->tipo,
-            $idU,
-            1,
-            'files/documentosUser/'.$idU.'/'.$nombre,
-            0,
-            1,
-            $hoytime
-        ]);
-
-        return $insert;
+    static function guardarDocs($request, $idU, $archivo){
+        Cls_DocumentosBase::where(['ID_CDOCUMENTOS' => $request->tipo, 'ID_USUARIO' => $idU])->update(['isActual' => false , 'update_at' => now()]);
+        $item = new Cls_DocumentosBase();
+        $item->FORMATO          = $archivo['extension'];
+        $item->PESO             = $archivo['size'];
+        $item->VIGENCIA_INICIO  = date('Y-m-d');
+        $item->VIGENCIA_FIN     = '';
+        $item->ID_CDOCUMENTOS   = $request->tipo;
+        $item->ID_USUARIO       = $idU;
+        $item->isDelete         = false;
+        $item->estatus          = 1;
+        $item->ruta             = $archivo['path'];
+        $item->isActual         = true;
+        $item->create_at        = now();
+        $item->update_at        = now();
+        $item->save();
+        return $item;
     }
-    static function eliminarDoc($id){
-        $delete = DB::update('UPDATE tram_mst_documentosbase SET isDelete = 1 WHERE id = ?',[$id->id]);
-        return $delete;
-    }
+
     static function getHistoryDocs($user){
         return DB::table('tram_mdv_usuariordocumento')->where('USDO_NIDUSUARIOBASE', $user)->get();
     }

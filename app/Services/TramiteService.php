@@ -32,7 +32,7 @@ class TramiteService
             $depPertenece   = DB::table('tram_aux_dependencia_usuario_pertenece')->where('DEPUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
             $uniPertenece   = DB::table('tram_aux_unidad_usuario_pertenece')->where('UNIDUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
             $tramPertenece  = DB::table('tram_aux_tramite_usuario_pertenece')->where('TRAMUP_NIDUSUARIO', $usuario->USUA_NIDUSUARIO)->get();
-            
+
             $query->whereIn('d.iId', $depPertenece->pluck('DEPUP_NIDDEPENCIA'))
                     ->whereIn('a.iId', $uniPertenece->pluck('UNIDUP_NIDUNIDAD'))
                     ->whereIn('p.iId', $tramPertenece->pluck('TRAMUP_NIDTRAMITE'));
@@ -44,6 +44,8 @@ class TramiteService
             $query->where('d.Id', $data->dependencia);
         if(!is_null($data->registros))
             $registros = $data->registros;
+        if(!is_null($data->IntCantidadRegistros))
+            $registros = $data->IntCantidadRegistros;
 
         $tramites = $query->paginate($registros);
 
@@ -63,7 +65,7 @@ class TramiteService
                 $tramite->TRAM_NIDTRAMITE_CONFIG = $segundo->TRAM_NIDTRAMITE;
                 $tramite->TRAM_CTIPO_PERSONA = $segundo->TRAM_CTIPO_PERSONA;
             }
-                
+
         }
 
         return [ 'data' => $tramites];
@@ -98,7 +100,7 @@ class TramiteService
                     ->join('requesttypes as retyp', 'p.IdRequestType', '=', 'retyp.Id')
                     ->leftJoin('targettypes as tartyp', 'p.IdTargetType', '=', 'tartyp.Id')
                     ->leftJoin('daysrange as v','p.IdVigencyRange', '=', 'v.Id')
-                    ->select('p.*', 'p.iId as remtisId','d.Name as nameDependencia', 'p.CitizenDescription' ,'d.iId as dependenciaId' 
+                    ->select('p.*', 'p.iId as remtisId','d.Name as nameDependencia', 'p.CitizenDescription' ,'d.iId as dependenciaId'
                     ,'i.Name as nameInstrumento', 'v.Name as tipoVigencia', 'c.Name as community', 'cat.Name as categories'
                     , 'retyp.Name as requesttypes', 'tartyp.Name as targettypes')
                     ->where('p.iId', $tramiteID)->first();
@@ -216,7 +218,7 @@ class TramiteService
         $monto      = !is_null($objTramite->StaticAmount) ? $objTramite->StaticAmount : 0;
         $montoMin = !is_null($objTramite->CalculatedAmountMin) ? $objTramite->CalculatedAmountMin : 0;
         $montoMax = !is_null($objTramite->CalculatedAmountMax) ? $objTramite->CalculatedAmountMax : 0;
-       
+
         if($monto > $montoMin && $monto > $montoMax){
             $montoFinal = $monto;
         }else if($montoMin > $montoMax){
@@ -224,7 +226,7 @@ class TramiteService
         }else if($montoMax > $montoFinal){
             $montoFinal = $montoMax;
         }
-        
+
         $tramite['costo'] = [
             [
                 "titulo"        => "¿Este trámite o servicio tiene monto de derechos o aprovechamientos?",
@@ -251,7 +253,7 @@ class TramiteService
 
         $vigencia   = $objTramite->VigencyNumber == 0 || is_null($objTramite->VigencyNumber) ? "" : $objTramite->VigencyNumber;
         $rango      = $objTramite->VigencyNumber == 1 ? substr($objTramite->tipoVigencia, 0, -1)  : $objTramite->tipoVigencia;
-        
+
         $tramite['informacion_general'] = [
             [
                 "titulo"        => "Homoclave:",
@@ -319,22 +321,22 @@ class TramiteService
 
         $tramite['fundamento_legal'] = [
             [
-                "titulo" => "Nombre del Fundamento Jurídico", 
-                "opciones" => [], 
-                "adicional" => [], 
+                "titulo" => "Nombre del Fundamento Jurídico",
+                "opciones" => [],
+                "adicional" => [],
                 "descripcion" => $objTramite->LegalBasisOriginName
             ],
             [
-                "titulo" => "Artículo", 
-                "opciones" => [], 
-                "adicional" => [], 
+                "titulo" => "Artículo",
+                "opciones" => [],
+                "adicional" => [],
                 "descripcion" => $objTramite->LegalBasisOriginArticle
             ],
-           
-        ];
-       
 
-        
+        ];
+
+
+
 
         return $tramite;
     }
@@ -370,7 +372,7 @@ class TramiteService
     /**
      * Retorna los tramites de siegy
      * @param int $tramiteAccedeId
-     * @return Collection 
+     * @return Collection
      */
     public function getTramitesSiegy($tramiteAccedeId = null){
         $query = Cls_Tramite::where('TRAM_NIMPLEMENTADO', true);
@@ -412,8 +414,8 @@ class TramiteService
                     ->leftJoin('tram_mst_usuario as anaNom', 'anaNom.USUA_NIDUSUARIO' ,'=', 'ua.USUA_NIDUSUARIO')
                     ->where('v.USTR_NESTATUS','!=',1)
                     ->select(
-                        'v.*', 
-                        'ua.USUA_FECHA as fecha_asignacion', 
+                        'v.*',
+                        'ua.USUA_FECHA as fecha_asignacion',
                         DB::raw("concat(\"USUA_CNOMBRES\",' ',\"USUA_CPRIMER_APELLIDO\",' ',\"USUA_CSEGUNDO_APELLIDO\") as analista"),
                         DB::raw("(SELECT tur.\"USRE_CRESPUESTA\" FROM tram_mdv_usuariorespuestas as tur WHERE tur.\"USRE_NIDUSUARIOTRAMITE\"=v\".USTR_NIDUSUARIOTRAMITE\" and \"tur.USRE_NIDPREGUNTA\"=510 limit 1) as tram_razon_social"),
                         DB::raw("(SELECT tur.\"USRE_CRESPUESTA\" FROM tram_mdv_usuariorespuestas as tur WHERE tur.\"USRE_NIDUSUARIOTRAMITE\"=v.\"USTR_NIDUSUARIOTRAMITE\" and \"tur.USRE_NIDPREGUNTA\"=526 limit 1) as tram_rfc")
@@ -425,14 +427,14 @@ class TramiteService
                     ->leftJoin('tram_mst_usuario as anaNom', 'anaNom.USUA_NIDUSUARIO' ,'=', 'ua.USUA_NIDUSUARIO')
                     ->where('v.USTR_NESTATUS','!=',1)
                     ->select(
-                        'v.*', 
+                        'v.*',
                         'ua.USUA_FECHA as fecha_asignacion',
                         DB::raw("concat(\"USUA_CNOMBRES\",' ',\"USUA_CPRIMER_APELLIDO\",' ',\"USUA_CSEGUNDO_APELLIDO\") as analista"),
                         DB::raw("(SELECT tur.\"USRE_CRESPUESTA\" FROM tram_mdv_usuariorespuestas as tur WHERE tur.\"USRE_NIDUSUARIOTRAMITE\"=v.\"USTR_NIDUSUARIOTRAMITE\" and tur.\"USRE_NIDPREGUNTA\"=510 limit 1) as tram_razon_social"),
                         DB::raw("(SELECT tur.\"USRE_CRESPUESTA\" FROM tram_mdv_usuariorespuestas as tur WHERE tur.\"USRE_NIDUSUARIOTRAMITE\"=v.\"USTR_NIDUSUARIOTRAMITE\" and tur.\"USRE_NIDPREGUNTA\"=526 limit 1) as tram_rfc")
                     );
             }
-            
+
         }
 
         if($rol->ROL_CCLAVE != 'ADM'){
@@ -468,7 +470,7 @@ class TramiteService
             $query->where('v.USTR_NESTATUS', $request->estatus);
 
 
-        $registros  = !is_null($request->length) ? $request->length : 10; 
+        $registros  = !is_null($request->length) ? $request->length : 10;
         $registros  = $registros == -1 ? 1000000 : $registros;
         $order      = isset($request->order[0]['dir']) ? $request->order[0]['dir'] : 'desc';
         $order      = $request->order[0]['column'] == 0 ? 'desc' : 'asc';
@@ -490,10 +492,10 @@ class TramiteService
     }
 
     /**
-     * Retorna los tramites de consulta en base al usuario 
+     * Retorna los tramites de consulta en base al usuario
      */
     public function consultarSeguimiento(Request $request){
-        $orderBy    = 'v.USTR_DFECHAMODIFICADO'; 
+        $orderBy    = 'v.USTR_DFECHAMODIFICADO';
         $order      = "desc";
         $usuario    = Auth::user();
         $result     = [];
@@ -511,8 +513,8 @@ class TramiteService
             $query->where('v.TRAM_NIDCENTRO', $request->dependencia);
         if(!is_null($request->estatus))
             $query->where('v.USTR_NESTATUS', $request->estatus);
-        
-        
+
+
         /* Parametros para la paginanacion y el orden */
         if(!is_null($request->orderBy)){
             switch ($request->orderBy) {
@@ -554,57 +556,98 @@ class TramiteService
      * @return array
      */
     public function getTramitePublico(object $request){
-        /* $usuario    = User::find(973); // Auth::user();   
-        $rol        = $usuario->TRAM_CAT_ROL; */
+        $usuario = Auth::user();
 
-        /* if($usuario->USUA_NIDROL == 2){
-            if($usuario->USUA_NTIPO_PERSONA == 'FISICA')
-                $inTipoPersona = 1;
-            else
-                $inTipoPersona = $usuario->USUA_NTIPO_PERSONA == 'MORAL' ? 2 : 0;
-        } */
         $tipoPersona = 0;
-       try {
-            
-       
+        if($usuario->USUA_NIDROL == 2){
+            $tipoPersona = $usuario->USUA_NTIPO_PERSONA == 'FISICA' ? 1 : ($usuario->USUA_NTIPO_PERSONA == 'MORAL' ? 2 : 0);
+        }
 
+        $StrOrdenDir = "ASC";
+        if(isset($request->StrOrdenDir) && $request->StrOrdenDir != ""){
+            $StrOrdenDir = $request->StrOrdenDir;
+        }
 
+        $StrOrdenColumna = "";
+        if(isset($request->StrOrdenColumna) && $request->StrOrdenColumna != ""){
+            $StrOrdenColumna = $request->StrOrdenColumna;
+        }
 
-            $query  = DB::table('tram_view_tramite_publico')
-                       ->where('TRAM_NIMPLEMENTADO', true);
-   
-            if(isset($request->StrTexto) && $request->StrTexto != "")
-               $query->where('TRAM_CNOMBRE', 'ilike',"%".$request->StrTexto."%");
-            if(isset($request->dependenciaID))
-                $query->where('TRAM_NIDCENTRO', $request->dependenciaID);
-            /* if(isset($request->IntModalidad))
-                $IntModalidad = $request->IntModalidad; */
-            if(isset($request->IntClasificacion))
-                $query->where('TRAM_NTIPO', $request->IntClasificacion);
-            /* if(isset($request->StrAudiencia))
-                $StrAudiencia = $request->StrAudiencia; */
-           
-            $query->where('TRAM_TPERSONA', $tipoPersona);
-            
+        try {
+            //query filters
+            $query = Cls_Tramite::select(
+                'TRAM_NIDTRAMITE_ACCEDE AS TRAM_NIDTRAMITE',
+                'TRAM_NIDTRAMITE AS TRAM_NIDTRAMITE_CONFIG',
+                'TRAM_CNOMBRE AS TRAM_CNOMBRE',
+                'TRAM_CDESCRIPCION AS TRAM_CDESCRIPCION',
+                'TRAM_CCENTRO AS UNAD_CNOMBRE',
+                'TRAM_CCENTRO AS TRAM_CCENTRO',
+                'TRAM_NIDCENTRO AS TRAM_NIDCENTRO',
+                'TRAM_NIMPLEMENTADO AS TRAM_NIMPLEMENTADO',
+                'TRAM_NTIPO AS TRAM_NTIPO',
+                'TRAM_CTIPO_PERSONA AS TRAM_TPERSONA',
+                'TRAM_CTIPO_PERSONA AS TIPO_FIS_MOR',
+                'created_at AS created_at',
+                'updated_at AS updated_at',
+                DB::raw("\"TRAM_CTRAMITE_JSON\"::json->>'TIPO_PERSONA' as \"TRAM_CTIPO_PERSONA\""),
+            )->where('TRAM_NIMPLEMENTADO', 1);
 
+            if(isset($request->StrTexto) && $request->StrTexto != ""){
+                $query = $query->where('TRAM_CNOMBRE', 'ilike',"%".$request->StrTexto."%");
+            }
+            if(isset($request->IntDependencia) && $request->IntDependencia > 0){
+                $query = $query->where('TRAM_NIDCENTRO', $request->IntDependencia);
+            }
+            if(isset($request->IntClasificacion) && $request->IntClasificacion > 0){
+                $query = $query->where('TRAM_NTIPO', $request->IntClasificacion);
+            }
+            if($tipoPersona>0){
+                $query = $query->where(function($query) use($tipoPersona) {
+                    $query->orWhere('TRAM_CTIPO_PERSONA','=', $tipoPersona)
+                    ->orWhere('TRAM_CTIPO_PERSONA','=',0)
+                    ->orWhereNull('TRAM_CTIPO_PERSONA');
+                });
+            }
 
+            //query order arguments
+            if($StrOrdenDir != "ASC" && $StrOrdenDir != "DESC"){
+                $StrOrdenDir = "ASC";
+            }
 
+            $query = $query->orderBy('TRAM_CTIPO_PERSONA', $StrOrdenDir);
 
-               
-   
-               
-          
-           $order      = isset($request->order[0]['dir']) ? $request->order[0]['dir'] : 'desc';
-           $orderBy    = isset($request->order[0]['dir']) ? $request->columns[$request->order[0]['column']]['data'] : "TRAM_NIDTRAMITE";
-           $show       = isset($request->length) ? $request->length : 10;
-           $show       = $show == -1 ? 1000000 : $show;
-           $start      = isset($request->start) ? $request->start : 0;
-           $conteo     = $query;
-           $total      = $conteo->count();
-           $resultado  = $query->orderBy($orderBy, $order)->offset($start)->limit($show)->get();
+            if($StrOrdenColumna != ""){
+                $query = $query->orderBy($StrOrdenColumna, $StrOrdenDir);
+            }
+
+            //query paginate arguments
+            $page = 1;
+            if(isset($request->IntNumPagina) && $request->IntNumPagina > 0){
+                $page = $request->IntNumPagina;
+            }
+
+            $limit = 10;
+            if(isset($request->IntCantidadRegistros) && $request->IntCantidadRegistros > 0){
+                $limit = $request->IntCantidadRegistros;
+            }
+
+            $offset = $limit*($page-1);
+
+            $total = $query->count();
+            $result  = $query->limit($limit)->offset($offset)->get();
+
+            return [
+                "data" => $result,
+                "pagination" => [
+                    (object)[
+                        "TotalRegistros" => $total,
+                        "PaginaActual" => $page,
+                        "TotalPaginas" => ceil($total/$limit)
+                    ]
+                ]
+            ];
        } catch (Exception $ex) {
             dd($ex);
        }
-        return [ "data" => $resultado, "total" =>  $total];
     }
 }

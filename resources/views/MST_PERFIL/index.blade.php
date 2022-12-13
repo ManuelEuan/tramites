@@ -49,13 +49,14 @@
                                         <div class="MensajeSuccess"></div>
 
 
-                                        <input type="hidden" name="txtIdUsuario" value="{{ $usuario->USUA_NIDUSUARIO }}" />
+                                        <input type="hidden" id="txtIdUsuario" name="txtIdUsuario" value="{{ $usuario->USUA_NIDUSUARIO }}" />
                                         <input type="hidden" name="rdbTipo_Persona" value="{{ $usuario->USUA_NTIPO_PERSONA }}" />
                                         <div id="frmRegistro">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <p class="text-dark" id="divTxtRepresentante"><b>Datos de persona
-                                                            moral</b></p>
+                                                    <p class="text-dark" id="divTxtRepresentante">
+                                                        <b>Datos de persona moral</b>
+                                                    </p>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -63,7 +64,7 @@
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">RFC <span class="text-danger">*</span> <span class="text-primary">Se compone de 13
                                                                 caracteres</span></label>
-                                                        <input type="text" class="form-control" id="txtRfc" name="txtRfc" placeholder="RFC" value="{{ $usuario->USUA_CRFC }}" required disabled>
+                                                        <input type="text" class="form-control" id="txtRfc" name="USUA_CRFC" placeholder="RFC" value="{{ $usuario->USUA_CRFC }}" required disabled>
                                                         <span id="resultadoValidText" style="font-size: 12px;"></span>
                                                         <span id="resultadoExistRfc" style="font-size: 12px;"></span>
                                                     </div>
@@ -72,29 +73,28 @@
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">CURP<span class="text-danger">*</span><span class="text-primary">Se compone de 18 caracteres</span>
                                                             <span>&nbsp;&nbsp; <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCurpFisica', 1);"></i></span></label>
-                                                        <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpFisica" placeholder="CURP" value="{{ $usuario->USUA_CCURP }}" disabled>
+                                                        <input type="text" class="form-control txtCurp" name="USUA_CCURP" id="txtCurpFisica" placeholder="CURP" value="{{ $usuario->USUA_CCURP }}" disabled>
                                                         <span class="resultadoValidTextCurp" style="font-size: 12px;"></span>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 divRazon_Social">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Razón Social <span class="text-danger">*</span> <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtRazon_Social', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtRazon_Social" id="txtRazon_Social" placeholder="Razón Social" value="{{ $usuario->USUA_CRAZON_SOCIAL }}" disabled>
+                                                        <input type="text" class="form-control" name="USUA_CRAZON_SOCIAL" id="txtRazon_Social" placeholder="Razón Social" value="{{ $usuario->USUA_CRAZON_SOCIAL }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <p class="text-dark" id="divTxtRepresentante"><b>Datos del
-                                                            representante legal</b></p>
+                                                    <p class="text-dark" id="divTxtRepresentante"><b>Datos del representante legal</b></p>
                                                     <label for="bus-txt-centro-trabajo">Sexo <span class="text-danger">*</span><i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('rdbSexo', 2);"></i></span></label>
                                                     <div class="form-group">
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input rdbSexo" type="radio" value="F" name="rdbSexo" {{ $usuario->USUA_NTIPO_SEXO == 'F' ? 'checked' : '' }} required disabled>
+                                                            <input class="form-check-input rdbSexo" type="radio" value="F" name="USUA_NTIPO_SEXO" {{ $usuario->USUA_NTIPO_SEXO == 'F' ? 'checked' : '' }} required disabled>
                                                             <label class="form-check-label">Mujer</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input rdbSexo" type="radio" value="M" name="rdbSexo" {{ $usuario->USUA_NTIPO_SEXO == 'M' ? 'checked' : '' }} required disabled>
+                                                            <input class="form-check-input rdbSexo" type="radio" value="M" name="USUA_NTIPO_SEXO" {{ $usuario->USUA_NTIPO_SEXO == 'M' ? 'checked' : '' }} required disabled>
                                                             <label class="form-check-label">Hombre</label>
                                                         </div>
                                                     </div>
@@ -109,7 +109,7 @@
                                                             <div class="form-group">
                                                                 <label for="bus-txt-centro-trabajo">CURP <span class="text-danger">*</span><span class="text-primary">Se compone de 18
                                                                         caracteres</span> <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCurpMoral', 1);"></i></span></label>
-                                                                <input type="text" class="form-control txtCurp" name="txtCurp" id="txtCurpMoral" placeholder="CURP" value="{{ $usuario->USUA_CCURP }}" disabled>
+                                                                <input type="text" class="form-control txtCurp" name="USUA_CCURP" id="txtCurpMoral" placeholder="CURP" value="{{ $usuario->USUA_CCURP }}" disabled>
                                                                 <span class="resultadoValidTextCurp" style="font-size: 12px;"></span>
                                                             </div>
                                                         </div>
@@ -120,20 +120,20 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Nombre (s) <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtNombres', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtNombres" id="txtNombres" placeholder="Nombre (s)" value="{{ $usuario->USUA_CNOMBRES }}" required disabled>
+                                                        <input type="text" class="form-control" name="USUA_CNOMBRES" id="txtNombres" placeholder="Nombre (s)" value="{{ $usuario->USUA_CNOMBRES }}" required disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Primer apellido <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtPrimer_Apellido', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtPrimer_Apellido" id="txtPrimer_Apellido" placeholder="Primer apellido" value="{{ $usuario->USUA_CPRIMER_APELLIDO }}" required disabled>
+                                                        <input type="text" class="form-control" name="USUA_CPRIMER_APELLIDO" id="txtPrimer_Apellido" placeholder="Primer apellido" value="{{ $usuario->USUA_CPRIMER_APELLIDO }}" required disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Segundo apellido
                                                             <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtSegundo_Apellido', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtSegundo_Apellido" id="txtSegundo_Apellido" placeholder="Segundo apellido" value="{{ $usuario->USUA_CSEGUNDO_APELLIDO }}" disabled>
+                                                        <input type="text" class="form-control" name="USUA_CSEGUNDO_APELLIDO" id="txtSegundo_Apellido" placeholder="Segundo apellido" value="{{ $usuario->USUA_CSEGUNDO_APELLIDO }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,7 +146,7 @@
                                                         <label for="bus-txt-centro-trabajo">Fecha de Nacimiento: <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('fechaNacimientoFisica', 1);"></i>
                                                         </label>
                                                         <br>
-                                                        <input type="date" id="fechaNacimientoFisica" name="fechaNacimientoFisica" value="{{ $usuario->USUA_DFECHA_NACIMIENTO }}" disabled>
+                                                        <input type="date" id="fechaNacimientoFisica" name="USUA_DFECHA_NACIMIENTO" value="{{ $usuario->USUA_DFECHA_NACIMIENTO }}" disabled>
                                                     </div>
                                                 </div>
 
@@ -168,7 +168,7 @@
                                                                 <label for="bus-txt-centro-trabajo">Correo electronico
                                                                     <span class="text-danger">*</span>
                                                                     <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreo', 1);"></i></span></label>
-                                                                <input type="text" class="form-control" name="txtCorreo" id="txtCorreo" placeholder="ejemplo@correo.com" value="{{ $usuario->USUA_CCORREO_ELECTRONICO }}" disabled>
+                                                                <input type="text" class="form-control" name="USUA_CCORREO_ELECTRONICO" id="txtCorreo" placeholder="ejemplo@correo.com" value="{{ $usuario->USUA_CCORREO_ELECTRONICO }}" disabled>
                                                                 <span id="resultadoExistCorreoElectronico" style="font-size: 12px;"></span>
                                                             </div>
 
@@ -178,7 +178,7 @@
                                                             <div class="form-group">
                                                                 <label for="bus-txt-centro-trabajo">Correo electronico
                                                                     alternativo <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCorreoAlternativo', 1);"></i></span></label>
-                                                                <input type="text" class="form-control" name="txtCorreoAlternativo" id="txtCorreoAlternativo" placeholder="alternativo@correo.com" value="{{ $usuario->USUA_CCORREO_ALTERNATIVO }}" disabled>
+                                                                <input type="text" class="form-control" name="USUA_CCORREO_ALTERNATIVO" id="txtCorreoAlternativo" placeholder="alternativo@correo.com" value="{{ $usuario->USUA_CCORREO_ALTERNATIVO }}" disabled>
                                                                 <span id="resultadoExistCorreoElectronicoAlternativo" style="font-size: 12px;"></span>
                                                             </div>
 
@@ -202,7 +202,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control rdbTelefono" name="txtTelefono" id="txtTelefono" placeholder="9999999999" value="{{ $usuario->USUA_NTELEFONO }}" disabled>
+                                                        <input type="text" class="form-control rdbTelefono" name="USUA_NTELEFONO" id="USUA_CTEL_LOCAL" placeholder="9999999999" value="{{ $usuario->USUA_NTELEFONO }}" disabled>
                                                     </div>
                                                 </div>
 
@@ -214,21 +214,21 @@
                                                 <div class="col-md-4">
                                                     <label for="bus-txt-centro-trabajo">Nombre (s) <span class="text-danger">*</span> <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('nombrePersonaAutorizada', 1);"></i></label>
                                                     <div class="form-group">
-                                                        <input class="form-control" type="text" id="nombrePersonaAutorizada" name="nombrePersonaAutorizada" value="{{ $usuario->USUA_CNOMBRE_NOTIFICACION }}" placeholder="Nombre (s)" required disabled>
+                                                        <input class="form-control" type="text" id="nombrePersonaAutorizada" name="USUA_CNOMBRE_NOTIFICACION" value="{{ $usuario->USUA_CNOMBRE_NOTIFICACION }}" placeholder="Nombre (s)" required disabled>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <label for="bus-txt-centro-trabajo">Teléfono <span class="text-danger">*</span> <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('telefonoPersonaAutorizada', 1);"></i></label>
                                                     <div class="form-group">
-                                                        <input type="tel" class="form-control" id="telefonoPersonaAutorizada" name="telefonoPersonaAutorizada" value="{{ $usuario->USUA_CTEL_CELULAR_NOTIFICACION }}" placeholder="999999999" pattern="[(]{1}[0-9]{3}[) ]{2}[0-9]{3}[-]{1}[0-9]{4}" placeholder="No. de teléfono" required disabled>
+                                                        <input type="tel" class="form-control" id="telefonoPersonaAutorizada" name="USUA_CTEL_CELULAR_NOTIFICACION" value="{{ $usuario->USUA_CTEL_CELULAR_NOTIFICACION }}" placeholder="999999999" pattern="[(]{1}[0-9]{3}[) ]{2}[0-9]{3}[-]{1}[0-9]{4}" placeholder="No. de teléfono" required disabled>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <label for="bus-txt-centro-trabajo">Correo <span class="text-danger">*</span> <i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('correoPersonaAutorizada', 1);"></i></label>
                                                     <div class="form-group">
-                                                        <input class="form-control" type="text" id="correoPersonaAutorizada" name="correoPersonaAutorizada" value="{{ $usuario->USUA_CCORREO_NOTIFICACION }}" placeholder="Correo" required disabled>
+                                                        <input class="form-control" type="text" id="correoPersonaAutorizada" name="USUA_CCORREO_NOTIFICACION" value="{{ $usuario->USUA_CCORREO_NOTIFICACION }}" placeholder="Correo" required disabled>
                                                         <span id="errorPAutorizada" style="font-size: 12px;"></span>
                                                     </div>
                                                 </div>
@@ -246,26 +246,26 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Calle <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCalle_Particular', 1);"></i></span></label>
-                                                        <input type="text" class="form-control" name="txtCalle_Particular" id="txtCalle_Particular" placeholder="Calle" value="{{ $usuario->USUA_CCALLE_PARTICULAR }}" disabled>
+                                                        <input type="text" class="form-control" name="USUA_CCALLE_PARTICULAR" id="txtCalle_Particular" placeholder="Calle" value="{{ $usuario->USUA_CCALLE_PARTICULAR }}" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Número interior
                                                             <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtNumero_Interior_Particular', 1);"></i></span></label>
-                                                        <input type="number" class="form-control" name="txtNumero_Interior_Particular" id="txtNumero_Interior_Particular" placeholder="Número interior" value="{{ $usuario->USUA_NNUMERO_INTERIOR_PARTICULAR }}" disabled>
+                                                        <input type="number" class="form-control" name="USUA_NNUMERO_INTERIOR_PARTICULAR" id="txtNumero_Interior_Particular" placeholder="Número interior" value="{{ $usuario->USUA_NNUMERO_INTERIOR_PARTICULAR }}" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">Número exterior <span class="text-danger">*</span> <span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtNumero_Exterior_Particular', 1);"></i></span></label>
-                                                        <input type="number" class="form-control" name="txtNumero_Exterior_Particular" id="txtNumero_Exterior_Particular" placeholder="Número exterior" value="{{ $usuario->USUA_NNUMERO_EXTERIOR_PARTICULAR }}">
+                                                        <input type="number" class="form-control" name="USUA_NNUMERO_EXTERIOR_PARTICULAR" id="txtNumero_Exterior_Particular" placeholder="Número exterior" value="{{ $usuario->USUA_NNUMERO_EXTERIOR_PARTICULAR }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="bus-txt-centro-trabajo">C.P. <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('txtCP_Particular', 1);"></i></span></label>
-                                                        <input type="number" class="form-control" name="txtCP_Particular" id="txtCP_Particular" placeholder="C.P." value="{{ $usuario->USUA_NCP_PARTICULAR }}" disabled>
+                                                        <input type="number" class="form-control" name="USUA_NCP_PARTICULAR" id="txtCP_Particular" placeholder="C.P." value="{{ $usuario->USUA_NCP_PARTICULAR }}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -274,7 +274,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="cmbColonia_Particular">Colonia <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('cmbColonia_Particular', 1);"></i></span></label>
-                                                        <select class="combobox form-control" name="cmbColonia_Particular" id="cmbColonia_Particular" title="Colonia" value="{{ $usuario->USUA_CCOLONIA_PARTICULAR }}" disabled>
+                                                        <select class="combobox form-control" name="USUA_CCOLONIA_PARTICULAR" id="cmbColonia_Particular" title="Colonia" value="{{ $usuario->USUA_CCOLONIA_PARTICULAR }}" disabled>
                                                             <option value="">Seleccione...</option>
                                                             <option value="Zona Centro" {{ $usuario->USUA_CCOLONIA_PARTICULAR == 'Zona Centro' ? 'selected' : '' }}>
                                                                 Zona Centro</option>
@@ -294,7 +294,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="cmbMunicipio_Particular">Municipio <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('cmbMunicipio_Particular', 1);"></i></span></label>
-                                                        <select class="combobox form-control" name="cmbMunicipio_Particular" id="cmbMunicipio_Particular" title="Municipio" disabled>
+                                                        <select class="combobox form-control" name="USUA_CMUNICIPIO_PARTICULAR" id="cmbMunicipio_Particular" title="Municipio" disabled>
                                                             <option value="">Seleccione...</option>
                                                             <option value="Chihuahua" {{ $usuario->USUA_CMUNICIPIO_PARTICULAR == 'Chihuahua' ? 'selected' : '' }}>
                                                                 Chihuahua</option>
@@ -306,7 +306,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="cmbEstado_Particular">Estado <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('cmbEstado_Particular', 1);"></i></span></label>
-                                                        <select class="combobox form-control" name="cmbEstado_Particular" id="cmbEstado_Particular" title="Estado" disabled>
+                                                        <select class="combobox form-control" name="USUA_CESTADO_PARTICULAR" id="cmbEstado_Particular" title="Estado" disabled>
                                                             <option value="">Seleccione...</option>
                                                             <option value="Chihuahua" {{ $usuario->USUA_CESTADO_PARTICULAR == 'Chihuahua' ? 'selected' : '' }}>
                                                                 Chihuahua</option>
@@ -316,7 +316,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="cmbPais_Particular">País <span class="text-danger">*</span><span>&nbsp;&nbsp;<i class="fa fa-pencil-alt icon-edit" onclick="TRAM_FN_ENABLE('cmbPais_Particular', 1);"></i></span></label>
-                                                        <select class="combobox form-control" name="cmbPais_Particular" id="cmbPais_Particular" title="País" disabled>
+                                                        <select class="combobox form-control" name="USUA_CPAIS_PARTICULAR" id="cmbPais_Particular" title="País" disabled>
                                                             <option value="">Seleccione...</option>
                                                             <option value="México" {{ $usuario->USUA_CPAIS_PARTICULAR == 'México' ? 'selected' : '' }}>
                                                                 México</option>
@@ -761,27 +761,27 @@
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Calle</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtCalleParticular" name="txtCalleParticular" value="{{ $usuario->USUA_CCALLE_PARTICULAR }}" placeholder="21">
+                                                                                    <input type="text" class="form-control" id="txtCalleParticular" name="USUA_CCALLE_PARTICULAR" value="{{ $usuario->USUA_CCALLE_PARTICULAR }}" placeholder="21">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Número
                                                                                         interior</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtNumeroInteriorParticular" name="txtNumeroInteriorParticular" value="{{ $usuario->USUA_NNUMERO_INTERIOR_PARTICULAR }}" placeholder="Número interior">
+                                                                                    <input type="text" class="form-control" id="txtNumeroInteriorParticular" name="USUA_NNUMERO_INTERIOR_PARTICULAR" value="{{ $usuario->USUA_NNUMERO_INTERIOR_PARTICULAR }}" placeholder="Número interior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Número
                                                                                         exterior</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtNumeroExteriorParticular" name="txtNumeroExteriorParticular" value="{{ $usuario->USUA_NNUMERO_EXTERIOR_PARTICULAR }}" placeholder="Número exterior">
+                                                                                    <input type="text" class="form-control" id="txtNumeroExteriorParticular" name="USUA_NNUMERO_EXTERIOR_PARTICULAR" value="{{ $usuario->USUA_NNUMERO_EXTERIOR_PARTICULAR }}" placeholder="Número exterior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">C.P.</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroCPParticular" name="txtNumeroCPParticular" value="{{ $usuario->USUA_NCP_PARTICULAR }}" placeholder="97000">
+                                                                                    <input type="number" class="form-control" id="txtNumeroCPParticular" name="USUA_NCP_PARTICULAR" value="{{ $usuario->USUA_NCP_PARTICULAR }}" placeholder="97000">
                                                                                 </div>
 
                                                                             </div>
@@ -817,7 +817,7 @@
                                                                                     <label for="">Colonia</label>
                                                                                     <br>
                                                                                     <!-- <input type="text" class="form-control" id="txtColoniaParticular" name="txtColoniaParticular" value="{{ $usuario->USUA_CCOLONIA_PARTICULAR }}" placeholder="Centro">-->
-                                                                                    <select class="combobox form-control optionsColoniaParticular" name="txtColoniaParticular"
+                                                                                    <select class="combobox form-control optionsColoniaParticular" name="USUA_CCOLONIA_PARTICULAR"
                                                                                         id="txtColoniaParticular" title="Colonia">
                                                                                         <option value="" selected="true" disabled="disabled">Selecione una colonia.</option>
                                                                                     </select>
@@ -850,27 +850,27 @@
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Calle</label>
                                                                                     <br>
-                                                                                    <input type="text" class="form-control" id="txtCalleFiscal" name="txtCalleFiscal" value="{{ $usuario->USUA_CCALLE }}" placeholder="21">
+                                                                                    <input type="text" class="form-control" id="txtCalleFiscal" name="USUA_CCALLE" value="{{ $usuario->USUA_CCALLE }}" placeholder="21">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Número
                                                                                         interior</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroInteriorFiscal" name="txtNumeroInteriorFiscal" value="{{ $usuario->USUA_NNUMERO_INTERIOR }}" placeholder="Número interior">
+                                                                                    <input type="number" class="form-control" id="txtNumeroInteriorFiscal" name="USUA_NNUMERO_INTERIOR" value="{{ $usuario->USUA_NNUMERO_INTERIOR }}" placeholder="Número interior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">Número
                                                                                         exterior</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtNumeroExteriorFiscal" name="txtNumeroExteriorFiscal" value="{{ $usuario->USUA_NNUMERO_EXTERIOR }}" placeholder="Número exterior">
+                                                                                    <input type="number" class="form-control" id="txtNumeroExteriorFiscal" name="USUA_NNUMERO_EXTERIOR" value="{{ $usuario->USUA_NNUMERO_EXTERIOR }}" placeholder="Número exterior">
                                                                                 </div>
 
                                                                                 <div class="col-md-3">
                                                                                     <label for="">C.P.</label>
                                                                                     <br>
-                                                                                    <input type="number" class="form-control" id="txtCPFiscal" name="txtCPFiscal" value="{{ $usuario->USUA_NCP }}" placeholder="97000">
+                                                                                    <input type="number" class="form-control" id="txtCPFiscal" name="USUA_NCP" value="{{ $usuario->USUA_NCP }}" placeholder="97000">
                                                                                 </div>
 
                                                                             </div>
@@ -1744,10 +1744,10 @@
             if(curpPrincipal == value){
                 return;
             }
-
-            $.get('/registrar/validar_curp/' + value, function(data) {
+            let id = $("#txtIdUsuario").val();
+            $.get('/registrar/validar_curp/' + value.toUpperCase()+"/"+id, function(data) {
                 //Validamos si existe un usuario con el correo capturado
-                if (data.status == "success") {
+                if (data.status != "success") {
                     
                     $(".iconCurp_Valido").hide();
                     $(".resultadoValidTextCurp").html(
@@ -1838,16 +1838,15 @@
             });
         });
 
-        document.getElementById('txtTelefono').addEventListener('input', function (e) {
-            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-        });
-
         document.getElementById('telefonoPersonaAutorizada').addEventListener('input', function (e) {
             var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
             e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
         });
 
+        document.getElementById('USUA_CTEL_LOCAL').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
 
         $("#correoPersonaAutorizada").change(function(){
             var value = $(this).val();
