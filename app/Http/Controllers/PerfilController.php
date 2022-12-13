@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\User;
 use DateTime;
 use Exception;
-use App\Cls_Rol;
 use App\Cls_Usuario;
 use App\Cls_Bitacora;
 use App\Cls_Sucursal;
 use Illuminate\Http\Request;
 use App\Services\VariosService;
 use App\Models\Cls_DocumentosBase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class PerfilController extends Controller
@@ -65,6 +65,7 @@ class PerfilController extends Controller
         $usuario['documentos'] = $data;
         return view('MST_PERFIL.index', compact('usuario'));
     }
+
     public function listarDocs(){
         $ObjAuth    = Auth::user();
         $docsUser   = Cls_Usuario::getTipoDocs($ObjAuth->USUA_NTIPO_PERSONA);
@@ -221,67 +222,63 @@ class PerfilController extends Controller
     {
         $response = [];
         try {
-            //$request->txtRol = Cls_Rol::TRAM_SP_OBTENERROLPORCLAVE("CDNS");
-            $request->txtRol = Auth::user()->TRAM_CAT_ROL->ROL_NIDROL; //ROL_NIDROL
+            DB::beginTransaction();
+            $existUser = Cls_Usuario::where("USUA_CCURP", $request->USUA_CCURP)->first();
 
-            if (Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE == "CDNS")
-                //$request->txtTelefono = "";
-            $request->txtExtension = "";
-            $request->txtUsuario = "";
-
-            $existUser = Cls_Usuario::where("USUA_CCURP", $request->txtCurp)->first();
-            if($existUser){
+            if(!is_null($existUser)){
                 if($existUser->USUA_NIDUSUARIO != $request->txtIdUsuario){
                     $response = [
-                        'codigo' => 400,
-                        'status' => "error",
-                        'message' => 'CURP HA SIDO REGISTRADO POR ALGUIEN MAS'
+                        'codigo'    => 400,
+                        'status'    => "error",
+                        'message'   => 'CURP HA SIDO REGISTRADO POR ALGUIEN MAS'
                     ];
+                    return $response;
                 }
             }
 
-            if(count($response)<=0){
-                Cls_Usuario::TRAM_SP_MODIFICARUSUARIO($request);
+            $usuario = User::find($request->txtIdUsuario);
+            $usuario->update($request->all());
+            Cls_Sucursal::where('SUCU_NIDUSUARIO',$request->txtIdUsuario)->delete();
 
-                //Eliminar sucursal actuales
-                Cls_Sucursal::TRAM_SP_ELIMINARSUCURSAL_USUARIO($request->txtIdUsuario);
-                //Agregar sucursales
-                if(isset($request->lstSucursal)){
-                    foreach ($request->lstSucursal as $value) {
-                        $ObjSucursal = array(
-                            'txtUsuario'    => $request->txtIdUsuario,
-                            'txtCalle'      => $value['txtCalle_Sucursal'],
-                            'txtCP'         => $value['txtCP_Sucursal'],
-                            'cmbColonia'    => $value['cmbColonia_Sucursal'],
-                            'cmbMunicipio'  => $value['cmbMunicipio_Sucursal'],
-                            'cmbEstado'     => $value['cmbEstado_Sucursal'],
-                            'cmbPais'       => $value['cmbPais_Sucursal'],
-                            'txtNumero_Interior' => $value['txtNumero_Interior_Sucursal'],
-                            'txtNumero_Exterior' => $value['txtNumero_Exterior_Sucursal'],
-                        );
-                        Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
-                    }
+            //Agregar sucursales
+            if(isset($request->lstSucursal)){
+                foreach ($request->lstSucursal as $value) {
+                    $ObjSucursal = array(
+                        'txtUsuario'    => $request->txtIdUsuario,
+                        'txtCalle'      => $value['txtCalle_Sucursal'],
+                        'txtCP'         => $value['txtCP_Sucursal'],
+                        'cmbColonia'    => $value['cmbColonia_Sucursal'],
+                        'cmbMunicipio'  => $value['cmbMunicipio_Sucursal'],
+                        'cmbEstado'     => $value['cmbEstado_Sucursal'],
+                        'cmbPais'       => $value['cmbPais_Sucursal'],
+                        'txtNumero_Interior' => $value['txtNumero_Interior_Sucursal'],
+                        'txtNumero_Exterior' => $value['txtNumero_Exterior_Sucursal'],
+                    );
+                    Cls_Sucursal::create($ObjSucursal);
                 }
-                //Insertar bitacora
-                $ObjBitacora = new Cls_Bitacora();
-                $ObjBitacora->BITA_NIDUSUARIO = Auth::user()->USUA_NIDUSUARIO;
-                $ObjBitacora->BITA_CMOVIMIENTO = "Edición de perfil";
-                $ObjBitacora->BITA_CTABLA = Auth::user()->TRAM_CAT_ROL->ROL_CCLAVE != "CDNS" ? "tram_mst_usuario" : "tram_mst_usuario y tram_mdv_sucursal";
-                $ObjBitacora->BITA_CIP = $request->ip();
-                $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
-                $ObjBitacora->save();
-                
-                $response = [
-                    'codigo' => 200,
-                    'status' => "success",
-                    'message' => '¡Éxito! Los datos se han guardado correctamente.'
-                ];
             }
-        } catch (Exception $e) {
+
+            //Insertar bitacora
+            $ObjBitacora = new Cls_Bitacora();
+            $ObjBitacora->BITA_NIDUSUARIO   = $existUser->USUA_NIDUSUARIO;
+            $ObjBitacora->BITA_CMOVIMIENTO  = "Edición de perfil";
+            $ObjBitacora->BITA_CTABLA       = $existUser->TRAM_CAT_ROL->ROL_CCLAVE != "CDNS" ? "tram_mst_usuario" : "tram_mst_usuario y tram_mdv_sucursal";
+            $ObjBitacora->BITA_CIP          = $request->ip();
+            $ObjBitacora->BITA_FECHAMOVIMIENTO = now();
+            $ObjBitacora->save();
+            
             $response = [
-                'codigo' => 400,
-                'status' => "error",
-                'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " . $e->getMessage()
+                'codigo'    => 200,
+                'status'    => "success",
+                'message'   => '¡Éxito! Los datos se han guardado correctamente.'
+            ];
+            DB::commit(); 
+        } catch (Exception $e) { dd($e);
+            DB::rollBack();
+            $response = [
+                'codigo'    => 400,
+                'status'    => "error",
+                'message'   => "Ocurrió una excepción, favor de contactar al administrador del sistema , " . $e->getMessage()
             ];
         }
 

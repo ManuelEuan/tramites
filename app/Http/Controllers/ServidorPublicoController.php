@@ -36,7 +36,10 @@ class ServidorPublicoController extends Controller
     }
 
     public function consultar(){
-        $result = Cls_Usuario::TRAM_SP_CONSULTAR_USUARIOS();
+        $result = DB::table('tram_mst_usuario as a')
+            ->join('tram_cat_rol as b', 'a.USUA_NIDROL', '=', 'b.ROL_NIDRO')
+            ->where( 'a.USUA_NIDROL', '!=', 2)->get();
+
         $response = [
             'data' => $result,
         ];

@@ -50,7 +50,7 @@ class RegistroController extends Controller
                         'cmbEstado'     => '0',
                         'cmbPais'       => '0'
                     );
-                    Cls_Sucursal::TRAM_SP_AGREGARSUCURSAL($ObjSucursal);
+                    Cls_Sucursal::create($ObjSucursal);
                 }
 
                 //Envia correo
@@ -93,15 +93,20 @@ class RegistroController extends Controller
         return Response()->json($response);
     }
 
-    public function validar_curp($StrCurp){
+    public function validar_curp($StrCurp, $id){
+        $response = ['codigo' =>  200, 'status' =>  "success", 'message' => "Correcto"];
+        $user = User::where('USUA_CCURP',$StrCurp)->first();
 
-        $IntResult = Cls_Usuario::TRAM_SP_VALIDAR_CURP($StrCurp);
-        $response = [
-            'codigo' => $IntResult > 0 ? 200 : 400, 
-            'status' => $IntResult > 0 ? "success" : "error", 
-            'message' => $IntResult > 0 ? 'El correo electrónico ya existe en el sistema, por favor ingresa con tu usuario y contraseña.' : "Ocurrió un excepción, favor de contactar al administrador del sistema <<>>"
-        ];
-        //dd($response);
+        if(!is_null($user)){
+            if($user->USUA_NIDUSUARIO != $id){
+                $response = [
+                    'codigo' => 400, 
+                    'status' => "error", 
+                    'message' => 'El correo electrónico ya existe en el sistema, por favor ingresa con tu usuario y contraseña.'
+                ];
+            }
+        }
+
         return Response()->json($response);
     }
 

@@ -9,7 +9,7 @@ class PermisoRolController extends Controller
 {
     public function consultar($id)
     {
-        $result = Cls_PermisoRol::TRAM_SP_CONSULTARPERMISOROL($id);
+        $result = Cls_PermisoRol::where('PROL_NIDROL',$id)->get();
         return Response()->json($result);
     }
 }

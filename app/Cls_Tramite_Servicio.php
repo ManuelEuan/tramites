@@ -37,32 +37,6 @@ class Cls_Tramite_Servicio extends Model
     public $TRAM_CCONTACTO;
     public $TRAM_CDESCRIPCION;
 
-    public function TRAM_SP_CONSULTAR_TRAMITE_PUBLICO()
-    {
-        $sql = "call TRAM_SP_CONSULTAR_TRAMITE_PUBLICO('$this->StrTexto', '$this->IntDependencia', '$this->IntModalidad',
-        '$this->IntClasificacion', '$this->IntNumPagina','$this->IntCantidadRegistros', '$this->StrOrdenColumna',
-        '$this->StrOrdenDir','$this->IntUsuarioId', '$this->StrAudiencia')";
-
-        $pdo = DB::connection()->getPdo();
-        $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
-        $stmt = $pdo->prepare($sql, [\PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL]);
-        $exec = $stmt->execute();
-
-        //Primer resultado
-        $first = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
-        //Segundo resultado
-        $stmt->nextRowset();
-        $second = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
-        $data = [
-            'data' => $first,
-            'pagination' => $second,
-        ];
-
-        return $data;
-    }
-
     public function TRAM_CONSULTAR_DETALLE_TRAMITE($TRAM_NIDTRAMITE_CONFIG){
         return  DB::table(' tram_mst_tramite as a')
                     ->join('tram_mdv_usuariotramite as b', 'a.TRAM_NIDTRAMITE', '=', 'b.USTR_NIDTRAMITE')
@@ -344,11 +318,11 @@ class Cls_Tramite_Servicio extends Model
                 "mensaje" => "¡Éxito! acción realizada con éxito.",
                 "codigo" => 200
             ];
-        } catch (Throwable $th) {
+        } catch (Exception $th) {
             $response = [
-                "estatus" => "error",
-                "mensaje" => "Ocurrió un error: " . $th->getMessage(),
-                "codigo" => 400
+                "estatus"   => "error",
+                "mensaje"   => "Ocurrió un error: " . $th->getMessage(),
+                "codigo"    => 400
             ];
         }
 
@@ -360,15 +334,10 @@ class Cls_Tramite_Servicio extends Model
     } 
  
 
-    static function getConfigDocumentos($nombre) 
-    {
-        //$docs = DB::select("SELECT * FROM `tram_mst_configdocumentos` WHERE NOMBRE = '".$nombre."' LIMIT 0,1");
-        
-        //return $docs;
-        $response = DB::selectOne('SELECT * FROM tram_mst_configdocumentos WHERE NOMBRE =  ?',
-        array($nombre));
-        return $response;
-    } 
+    static function getConfigDocumentos($nombre) {
+        return DB::table('tram_mst_configdocumentos')->where('NOMBRE', $nombre)->first();
+    }
+
     static function getTipoDocsBASE($idUSER)
     {
         $docsUser = DB::select("SELECT * FROM `tram_mst_documentosbase` 

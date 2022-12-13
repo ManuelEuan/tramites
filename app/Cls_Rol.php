@@ -11,18 +11,6 @@ class Cls_Rol extends Model
     protected $table        = 'tram_cat_rol';
     protected $fillable     = ['ROL_NIDROL', 'ROL_CNOMBRE', 'ROL_CDESCRIPCION', 'ROL_CCLAVE'];
     protected $primaryKey   = 'ROL_NIDROL';
-    protected $with         = ['TRAM_DET_PERMISOROL'];
-
-    static function TRAM_SP_CONSULTARROL(){
-        return DB::select(
-            'call TRAM_SP_CONSULTARROL()'
-        );
-    }
-
-    static function TRAM_SP_OBTENERROL($IntId){
-        return DB::select('call TRAM_SP_OBTENERROL(?)'
-        , array($IntId))[0];
-    }
     
     static function TRAM_SP_OBTENERROLPORCLAVE($clave){
         return DB::table('tram_cat_rol')->where('ROL_CCLAVE', $clave)->first();

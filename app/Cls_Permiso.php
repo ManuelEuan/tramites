@@ -9,7 +9,8 @@ class Cls_Permiso extends Model
 {
     protected $connection   = 'pgsql';
     protected $table        = 'tram_cat_permiso';
-    protected $with         = ['TRAM_CAT_CATEGORIA_PERMISO'];
+    protected $fillable     = ['PERMI_CNOMBRE', 'PERMI_CDESCRIPCION', 'PERMI_CICONO', 'PERMI_CRUTA','PERMI_NIDCATEGORIA_PERMISO'];
+    protected $primaryKey   = 'PERMI_NIDPERMISO';
 
     static function TRAM_SP_CONSULTARPERMISO(){
         return DB::select(

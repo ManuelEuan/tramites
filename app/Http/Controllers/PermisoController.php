@@ -8,6 +8,10 @@ use Exception;
 
 class PermisoController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
         return view('CAT_PERMISO.index');
@@ -15,7 +19,7 @@ class PermisoController extends Controller
     
     public function consultar(Request $request)
     {
-        $result = Cls_Permiso::TRAM_SP_CONSULTARPERMISO();
+        $result = Cls_Permiso::all();
         $response = [
             'data' => $result,
         ];

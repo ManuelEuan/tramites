@@ -41,13 +41,6 @@ class Cls_Usuario extends Model
         return $docsExpedienteUSer;
     }
 
-    static function TRAM_SP_VALIDAR_CURP($StrCurp)
-    {
-        $ObjUser = DB::select("SELECT * FROM tram_mst_usuario WHERE USUA_CCURP = '$StrCurp'");
-
-        return $ObjUser;
-    }
-
     static function TRAM_FN_VALIDAR_RECAPTCHA($StrRecaptcha)
     {
         $ch = curl_init();
@@ -62,16 +55,6 @@ class Cls_Usuario extends Model
         return $arrResponse;
     }
 
-    static function TRAM_SP_MODIFICARUSUARIO(Request $request)
-    {
-        return DB::statement(
-            'call TRAM_SP_MODIFICARUSUARIO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            array(
-                $request->txtRol, $request->rdbTipo_Persona, $request->txtRfc, $request->txtCurp, $request->rdbSexo, $request->txtRazon_Social, $request->txtNombres, $request->txtPrimer_Apellido, $request->txtSegundo_Apellido, $request->txtCalleFiscal, $request->txtNumeroInteriorFiscal, $request->txtNumeroExteriorFiscal, $request->txtCPFiscal, $request->txtColoniaFiscal, 0,$request->txtMunicipioFiscal, 0,$request->txtEstadoFiscal, 0, $request->txtPaisFiscal, 0, $request->txtCorreo, $request->txtCorreoAlternativo, $request->txtCalleParticular, $request->txtNumeroInteriorParticular, $request->txtNumeroExteriorParticular, $request->txtNumeroCPParticular, $request->txtColoniaParticular,  0, $request->txtMunicipioParticular, 0, $request->txtEstadoParticular, 0,  $request->txtPaisParticular, 0, $request->txtIdUsuario,  $request->txtTelefono, $request->txtExtension, $request->txtUsuario, $request->fechaNacimientoFisica ?? null, $request->fechaConstitucionMoral ?? null, $request->nombrePersonaAutorizada, $request->telefonoPersonaAutorizada ?? 0, $request->correoPersonaAutorizada
-            )
-        );
-    }
-
     static function TRAM_SP_AGREGAR_ACCESO($IntIdUsuario, $BolAccesoValido)
     {
         return DB::table('tram_dat_acceso')->insert([
@@ -84,11 +67,6 @@ class Cls_Usuario extends Model
     static function TRAM_SP_ELIMINAR_ACCESO_NO_VALIDO($IntIdUsuario)
     {
         DB::table('tram_dat_acceso')->where('ACCE_NIDUSUARIO', $IntIdUsuario)->delete();
-    }
-
-    static function TRAM_SP_CONSULTAR_USUARIOS()
-    {
-        return DB::select('CALL TRAM_SP_CONSULTAR_USUARIOS()');
     }
 
     static function TRAM_SP_AGREGAR_DEPENDENCIA_USUARIO_ACCESO($IntIdDependencia, $IntIdUsuario)

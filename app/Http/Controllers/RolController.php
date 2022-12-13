@@ -8,24 +8,24 @@ use Exception;
 
 class RolController extends Controller
 {
-    public function index(Request $request)
-    {
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
+    public function index(Request $request){
         return view('CAT_ROL.index');
     }
     
-    public function consultar(Request $request)
-    {
-        $result = Cls_Rol::TRAM_SP_CONSULTARROL();
+    public function consultar(Request $request) {
         $response = [
-            'data' => $result,
+            'data' => Cls_Rol::all()
         ];
 
         return Response()->json($response);
     }
     
-    public function obtener($id)
-    {
-        $result = Cls_Rol::TRAM_SP_OBTENERROL($id);
+    public function obtener($id) {
+        $result = Cls_Rol::find($id);
         return Response()->json($result);
     }
 
