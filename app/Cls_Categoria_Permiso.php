@@ -9,10 +9,7 @@ class Cls_Categoria_Permiso extends Model
 {
     protected $connection   = 'pgsql';
     protected $table        = 'tram_cat_categoria_permiso';
-
-    static function TRAM_SP_CONSULTAR_CATEGORIA_PERMISO(){
-        return DB::select(
-            'call TRAM_SP_CONSULTAR_CATEGORIA_PERMISO()'
-        );
-    }
+    protected $fillable     = ['CPERMI_NIDCATEGORIA_PERMISO', 'CPERMI_CNOMBRE'];
+    protected $primaryKey   = 'CPERMI_NIDCATEGORIA_PERMISO';
+    public $timestamps      = false;
 }

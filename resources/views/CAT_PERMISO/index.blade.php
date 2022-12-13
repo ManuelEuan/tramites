@@ -191,7 +191,7 @@
         $.get('/categoria_permiso/consultar', function (data) {
             console.log(data);
 
-            _html += '<select class="form-control" name="IntCategoria" id="IntCategoria"><option>selecionar...</option>';
+            _html += '<select class="form-control" name="IntCategoria" id="IntCategoria"><option value="0">selecionar...</option>';
             data.forEach(item => {
                 _html += '<option value="'+ item.CPERMI_NIDCATEGORIA_PERMISO +'">'+ item.CPERMI_CNOMBRE +'</option>';
             });

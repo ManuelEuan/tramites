@@ -29,14 +29,21 @@ class PermisoController extends Controller
 
     public function obtener($id)
     {
-        $result = Cls_Permiso::TRAM_SP_OBTENERPERMISO($id)[0];
+        $result = Cls_Permiso::find($id);
         return Response()->json($result);
     }
 
     public function agregar(Request $request){
-        $response = [];
+        $response = ['codigo' => 200, 'status' => "success", 'message' => 'Los datos se han guardado correctamente.'];
         try {
-            Cls_Permiso::TRAM_SP_AGREGARPERMISO($request);
+            $permiso = new Cls_Permiso();
+            $permiso->PERMI_CNOMBRE         = $request->StrNommbre;
+            $permiso->PERMI_CDESCRIPCION    = $request->StrDescripcion;
+            $permiso->PERMI_CICONO          = $request->StrIcono;
+            $permiso->PERMI_CRUTA           = $request->StrRuta;
+            $permiso->PERMI_NIDCATEGORIA_PERMISO = $request->IntCategoria;
+            $permiso->save();
+            $respoonse['item'] = $permiso;
         }
         catch(Exception $e) {
             $response = [
@@ -45,20 +52,19 @@ class PermisoController extends Controller
                 'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema , " .$e->getMessage()
             ];
         }
-
-        $response = [
-            'codigo' => 200, 
-            'status' => "success", 
-            'message' => 'Los datos se han guardado correctamente.'
-        ];
-
         return Response()->json($response);
     }
 
     public function modificar(Request $request){
-        $response = [];
+        $response = ['codigo' => 200, 'status' => "success", 'message' => 'Los datos se han guardado correctamente.'];
         try {
-            Cls_Permiso::TRAM_SP_MODIFICARPERMISO($request);
+            $permiso = Cls_Permiso::find($request->IntId);
+            $permiso->PERMI_CNOMBRE         = $request->StrNommbre;
+            $permiso->PERMI_CDESCRIPCION    = $request->StrDescripcion;
+            $permiso->PERMI_CICONO          = $request->StrIcono;
+            $permiso->PERMI_CRUTA           = $request->StrRuta;
+            $permiso->PERMI_NIDCATEGORIA_PERMISO = $request->IntCategoria;
+            $permiso->save();
         }
         catch(Exception $e) {
             $response = [
@@ -67,20 +73,13 @@ class PermisoController extends Controller
                 'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema " .$e->getMessage()
             ];
         }
-
-        $response = [
-            'codigo' => 200, 
-            'status' => "success", 
-            'message' => 'Los datos se han guardado correctamente.'
-        ];
-
         return Response()->json($response);
     }
 
     public function eliminar(Request $request){
-        $response = [];
+        $response = ['codigo' => 200, 'status' => "success", 'message' => 'Los datos se han guardado correctamente.'];
         try {
-            Cls_Permiso::TRAM_SP_ELIMINARPERMISO($request);
+            Cls_Permiso::find($request->IntId)->delete();
         }
         catch(Exception $e) {
             $response = [
@@ -89,13 +88,6 @@ class PermisoController extends Controller
                 'message' => "Ocurrió una excepción, favor de contactar al administrador del sistema " .$e->getMessage()
             ];
         }
-
-        $response = [
-            'codigo' => 200, 
-            'status' => "success", 
-            'message' => 'Los datos se han eliminado.'
-        ];
-
         return Response()->json($response);
     }
 }

@@ -9,7 +9,7 @@ class CategoriaPermisoController extends Controller
 {
     public function consultar()
     {
-        $result = Cls_Categoria_Permiso::TRAM_SP_CONSULTAR_CATEGORIA_PERMISO();
+        $result = Cls_Categoria_Permiso::all();
         return Response()->json($result);
     }
 }
