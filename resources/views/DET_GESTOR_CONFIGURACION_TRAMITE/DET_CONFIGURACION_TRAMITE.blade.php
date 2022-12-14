@@ -706,11 +706,11 @@
                         //Agregar el formulario ya seleccionado
                         if (list_formularios.length > 0) {
 
-                            var formularioSelect = list_formularios.find(x => x.FORM_NIDFORMULARIO === id_formulario);
+                            var formularioSelect = list_formularios.find(x => x.FORM_NID === id_formulario);
 
                             if (typeof formularioSelect !== 'undefined') {
 
-                                var activo_ = formularioSelect.total > 0 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
+                                var activo_ = formularioSelect.FORM_BACTIVO ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
                                 var check = "checked";
 
                                 var itemFormulario = '<div class="row">' +
@@ -725,7 +725,7 @@
                                     '<div class="col-2" style="align-items: center; display: flex; justify-content: center;">' +
                                     '<div class="form-group">' +
                                     '<div class="form-check">' +
-                                    '<input ' + check + ' data-formulario="' + formularioSelect.FORM_NIDFORMULARIO + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
+                                    '<input ' + check + ' data-formulario="' + formularioSelect.FORM_NID + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
                                     '</div>' +
                                     '</div>' +
                                     '</div>' +
@@ -931,7 +931,7 @@
                         // }
 
                         tramite_ = response;
-                        id_formulario = tramite_.formularios[0].FORM_NIDFORMULARIO;
+                        id_formulario = tramite_.formularios[0].FORM_NID;
                         TRAM_FN_AGREGAR_SECCION(tramite_.secciones);
                         TRAM_AJX_OBTENER_DOCUMENTO_TRAMITE(tramite_.documentos);
 
@@ -1274,11 +1274,11 @@
                     //Agregar el formulario ya seleccionado
                     if (list_formularios.length > 0) {
 
-                        var formularioSelect = list_formularios.find(x => x.FORM_NIDFORMULARIO === id_formulario);
+                        var formularioSelect = list_formularios.find(x => x.FORM_NID === id_formulario);
 
                         if (typeof formularioSelect !== 'undefined') {
 
-                            var activo_ = formularioSelect.total > 0 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
+                            var activo_ = formularioSelect.FORM_BACTIVO ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
                             var check = "checked";
 
                             var itemFormulario = '<div class="row">' +
@@ -1293,7 +1293,7 @@
                                 '<div class="col-2" style="align-items: center; display: flex; justify-content: center;">' +
                                 '<div class="form-group">' +
                                 '<div class="form-check">' +
-                                '<input ' + check + ' data-formulario="' + formularioSelect.FORM_NIDFORMULARIO + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
+                                '<input ' + check + ' data-formulario="' + formularioSelect.FORM_NID + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>' +
@@ -1306,12 +1306,12 @@
 
                     $.each(list_formularios, function(i, v) {
 
-                        if (v.FORM_NIDFORMULARIO === id_formulario) {
+                        if (v.FORM_NID === id_formulario) {
                             return true;
                         }
 
-                        var activo_ = v.total > 0 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
-                        var check = v.FORM_NIDFORMULARIO === id_formulario ? "checked" : "";
+                        var activo_ = v.FORM_BACTIVO ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
+                        var check = v.FORM_NID === id_formulario ? "checked" : "";
 
                         var itemFormulario = '<div class="row">' +
                             '<div class="col-10">' +
@@ -1325,7 +1325,7 @@
                             '<div class="col-2" style="align-items: center; display: flex; justify-content: center;">' +
                             '<div class="form-group">' +
                             '<div class="form-check">' +
-                            '<input ' + check + ' data-formulario="' + v.FORM_NIDFORMULARIO + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
+                            '<input ' + check + ' data-formulario="' + v.FORM_NID + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
                             '</div>' +
                             '</div>' +
                             '</div>' +
@@ -1726,11 +1726,11 @@
         //Agregar el formulario ya seleccionado
         if (list_formularios.length > 0) {
 
-            var formularioSelect = list_formularios.find(x => x.FORM_NIDFORMULARIO === id_formulario);
+            var formularioSelect = list_formularios.find(x => x.FORM_NID === id_formulario);
 
             if (typeof formularioSelect !== 'undefined') {
 
-                var activo_ = formularioSelect.total > 0 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
+                var activo_ = formularioSelect.FORM_BACTIVO ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
                 var check = "checked";
 
                 var itemFormulario = '<div class="row">' +
@@ -1745,7 +1745,7 @@
                     '<div class="col-2" style="align-items: center; display: flex; justify-content: center;">' +
                     '<div class="form-group">' +
                     '<div class="form-check">' +
-                    '<input ' + check + ' data-formulario="' + formularioSelect.FORM_NIDFORMULARIO + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
+                    '<input ' + check + ' data-formulario="' + formularioSelect.FORM_NID + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -1759,14 +1759,14 @@
         //Agregar formularios que coincidan con la busqueda
         $.each(list_formularios, function(i, v) {
 
-            if (v.FORM_NIDFORMULARIO === id_formulario) {
+            if (v.FORM_NID === id_formulario) {
                 return true;
             }
 
             if (v.FORM_CNOMBRE.toLowerCase().indexOf(txtSearch) > -1) {
 
-                var activo_ = v.total > 0 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
-                var check = v.FORM_NIDFORMULARIO === id_formulario ? "checked" : "";
+                var activo_ = v.tFORM_BACTIVO ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-secondary">Inactivo</span>';
+                var check = v.FORM_NID === id_formulario ? "checked" : "";
 
                 var itemFormulario = '<div class="row">' +
                     '<div class="col-10">' +
@@ -1780,7 +1780,7 @@
                     '<div class="col-2" style="align-items: center; display: flex; justify-content: center;">' +
                     '<div class="form-group">' +
                     '<div class="form-check">' +
-                    '<input ' + check + ' data-formulario="' + v.FORM_NIDFORMULARIO + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
+                    '<input ' + check + ' data-formulario="' + v.FORM_NID + '" style="width: 1.4rem; height: 1.4rem;" class="form-check-input checkItemFormulario" type="checkbox">' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -2051,7 +2051,7 @@
 
     function TRAM_FN_VALIDAR_FORMULARIO() {
         if (id_formulario > 0) {
-            var formularioSelect = list_formularios.find(x => x.FORM_NIDFORMULARIO === id_formulario);
+            var formularioSelect = list_formularios.find(x => x.FORM_NID === id_formulario);
             if (typeof formularioSelect !== 'undefined') {
 
                 var documentos_filter = list_default_documentos.filter(x => x.TRAD_SELECT === true);
