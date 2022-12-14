@@ -28,17 +28,14 @@ class CitasController extends Controller
     }
 
      //Obtener formularios activos
-    public function consultar_citas($idusuario, $idtramiteconf)
-    {
+    public function consultar_citas($idusuario, $idtramiteconf) {
+        $query = DB::table('tram_aux_citas_reservadas')
+                    ->where(function($q) { 
+                        $q->orWhere('CITA_STATUS',1)->orWhere('CITA_STATUS',2);
+                    })
+                    ->where(['CITA_IDTRAMITECONF' => $idtramiteconf, 'CITA_IDUSUARIO' => $idusuario])->get();
 
-         $citas = new Cls_Citas();
-         $registros = $citas->TRAM_SP_CITACONSULTAR($idusuario, $idtramiteconf);
-
-         $response = [
-             'data' => $registros,
-         ];
-
-         return response()->json($response);
+        return response()->json(['data' => $query]);
     }
 
     public function guardar_cita(Request $request){

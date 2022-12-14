@@ -21,7 +21,34 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 ###################### Manuel Euan ######################
 
+Route::post('/perfil/guardarDocs', 'PerfilController@guardarDocs');
+Route::get('/perfil', 'PerfilController@index');
+Route::get('/perfil/listarDocs', 'PerfilController@listarDocs');
+Route::post('/perfil/eliminarDoc', 'PerfilController@eliminarDoc');
+Route::post('/gestores/consultar', 'GestorController@consultar');
 
+Route::post('/servidorespublicos/agregar', 'ServidorPublicoController@agregar');
+Route::get('/servidorespublicos/editar/{id}', 'ServidorPublicoController@editar');
+Route::post('/servidorespublicos/modificar', 'ServidorPublicoController@modificar');
+Route::post('/perfil/modificar', 'PerfilController@modificar');
+
+Route::group(['prefix' => 'rol'], function () {
+    Route::get('/','RolController@index');
+    Route::get('/consultar', 'RolController@consultar');
+    Route::get('/obtener/{id}', 'RolController@obtener');
+    Route::post('/agregar', 'RolController@agregar');
+    Route::post('/modificar', 'RolController@modificar');
+    Route::post('/eliminar', 'RolController@eliminar');
+});
+
+Route::group(['prefix' => 'permiso'], function (){
+    Route::get('/', 'PermisoController@index');
+    Route::get('/consultar', 'PermisoController@consultar');
+    Route::get('/obtener/{id}', 'PermisoController@obtener');
+    Route::post('/agregar', 'PermisoController@agregar');
+    Route::post('/modificar', 'PermisoController@modificar');
+    Route::post('/eliminar', 'PermisoController@eliminar');
+});
 
 
 /* Route::get('/getFiltros', 'GestorController@obtener_filtro');

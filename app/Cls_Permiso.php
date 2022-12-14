@@ -12,12 +12,6 @@ class Cls_Permiso extends Model
     protected $fillable     = ['PERMI_CNOMBRE', 'PERMI_CDESCRIPCION', 'PERMI_CICONO', 'PERMI_CRUTA','PERMI_NIDCATEGORIA_PERMISO'];
     protected $primaryKey   = 'PERMI_NIDPERMISO';
 
-    static function TRAM_SP_CONSULTARPERMISO(){
-        return DB::select(
-            'call TRAM_SP_CONSULTARPERMISO()'
-        );
-    }
-    
     public function TRAM_CAT_CATEGORIA_PERMISO()
     {
         return $this->belongsTo(Cls_Categoria_Permiso::class, 'PERMI_NIDCATEGORIA_PERMISO', 'CPERMI_NIDCATEGORIA_PERMISO');
