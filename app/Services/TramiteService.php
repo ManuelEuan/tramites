@@ -9,6 +9,8 @@ use App\Models\Cls_Tramite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use App\Models\Cls_TramiteSecciones;
 
 class TramiteService
 {
@@ -506,9 +508,9 @@ class TramiteService
                     ->where('USTR_NIDUSUARIO', $usuario->USUA_NIDUSUARIO);
 
         if(!is_null($request->fecha))
-            $query->where('v.USTR_DFECHACREACION', 'like','%'.$request->fecha.'%');
+            $query->where('v.USTR_DFECHACREACION', 'ilike','%'.$request->fecha.'%');
         if(!is_null($request->nombre))
-            $query->where('v.USTR_CNOMBRE_TRAMITE','like','%'.$request->nombre.'%');
+            $query->where('v.USTR_CNOMBRE_TRAMITE','ilike','%'.$request->nombre.'%');
         if(!is_null($request->dependencia))
             $query->where('v.TRAM_NIDCENTRO', $request->dependencia);
         if(!is_null($request->estatus))
@@ -649,5 +651,98 @@ class TramiteService
        } catch (Exception $ex) {
             dd($ex);
        }
+    }
+
+    /**
+     * Agrega el tramite para su respectiva configuracion
+     * @param  object $data
+     * @return Cls_Tramite 
+     */
+    public function storeTramite(object $data){
+        $result         = null;
+        $publicado      = Cls_Tramite::where(['TRAM_NIDTRAMITE_ACCEDE' => $data->TRAM_NIDTRAMITE_ACCEDE,'TRAM_NIMPLEMENTADO' => true])->first();
+        $sinPublicar    = Cls_Tramite::where(['TRAM_NIDTRAMITE_ACCEDE' => $data->TRAM_NIDTRAMITE_ACCEDE,'TRAM_NIMPLEMENTADO' => false])->first();
+
+        if(!is_null($publicado)){
+            /* if(!is_null($sinPublicar))
+                //CALL TRAM_SP_ACTUALIZAR_TRAMITE(TRAM_NIDTRAMITE_ACCEDE, TRAM_NDIASHABILESRESOLUCION, TRAM_NDIASHABILESNOTIFICACION, TRAM_NIDFORMULARIO, TRAM_NENLACEOFICIAL, TRAM_NIDUNIDADADMINISTRATIVA, TRAM_CUNIDADADMINISTRATIVA, TRAM_NIDCENTRO, TRAM_CCENTRO, TRAM_CNOMBRE, TRAM_CENCARGADO, TRAM_CCONTACTO, TRAM_CDESCRIPCION, TRAM_NTIPO, TRAM_NLINEA, TRAM_NPRESENCIAL, TRAM_NTELEFONO, TRAM_CAUDIENCIA, TRAM_CID_AUDIENCIA, TRAM_CTRAMITE_JSON);
+            else
+                //CALL TRAM_SP_AGREGAR_TRAMITE_SAVE(TRAM_NIDTRAMITE_ACCEDE, TRAM_NDIASHABILESRESOLUCION, TRAM_NDIASHABILESNOTIFICACION, TRAM_NIDFORMULARIO, TRAM_NENLACEOFICIAL, TRAM_NIDUNIDADADMINISTRATIVA, TRAM_CUNIDADADMINISTRATIVA, TRAM_NIDCENTRO, TRAM_CCENTRO, TRAM_CNOMBRE, TRAM_CENCARGADO, TRAM_CCONTACTO, TRAM_CDESCRIPCION, TRAM_NTIPO, TRAM_NLINEA, TRAM_NPRESENCIAL, TRAM_NTELEFONO, TRAM_CAUDIENCIA, TRAM_CID_AUDIENCIA, TRAM_CTRAMITE_JSON);
+                 */
+                dd(1);
+        }
+        elseif(!is_null($sinPublicar)){
+            dd(2);
+        }
+        else{
+            $result = $this->agregar($data);
+        }
+
+        return $result;
+
+    }
+    
+    /**
+     * Agrega el tramite para su respectiva configuracion
+     * @param  object $data
+     * @return Cls_TramiteSecciones
+     */
+    public function agregarSeccion(object $data){
+        try {
+            $item = new Cls_TramiteSecciones();
+            $item->CONF_NIDTRAMITE      = $data->CONF_NIDTRAMITE;
+            $item->CONF_NSECCION        = $data->CONF_NSECCION;
+            $item->CONF_CNOMBRESECCION  = $data->CONF_CNOMBRESECCION;
+            $item->CONF_ESTATUSSECCION  = $data->CONF_ESTATUSSECCION;
+            $item->CONF_NDIASHABILES    = $data->CONF_NDIASHABILES;
+            $item->CONF_CDESCRIPCIONCITA= $data->CONF_CDESCRIPCIONCITA;
+            $item->CONF_NORDEN          = $data->CONF_NORDEN;
+            $item->CONF_CDESCRIPCIONVENTANILLA = $data->CONF_CDESCRIPCIONVENTANILLA;
+            $item->save();
+        } catch (Exception $ex ) {
+            dd($ex);
+        }
+        return $item;
+    }   
+
+
+    private function agregar(object $data){
+        try {
+            $objTramite     = $this->getTramite($data->TRAM_NIDTRAMITE_ACCEDE);
+
+            if ($data->TRAM_NENLACEOFICIAL < 1)
+                $TRAM_NENLACEOFICIAL = Gate::allows('isAdministradorOrEnlace') ? 1 : 0;
+            else
+                $TRAM_NENLACEOFICIAL = 1;
+    
+            $item = new Cls_Tramite();
+            $item->TRAM_NIDTRAMITE_ACCEDE   = $data->TRAM_NIDTRAMITE_ACCEDE;
+            $item->TRAM_NTIPO               = 0;
+            $item->TRAM_NIDUNIDADADMINISTRATIVA = 1;
+            $item->TRAM_CUNIDADADMINISTRATIVA   = "";
+            $item->TRAM_NIDCENTRO       = $objTramite->dependenciaId;
+            $item->TRAM_CCENTRO         = $objTramite->nameDependencia;
+            $item->TRAM_CNOMBRE         = $objTramite->Name;
+            $item->TRAM_CENCARGADO      = "";
+            $item->TRAM_CCONTACTO       = "";
+            $item->TRAM_CDESCRIPCION    = $objTramite->CitizenDescription;
+            $item->TRAM_NENLACEOFICIAL  = $TRAM_NENLACEOFICIAL;
+            $item->TRAM_NIMPLEMENTADO   = 0;
+            $item->TRAM_NESTATUS        = 0;
+            $item->TRAM_NLINEA          = 0;
+            $item->TRAM_NPRESENCIAL     = 0;
+            $item->TRAM_NTELEFONO       = 0; 
+            $item->TRAM_CAUDIENCIA      = "";
+            $item->TRAM_CID_AUDIENCIA   = 0;
+            $item->TRAM_CTRAMITE_JSON   = '{"item": 1}';
+            $item->TRAM_NDIASHABILESRESOLUCION      = $data->TRAM_NDIASHABILESRESOLUCION;
+            $item->TRAM_NDIASHABILESNOTIFICACION    = $data->TRAM_NDIASHABILESNOTIFICACION;
+            $item->save();
+            $item->TRAM_CTIPO = 'Creación';
+            return $item;
+
+        } catch (Exception $ex) {
+            dd($ex);
+        }
     }
 }

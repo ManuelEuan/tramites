@@ -36,7 +36,7 @@ Route::post('/registrar/agregar', 'RegistroController@agregar');
 
 Route::get('/registrar/validar_rfc/{StrRfc}', array('uses' => 'RegistroController@validar_rfc'));
 Route::get('/registrar/validar_correo/{StrCorreo}', array('uses' => 'RegistroController@validar_correo'));
-Route::get('/registrar/validar_curp/{StrCurp}', array('uses' => 'RegistroController@validar_curp'));
+Route::get('/registrar/validar_curp/{StrCurp}/{id}', 'RegistroController@validar_curp');
 Route::get('/registrar/localidades/{id}', array('uses' => 'RegistroController@localidades'));
 Route::get('/registrar/estados', array('uses' => 'RegistroController@estados'));
 Route::get('/registrar/municipios/{id}', array('uses' => 'RegistroController@municipios'));
@@ -58,22 +58,27 @@ Route::group(['prefix' => 'perfil'], function () {
 Route::get('/bitacora', 'BitacoraController@index');
 Route::get('/bitacora/consultar', 'BitacoraController@consultar');
 
-Route::get('/permiso', array('uses' => 'PermisoController@index'))->middleware("permiso");
-Route::get('/permiso/consultar', array('uses' => 'PermisoController@consultar'));
-Route::get('/permiso/obtener/{id}', array('uses' => 'PermisoController@obtener'));
-Route::post('/permiso/agregar', array('uses' => 'PermisoController@agregar'));
-Route::post('/permiso/modificar', array('uses' => 'PermisoController@modificar'));
-Route::post('/permiso/eliminar', array('uses' => 'PermisoController@eliminar'));
 
-Route::get('/rol', array('uses' => 'RolController@index'))->middleware("permiso");
-Route::get('/rol/consultar', array('uses' => 'RolController@consultar'));
-Route::get('/rol/obtener/{id}', array('uses' => 'RolController@obtener'));
-Route::post('/rol/agregar', array('uses' => 'RolController@agregar'));
-Route::post('/rol/modificar', array('uses' => 'RolController@modificar'));
-Route::post('/rol/eliminar', array('uses' => 'RolController@eliminar'));
+Route::group(['prefix' => 'permiso'], function (){
+    Route::get('/', 'PermisoController@index');
+    Route::get('/consultar', 'PermisoController@consultar');
+    Route::get('/obtener/{id}', 'PermisoController@obtener');
+    Route::post('/agregar', 'PermisoController@agregar');
+    Route::post('/modificar', 'PermisoController@modificar');
+    Route::post('/eliminar', 'PermisoController@eliminar');
+});
 
-Route::get('/permisorol/consultar/{id}', array('uses' => 'PermisoRolController@consultar'));
-Route::get('/categoria_permiso/consultar/', array('uses' => 'CategoriaPermisoController@consultar'));
+Route::group(['prefix' => 'rol'], function () {
+    Route::get('/','RolController@index');
+    Route::get('/consultar', 'RolController@consultar');
+    Route::get('/obtener/{id}', 'RolController@obtener');
+    Route::post('/agregar', 'RolController@agregar');
+    Route::post('/modificar', 'RolController@modificar');
+    Route::post('/eliminar', 'RolController@eliminar');
+});
+
+Route::get('/permisorol/consultar/{id}', 'PermisoRolController@consultar');
+Route::get('/categoria_permiso/consultar/', 'CategoriaPermisoController@consultar');
 Route::get('/download_tramite_detalle/{id}', 'TramiteServicioController@download_tramite_detalle')->name('download_tramite_detalle');
 Route::get('/consultar_pago/{id}', 'TramiteServicioController@consultar_pago')->name('consultar_pago');
 

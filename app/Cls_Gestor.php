@@ -161,39 +161,6 @@ class Cls_Gestor extends Model
 
     //-------------- Metodos de guardado ----------------
 
-    public function TRAM_SP_AGREGAR_TRAMITE()
-    {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_TRAMITE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            array(
-                $this->TRAM_NIDTRAMITE_ACCEDE,
-                $this->TRAM_NIDTRAMITE_CONFIG,
-                $this->TRAM_NDIASHABILESRESOLUCION,
-                $this->TRAM_NDIASHABILESNOTIFICACION,
-                $this->TRAM_NIDFORMULARIO,
-                $this->TRAM_NENLACEOFICIAL,
-
-                $this->TRAM_NIDUNIDADADMINISTRATIVA,
-                $this->TRAM_CUNIDADADMINISTRATIVA,
-                $this->TRAM_NIDCENTRO,
-                $this->TRAM_CCENTRO,
-                $this->TRAM_CNOMBRE,
-                $this->TRAM_CENCARGADO,
-                $this->TRAM_CCONTACTO,
-                $this->TRAM_CDESCRIPCION,
-                $this->TRAM_NTIPO,
-
-                $this->TRAM_NLINEA,
-                $this->TRAM_NPRESENCIAL,
-                $this->TRAM_NTELEFONO,
-                $this->TRAM_CAUDIENCIA,
-                $this->TRAM_CID_AUDIENCIA,
-
-                $this->TRAM_CTRAMITE_JSON
-            )
-        );
-    }
-
     public function TRAM_SP_AGREGAR_SECCION()
     {
 
@@ -292,21 +259,8 @@ class Cls_Gestor extends Model
 
     //----------- Metodo de eliminacion ---------------------
 
-    public function TRAM_SP_ELIMINAR_FORMULARIO($FORM_NIDTRAMITE)
-    {
-        DB::select(
-            'DELETE FROM tram_mst_formulario_tramite WHERE FORM_NIDTRAMITE = ? ',
-            array($FORM_NIDTRAMITE)
-        );
-    }
-
-    public function TRAM_SP_ELIMINAR_SECCION($TRAM_NIDTRAMITE)
-    {
-
-        return DB::select(
-            'DELETE FROM tram_mdv_seccion_tramite WHERE CONF_NIDTRAMITE = ?',
-            array($TRAM_NIDTRAMITE)
-        );
+    public function TRAM_SP_ELIMINAR_SECCION($TRAM_NIDTRAMITE) {
+        return  DB::table('tram_mdv_seccion_tramite')->where('CONF_NIDTRAMITE', $TRAM_NIDTRAMITE)->delete();
     }
 
     public function TRAM_SP_ELIMINAR_DOCUMENTO($TRAM_NIDTRAMITE)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use stdClass;
 use Exception;
 use App\Cls_Gestor;
 use App\Cls_Resolutivo;
@@ -13,7 +14,6 @@ use App\Services\TramiteService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use  Illuminate\Pagination\Paginator;
 use App\Http\Controllers\FormularioController;
 use  Illuminate\Pagination\LengthAwarePaginator;
@@ -306,18 +306,18 @@ class GestorController extends Controller
     {
         try {
             DB::beginTransaction();
-            $tramite = $this->TRAM_SP_AGREGAR_TRAMITE($request);
+            $tramite    = $this->tramiteService->storeTramite((object)$request->all());
 
             if ($tramite->TRAM_CTIPO == "Creación" || $tramite->TRAM_CTIPO == "Actualización") {
-                $resultSecciones = $this->TRAM_SP_AGREGAR_SECCIONES($request->TRAM_LIST_SECCION, $tramite->TRAM_NIDTRAMITE_CONFIG);
+                $resultSecciones = $this->TRAM_SP_AGREGAR_SECCIONES($request->TRAM_LIST_SECCION, $tramite->TRAM_NIDTRAMITE);
                 if ($resultSecciones['codigo'] == 200) {
-                    $rutaNew    = route('gestor_configurar_tramite', ['tramiteID' =>  $tramite->TRAM_NIDTRAMITE_ACCEDE, 'tramiteIDConfig' => $tramite->TRAM_NIDTRAMITE_CONFIG]);
+                    $rutaNew    = route('gestor_configurar_tramite', ['tramiteID' =>  $tramite->TRAM_NIDTRAMITE_ACCEDE, 'tramiteIDConfig' => $tramite->TRAM_NIDTRAMITE]);
                     $result     = null;
 
                     //Implementar en caso de implementar
                     if ($request->TRAM_NIMPLEMENTADO == 1) {
                         $gestor_im  = new Cls_Gestor();
-                        $result     = $gestor_im->TRAM_SP_CAMBIAR_ESTATUS_TRAMITE($tramite->TRAM_NIDTRAMITE_CONFIG, 1);
+                        $result     = $gestor_im->TRAM_SP_CAMBIAR_ESTATUS_TRAMITE($tramite->TRAM_NIDTRAMITE, 1);
                     }
 
                     DB::commit();
@@ -351,57 +351,6 @@ class GestorController extends Controller
         }
     }
 
-    /********* Auxiliares del guardado de configuración de trámite *********/
-    private function TRAM_SP_AGREGAR_TRAMITE(Request $request)
-    {
-
-        $response = [];
-
-        try {
-            $objTramite     = $this->tramiteService->getTramite($request->TRAM_NIDTRAMITE_ACCEDE);
-            $tramites = new Cls_Gestor();
-            $tramites->TRAM_NIDTRAMITE_ACCEDE       = (int)$request->TRAM_NIDTRAMITE_ACCEDE;
-            $tramites->TRAM_NIDTRAMITE_CONFIG       = (int)$request->TRAM_NIDTRAMITE_CONFIG;
-            $tramites->TRAM_NDIASHABILESRESOLUCION  = $request->TRAM_NDIASHABILESRESOLUCION;
-            $tramites->TRAM_NIDFORMULARIO           = $request->TRAM_NIDFORMULARIO;
-            $tramites->TRAM_NDIASHABILESNOTIFICACION = $request->TRAM_NDIASHABILESNOTIFICACION;
-
-            $tramites->TRAM_NIDUNIDADADMINISTRATIVA =  1;
-            $tramites->TRAM_CUNIDADADMINISTRATIVA   =  "";
-            $tramites->TRAM_NIDCENTRO               =  $objTramite->dependenciaId;
-            $tramites->TRAM_CCENTRO                 =  $objTramite->nameDependencia;
-            $tramites->TRAM_CNOMBRE                 =  $objTramite->Name;
-            $tramites->TRAM_CENCARGADO              =  "";
-            $tramites->TRAM_CCONTACTO               =  "";
-            $tramites->TRAM_CDESCRIPCION            = $objTramite->CitizenDescription;
-            $tramites->TRAM_NTIPO                   =  0;
-
-            $tramites->TRAM_NLINEA          =  0;
-            $tramites->TRAM_NPRESENCIAL     =  0;
-            $tramites->TRAM_NTELEFONO       =  0;
-            $tramites->TRAM_CAUDIENCIA      =  "";
-            $tramites->TRAM_CID_AUDIENCIA   =  0;
-            $tramites->TRAM_CTRAMITE_JSON   = '{"item": 1}';
-
-            if ($request->TRAM_NENLACEOFICIAL < 1)
-                $tramites->TRAM_NENLACEOFICIAL = Gate::allows('isAdministradorOrEnlace') ? 1 : 0;
-            else
-                $tramites->TRAM_NENLACEOFICIAL = 1;
-
-            $result = $tramites->TRAM_SP_AGREGAR_TRAMITE();
-            return $result[0];
-        } catch (Exception $ex) {
-            $response = [
-                "TRAM_CTIPO" => "error",
-                "estatus" => "error",
-                "codigo" => 400,
-                "mensaje" => "Ocurrió una excepción, favor de contactar al administrador del sistema " . $ex->getMessage(),
-            ];
-        }
-
-        return $response;
-    }
-
     private function TRAM_SP_AGREGAR_SECCIONES(array $listSecciones, $TramiteID)
     {
         $response   = [];
@@ -412,23 +361,25 @@ class GestorController extends Controller
 
                 foreach ($listSecciones as $seccion) {
                     try{
-                        $newSeccion = new Cls_Gestor();
-                        $newSeccion->CONF_NIDTRAMITE = $TramiteID;
-                        $newSeccion->CONF_NSECCION = $seccion['CONF_NSECCION'];
-                        $newSeccion->CONF_CNOMBRESECCION = $seccion['CONF_CNOMBRESECCION'];
-                        $newSeccion->CONF_ESTATUSSECCION = 0;
-                        $newSeccion->CONF_NDIASHABILES = is_null($seccion['CONF_NDIASHABILES']) ? 0 :  $seccion['CONF_NDIASHABILES'];
-                        $newSeccion->CONF_CDESCRIPCIONCITA = is_null($seccion['CONF_CDESCRIPCIONCITA']) ? "" : $seccion['CONF_CDESCRIPCIONCITA'];
-                        $newSeccion->CONF_CDESCRIPCIONVENTANILLA = is_null($seccion['CONF_CDESCRIPCIONVENTANILLA']) ? "" : $seccion['CONF_CDESCRIPCIONVENTANILLA'];
-                        $newSeccion->CONF_NORDEN = $seccion['CONF_NORDEN'];
-                        $SectionID = $newSeccion->TRAM_SP_AGREGAR_SECCION();
-                        $Seccion_id = $SectionID[0]->SeccionID;
+                        $object = new stdClass();
+                        $object->CONF_NIDTRAMITE        = $TramiteID;
+                        $object->CONF_NSECCION          = $seccion['CONF_NSECCION'];
+                        $object->CONF_CNOMBRESECCION    = $seccion['CONF_CNOMBRESECCION'];
+                        $object->CONF_ESTATUSSECCION    = 0;
+                        $object->CONF_NDIASHABILES      = is_null($seccion['CONF_NDIASHABILES']) ? 0 :  $seccion['CONF_NDIASHABILES'];
+                        $object->CONF_CDESCRIPCIONCITA  = is_null($seccion['CONF_CDESCRIPCIONCITA']) ? "" : $seccion['CONF_CDESCRIPCIONCITA'];
+                        $object->CONF_NORDEN            = $seccion['CONF_NORDEN'];
+                        $object->CONF_CDESCRIPCIONVENTANILLA = is_null($seccion['CONF_CDESCRIPCIONVENTANILLA']) ? "" : $seccion['CONF_CDESCRIPCIONVENTANILLA'];
+                        $objSeccion = $this->tramiteService->agregarSeccion($object);
+
 
                         //Agregar formulario y documentos: Se elimina documentos, edificios y conceptos antiguos en TRAM_AGREGAR_DOCUMENTO()
+                        /* 
+                        
+                        Aca comente poor pruebas
+                        
                         if ($seccion['CONF_NSECCION'] === "Formulario") {
-                            $TRAM_LIST_FORMULARIO =  $seccion['CONF_LIST_FORMULARIO'];
-
-                            $this->TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TramiteID);
+                            $this->TRAM_AGREGAR_FORMULARIO($seccion['CONF_LIST_FORMULARIO'], $TramiteID);
                             if (isset($seccion['CONF_LIST_DOCUMENTO']))
                                 $this->TRAM_AGREGAR_DOCUMENTO($seccion['CONF_LIST_DOCUMENTO'], $TramiteID);
                         }
@@ -455,7 +406,7 @@ class GestorController extends Controller
                         if ($seccion['CONF_NSECCION'] === "Citas en línea") {
                             $citas = isset($seccion['CONF_ARRAY_DETALLE_CITA']) ? $seccion['CONF_ARRAY_DETALLE_CITA'] : [];
                             $this->citasService->create($TramiteID, $citas);
-                        }
+                        } */
                     }catch(Exception $ex){
                         dd($ex,$seccion);
                     }
@@ -484,14 +435,11 @@ class GestorController extends Controller
         return $response;
     }
 
-    private function TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TRAM_NIDTRAMITE)
-    {
+    private function TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TRAM_NIDTRAMITE) {
 
         try {
-
-            $gestor = new Cls_Gestor();
-            $gestor->TRAM_SP_ELIMINAR_FORMULARIO($TRAM_NIDTRAMITE);
-
+            DB::table('tram_mst_formulario_tramite')->where($TRAM_NIDTRAMITE)->delete();
+            
             for ($i = 0; $i < count($TRAM_LIST_FORMULARIO); $i++) {
 
                 $TRAM_LIST_FORMULARIO[$i]['TRAM_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
