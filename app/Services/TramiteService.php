@@ -671,15 +671,12 @@ class TramiteService
                  */
                 dd(1);
         }
-        elseif(!is_null($sinPublicar)){
-            dd(2);
-        }
-        else{
-            $result = $this->agregar($data);
-        }
-
+        elseif(!is_null($sinPublicar))
+            $result = $this->registro($data, $sinPublicar);
+        else
+            $result = $this->registro($data, null);
+        
         return $result;
-
     }
     
     /**
@@ -706,7 +703,8 @@ class TramiteService
     }   
 
 
-    private function agregar(object $data){
+    /********************* Funciones privadas *************************/
+    private function registro(object $data, $anterior = null){
         try {
             $objTramite     = $this->getTramite($data->TRAM_NIDTRAMITE_ACCEDE);
 
@@ -715,7 +713,11 @@ class TramiteService
             else
                 $TRAM_NENLACEOFICIAL = 1;
     
-            $item = new Cls_Tramite();
+            if(is_null($anterior))
+                $item = new Cls_Tramite();
+            else
+              $item = Cls_Tramite::find($anterior->TRAM_NIDTRAMITE);
+
             $item->TRAM_NIDTRAMITE_ACCEDE   = $data->TRAM_NIDTRAMITE_ACCEDE;
             $item->TRAM_NTIPO               = 0;
             $item->TRAM_NIDUNIDADADMINISTRATIVA = 1;
@@ -738,11 +740,12 @@ class TramiteService
             $item->TRAM_NDIASHABILESRESOLUCION      = $data->TRAM_NDIASHABILESRESOLUCION;
             $item->TRAM_NDIASHABILESNOTIFICACION    = $data->TRAM_NDIASHABILESNOTIFICACION;
             $item->save();
-            $item->TRAM_CTIPO = 'Creación';
-            return $item;
+            $item->TRAM_CTIPO = is_null($anterior) ? 'Creación' : 'Actualización';
 
+            return $item;
         } catch (Exception $ex) {
             dd($ex);
         }
     }
+
 }

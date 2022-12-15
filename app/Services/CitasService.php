@@ -35,8 +35,8 @@ class CitasService {
                 $item->tiempoAtencion   = $value['tiempo'];
                 $item->save();
                 array_push($response['items'],$item);
-            } catch (Exception $ex) {dd($ex);
-                throw $ex;
+            } catch (Exception $ex) {
+                dd($ex);
             }
         }
 

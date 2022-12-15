@@ -123,8 +123,7 @@ class DatosDurosController extends Controller
     }
     
     public function tramites($id){
-        $tramites = new Cls_Tramite_Servicio();
-        $data = $tramites->TRAM_SP_CONSULTAR_TRAMITE_ACCEDE($id);
+        $data = DB::table('accede_lista_tramites')->where('ID_CENTRO', $id)->get();
         return response()->json($data);
     }
 

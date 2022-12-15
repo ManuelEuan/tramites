@@ -19,9 +19,13 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label for="cmbConceptoPago" style="font-size: 1rem; font-weight: bold;">Seleccione los conceptos de pago</label>
-                    <select id="cmbConceptoPago" class="selectpicker form-control" data-live-search="true" multiple>
-
-                    </select>
+                    <select id="cmbConceptoPago" class="selectpicker form-control" data-live-search="true" multiple></select>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="cmbServices" style="font-size: 1rem; font-weight: bold;">Seleccione servicio externo requerido</label>
+                    <select id="cmbServices" class="selectpicker form-control" data-live-search="true" multiple></select>
                 </div>
             </div>
         </div>
@@ -59,6 +63,30 @@
                 idTemporalesConceptos.push(value.ID);
             });
             $('#cmbConceptoPago').selectpicker('val', idTemporalesConceptos);
+        }
+
+        var cmbServices = $('#cmbServices');
+        cmbServices.find('option').remove();
+        $(list_servicios_tramite).each(function(i, v) {
+            cmbServices.append('<option value="' + v.SERV_ID + '" data-content="<small><strong>' + v.SERV_DESCRIPTION + '</strong></small>"></option>');
+        })
+
+        $('#cmbServices').selectpicker({
+            noneSelectedText: 'Seleccione servicio',
+            noneResultsText: 'Servicios no encontrados',
+        });
+
+        $('#cmbServices').on('change', function() {
+            var selected = $('#cmbServices').val();
+            TRAM_FN_AGREGA_SERVICIO(selected);
+        });
+
+        if (list_servicios.length > 0) {
+            var idTemporalesServicios = [];
+            $.each(list_servicios, function(index, value) {
+                idTemporalesServicios.push(value.SERV_ID);
+            });
+            $('#cmbServices').selectpicker('val', idTemporalesServicios);
         }
     });
 </script>

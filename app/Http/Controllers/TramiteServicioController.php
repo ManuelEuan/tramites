@@ -6,6 +6,7 @@ use App\User;
 use Exception;
 use App\Cls_Bitacora;
 use GuzzleHttp\Client;
+use App\Cls_Pago_Tramite;
 use App\Cls_Usuario_Tramite;
 use Illuminate\Http\Request;
 use App\Cls_Tramite_Concepto;
@@ -13,7 +14,7 @@ use App\Cls_Tramite_Servicio;
 use App\Cls_Usuario_Concepto;
 use App\Cls_Usuario_Documento;
 use App\Cls_Usuario_Respuesta;
-use App\Cls_Pago_Tramite;
+use App\Models\Cls_Dependencia;
 use App\Models\Cls_Cat_Seccion;
 use App\Services\GestorService;
 use App\Services\VariosService;
@@ -690,22 +691,9 @@ class TramiteServicioController extends Controller
         return $this->seguimiento_tramite_servicio($id);
     }
 
-    public function obtener_dependencias_unidad()
-    {
-        $collection = collect();
-
-        for ($i = 0; $i < 5; $i++) {
-            $data = [
-                'id' => $i + 1,
-                'nombre' => "Opción DU " . $i
-            ];
-            $collection->push($data);
-        }
-
-        $Cls_Tramite_Servicio = new Cls_Tramite_Servicio();
-        $result = $Cls_Tramite_Servicio->TRAM_SP_OBTENERDEPENDECIAS();
-
-        return Response()->json($result);
+    public function obtener_dependencias_unidad() {
+        $result =  Cls_Dependencia::all();
+        return response()->json($result);
     }
 
     public function obtener_modalidad()

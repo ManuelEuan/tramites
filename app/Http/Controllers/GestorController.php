@@ -10,11 +10,15 @@ use Illuminate\Http\Request;
 use App\Models\Cls_Formulario;
 use App\Services\CitasService;
 use App\Cls_Seccion_Seguimiento;
+use App\Cls_Tramite_Concepto;
 use App\Services\TramiteService;
 use Illuminate\Support\Collection;
+use App\Models\Cls_TramiteEdificio;
 use Illuminate\Support\Facades\DB;
+use App\Models\Cls_TramiteDocumento;
 use Illuminate\Support\Facades\Auth;
 use  Illuminate\Pagination\Paginator;
+use App\Models\Cls_TramiteFormulario;
 use App\Http\Controllers\FormularioController;
 use  Illuminate\Pagination\LengthAwarePaginator;
 
@@ -35,7 +39,7 @@ class GestorController extends Controller
      */
     public function __construct()
     {
-        /* $this->middleware('auth'); */
+        $this->middleware('auth');
         $this->tramiteService   = new TramiteService();
         $this->citasService     = new CitasService();
     }
@@ -310,6 +314,7 @@ class GestorController extends Controller
 
             if ($tramite->TRAM_CTIPO == "Creación" || $tramite->TRAM_CTIPO == "Actualización") {
                 $resultSecciones = $this->TRAM_SP_AGREGAR_SECCIONES($request->TRAM_LIST_SECCION, $tramite->TRAM_NIDTRAMITE);
+
                 if ($resultSecciones['codigo'] == 200) {
                     $rutaNew    = route('gestor_configurar_tramite', ['tramiteID' =>  $tramite->TRAM_NIDTRAMITE_ACCEDE, 'tramiteIDConfig' => $tramite->TRAM_NIDTRAMITE]);
                     $result     = null;
@@ -322,38 +327,35 @@ class GestorController extends Controller
 
                     DB::commit();
                     return response()->json([
-                        "estatus" => "success",
-                        "codigo" => 200,
-                        "mensaje" => "Trámite y secciones agregadas correctamente",
-                        "ruta" => $rutaNew,
-                        "result" => $result,
+                        "estatus"   => "success",
+                        "codigo"    => 200,
+                        "mensaje"   => "Trámite y secciones agregadas correctamente",
+                        "ruta"      => $rutaNew,
+                        "result"    => $result,
                     ]);
-                } else {
-                    DB::commit();
-                    return response()->json($resultSecciones);
                 }
             } else {
 
                 return response()->json([
-                    "estatus" => "error",
-                    "codigo" => 400,
+                    "estatus"   => "error",
+                    "codigo"    => 400,
                     "DataError" => $tramite[0]->TRAM_CTIPO
                 ]);
             }
         } catch (Exception $ex) {
             DB::rollBack();
             $response = [
-                "estatus" => "error",
-                "codigo" => 400,
-                "mensaje" => "Ocurrió una excepción, favor de contactar al administrador del sistema " . $e->getMessage(),
+                "estatus"   => "error",
+                "codigo"    => 400,
+                "mensaje"   => "Ocurrió una excepción, favor de contactar al administrador del sistema " . $e->getMessage(),
             ];
             return response()->json($response);
         }
     }
 
-    private function TRAM_SP_AGREGAR_SECCIONES(array $listSecciones, $TramiteID)
-    {
-        $response   = [];
+    private function TRAM_SP_AGREGAR_SECCIONES(array $listSecciones, $TramiteID) {
+        $response = [ "estatus" => "success", "codigo" => 200, "mensaje" => "Secciones agregadas correctamente"];
+
         try {
             if (count($listSecciones) > 0) {
                 $seccionesEliminadas = new Cls_Gestor();
@@ -372,51 +374,35 @@ class GestorController extends Controller
                         $object->CONF_CDESCRIPCIONVENTANILLA = is_null($seccion['CONF_CDESCRIPCIONVENTANILLA']) ? "" : $seccion['CONF_CDESCRIPCIONVENTANILLA'];
                         $objSeccion = $this->tramiteService->agregarSeccion($object);
 
-
                         //Agregar formulario y documentos: Se elimina documentos, edificios y conceptos antiguos en TRAM_AGREGAR_DOCUMENTO()
-                        /* 
-                        
-                        Aca comente poor pruebas
-                        
                         if ($seccion['CONF_NSECCION'] === "Formulario") {
                             $this->TRAM_AGREGAR_FORMULARIO($seccion['CONF_LIST_FORMULARIO'], $TramiteID);
                             if (isset($seccion['CONF_LIST_DOCUMENTO']))
                                 $this->TRAM_AGREGAR_DOCUMENTO($seccion['CONF_LIST_DOCUMENTO'], $TramiteID);
                         }
-
-                        //Agregas edificios
                         if ($seccion['CONF_NSECCION'] === "Ventanilla sin cita") {
                             $TRAM_LIST_EDIFICIO = $seccion['CONF_LIST_EDIFICIO'];
-                            $this->TRAM_AGREGAR_EDIFICIOS($TRAM_LIST_EDIFICIO, $TramiteID, $Seccion_id);
+                            $this->TRAM_AGREGAR_EDIFICIOS($TRAM_LIST_EDIFICIO, $TramiteID, $objSeccion->CONF_NIDTRAMITE);
                         }
 
-                        //Agregar resolutivos
-                        if ($seccion['CONF_NSECCION'] === "Resolutivo electrónico") {
-                            $TRAM_LIST_RESOLUTIVO = $seccion['CONF_DATA_RESOLUTIVO'];
-                            $this->TRAM_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO, $TramiteID, $Seccion_id);
-                        }
-
-                        //Agregar conceptos de pago
-                        if ($seccion['CONF_NSECCION'] === "Pago en línea") {
-                            $TRAM_LIST_CONCEPTO = $seccion['CONF_LIST_PAGO'];
-                            $this->TRAM_AGREGAR_CONCEPTO_PAGO_TRAMITE($TRAM_LIST_CONCEPTO, $TramiteID, $Seccion_id);
-                        }
-
-                        //Valido si tiene la seccion cita y si cuenta con su detalle
                         if ($seccion['CONF_NSECCION'] === "Citas en línea") {
                             $citas = isset($seccion['CONF_ARRAY_DETALLE_CITA']) ? $seccion['CONF_ARRAY_DETALLE_CITA'] : [];
                             $this->citasService->create($TramiteID, $citas);
-                        } */
+                        }
+
+                        if ($seccion['CONF_NSECCION'] === "Pago en línea") {
+                            $TRAM_LIST_CONCEPTO = $seccion['CONF_LIST_PAGO'];
+                            $this->TRAM_AGREGAR_CONCEPTO_PAGO_TRAMITE($TRAM_LIST_CONCEPTO, $TramiteID, $objSeccion->CONF_NIDTRAMITE);
+                        }
+
+                        if ($seccion['CONF_NSECCION'] === "Resolutivo electrónico") {
+                            $TRAM_LIST_RESOLUTIVO = $seccion['CONF_DATA_RESOLUTIVO'];
+                            $this->TRAM_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO, $TramiteID, $objSeccion->CONF_NIDTRAMITE);
+                        }
                     }catch(Exception $ex){
                         dd($ex,$seccion);
                     }
                 }
-
-                $response = [
-                    "estatus"   => "success",
-                    "codigo"    => 200,
-                    "mensaje"   => "Secciones agregadas correctamente",
-                ];
             } else {
                 $response = [
                     "estatus"   => "error",
@@ -436,17 +422,20 @@ class GestorController extends Controller
     }
 
     private function TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TRAM_NIDTRAMITE) {
-
         try {
-            DB::table('tram_mst_formulario_tramite')->where($TRAM_NIDTRAMITE)->delete();
-            
+            Cls_TramiteFormulario::where('FORM_NIDTRAMITE',$TRAM_NIDTRAMITE)->delete();
             for ($i = 0; $i < count($TRAM_LIST_FORMULARIO); $i++) {
-
-                $TRAM_LIST_FORMULARIO[$i]['TRAM_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
-                $gestor->TRAM_SP_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO[$i]['TRAM_NIDFORMULARIO'], $TRAM_LIST_FORMULARIO[$i]['TRAM_NIDTRAMITE']);
+                $valor =  DB::table('tram_form_formulario')->where('FORM_NID', $TRAM_LIST_FORMULARIO[$i]['TRAM_NIDFORMULARIO'])->first();
+                $item = new Cls_TramiteFormulario();
+                $item->FORM_NIDFORMULARIO   = $valor->FORM_NID;
+                $item->FORM_NIDTRAMITE      = $TRAM_LIST_FORMULARIO[$i]['TRAM_NIDTRAMITE'];
+                $item->FORM_CNOMBRE         = $valor->FORM_CNOMBRE;
+                $item->FORM_CDESCRIPCION    = is_null($valor->FORM_CDESCRIPCION) ? $valor->FORM_CNOMBRE : $valor->FORM_CDESCRIPCION;
+                $item->FORM_NESACTIVO       = $valor->FORM_BACTIVO;
+                $item->save();
             }
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (Exception $ex) {
+            dd($ex);
         }
     }
 
@@ -457,28 +446,27 @@ class GestorController extends Controller
         try {
             //Eliminar edificos, resolutivos y conceptos del trámite
             $gestor = new Cls_Gestor();
-            $gestor->TRAM_SP_ELIMINAR_EDIFICIO($TRAM_NIDTRAMITE);
-            $gestor->TRAM_SP_ELIMINAR_RESOLUTIVO($TRAM_NIDTRAMITE);
-            $gestor->TRAM_SP_ELIMINAR_CONCEPTO($TRAM_NIDTRAMITE);
+            Cls_TramiteEdificio::where('EDIF_NIDTRAMITE', $TRAM_NIDTRAMITE)->delete();
+            DB::table('tram_mst_resolutivo')->where('RESO_NIDTRAMITE', $TRAM_NIDTRAMITE)->delete();
+            DB::table('tram_mst_concepto_tramite')->where('CONC_NIDTRAMITE', $TRAM_NIDTRAMITE)->delete();
 
             foreach ($TRAM_LIST_DOCUMENTO as $documentos) {
                 array_push($arrayId, $documentos['TRAD_NIDDOCUMENTO']);
-                $item = DB::table('tram_mdv_documento_tramite')->where(['TRAD_NIDTRAMITE' => $TRAM_NIDTRAMITE, 'TRAD_NIDDOCUMENTO' => $documentos['TRAD_NIDDOCUMENTO']])->first();
+                $item = Cls_TramiteDocumento::where(['TRAD_NIDTRAMITE' => $TRAM_NIDTRAMITE, 'TRAD_NIDDOCUMENTO' => $documentos['TRAD_NIDDOCUMENTO']])->first();
                 
                 if(is_null($item)){
-                    $gestor->TRAM_SP_AGREGAR_DOCUMENTO(
-                        $TRAM_NIDTRAMITE,
-                        $documentos['TRAD_NIDDOCUMENTO'],
-                        $documentos['TRAD_CNOMBRE'],
-                        $documentos['TRAD_CDESCRIPCION'],
-                        $documentos['TRAD_CEXTENSION'],
-                        $documentos['TRAD_NOBLIGATORIO'],
-                        $documentos['TRAD_NMULTIPLE']
-                    );
+                    $item = new Cls_TramiteDocumento();
+                    $item->TRAD_NIDTRAMITE      = $TRAM_NIDTRAMITE;
+                    $item->TRAD_NIDDOCUMENTO    = $documentos['TRAD_NIDDOCUMENTO'];
+                    $item->TRAD_CNOMBRE         = $documentos['TRAD_CNOMBRE'];
+                    $item->TRAD_CDESCRIPCION    = $documentos['TRAD_CDESCRIPCION'];
+                    $item->TRAD_CEXTENSION      = $documentos['TRAD_CEXTENSION'];
+                    $item->TRAD_NOBLIGATORIO    = $documentos['TRAD_NOBLIGATORIO'];
+                    $item->TRAD_NMULTIPLE       = $documentos['TRAD_NMULTIPLE'];
+                    $item->save();
                 }
                 else{
-                    DB::table('tram_mdv_documento_tramite')
-                        ->where(['TRAD_NIDTRAMITE' => $TRAM_NIDTRAMITE, 'TRAD_NIDDOCUMENTO' => $documentos['TRAD_NIDDOCUMENTO']])
+                    Cls_TramiteDocumento::where(['TRAD_NIDTRAMITE' => $TRAM_NIDTRAMITE, 'TRAD_NIDDOCUMENTO' => $documentos['TRAD_NIDDOCUMENTO']])
                         ->update([
                             'TRAD_NOBLIGATORIO' => $documentos['TRAD_NOBLIGATORIO'],
                             'TRAD_NMULTIPLE'    => $documentos['TRAD_NMULTIPLE']
@@ -487,20 +475,27 @@ class GestorController extends Controller
             }
 
             //Elimino los que ya no van a estar
-            DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE)->whereNotIn('TRAD_NIDDOCUMENTO', $arrayId)->delete();
+            Cls_TramiteDocumento::where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE)->whereNotIn('TRAD_NIDDOCUMENTO', $arrayId)->delete();
         } catch (EXception $ex) {
             throw $ex;
         }
     }
 
-    private function TRAM_AGREGAR_EDIFICIOS($TRAM_LIST_EDIFICIO, $TRAM_NIDTRAMITE, $TRAM_NIDSECCION)
-    {
-        $gestor = new Cls_Gestor();
-
-        for ($i = 0; $i < count($TRAM_LIST_EDIFICIO); $i++) {
-
-            $TRAM_LIST_EDIFICIO[$i]['EDIF_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
-            $gestor->TRAM_SP_AGREGAR_EDIFICIO_TRAMITE($TRAM_LIST_EDIFICIO[$i]['EDIF_NIDTRAMITE'], $TRAM_LIST_EDIFICIO[$i]['EDIF_CNOMBRE'], $TRAM_NIDSECCION, $TRAM_LIST_EDIFICIO[$i]['EDIF_CCALLE'], $TRAM_LIST_EDIFICIO[$i]['EDIF_CLATITUD'], $TRAM_LIST_EDIFICIO[$i]['EDIF_CLONGITUD'], intval($TRAM_LIST_EDIFICIO[$i]['EDIF_NIDEDIFICIO']));
+    private function TRAM_AGREGAR_EDIFICIOS($TRAM_LIST_EDIFICIO, $TRAM_NIDTRAMITE, $TRAM_NIDSECCION) {
+        try {
+            for ($i = 0; $i < count($TRAM_LIST_EDIFICIO); $i++) {
+                $item = new Cls_TramiteEdificio();
+                $item->EDIF_NIDTRAMITE  = $TRAM_NIDTRAMITE;
+                $item->EDIF_CNOMBRE     = $TRAM_LIST_EDIFICIO[$i]['EDIF_CNOMBRE'];
+                $item->EDIF_CCALLE      = $TRAM_LIST_EDIFICIO[$i]['EDIF_CCALLE'];
+                $item->EDIF_CLATITUD    = $TRAM_LIST_EDIFICIO[$i]['EDIF_CLATITUD'];
+                $item->EDIF_CLONGITUD   = $TRAM_LIST_EDIFICIO[$i]['EDIF_CLONGITUD'];
+                $item->EDIF_NIDSECCION  = $TRAM_NIDSECCION;
+                $item->EDIF_NIDEDIFICIO = intval($TRAM_LIST_EDIFICIO[$i]['EDIF_NIDEDIFICIO']);
+                $item->save();
+            }
+        } catch (Exception $ex) {
+            dd($ex);
         }
     }
 
@@ -533,45 +528,34 @@ class GestorController extends Controller
 
         $TRAM_LIST_RESOLUTIVO['RESO_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
         $TRAM_LIST_RESOLUTIVO['RESO_NIDRESOLUTIVO'] = 1;
-        $nombreResolutivo = isset($TRAM_LIST_RESOLUTIVO['RESO_CNOMBRE']) ? $TRAM_LIST_RESOLUTIVO['RESO_CNOMBRE'] : "";
-        $documentoResolutivo =  $gestor->TRAM_SP_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO['RESO_NIDTRAMITE'], $TRAM_LIST_RESOLUTIVO['RESO_NIDRESOLUTIVO'], $nombreResolutivo , $TRAM_NIDSECCION, $fileName);
-        $documentoResolutivoId = $documentoResolutivo[0]->ResolutivoID;
+        $nombreResolutivo       = isset($TRAM_LIST_RESOLUTIVO['RESO_CNOMBRE']) ? $TRAM_LIST_RESOLUTIVO['RESO_CNOMBRE'] : "";
+        $documentoResolutivo    = $gestor->TRAM_SP_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO['RESO_NIDTRAMITE'], $TRAM_LIST_RESOLUTIVO['RESO_NIDRESOLUTIVO'], $nombreResolutivo , $TRAM_NIDSECCION, $fileName);
+
         if (!empty($TRAM_LIST_RESOLUTIVO["MAPEO"])) {
             foreach ($TRAM_LIST_RESOLUTIVO["MAPEO"] as $MAPEO) {
-                $gestor->TRAM_SP_AGREGAR_RESOLUTIVO_MAPEO($documentoResolutivoId, $MAPEO['idFormulario'], $MAPEO['idPregunta'], $MAPEO['campo']);
+                $gestor->TRAM_SP_AGREGAR_RESOLUTIVO_MAPEO($documentoResolutivo->RESO_NID, $MAPEO['idFormulario'], $MAPEO['idPregunta'], $MAPEO['campo']);
             }
         }
     }
-    /* 
-    private function TRAM_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO, $TRAM_NIDTRAMITE, $TRAM_NIDSECCION)
-    {
-        $gestor = new Cls_Gestor();
-
-        for ($i = 0; $i < count($TRAM_LIST_RESOLUTIVO); $i++) {
-
-            $TRAM_LIST_RESOLUTIVO[$i]['RESO_NIDTRAMITE'] = $TRAM_NIDTRAMITE;
-            $TRAM_LIST_RESOLUTIVO[$i]['RESO_NIDRESOLUTIVO'] = $i + 1;
-            $gestor->TRAM_SP_AGREGAR_RESOLUTIVO($TRAM_LIST_RESOLUTIVO[$i]['RESO_NIDTRAMITE'], $TRAM_LIST_RESOLUTIVO[$i]['RESO_NIDRESOLUTIVO'], $TRAM_LIST_RESOLUTIVO[$i]['RESO_CNOMBRE'], $TRAM_NIDSECCION);
-        }
-    } */
 
     private function TRAM_AGREGAR_CONCEPTO_PAGO_TRAMITE($TRAM_LIST_CONCEPTO, $TRAM_NIDTRAMITE, $TRAM_NIDSECCION)
     {
-        $gestor = new Cls_Gestor();
-
-        for ($i = 0; $i < count($TRAM_LIST_CONCEPTO); $i++) {
-            $concepto_add = [
-                $TRAM_LIST_CONCEPTO[$i]['CONC_NIDCONCEPTO'],
-                $TRAM_NIDTRAMITE,
-                $TRAM_LIST_CONCEPTO[$i]['CONC_NIDTRAMITE_ACCEDE'],
-                $TRAM_LIST_CONCEPTO[$i]['CONC_NREFERENCIA'],
-                $TRAM_LIST_CONCEPTO[$i]['CONC_CONCEPTO'],
-                $TRAM_LIST_CONCEPTO[$i]['CONC_CTRAMITE'],
-                $TRAM_LIST_CONCEPTO[$i]['CONC_CENTE_PUBLICO'],
-                $TRAM_LIST_CONCEPTO[$i]['CONC_CENTE'],
-                $TRAM_NIDSECCION
-            ];
-            $gestor->TRAM_SP_AGREGAR_CONCEPTO($concepto_add);
+        try{
+            for ($i = 0; $i < count($TRAM_LIST_CONCEPTO); $i++) {
+                $item = new Cls_Tramite_Concepto();
+                $item->CONC_NIDCONCEPTO     = $TRAM_LIST_CONCEPTO[$i]['CONC_NIDCONCEPTO'];
+                $item->CONC_NIDTRAMITE      = $TRAM_NIDTRAMITE;
+                $item->CONC_NIDTRAMITE_ACCEDE = $TRAM_LIST_CONCEPTO[$i]['CONC_NIDTRAMITE_ACCEDE'];
+                $item->CONC_NREFERENCIA     = $TRAM_LIST_CONCEPTO[$i]['CONC_NREFERENCIA'];
+                $item->CONC_CTRAMITE        = $TRAM_LIST_CONCEPTO[$i]['CONC_CTRAMITE'];
+                $item->CONC_CENTE_PUBLICO   = $TRAM_LIST_CONCEPTO[$i]['CONC_CENTE_PUBLICO'];
+                $item->CONC_CENTE           = $TRAM_LIST_CONCEPTO[$i]['CONC_CENTE'];
+                $item->CONC_NIDSECCION      = $TRAM_NIDSECCION;
+                $item->save();
+            }
+        }
+        catch (Exception $ex) {
+            dd($ex);
         }
     }
 
@@ -661,4 +645,14 @@ class GestorController extends Controller
         $formulario->open_modal = 1;
         return $formulario->list();
     }
+
+     //Obtener servicios de tramite
+     public function consultar_servicios($TRAM_NIDTRAMITE_ACCEDE)
+     {
+        try {
+            return Cls_Gestor::TRAM_CONSULTAR_SERVICIOS_TRAMITE($TRAM_NIDTRAMITE_ACCEDE);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+     }
 }

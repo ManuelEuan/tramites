@@ -58,32 +58,20 @@ class CitasController extends Controller
         return Response()->json($listCitas);
     }
 
-    public function guardar_cita_local(Request $request)
-    {
-        $response = Cls_Citas::TRAM_SP_CITAAGENDADA(
-            $request->input('CITA_FOLIO'),
-            $request->input('CITA_STATUS'),
-            $request->input('CITA_IDUSUARIO'),
-            $request->input('CITA_IDTRAMITECONF'));
+    public function guardar_cita_local(Request $request) {
+        $item = new Cls_Citas();
+        $item->CITA_FOLIO       = $request->CITA_FOLIO;
+        $item->CITA_STATUS      = $request->CITA_STATUS;
+        $item->CITA_IDUSUARIO   = $request->CITA_IDUSUARIO;
+        $item->CITA_IDTRAMITECONF =  $request->CITA_IDTRAMITECONF;
+        $item->save();
 
-        return response()->json([
-            "estatus" => "success",
-            "codigo" => 200,
-            "mensaje" => "Cita guardada con éxito"
-        ]);
+        return response()->json(["estatus" => "success", "codigo" => 200, "mensaje" => "Cita guardada con éxito"]);
     }
 
-    public function actualizar_cita(Request $request)
-    {
-        $response = Cls_Citas::TRAM_SP_CITAACTUALIZADA(
-            $request->input('CITA_FOLIO'),
-            $request->input('CITA_STATUS'));
-
-        return response()->json([
-            "estatus" => "success",
-            "codigo" => 200,
-            "mensaje" => "Cita actualizada con éxito"
-        ]);
+    public function actualizar_cita(Request $request) {
+        Cls_Citas::where('CITA_FOLIO', $request->CITA_FOLIO)->update(['CITA_STATUS' => $request->CITA_STATUS]);
+        return response()->json([ "estatus" => "success", "codigo" => 200, "mensaje" => "Cita actualizada con éxito"]);
     }
 
     public function citas_disponibles($idtramite, $idedificio){

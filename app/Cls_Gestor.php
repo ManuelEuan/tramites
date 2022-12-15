@@ -3,6 +3,7 @@
 namespace App;
 
 use Exception;
+use App\Models\Cls_Tramite;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
@@ -65,6 +66,7 @@ class Cls_Gestor extends Model
     public $CONF_CDESCRIPCIONCITA;
     public $CONF_CDESCRIPCIONVENTANILLA;
     public $CONF_NORDEN;
+    public $TRAM_SERV_ID;
 
     //Obtiene los trámites segun filtrado y unidad administrativa
     public function TRAM_SP_CONSULTARTRAMITESERVICIO()
@@ -136,13 +138,19 @@ class Cls_Gestor extends Model
         $response = array();
 
         try {
-            $response['tramite']        = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $tramite = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['tramite']        = $tramite;
             $response['secciones']      = DB::table('tram_mdv_seccion_tramite')->where('CONF_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->orderBy('CONF_NORDEN', 'asc')->get();
             $response['formularios']    = DB::table('tram_mst_formulario_tramite')->where('FORM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
             $response['documentos']     = DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
             $response['edificios']      = DB::table('tram_mst_edificio')->where('EDIF_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
             $response['conceptos_pago'] = DB::table('tram_mst_concepto_tramite')->where('CONC_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
             $response['resolutivos']    = DB::table('tram_mst_resolutivo')->where('RESO_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['servicios']      = [];
+
+            if($tramite && count($tramite)>0){
+                $response['servicios'] = DB::table('tram_cat_services')->where('SERV_ACTIVE', 1)->where('SERV_ID', $tramite[0]->TRAM_SERV_ID)->get();   
+            }
 
             foreach ($response['resolutivos'] as $key => $resolutivo) {
                 $response['resolutivos'][$key]->MAPEO = DB::select(
@@ -179,82 +187,30 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_AGREGAR_FORMULARIO($TRAM_NIDFORMULARIO, $TRAM_NIDTRAMITE)
-    {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_FORMULARIO_TRAMITE(?, ?)',
-            array(
-                $TRAM_NIDFORMULARIO,
-                $TRAM_NIDTRAMITE
-            )
-        );
-    }
-
-    public function TRAM_SP_AGREGAR_DOCUMENTO($TRAD_NIDTRAMITE, $TRAD_NIDDOCUMENTO, $TRAD_CNOMBRE, $TRAD_CDESCRIPCION, $TRAD_CEXTENSION, $TRAD_NOBLIGATORIO, $TRAD_NMULTIPLE)
-    {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_DOCUMENTO_TRAMITE(?,?,?,?,?,?,?)',
-            array(
-                $TRAD_NIDTRAMITE,
-                $TRAD_NIDDOCUMENTO,
-                $TRAD_CNOMBRE,
-                $TRAD_CDESCRIPCION,
-                $TRAD_CEXTENSION,
-                $TRAD_NOBLIGATORIO,
-                $TRAD_NMULTIPLE
-            )
-        );
-    }
-
-    public function TRAM_SP_AGREGAR_EDIFICIO_TRAMITE($EDIF_NIDTRAMITE, $EDIF_CNOMBRE, $TRAM_NIDSECCION, $TRAM_NCALLE, $TRAM_CLATITUD, $TRAM_CLONGITUD, $TRAM_NIDEDIFICIO)
-    {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_EDIFICIO_TRAMITE(?, ?, ?, ?, ?, ?, ?)',
-            array(
-                $EDIF_NIDTRAMITE,
-                $EDIF_CNOMBRE,
-                $TRAM_NIDSECCION,
-                $TRAM_NCALLE,
-                $TRAM_CLATITUD,
-                $TRAM_CLONGITUD,
-                $TRAM_NIDEDIFICIO
-            )
-        );
-    }
-
     public function TRAM_SP_AGREGAR_RESOLUTIVO($RESO_NIDTRAMITE, $RESO_NIDRESOLUTIVO, $RESO_CNOMBRE, $TRAM_NIDSECCION, $RESO_CNAMEFILE)
     {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_RESOLUTIVO(?,?,?,?,?)',
-            array(
-                $RESO_NIDTRAMITE,
-                $RESO_NIDRESOLUTIVO,
-                $RESO_CNOMBRE,
-                $TRAM_NIDSECCION,
-                $RESO_CNAMEFILE
-            )
-        );
+        $item = new Cls_Resolutivo();
+        $item->RESO_NIDTRAMITE = $RESO_NIDTRAMITE;
+        $item->TRAD_CNOMBRE = $RESO_NIDTRAMITE;
+        $item->RESO_NIDRESOLUTIVO = $RESO_NIDTRAMITE;
+        $item->RESO_CNOMBRE = $RESO_NIDTRAMITE;
+        $item->TRAD_NOBLIGATORIO = $RESO_NIDTRAMITE;
+        $item->RESO_NIDSECCION = $RESO_NIDTRAMITE;
+        $item->RESO_CNAMEFILE = $RESO_NIDTRAMITE;
+        $item->save();
+        
+        return $item;
     }
 
     public function TRAM_SP_AGREGAR_RESOLUTIVO_MAPEO($TRAM_RESODOCU_NID, $TRAM_NIDFORMULARIO, $TRAM_NIDPRGUNTA, $TRAM_CNOMBRECAMPO)
     {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_RESOLUTIVO_MAPEO(?,?,?,?)',
-            array(
-                $TRAM_RESODOCU_NID,
-                $TRAM_NIDFORMULARIO,
-                $TRAM_NIDPRGUNTA,
-                $TRAM_CNOMBRECAMPO,
-            )
-        );
-    }
+        DB::table('tram_mst_resolutivo_mapeo')->insert([
+            'TRAM_RESODOCU_NID'     => $TRAM_RESODOCU_NID,
+            'TRAM_NIDFORMULARIO'    => $TRAM_NIDFORMULARIO,
+            'TRAM_NIDPRGUNTA'       => $TRAM_NIDPRGUNTA,
+            'TRAM_CNOMBRECAMPO'     => $TRAM_CNOMBRECAMPO
 
-    public function TRAM_SP_AGREGAR_CONCEPTO(array $conceptos)
-    {
-        DB::select(
-            'INSERT INTO tram_mst_concepto_tramite (CONC_NIDCONCEPTO, CONC_NIDTRAMITE, CONC_NIDTRAMITE_ACCEDE, CONC_NREFERENCIA, CONC_CONCEPTO, CONC_CTRAMITE, CONC_CENTE_PUBLICO, CONC_CENTE, CONC_NIDSECCION) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            $conceptos
-        );
+        ]);
     }
 
     //----------- Metodo de eliminacion ---------------------
@@ -272,69 +228,26 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_ELIMINAR_EDIFICIO($EDIF_NIDTRAMITE)
-    {
-
-        return DB::select(
-            'DELETE FROM tram_mst_edificio WHERE EDIF_NIDTRAMITE = ?',
-            array($EDIF_NIDTRAMITE)
-        );
-    }
-
-    public function TRAM_SP_ELIMINAR_RESOLUTIVO($TRAM_NIDTRAMITE)
-    {
-
-        return DB::select(
-            'DELETE FROM tram_mst_resolutivo WHERE RESO_NIDTRAMITE = ?',
-            array($TRAM_NIDTRAMITE)
-        );
-    }
-
-    public function TRAM_SP_ELIMINAR_CONCEPTO($TRAM_NIDTRAMITE)
-    {
-
-        return DB::select(
-            'DELETE FROM tram_mst_concepto_tramite WHERE CONC_NIDTRAMITE = ?',
-            array($TRAM_NIDTRAMITE)
-        );
-    }
-
     //Implementar/Desimplementar trámite
     public function TRAM_SP_CAMBIAR_ESTATUS_TRAMITE($TRAM_NIDTRAMITE_CONFIG, $TRAM_NIMPLEMENTADO)
     {
-        $response = [];
+        $response = ["estatus" => "success", "mensaje" => "Se cambio el estatus del trámite", "codigo" => 200 ];
         try {
 
-            $tramite = DB::select(
-                'SELECT TRAM_NIDTRAMITE_ACCEDE FROM tram_mst_tramite WHERE TRAM_NIDTRAMITE = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-
-            $TRAM_NIDACCEDE = $tramite[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite = Cls_Tramite::find($TRAM_NIDTRAMITE_CONFIG);
 
             //Desimplementamos los trámites anteriores
-            if ($TRAM_NIMPLEMENTADO > 0) {
-                DB::select(
-                    'UPDATE tram_mst_tramite SET TRAM_NIMPLEMENTADO = 0 WHERE TRAM_NIDTRAMITE_ACCEDE = ? AND TRAM_NIDTRAMITE != ?',
-                    array($TRAM_NIDACCEDE, $TRAM_NIDTRAMITE_CONFIG)
-                );
+            if($TRAM_NIMPLEMENTADO > 0){
+                Cls_Tramite::where(['TRAM_NIDTRAMITE_ACCEDE' => $tramite->TRAM_NIDACCEDE, 'TRAM_NIDTRAMITE' => $TRAM_NIDTRAMITE_CONFIG])->update(['TRAM_NIMPLEMENTADO' => false]);
             }
 
-            //Implementamos/Desimplementamos el Trámite en cuestión
-            DB::select(
-                'UPDATE tram_mst_tramite SET TRAM_NIMPLEMENTADO = ? WHERE TRAM_NIDTRAMITE = ?',
-                array($TRAM_NIMPLEMENTADO, $TRAM_NIDTRAMITE_CONFIG)
-            );
-
-            $response = [
-                "estatus" => "success",
-                "mensaje" => "Se cambio el estatus del trámite",
-                "codigo" => 200
-            ];
-        } catch (\Throwable $th) {
+            $item = Cls_Tramite::find($TRAM_NIDTRAMITE_CONFIG);
+            $item->TRAM_NIMPLEMENTADO = $TRAM_NIMPLEMENTADO;
+            $item->save();
+        } catch (Exception $ex) {
             $response = [
                 "estatus" => "error",
-                "mensaje" => "Error al intentar cambiar estatus del trámite",
+                "mensaje" => "Error al intentar cambiar estatus del trámite, ". $ex->getMessage(),
                 "codigo" => 400
             ];
         }
@@ -433,5 +346,23 @@ class Cls_Gestor extends Model
         } catch (\Throwable $th) {
             //throw $th;
         }
+    }
+
+    //Obtiene los conceptos de pago del trámite
+    static function TRAM_CONSULTAR_SERVICIOS_TRAMITE($TRAM_NIDTRAMITE_ACCEDE)
+    {
+        $response = ["estatus" => "success",  "mensaje" => "Success","codigo" => 200, "data" => null];
+        try {
+            $result = DB::table('tram_cat_services')->where('SERV_ACTIVE', true)->get();
+            $response["data"] = $result;
+
+        } catch (Exception $ex) {
+            $response = [
+                "estatus" => "error",
+                "mensaje" => "Error al intentar cambiar estatus del trámite, ".$ex->getMessage(),
+                "codigo" => 400
+            ];
+        }
+        return $response;
     }
 }

@@ -241,11 +241,12 @@ class LoginController extends Controller
 		return Response()->json($response);
 	}
 
-	public function recuperar_cuenta($StrToken){
-		$ObjBloqueo = Cls_Bloqueo::TRAM_SP_CONSULTARBLOQUEO($StrToken);
-		if($ObjBloqueo == null){
+	public function recuperar_cuenta($token){
+		$ObjBloqueo = Cls_Bloqueo::where(['BLUS_NBLOQUEADO' => true, 'BLUS_CTOKEN' => $token])->first();
+		
+		if(is_null($ObjBloqueo))
 			return redirect('/logout');
-		}
+		
 		$IntIdUsuario = $ObjBloqueo->BLUS_NIDUSUARIO;
 		$IntTipo = 0;//recuperar cuenta y cambiando contraseña
 		return view('MST_RECUPERAR_CONTRASENA.index', compact('IntIdUsuario', 'StrToken', 'IntTipo'));
