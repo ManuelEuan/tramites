@@ -6,6 +6,7 @@ use stdClass;
 use Exception;
 use Illuminate\Http\Request;
 use App\Cls_Notificacion_Tramite;
+use App\Models\Cls_Dependencia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -218,7 +219,7 @@ class Cls_Tramite_Servicio extends Model
 
     public function TRAM_SP_OBTENERDEPENDECIAS()
     {
-        return DB::select('CALL TRAM_SP_OBTENERDEPENDENCIA()');
+        return Cls_Dependencia::all();;
     }
 
     public function TRAM_SP_CREARTRAMITE()
@@ -240,11 +241,6 @@ class Cls_Tramite_Servicio extends Model
                 $this->TRAM_NIDTRAMITE
             )
         );
-    }
-
-    public function TRAM_SP_CONSULTAR_TRAMITE_ACCEDE($IntIdUnidad)
-    {
-        return DB::select('CALL TRAM_SP_CONSULTAR_TRAMITE_ACCEDE(?)', array($IntIdUnidad));
     }
 
     static function TRAM_ESTATUS_NOTIFICACION($IntIdNotificacion)

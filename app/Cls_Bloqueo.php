@@ -11,29 +11,19 @@ class Cls_Bloqueo extends Model
     protected $connection   = 'pgsql';
     protected $table        = 'tram_dat_bloqueusuario';
     protected $fillable     = [ 'BLUS_NIDBLOQUEUSUARIO', 'BLUS_NIDUSUARIO', 'BLUS_NBLOQUEADO', 'BLUS_CTOKEN', 'BLUS_DFECHABLOQUEO', 'BLUS_DFECHADESBLOQUEO' ];
-    
-    static function TRAM_SP_AGREGAR_BLOQUEO($IntIdUsuario, $BolBloqueado, $StrToken){
-        return DB::statement('call TRAM_SP_AGREGAR_BLOQUEO(?,?,?)'
-                , array($IntIdUsuario
-                , $BolBloqueado
-                , $StrToken));
-    }
-    
-    static function TRAM_SP_CONSULTARBLOQUEO($StrToken){
-        $ObjBloqueo = DB::selectOne('call TRAM_SP_CONSULTARBLOQUEO(?)'
-                , array($StrToken)
-            );
-        if($ObjBloqueo == null){
-            $Obj = null;
-        }else {
-            $Obj = new Cls_Bloqueo();
-            $Obj->BLUS_NIDBLOQUEUSUARIO = $ObjBloqueo->BLUS_NIDBLOQUEUSUARIO;
-            $Obj->BLUS_NIDUSUARIO = $ObjBloqueo->BLUS_NIDUSUARIO;
-            $Obj->BLUS_NBLOQUEADO = $ObjBloqueo->BLUS_NBLOQUEADO;
-            $Obj->BLUS_CTOKEN = $ObjBloqueo->BLUS_CTOKEN;
-            $Obj->BLUS_DFECHABLOQUEO = $ObjBloqueo->BLUS_DFECHABLOQUEO;
-            $Obj->BLUS_DFECHADESBLOQUEO = $ObjBloqueo->BLUS_DFECHADESBLOQUEO;
-        }
-        return $Obj;
+    protected $primaryKey   = 'BLUS_NIDBLOQUEUSUARIO';
+    protected $timestamps   = false;
+
+
+    static function TRAM_SP_AGREGAR_BLOQUEO($IntIdUsuario, $BolBloqueado, $token){
+        $item = new Cls_Bloqueo();
+        $item->BLUS_NIDUSUARIO      = $IntIdUsuario;
+        $item->BLUS_NBLOQUEADO      = $BolBloqueado;
+        $item->BLUS_CTOKEN          = $token;
+        $item->BLUS_DFECHABLOQUEO   = now();
+        $item->BLUS_DFECHADESBLOQUEO = now();
+        $item->save();
+
+        return $item;
     }
 }
