@@ -6,6 +6,7 @@ use DateTime;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Cls_TramiteEdificio;
 use Illuminate\Support\Facades\Auth;
 
 class SeguimientoServidorPublicoService
@@ -109,19 +110,7 @@ class SeguimientoServidorPublicoService
                         ->where('TRAD_NIDTRAMITE', $id)->get();
         return $query;
     }
-    
-    /**
-     * TramiteEdificios
-     *
-     * @param  mixed $id
-     * @return array
-     */
-    static function TramiteEdificios($id){
-        $query  = DB::table('tram_mst_edificio')
-                        ->where('EDIF_NIDTRAMITE', $id)->get();
-        return $query;
-    }
-    
+
     /**
      * TramiteResolutivos
      *
@@ -177,7 +166,7 @@ class SeguimientoServidorPublicoService
             $response['documentos'] = SeguimientoServidorPublicoService::TramiteDocumentos($USTR_NIDTRAMITE);
 
             //Sexto resultado: Secciones de edificios
-            $response['edificios'] = SeguimientoServidorPublicoService::TramiteEdificios($USTR_NIDTRAMITE);
+            $response['edificios'] = Cls_TramiteEdificio::where('EDIF_NIDTRAMITE', $USTR_NIDTRAMITE)->get();
 
             //Septimo resultado: Secciones de resolutivos
             $response['resolutivos'] = SeguimientoServidorPublicoService::TramiteResolutivos($USTR_NIDTRAMITE);

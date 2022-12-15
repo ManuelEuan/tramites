@@ -179,82 +179,30 @@ class Cls_Gestor extends Model
         );
     }
 
-    public function TRAM_SP_AGREGAR_FORMULARIO($TRAM_NIDFORMULARIO, $TRAM_NIDTRAMITE)
-    {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_FORMULARIO_TRAMITE(?, ?)',
-            array(
-                $TRAM_NIDFORMULARIO,
-                $TRAM_NIDTRAMITE
-            )
-        );
-    }
-
-    public function TRAM_SP_AGREGAR_DOCUMENTO($TRAD_NIDTRAMITE, $TRAD_NIDDOCUMENTO, $TRAD_CNOMBRE, $TRAD_CDESCRIPCION, $TRAD_CEXTENSION, $TRAD_NOBLIGATORIO, $TRAD_NMULTIPLE)
-    {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_DOCUMENTO_TRAMITE(?,?,?,?,?,?,?)',
-            array(
-                $TRAD_NIDTRAMITE,
-                $TRAD_NIDDOCUMENTO,
-                $TRAD_CNOMBRE,
-                $TRAD_CDESCRIPCION,
-                $TRAD_CEXTENSION,
-                $TRAD_NOBLIGATORIO,
-                $TRAD_NMULTIPLE
-            )
-        );
-    }
-
-    public function TRAM_SP_AGREGAR_EDIFICIO_TRAMITE($EDIF_NIDTRAMITE, $EDIF_CNOMBRE, $TRAM_NIDSECCION, $TRAM_NCALLE, $TRAM_CLATITUD, $TRAM_CLONGITUD, $TRAM_NIDEDIFICIO)
-    {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_EDIFICIO_TRAMITE(?, ?, ?, ?, ?, ?, ?)',
-            array(
-                $EDIF_NIDTRAMITE,
-                $EDIF_CNOMBRE,
-                $TRAM_NIDSECCION,
-                $TRAM_NCALLE,
-                $TRAM_CLATITUD,
-                $TRAM_CLONGITUD,
-                $TRAM_NIDEDIFICIO
-            )
-        );
-    }
-
     public function TRAM_SP_AGREGAR_RESOLUTIVO($RESO_NIDTRAMITE, $RESO_NIDRESOLUTIVO, $RESO_CNOMBRE, $TRAM_NIDSECCION, $RESO_CNAMEFILE)
     {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_RESOLUTIVO(?,?,?,?,?)',
-            array(
-                $RESO_NIDTRAMITE,
-                $RESO_NIDRESOLUTIVO,
-                $RESO_CNOMBRE,
-                $TRAM_NIDSECCION,
-                $RESO_CNAMEFILE
-            )
-        );
+        $item = new Cls_Resolutivo();
+        $item->RESO_NIDTRAMITE = $RESO_NIDTRAMITE;
+        $item->TRAD_CNOMBRE = $RESO_NIDTRAMITE;
+        $item->RESO_NIDRESOLUTIVO = $RESO_NIDTRAMITE;
+        $item->RESO_CNOMBRE = $RESO_NIDTRAMITE;
+        $item->TRAD_NOBLIGATORIO = $RESO_NIDTRAMITE;
+        $item->RESO_NIDSECCION = $RESO_NIDTRAMITE;
+        $item->RESO_CNAMEFILE = $RESO_NIDTRAMITE;
+        $item->save();
+        
+        return $item;
     }
 
     public function TRAM_SP_AGREGAR_RESOLUTIVO_MAPEO($TRAM_RESODOCU_NID, $TRAM_NIDFORMULARIO, $TRAM_NIDPRGUNTA, $TRAM_CNOMBRECAMPO)
     {
-        return DB::select(
-            'call TRAM_SP_AGREGAR_RESOLUTIVO_MAPEO(?,?,?,?)',
-            array(
-                $TRAM_RESODOCU_NID,
-                $TRAM_NIDFORMULARIO,
-                $TRAM_NIDPRGUNTA,
-                $TRAM_CNOMBRECAMPO,
-            )
-        );
-    }
+        DB::table('tram_mst_resolutivo_mapeo')->insert([
+            'TRAM_RESODOCU_NID'     => $TRAM_RESODOCU_NID,
+            'TRAM_NIDFORMULARIO'    => $TRAM_NIDFORMULARIO,
+            'TRAM_NIDPRGUNTA'       => $TRAM_NIDPRGUNTA,
+            'TRAM_CNOMBRECAMPO'     => $TRAM_CNOMBRECAMPO
 
-    public function TRAM_SP_AGREGAR_CONCEPTO(array $conceptos)
-    {
-        DB::select(
-            'INSERT INTO tram_mst_concepto_tramite (CONC_NIDCONCEPTO, CONC_NIDTRAMITE, CONC_NIDTRAMITE_ACCEDE, CONC_NREFERENCIA, CONC_CONCEPTO, CONC_CTRAMITE, CONC_CENTE_PUBLICO, CONC_CENTE, CONC_NIDSECCION) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            $conceptos
-        );
+        ]);
     }
 
     //----------- Metodo de eliminacion ---------------------
@@ -268,33 +216,6 @@ class Cls_Gestor extends Model
 
         return DB::select(
             'DELETE FROM tram_mdv_documento_tramite WHERE TRAD_NIDTRAMITE = ?',
-            array($TRAM_NIDTRAMITE)
-        );
-    }
-
-    public function TRAM_SP_ELIMINAR_EDIFICIO($EDIF_NIDTRAMITE)
-    {
-
-        return DB::select(
-            'DELETE FROM tram_mst_edificio WHERE EDIF_NIDTRAMITE = ?',
-            array($EDIF_NIDTRAMITE)
-        );
-    }
-
-    public function TRAM_SP_ELIMINAR_RESOLUTIVO($TRAM_NIDTRAMITE)
-    {
-
-        return DB::select(
-            'DELETE FROM tram_mst_resolutivo WHERE RESO_NIDTRAMITE = ?',
-            array($TRAM_NIDTRAMITE)
-        );
-    }
-
-    public function TRAM_SP_ELIMINAR_CONCEPTO($TRAM_NIDTRAMITE)
-    {
-
-        return DB::select(
-            'DELETE FROM tram_mst_concepto_tramite WHERE CONC_NIDTRAMITE = ?',
             array($TRAM_NIDTRAMITE)
         );
     }
