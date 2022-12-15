@@ -453,6 +453,7 @@
     var list_formularios = [];
     var list_conceptos_tramite = [];
     var list_conceptos_temporal = [];
+    var list_servicios_tramite = [];
 
     //Variables de configuracion
     var list_sections = [];
@@ -799,6 +800,7 @@
                         "list_edificios": [],
                         "list_pago": [],
                         "list_resolutivo": [],
+                        "list_servicios": []
                     };
                     list_sections.push(formulario);
 
@@ -809,6 +811,7 @@
                     var _edificios = sectionNew.value === 4 ? tramite_.edificios.filter(x => x.EDIF_NIDSECCION === null || parseInt(x.EDIF_NIDSECCION) === parseInt(value.CONF_NIDCONFIGURACION)) : [];
                     var _pago = sectionNew.value === 5 ? tramite_.conceptos_pago.filter(x => x.CONC_NIDSECCION === null || parseInt(x.CONC_NIDSECCION) === parseInt(value.CONF_NIDCONFIGURACION)) : [];
                     var _resolutivo = sectionNew.value === 7 ? tramite_.resolutivos.filter(x => x.RESO_NIDSECCION === null || parseInt(x.RESO_NIDSECCION) === parseInt(value.CONF_NIDCONFIGURACION)) : [];
+                    var _servicios = sectionNew.value === 5 ? tramite_.servicios.filter() : [];
 
                     list_sections.push({
                         id: sectionNew.value,
@@ -825,6 +828,7 @@
                         list_edificios: _edificios,
                         list_pago: _pago,
                         list_resolutivo: _resolutivo,
+                        list_servicios: _servicios,
                     });
                 }
             });
@@ -950,11 +954,28 @@
             }
         }
 
+        function TRAM_AJX_OBTENER_SERVICIOS_TRAMITE() {
+            var TRAM_NIDTRAMITE_ACCEDE = "{{request()->route('tramiteID') }}";
+            $.ajax({
+                dataType: 'json',
+                url: "/gestores/consultar_servicios/" + TRAM_NIDTRAMITE_ACCEDE,
+                type: "GET",
+                success: function(data) {
+                    list_servicios_tramite = [];
+                    if (data.codigo === 200) {
+                        list_servicios_tramite = data.data;
+                    }
+                },
+                error: function(data) {}
+            });
+        }
+
         //Nuevo
         TRAM_AJX_OBTENER_TRAMITE();
         TRAM_FN_LLENARSELECTSECTION();
         TRAM_AJX_OBTENER_FORMULARIOS();
         TRAM_AJX_OBTENER_CONCEPTO_PAGO_TRAMITE();
+        TRAM_AJX_OBTENER_SERVICIOS_TRAMITE();
 
         //Funcion para guardar el ID del formulario seleccionado
         $(document).on('click', '.checkItemFormulario', function() {
@@ -1502,6 +1523,14 @@
             }
         });
 
+        list_servicios = []
+        $.each(list_sections[_index].list_pago, function(key, value) {
+            var item = list_servicios_tramite.find(x => parseInt(x.ID) === parseInt(value.CONC_NIDCONCEPTO));
+            if (typeof item !== 'undefined') {
+                list_servicios.push(item);
+            }
+        });
+
         $.ajax({
             // data: filtro,
             dataType: 'json',
@@ -1803,6 +1832,31 @@
         } else {
             searchFormulario = "";
             TRAM_FN_BUSCAR_FORMULARIO_RENDER(searchFormulario);
+        }
+    }
+
+    function TRAM_FN_AGREGA_SERVICIO(values) {
+        list_servicios = [];
+        list_sections[_index].list_servicios = [];
+
+        if (values !== null && values.length > 0) {
+            $.each(values, function(key, value) {
+                var item = list_servicios_tramite.find(x => parseInt(x.ID) === parseInt(value));
+                if (typeof item !== 'undefined') {
+                    list_servicios.push(item);
+                    list_sections[_index].list_servicios.push({
+                        "SERV_ACTIVE": item.SERV_ACTIVE,
+                        "SERV_AUTH_TYPE": item.SERV_AUTH_TYPE,
+                        "SERV_ID": item.SERV_ID,
+                        "SERV_KEY": item.SERV_KEY,
+                        "SERV_PASSWORD": item.SERV_PASSWORD,
+                        "SERV_SERVICE": item.SERV_SERVICE,
+                        "SERV_TYPE": item.SERV_TYPE,
+                        "SERV_USERNAME": item.SERV_USERNAME,
+                        "SERV_DESCRIPTION": item.SERV_DESCRIPTION,                            
+                    });
+                }
+            });
         }
     }
 

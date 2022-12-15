@@ -530,6 +530,8 @@
         var list_conceptos_temporal = [];
         var list_resolutivos_tramite = [];
         var list_preguntas_resolutivos = [];
+        var list_servicios_tramite = [];
+        var list_servicios_temporal = [];
 
         //Variables de configuracion
         var list_sections = [];
@@ -537,6 +539,7 @@
         var edificios = [];
         var resolutivos = [];
         var list_conceptos = [];
+        var list_servicios = [];
 
         var id_formulario = 0;
         var list_documentos = [];
@@ -575,7 +578,8 @@
             CONF_NORDEN: 1,
             CONF_LIST_EDIFICIO: [],
             CONF_LIST_PAGO: [],
-            CONF_LIST_RESOLUTIVO: []
+            CONF_LIST_RESOLUTIVO: [],
+            CONF_LIST_SERVICIO: [],
         };
 
         //resolutivo electronico
@@ -652,6 +656,7 @@
                     "list_edificios": [],
                     "list_pago": [],
                     "list_resolutivo": [],
+                    "list_servicios": [],
                 };
 
                 list_sections.push(formulario);
@@ -909,6 +914,7 @@
                             "list_edificios": [],
                             "list_pago": [],
                             "list_resolutivo": [],
+                            "list_servicios": []
                         };
                         list_sections.push(formulario);
 
@@ -919,6 +925,7 @@
                         var _edificios = sectionNew.value === 4 ? tramite_.edificios.filter(x => x.EDIF_NIDSECCION === null || parseInt(x.EDIF_NIDSECCION) === parseInt(value.CONF_NIDCONFIGURACION)) : [];
                         var _pago = sectionNew.value === 5 ? tramite_.conceptos_pago.filter(x => x.CONC_NIDSECCION === null || parseInt(x.CONC_NIDSECCION) === parseInt(value.CONF_NIDCONFIGURACION)) : [];
                         var _resolutivo = sectionNew.value === 7 ? tramite_.resolutivos.filter(x => x.RESO_NIDSECCION === null || parseInt(x.RESO_NIDSECCION) === parseInt(value.CONF_NIDCONFIGURACION)) : [];
+                        var _servicios = sectionNew.value === 5 ? tramite_.servicios : [];
 
                         list_sections.push({
                             id: sectionNew.value,
@@ -935,6 +942,7 @@
                             list_edificios: _edificios,
                             list_pago: _pago,
                             list_resolutivo: _resolutivo,
+                            list_servicios: _servicios,
                         });
                     }
 
@@ -1104,11 +1112,28 @@
                 list_preguntas_resolutivos = data;
             });
 
+            function TRAM_AJX_OBTENER_SERVICIOS_TRAMITE() {
+                var TRAM_NIDTRAMITE_ACCEDE = "{{request()->route('tramiteID') }}";
+                $.ajax({
+                    dataType: 'json',
+                    url: "/gestores/consultar_servicios/" + TRAM_NIDTRAMITE_ACCEDE,
+                    type: "GET",
+                    success: function(data) {
+                        list_servicios_tramite = [];
+                        if (data.codigo === 200) {
+                            list_servicios_tramite = data.data;
+                        }
+                    },
+                    error: function(data) {}
+                });
+            }
+
             //Nuevo
             TRAM_AJX_OBTENER_TRAMITE();
             TRAM_FN_LLENARSELECTSECTION();
             TRAM_AJX_OBTENER_FORMULARIOS();
             TRAM_AJX_OBTENER_CONCEPTO_PAGO_TRAMITE();
+            TRAM_AJX_OBTENER_SERVICIOS_TRAMITE();
 
             //Funcion para guardar el ID del formulario seleccionado
             $(document).on('click', '.checkItemFormulario', function() {
@@ -1795,6 +1820,14 @@
                 }
             });
 
+            list_servicios = []
+            $.each(list_sections[_index].list_servicios, function(key, value) {
+                var item = list_servicios_tramite.find(x => parseInt(x.SERV_ID) === parseInt(value.SERV_ID));
+                if (typeof item !== 'undefined') {
+                    list_servicios.push(item);
+                }
+            });
+
             $.ajax({
                 // data: filtro,
                 dataType: 'json',
@@ -2009,6 +2042,31 @@
             $.each(resolutivos, function(key, value) {
                 $('#list_resolutivos').append('<li class="list-group-item d-flex justify-content-between align-items-center">' + value + '  <span onclick="TRAM_FN_ELIMINAR_RESOLUTIVO(' + key + ');" style="cursor:pointer;" title="Eliminar resolutivo" class="badge badge-pill"><i style="font-size:16px;" class="fas fa-times"></i></span></li>');
             });
+        }
+
+        function TRAM_FN_AGREGA_SERVICIO(values) {
+            list_servicios = [];
+            list_sections[_index].list_servicios = [];
+
+            if (values !== null && values.length > 0) {
+                $.each(values, function(key, value) {
+                    var item = list_servicios_tramite.find(x => parseInt(x.SERV_ID) === parseInt(value));
+                    if (typeof item !== 'undefined') {
+                        list_servicios.push(item);
+                        list_sections[_index].list_servicios.push({
+                            "SERV_ACTIVE": item.SERV_ACTIVE,
+                            "SERV_AUTH_TYPE": item.SERV_AUTH_TYPE,
+                            "SERV_ID": item.SERV_ID,
+                            "SERV_KEY": item.SERV_KEY,
+                            "SERV_PASSWORD": item.SERV_PASSWORD,
+                            "SERV_SERVICE": item.SERV_SERVICE,
+                            "SERV_TYPE": item.SERV_TYPE,
+                            "SERV_USERNAME": item.SERV_USERNAME,
+                            "SERV_DESCRIPTION": item.SERV_DESCRIPTION,                            
+                        });
+                    }
+                });
+            }
         }
 
         /*** Funciones para configuracion de formulario ***/
@@ -2685,29 +2743,6 @@
         }
 
         function TRAM_FN_SAVE() {
-
-            //Validacion tablero
-            /*if (list_sections.length >= 2) {
-                var existeCitaResolutivo = list_sections.find(x => x.id === 3 || x.id === 7);
-                if (typeof existeCitaResolutivo === 'undefined') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: '¡Aviso!',
-                        text: 'Es necesario tener al menos dos elementos en el tablero y que la última acción corresponda a "Cita" o "Resolutivo electrónico".',
-                        footer: ''
-                    });
-                    return;
-                }
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: '¡Aviso!',
-                    text: 'Es necesario tener al menos dos elementos en el tablero y que la última acción corresponda a "Cita" o "Resolutivo electrónico".',
-                    footer: ''
-                });
-                return;
-            }*/
-
             var IntTramite = "{{request()->route('tramiteID') }}";
             var IntTramiteConfig = "{{request()->route('tramiteIDConfig') }}";
 
@@ -2759,7 +2794,8 @@
                                     CONF_LIST_EDIFICIO: [],
                                     CONF_LIST_PAGO: [],
                                     CONF_LIST_RESOLUTIVO: [],
-                                    CONF_DATA_RESOLUTIVO: null
+                                    CONF_DATA_RESOLUTIVO: null,
+                                    CONF_LIST_SERVICIO: [],
                                 };
 
                                 section.CONF_LIST_FORMULARIO.push({
@@ -2801,7 +2837,8 @@
                                     CONF_LIST_EDIFICIO: [],
                                     CONF_LIST_PAGO: [],
                                     CONF_LIST_RESOLUTIVO: [],
-                                    CONF_DATA_RESOLUTIVO: null
+                                    CONF_DATA_RESOLUTIVO: null,
+                                    CONF_LIST_SERVICIO: [],
                                 };
                                 tramite.TRAM_LIST_SECCION.push(section);
                             }
@@ -2834,7 +2871,8 @@
                                     CONF_LIST_PAGO: [],
                                     CONF_LIST_RESOLUTIVO: [],
                                     CONF_DATA_RESOLUTIVO: null,
-                                    CONF_ARRAY_DETALLE_CITA: objDetalle
+                                    CONF_ARRAY_DETALLE_CITA: objDetalle,
+                                    CONF_LIST_SERVICIO: [],
                                 };
                                 tramite.TRAM_LIST_SECCION.push(section);
                             }
@@ -2877,7 +2915,8 @@
                                         CONF_LIST_EDIFICIO: x.list_edificios,
                                         CONF_LIST_PAGO: [],
                                         CONF_LIST_RESOLUTIVO: [],
-                                        CONF_DATA_RESOLUTIVO: null
+                                        CONF_DATA_RESOLUTIVO: null,
+                                        CONF_LIST_SERVICIO: [],
                                     };
                                     tramite.TRAM_LIST_SECCION.push(section);
                                 }
@@ -2910,7 +2949,8 @@
                                     CONF_LIST_EDIFICIO: [],
                                     CONF_LIST_PAGO: x.list_pago,
                                     CONF_LIST_RESOLUTIVO: [],
-                                    CONF_DATA_RESOLUTIVO: null
+                                    CONF_DATA_RESOLUTIVO: null,
+                                    CONF_LIST_SERVICIO: x.list_servicios,
                                 };
                                 tramite.TRAM_LIST_SECCION.push(section);
                             }
@@ -2931,7 +2971,8 @@
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
                                 CONF_LIST_RESOLUTIVO: [],
-                                CONF_DATA_RESOLUTIVO: null
+                                CONF_DATA_RESOLUTIVO: null,
+                                CONF_LIST_SERVICIO: []
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                             break;
@@ -2977,8 +3018,8 @@
                                         RESO_FILEBASE64: objResolutivoEletronico.fileBase64,
                                         MAPEO: objResolutivoEletronico.list_mapeo_resolutivo,
 
-                                    }
-
+                                    },
+                                    CONF_LIST_SERVICIO: [],
                                 };
                                 tramite.TRAM_LIST_SECCION.push(section);
                             }
@@ -3514,7 +3555,8 @@
                                     CONF_LIST_DOCUMENTO: [],
                                     CONF_LIST_EDIFICIO: [],
                                     CONF_LIST_PAGO: [],
-                                    CONF_LIST_RESOLUTIVO: []
+                                    CONF_LIST_RESOLUTIVO: [],
+                                    CONF_LIST_SERVICIO: [],
                                 };
 
                                 section.CONF_LIST_FORMULARIO.push({
@@ -3555,7 +3597,8 @@
                                     CONF_LIST_DOCUMENTO: [],
                                     CONF_LIST_EDIFICIO: [],
                                     CONF_LIST_PAGO: [],
-                                    CONF_LIST_RESOLUTIVO: []
+                                    CONF_LIST_RESOLUTIVO: [],
+                                    CONF_LIST_SERVICIO: [],
                                 };
                                 tramite.TRAM_LIST_SECCION.push(section);
                             }
@@ -3587,7 +3630,8 @@
                                     CONF_LIST_EDIFICIO: [],
                                     CONF_LIST_PAGO: [],
                                     CONF_LIST_RESOLUTIVO: [],
-                                    CONF_ARRAY_DETALLE_CITA: objDetalle
+                                    CONF_ARRAY_DETALLE_CITA: objDetalle,
+                                    CONF_LIST_SERVICIO: [],
                                 };
                                 tramite.TRAM_LIST_SECCION.push(section);
                             }
@@ -3629,7 +3673,8 @@
                                         CONF_LIST_DOCUMENTO: [],
                                         CONF_LIST_EDIFICIO: x.list_edificios,
                                         CONF_LIST_PAGO: [],
-                                        CONF_LIST_RESOLUTIVO: []
+                                        CONF_LIST_RESOLUTIVO: [],
+                                        CONF_LIST_SERVICIO: [],
                                     };
                                     tramite.TRAM_LIST_SECCION.push(section);
                                 }
@@ -3661,7 +3706,8 @@
                                     CONF_LIST_DOCUMENTO: [],
                                     CONF_LIST_EDIFICIO: [],
                                     CONF_LIST_PAGO: x.list_pago,
-                                    CONF_LIST_RESOLUTIVO: []
+                                    CONF_LIST_RESOLUTIVO: [],
+                                    CONF_LIST_SERVICIO: x.list_servicios,
                                 };
                                 tramite.TRAM_LIST_SECCION.push(section);
                             }
@@ -3681,7 +3727,8 @@
                                 CONF_LIST_DOCUMENTO: [],
                                 CONF_LIST_EDIFICIO: [],
                                 CONF_LIST_PAGO: [],
-                                CONF_LIST_RESOLUTIVO: []
+                                CONF_LIST_RESOLUTIVO: [],
+                                CONF_LIST_SERVICIO: [],
                             };
                             tramite.TRAM_LIST_SECCION.push(section);
                             break;
@@ -3725,7 +3772,8 @@
                                         RESO_FILEBASE64: objResolutivoEletronico.fileBase64,
                                         MAPEO: objResolutivoEletronico.list_mapeo_resolutivo,
 
-                                    }
+                                    },
+                                    CONF_LIST_SERVICIO: [],
                                 };
                                 tramite.TRAM_LIST_SECCION.push(section);
                             }

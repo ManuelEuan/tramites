@@ -370,7 +370,6 @@ class GestorController extends Controller
     /********* Auxiliares del guardado de configuración de trámite *********/
     private function TRAM_SP_AGREGAR_TRAMITE(Request $request)
     {
-
         $response = [];
 
         try {
@@ -398,6 +397,20 @@ class GestorController extends Controller
             $tramites->TRAM_CAUDIENCIA      =  "";
             $tramites->TRAM_CID_AUDIENCIA   =  0;
             $tramites->TRAM_CTRAMITE_JSON   = '{"item": 1}';
+            $tramites->TRAM_SERV_ID         = null;
+
+            $listSecciones = $request->TRAM_LIST_SECCION;
+
+            foreach ($listSecciones as $seccion){
+                if ($seccion['CONF_NSECCION'] === "Pago en línea") {
+                    if(isset($seccion['CONF_LIST_SERVICIO'])){
+                        $TRAM_LIST_SERVICIO = $seccion['CONF_LIST_SERVICIO'];
+                        if($TRAM_LIST_SERVICIO && count($TRAM_LIST_SERVICIO)>0){
+                            $tramites->TRAM_SERV_ID = $TRAM_LIST_SERVICIO[0]["SERV_ID"];
+                        }
+                    }
+                }
+            }
 
             if ($request->TRAM_NENLACEOFICIAL < 1)
                 $tramites->TRAM_NENLACEOFICIAL = Gate::allows('isAdministradorOrEnlace') ? 1 : 0;
@@ -728,4 +741,14 @@ class GestorController extends Controller
         $formulario->open_modal = 1;
         return $formulario->list();
     }
+
+     //Obtener servicios de tramite
+     public function consultar_servicios($TRAM_NIDTRAMITE_ACCEDE)
+     {
+         try {
+             return Cls_Gestor::TRAM_CONSULTAR_SERVICIOS_TRAMITE($TRAM_NIDTRAMITE_ACCEDE);
+         } catch (\Throwable $th) {
+             //throw $th;
+         }
+     }
 }
