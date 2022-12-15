@@ -65,6 +65,7 @@ class Cls_Gestor extends Model
     public $CONF_CDESCRIPCIONCITA;
     public $CONF_CDESCRIPCIONVENTANILLA;
     public $CONF_NORDEN;
+    public $TRAM_SERV_ID;
 
     //Obtiene los trámites segun filtrado y unidad administrativa
     public function TRAM_SP_CONSULTARTRAMITESERVICIO()
@@ -136,13 +137,19 @@ class Cls_Gestor extends Model
         $response = array();
 
         try {
-            $response['tramite']        = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $tramite = DB::table('tram_mst_tramite')->where('TRAM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['tramite']        = $tramite;
             $response['secciones']      = DB::table('tram_mdv_seccion_tramite')->where('CONF_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->orderBy('CONF_NORDEN', 'asc')->get();
             $response['formularios']    = DB::table('tram_mst_formulario_tramite')->where('FORM_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
             $response['documentos']     = DB::table('tram_mdv_documento_tramite')->where('TRAD_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
             $response['edificios']      = DB::table('tram_mst_edificio')->where('EDIF_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
             $response['conceptos_pago'] = DB::table('tram_mst_concepto_tramite')->where('CONC_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
             $response['resolutivos']    = DB::table('tram_mst_resolutivo')->where('RESO_NIDTRAMITE', $TRAM_NIDTRAMITE_CONFIG)->get();
+            $response['servicios']      = [];
+
+            if($tramite && count($tramite)>0){
+                $response['servicios'] = DB::table('tram_cat_services')->where('SERV_ACTIVE', 1)->where('SERV_ID', $tramite[0]->TRAM_SERV_ID)->get();   
+            }
 
             foreach ($response['resolutivos'] as $key => $resolutivo) {
                 $response['resolutivos'][$key]->MAPEO = DB::select(
@@ -354,5 +361,32 @@ class Cls_Gestor extends Model
         } catch (\Throwable $th) {
             //throw $th;
         }
+    }
+
+    //Obtiene los conceptos de pago del trámite
+    static function TRAM_CONSULTAR_SERVICIOS_TRAMITE($TRAM_NIDTRAMITE_ACCEDE)
+    {
+        $response = [];
+        try {
+
+            $result =  DB::select(
+                'SELECT * FROM tram_cat_services WHERE SERV_ACTIVE = ?',
+                array(1)
+            );
+
+            $response = [
+                "estatus" => "success",
+                "mensaje" => "Success",
+                "codigo" => 200,
+                "data" => $result
+            ];
+        } catch (\Throwable $th) {
+            $response = [
+                "estatus" => "error",
+                "mensaje" => "Error al intentar cambiar estatus del trámite",
+                "codigo" => 400
+            ];
+        }
+        return $response;
     }
 }

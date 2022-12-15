@@ -645,4 +645,14 @@ class GestorController extends Controller
         $formulario->open_modal = 1;
         return $formulario->list();
     }
+
+     //Obtener servicios de tramite
+     public function consultar_servicios($TRAM_NIDTRAMITE_ACCEDE)
+     {
+         try {
+             return Cls_Gestor::TRAM_CONSULTAR_SERVICIOS_TRAMITE($TRAM_NIDTRAMITE_ACCEDE);
+         } catch (\Throwable $th) {
+             //throw $th;
+         }
+     }
 }

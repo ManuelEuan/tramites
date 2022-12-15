@@ -221,6 +221,7 @@ Route::group(['prefix' => 'gestores'], function () {
     Route::get('/consultar_resolutivo', array('uses' => 'GestorController@consultar_resolutivo'))->name("consultar_resolutivo");
     Route::get('/consultar_preguntas_formulario', 'GestorController@consultar_preguntas_formulario')->name("consultar_preguntas_formulario");
     Route::get('/formulario', array('uses' => 'GestorController@formulario'))->name("formulario_gestor");
+    Route::get('/consultar_servicios/{TRAM_NIDTRAMITE_ACCEDE}', array('uses' => 'GestorController@consultar_servicios'))->name("consultar_servicios");
 
     Route::get('/detalleTramite/{id}', 'GestorController@detalleTramite');
 });
