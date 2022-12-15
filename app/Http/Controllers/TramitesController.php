@@ -126,7 +126,7 @@ class TramitesController extends Controller
             $tramite    = DB::table('tram_vw_tramite_seguimiento')->where('USTR_NIDUSUARIOTRAMITE', $id)->first();
             $secciones  = Cls_Seccion_Seguimiento::where('SSEGTRA_NIDUSUARIOTRAMITE', $id)->orderBy('SSEGTRA_NIDSECCION_SEGUIMIENTO', 'ASC')->get();
             $conceptos  = DB::table('tram_mdv_usuario_concepto')->where('USCON_NIDUSUARIOTRAMITE', $id)->get();
-        
+
             $resolutivos= Cls_Seguimiento_Servidor_Publico::TRAM_OBTENER_RESOLUTIVOS_CONFIGURADOS($tramite->USTR_NIDTRAMITE);
             $objTramite = $this->tramiteService->getTramite($tramite->USTR_NIDTRAMITE_ACCEDE);
             $result     = $this->tramiteService->getDetalle($objTramite->Id);

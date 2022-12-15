@@ -1090,6 +1090,7 @@
                             objDetalle = response['citas'];
                             $('#txtPlazo_diasResolucion').val(tramite_.tramite[0].TRAM_NDIASHABILESRESOLUCION);
                             $('#txtPlazo_diasNotificacion').val(tramite_.tramite[0].TRAM_NDIASHABILESNOTIFICACION);
+                            $('#chk_RequiereRevision').val(tramite_.tramite[0].TRAM_NREQUIEREREVISION);
                         },
                         error: function(data) {
                             mensajeError('error',data);
@@ -3086,8 +3087,16 @@
                 txtPlazo_diasNotificacion = parseInt($('#txtPlazo_diasNotificacion').val());
             }
 
+            var ckbox = $("input[name='chk_RequiereRevision']");
+            if (ckbox.is(':checked')) {
+                chkRequiere_Revision = 1;
+            }else {
+                chkRequiere_Revision = 0;
+            }
+
             tramite.TRAM_NDIASHABILESRESOLUCION = txtPlazo_diasResolucion;
             tramite.TRAM_NDIASHABILESNOTIFICACION = txtPlazo_diasNotificacion;
+            tramite.TRAM_NREQUIEREREVISION = chkRequiere_Revision;
 
             $('#loading_save').show();
             $.ajax({
@@ -3444,8 +3453,16 @@
                 txtPlazo_diasNotificacion = parseInt($('#txtPlazo_diasNotificacion').val());
             }
 
+            var ckbox = $("input[name='chk_RequiereRevision']");
+            if (ckbox.is(':checked')) {
+                chkRequiere_Revision = 1;
+            }else {
+                chkRequiere_Revision = 0;
+            }
+
             tramite.TRAM_NDIASHABILESRESOLUCION = txtPlazo_diasResolucion;
             tramite.TRAM_NDIASHABILESNOTIFICACION = txtPlazo_diasNotificacion;
+            tramite.TRAM_NREQUIEREREVISION = chkRequiere_Revision;
 
             $('#loading_save').show();
             $.ajax({
@@ -3809,8 +3826,16 @@
                 txtPlazo_diasNotificacion = parseInt($('#txtPlazo_diasNotificacion').val());
             }
 
+            var ckbox = $("input[name='chk_RequiereRevision']");
+            if (ckbox.is(':checked')) {
+                chkRequiere_Revision = 1;
+            }else {
+                chkRequiere_Revision = 0;
+            }
+
             tramite.TRAM_NDIASHABILESRESOLUCION = txtPlazo_diasResolucion;
             tramite.TRAM_NDIASHABILESNOTIFICACION = txtPlazo_diasNotificacion;
+            tramite.TRAM_NREQUIEREREVISION = chkRequiere_Revision;
 
             $('#loading_save').show();
             $.ajax({

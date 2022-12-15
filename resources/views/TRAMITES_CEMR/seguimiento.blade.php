@@ -235,13 +235,15 @@
                                 @endif
                             </a>
                         </li>
-                        <li>
-                            <a class="nav-link" data-toggle="tab" href="#tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_REVISION({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Revisión de documentación
-                                @if($seccion->SSEGTRA_NIDESTATUS == 2)
-                                <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
-                                @endif
-                            </a>
-                        </li>
+                            @if($tramite->TRAM_NREQUIEREREVISION == 1)
+                                <li>
+                                    <a class="nav-link" data-toggle="tab" href="#tab_formulario_{{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}}" onclick="TRAM_FN_RENDER_REVISION({{$seccion->SSEGTRA_NIDSECCION_SEGUIMIENTO}})">Revisión de documentación
+                                        @if($seccion->SSEGTRA_NIDESTATUS == 2)
+                                        <span><img src="{{ asset('assets/template/img/check.png') }}" width="20" height="20"></span>
+                                        @endif
+                                    </a>
+                                </li>
+                            @endif
                         @break
                     @endswitch
                 @endforeach
@@ -433,7 +435,7 @@
                                                             {{-- <div class="row columna_2">
                                                                 <div class="col-md-12">
                                                                     <label class="titulo_pequeno">Edificio</label> <br>
-                                                                    <label class='respuesta_pequena'>Calle Juan Aldama 901, Zona Centro, Chihuahua, Chih.</label>
+                                                                    <labelPREVIOUS_SSEGTRA_NIDSECCION_SEGUIMIENTO class='respuesta_pequena'>Calle Juan Aldama 901, Zona Centro, Chihuahua, Chih.</label>
                                                                 </div>
                                                             </div> --}}
                                                             <div class="row columna_2">
