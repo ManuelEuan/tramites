@@ -31,6 +31,7 @@ class Cls_Tramite extends Model
         'TRAM_NTELEFONO',
         'TRAM_CAUDIENCIA',
         'TRAM_CID_AUDIENCIA',
-        'TRAM_CTRAMITE_JSON'
+        'TRAM_CTRAMITE_JSON',
+        'TRAM_SERV_ID'
     ];
 }
