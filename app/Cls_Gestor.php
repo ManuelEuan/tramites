@@ -3,6 +3,7 @@
 namespace App;
 
 use Exception;
+use App\Models\Cls_Tramite;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
@@ -230,39 +231,23 @@ class Cls_Gestor extends Model
     //Implementar/Desimplementar trámite
     public function TRAM_SP_CAMBIAR_ESTATUS_TRAMITE($TRAM_NIDTRAMITE_CONFIG, $TRAM_NIMPLEMENTADO)
     {
-        $response = [];
+        $response = ["estatus" => "success", "mensaje" => "Se cambio el estatus del trámite", "codigo" => 200 ];
         try {
 
-            $tramite = DB::select(
-                'SELECT TRAM_NIDTRAMITE_ACCEDE FROM tram_mst_tramite WHERE TRAM_NIDTRAMITE = ?',
-                array($TRAM_NIDTRAMITE_CONFIG)
-            );
-
-            $TRAM_NIDACCEDE = $tramite[0]->TRAM_NIDTRAMITE_ACCEDE;
+            $tramite = Cls_Tramite::find($TRAM_NIDTRAMITE_CONFIG);
 
             //Desimplementamos los trámites anteriores
-            if ($TRAM_NIMPLEMENTADO > 0) {
-                DB::select(
-                    'UPDATE tram_mst_tramite SET TRAM_NIMPLEMENTADO = 0 WHERE TRAM_NIDTRAMITE_ACCEDE = ? AND TRAM_NIDTRAMITE != ?',
-                    array($TRAM_NIDACCEDE, $TRAM_NIDTRAMITE_CONFIG)
-                );
+            if($TRAM_NIMPLEMENTADO > 0){
+                Cls_Tramite::where(['TRAM_NIDTRAMITE_ACCEDE' => $tramite->TRAM_NIDACCEDE, 'TRAM_NIDTRAMITE' => $TRAM_NIDTRAMITE_CONFIG])->update(['TRAM_NIMPLEMENTADO' => false]);
             }
 
-            //Implementamos/Desimplementamos el Trámite en cuestión
-            DB::select(
-                'UPDATE tram_mst_tramite SET TRAM_NIMPLEMENTADO = ? WHERE TRAM_NIDTRAMITE = ?',
-                array($TRAM_NIMPLEMENTADO, $TRAM_NIDTRAMITE_CONFIG)
-            );
-
-            $response = [
-                "estatus" => "success",
-                "mensaje" => "Se cambio el estatus del trámite",
-                "codigo" => 200
-            ];
-        } catch (\Throwable $th) {
+            $item = Cls_Tramite::find($TRAM_NIDTRAMITE_CONFIG);
+            $item->TRAM_NIMPLEMENTADO = $TRAM_NIMPLEMENTADO;
+            $item->save();
+        } catch (Exception $ex) {
             $response = [
                 "estatus" => "error",
-                "mensaje" => "Error al intentar cambiar estatus del trámite",
+                "mensaje" => "Error al intentar cambiar estatus del trámite, ". $ex->getMessage(),
                 "codigo" => 400
             ];
         }
@@ -366,24 +351,15 @@ class Cls_Gestor extends Model
     //Obtiene los conceptos de pago del trámite
     static function TRAM_CONSULTAR_SERVICIOS_TRAMITE($TRAM_NIDTRAMITE_ACCEDE)
     {
-        $response = [];
+        $response = ["estatus" => "success",  "mensaje" => "Success","codigo" => 200, "data" => null];
         try {
+            $result = DB::table('tram_cat_services')->where('SERV_ACTIVE', true)->get();
+            $response["data"] = $result;
 
-            $result =  DB::select(
-                'SELECT * FROM tram_cat_services WHERE SERV_ACTIVE = ?',
-                array(1)
-            );
-
-            $response = [
-                "estatus" => "success",
-                "mensaje" => "Success",
-                "codigo" => 200,
-                "data" => $result
-            ];
-        } catch (\Throwable $th) {
+        } catch (Exception $ex) {
             $response = [
                 "estatus" => "error",
-                "mensaje" => "Error al intentar cambiar estatus del trámite",
+                "mensaje" => "Error al intentar cambiar estatus del trámite, ".$ex->getMessage(),
                 "codigo" => 400
             ];
         }

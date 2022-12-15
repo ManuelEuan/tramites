@@ -423,7 +423,7 @@ class GestorController extends Controller
 
     private function TRAM_AGREGAR_FORMULARIO($TRAM_LIST_FORMULARIO, $TRAM_NIDTRAMITE) {
         try {
-            DB::table('tram_mst_formulario_tramite')->where('FORM_NIDTRAMITE',$TRAM_NIDTRAMITE)->delete();
+            Cls_TramiteFormulario::where('FORM_NIDTRAMITE',$TRAM_NIDTRAMITE)->delete();
             for ($i = 0; $i < count($TRAM_LIST_FORMULARIO); $i++) {
                 $valor =  DB::table('tram_form_formulario')->where('FORM_NID', $TRAM_LIST_FORMULARIO[$i]['TRAM_NIDFORMULARIO'])->first();
                 $item = new Cls_TramiteFormulario();
@@ -649,10 +649,10 @@ class GestorController extends Controller
      //Obtener servicios de tramite
      public function consultar_servicios($TRAM_NIDTRAMITE_ACCEDE)
      {
-         try {
-             return Cls_Gestor::TRAM_CONSULTAR_SERVICIOS_TRAMITE($TRAM_NIDTRAMITE_ACCEDE);
-         } catch (\Throwable $th) {
-             //throw $th;
-         }
+        try {
+            return Cls_Gestor::TRAM_CONSULTAR_SERVICIOS_TRAMITE($TRAM_NIDTRAMITE_ACCEDE);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
      }
 }
