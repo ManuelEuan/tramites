@@ -198,7 +198,7 @@ class Cls_Gestor extends Model
     public function TRAM_SP_AGREGAR_TRAMITE()
     {
         return DB::select(
-            'call TRAM_SP_AGREGAR_TRAMITE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            'call TRAM_SP_AGREGAR_TRAMITE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             array(
                 $this->TRAM_NIDTRAMITE_ACCEDE,
                 $this->TRAM_NIDTRAMITE_CONFIG,
@@ -225,7 +225,8 @@ class Cls_Gestor extends Model
 
                 $this->TRAM_CTRAMITE_JSON,
 
-                $this->TRAM_SERV_ID
+                $this->TRAM_SERV_ID,
+                $this->TRAM_NREQUIEREREVISION
             )
         );
     }

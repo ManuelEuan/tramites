@@ -398,6 +398,7 @@ class GestorController extends Controller
             $tramites->TRAM_CID_AUDIENCIA   =  0;
             $tramites->TRAM_CTRAMITE_JSON   = '{"item": 1}';
             $tramites->TRAM_SERV_ID         = null;
+            $tramites->TRAM_NREQUIEREREVISION         = $objTramite->TRAM_NREQUIEREREVISION;
 
             $listSecciones = $request->TRAM_LIST_SECCION;
 

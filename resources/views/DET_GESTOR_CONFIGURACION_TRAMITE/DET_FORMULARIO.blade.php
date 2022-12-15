@@ -13,6 +13,14 @@
     </h6>
     </p>
     <hr class="division_2" />
+    <h6>¿Requiere revision?</h6>
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="chk_RequiereRevision" name="chk_RequiereRevision">
+        </div>
+    </div>
+    <br>
+    <hr class="division_2" />
 </div>
 {{-- Buscador --}}
 <div id="boxSearchAddFormulario" class="box">
